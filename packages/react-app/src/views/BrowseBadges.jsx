@@ -24,6 +24,10 @@ export const toBase58 = contentHash => {
   return multihash.toB58String(buf)
 }
 
+export const isHexadecimal = (value) => {
+  return /^[0-9a-fA-F]+$/.test(value) && (value.length % 2 === 0)
+}
+
 export default function BrowseBadges({ localProvider, mainnet, selectedChainId }) {
   const [contractEvents, setContractEvents] = useState([])
   const contractConfig = { deployedContracts: {}, externalContracts: externalContracts || {} }
@@ -164,12 +168,19 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId }
               sx={{ color: '#007aa6' }}
               label="Address or ENS name"
               onChange={async e => {
-                const address = await mainnet.resolveName(e.target.value)
-                if (address) {
-                  setAddress(address)
-                } else {
+                if (!e.target.value) return
+                if (isHexadecimal(e.target.value.replace('0x', ''))) {
                   setAddress(e.target.value)
-                }
+                } else {
+                  let name = e.target.value
+                  if (!name.endsWith('.eth')) name = name + '.eth'
+                  const address = await mainnet.resolveName(name)
+                  if (address) {
+                    setAddress(address)
+                  } else {
+                    setErrorMessage(`${name} not found`)
+                  }
+                }                            
               }}
             />
           </FormControl>
