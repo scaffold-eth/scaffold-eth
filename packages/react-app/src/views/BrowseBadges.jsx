@@ -46,6 +46,22 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId }
     contractRef = externalContracts[selectedChainId].contracts.REMIX_REWARD
   }
 
+  async function addressFilterHandler(e) {
+    if (!e.target.value) return
+    if (isHexadecimal(e.target.value.replace('0x', ''))) {
+      setAddress(e.target.value)
+    } else {
+      let name = e.target.value
+      if (!name.endsWith('.eth')) name = name + '.eth'
+      const address = await mainnet.resolveName(name)
+      if (address) {
+        setAddress(address)
+      } else {
+        setErrorMessage(`${name} not found`)
+      }
+    }
+  }
+
   useEffect(() => {
     const run = async () => {
       if (!contractRef) return setErrorMessage('chain not supported. ' + selectedChainId)
@@ -167,21 +183,7 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId }
               id="addressEnsSearch"
               sx={{ color: '#007aa6' }}
               label="Address or ENS name"
-              onChange={async e => {
-                if (!e.target.value) return
-                if (isHexadecimal(e.target.value.replace('0x', ''))) {
-                  setAddress(e.target.value)
-                } else {
-                  let name = e.target.value
-                  if (!name.endsWith('.eth')) name = name + '.eth'
-                  const address = await mainnet.resolveName(name)
-                  if (address) {
-                    setAddress(address)
-                  } else {
-                    setErrorMessage(`${name} not found`)
-                  }
-                }                            
-              }}
+              onChange={(e) => addressFilterHandler}
             />
           </FormControl>
           <Paper>{error}</Paper>
