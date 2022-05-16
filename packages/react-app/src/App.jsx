@@ -286,6 +286,7 @@ function App(props) {
             mainnetProvider={mainnetProvider}
             blockExplorer={blockExplorer}
             address={address}
+            localProvider={localProvider}
           />
         </Route>
         <Route exact path="/yourShips">

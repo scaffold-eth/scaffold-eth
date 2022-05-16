@@ -1,11 +1,11 @@
 import { useContractReader } from "eth-hooks";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { ethers } from "ethers";
+import useMultiCall from "../hooks/useMulticall";
 import { Button, List, Card } from "antd";
 import { Address } from "../components";
 
-function Home({ DEBUG, readContracts, writeContracts, tx, mainnetProvider, blockExplorer, address }) {
+function Home({ DEBUG, readContracts, writeContracts, tx, mainnetProvider, blockExplorer, address, localProvider }) {
   const totalSupply = useContractReader(readContracts, "LoogieShip", "totalSupply");
   if (DEBUG) console.log("🤗 totalSupply:", totalSupply);
   const shipsLeft = 1000 - totalSupply;
@@ -14,42 +14,65 @@ function Home({ DEBUG, readContracts, writeContracts, tx, mainnetProvider, block
   const [page, setPage] = useState(1);
   const [loadingShips, setLoadingShips] = useState(true);
   const perPage = 9;
+  const [tokenIds, setTokenIds] = useState([]);
+
+  const results = useMultiCall(
+    readContracts,
+    {
+      LoogieShip: {
+        tokenURI: tokenIds,
+        ownerOf: tokenIds,
+      },
+    },
+    localProvider,
+  );
+
+  console.log({ results });
 
   const history = useHistory();
 
   useEffect(() => {
-    const updateAllShips = async () => {
-      if (readContracts.LoogieShip && totalSupply) {
+    const updateTokenIds = async () => {
+      if (totalSupply) {
+        let startIndex = totalSupply - 1 - perPage * (page - 1);
+        const multicallParams = [];
+        for (let tokenIndex = startIndex; tokenIndex > startIndex - perPage && tokenIndex >= 0; tokenIndex--) {
+          multicallParams.push({ key: tokenIndex + 1, params: [tokenIndex + 1] });
+        }
+        if (DEBUG) console.log("multicallParams: ", multicallParams);
+        setTokenIds(multicallParams);
+      }
+    };
+    updateTokenIds();
+  }, [DEBUG, (totalSupply || "0").toString(), page]);
+
+  useEffect(() => {
+    const updateAllShips = () => {
+      if (results && results.LoogieShip && results.LoogieShip.tokenURI && results.LoogieShip.ownerOf) {
         setLoadingShips(true);
         const collectibleUpdate = [];
-        let startIndex = totalSupply - 1 - perPage * (page - 1);
-        for (let tokenIndex = startIndex; tokenIndex > startIndex - perPage && tokenIndex >= 0; tokenIndex--) {
-          try {
-            if (DEBUG) console.log("Getting token index", tokenIndex);
-            const tokenId = await readContracts.LoogieShip.tokenByIndex(tokenIndex);
-            if (DEBUG) console.log("Getting Ship tokenId: ", tokenId);
-            const tokenURI = await readContracts.LoogieShip.tokenURI(tokenId);
-            if (DEBUG) console.log("tokenURI: ", tokenURI);
-            const jsonManifestString = atob(tokenURI.substring(29));
-            const owner = await readContracts.LoogieShip.ownerOf(tokenId);
-            if (DEBUG) console.log("owner: ", owner);
+        tokenIds.forEach(function (tokenIdData) {
+          const tokenId = tokenIdData.key;
+          const tokenURI = results.LoogieShip.tokenURI[tokenId][0];
+          if (DEBUG) console.log("tokenId: ", tokenId);
+          if (DEBUG) console.log("tokenURI: ", tokenURI);
+          const jsonManifestString = atob(tokenURI.substring(29));
+          const owner = results.LoogieShip.ownerOf[tokenId][0];
+          if (DEBUG) console.log("owner: ", owner);
 
-            try {
-              const jsonManifest = JSON.parse(jsonManifestString);
-              collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: owner, ...jsonManifest });
-            } catch (e) {
-              console.log(e);
-            }
+          try {
+            const jsonManifest = JSON.parse(jsonManifestString);
+            collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: owner, ...jsonManifest });
           } catch (e) {
             console.log(e);
           }
-        }
+        });
         setAllShips(collectibleUpdate);
         setLoadingShips(false);
       }
     };
     updateAllShips();
-  }, [DEBUG, readContracts.LoogieShip, (totalSupply || "0").toString(), page]);
+  }, [DEBUG, results]);
 
   return (
     <div style={{ backgroundColor: "#29aae1" }}>
@@ -235,7 +258,7 @@ function Home({ DEBUG, readContracts, writeContracts, tx, mainnetProvider, block
             loading={loadingShips}
             dataSource={allShips}
             renderItem={item => {
-              const id = item.id.toNumber();
+              const id = item.id;
 
               return (
                 <List.Item key={id + "_" + item.uri + "_" + item.owner}>

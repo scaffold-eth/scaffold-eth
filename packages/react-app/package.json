@@ -39,6 +39,7 @@
     "confetti-js": "^0.0.18",
     "dotenv": "^8.2.0",
     "eth-hooks": "2.3.16",
+    "ethereum-multicall": "^2.11.0",
     "ethers": "^5.4.1",
     "fortmatic": "^2.2.1",
     "graphiql": "^1.4.7",
