@@ -1,11 +1,8 @@
-# 🏗 Scaffold-ETH
+# 🏗 Ethers Phoenix prototype
 
-> everything you need to build on Ethereum! 🚀
+> Prototype NFT project rendering a SVG from a backend using the owner POAP count. 
 
-🧪 Quickly experiment with Solidity using a frontend that adapts to your smart contract:
-
-![image](https://user-images.githubusercontent.com/2653167/124158108-c14ca380-da56-11eb-967e-69cde37ca8eb.png)
-
+![phoenix-nft surge sh_](https://user-images.githubusercontent.com/466652/168684520-d56b880c-7d91-4c2a-81c6-63a0fb05f6b1.png)
 
 # 🏄‍♂️ Quick Start
 
@@ -39,9 +36,18 @@ cd scaffold-eth
 yarn deploy
 ```
 
-🔏 Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
+> in a fourth terminal window, start the backend:
+
+```bash
+cd scaffold-eth/packages/backend
+yarn start
+```
+
+🔏 Edit your smart contract `Phoenix.sol` in `packages/hardhat/contracts`
 
 📝 Edit your frontend `App.jsx` in `packages/react-app/src`
+
+📝 Edit your backend `index.js` in `packages/backend`
 
 💼 Edit your deployment scripts in `packages/hardhat/deploy`
 
