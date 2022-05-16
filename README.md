@@ -1,10 +1,12 @@
-# 🏗 Scaffold-ETH
+# SailorLoogies - FancyLoogies go fishing
 
-> everything you need to build on Ethereum! 🚀
+https://www.fancyloogies.com/
 
-🧪 Quickly experiment with Solidity using a frontend that adapts to your smart contract:
+![SailorLoogies](https://user-images.githubusercontent.com/466652/168671378-613731be-e41d-4e36-a6d1-ee95c01a77fb.png)
 
-![image](https://user-images.githubusercontent.com/2653167/124158108-c14ca380-da56-11eb-967e-69cde37ca8eb.png)
+> Game using the FancyLoogies. 
+
+![SailorLoogies Game](https://user-images.githubusercontent.com/466652/168671502-a1851cfb-c6ac-474a-8737-15aa7964c742.png)
 
 
 # 🏄‍♂️ Quick Start
@@ -46,6 +48,18 @@ yarn deploy
 💼 Edit your deployment scripts in `packages/hardhat/deploy`
 
 📱 Open http://localhost:3000 to see the app
+
+## Introduction
+
+Check https://github.com/scaffold-eth/scaffold-eth/tree/fancy-loogies README for more information about the SVG NFTs.
+
+This project add a LoogieShip SVG NFT, where you can send 4 FancyLoogies and the loogies will be shown on board the ship.
+
+The SailorLoogiesGame contract is where you can find all the game logic.
+
+The SailorLoogiesGameAward contract, another SVG NFT, used for the weekly prize.
+
+The game also introduce the LoogieCoin ERC20 token. This is the token used to pay for go fishing and to pay the fishing rewards.
 
 # 📚 Documentation
 
