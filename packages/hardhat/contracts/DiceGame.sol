@@ -7,7 +7,6 @@ contract DiceGame {
 
     uint256 public nonce = 0;
     uint256 public prize = 0;
-    uint256 public lastRoll;
 
     event Roll(address indexed player, uint256 roll);
     event Winner(address winner, uint256 amount);
@@ -26,7 +25,6 @@ contract DiceGame {
         bytes32 prevHash = blockhash(block.number - 1);                         
         bytes32 hash = keccak256(abi.encodePacked(prevHash, address(this), nonce));
         uint256 roll = uint256(hash) % 16;
-        lastRoll = roll;
         nonce++;
         prize += ((msg.value * 40) / 100);
 
