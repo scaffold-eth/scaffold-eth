@@ -566,7 +566,7 @@ function App(props) {
                 />
               </div>
               <div id='centerWrapper' style = {{ padding: 16 }}>
-                <h2>Roll a 0, 1, or 2 to win the pot!</h2>
+                <h2>Roll a 0, 1, or 2 to win the prize!</h2>
                 <Balance balance={prize} dollarMultiplier={price} fontSize={32} />
                 <div style={{ padding: 16, format: 'flex', flexDirection: 'row' }}>
                   <Button type="primary" disabled={diceRolled} onClick={rollTheDice}>
