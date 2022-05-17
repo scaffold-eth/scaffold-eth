@@ -2,7 +2,9 @@
 
 ## 🚩 Challenge 3: 🎲 Dice Game 
 
-> 🤖 Randomness is tricky on a public, deterministic, blockchain. The block hash is the result proof of work (for now) and some builders use this as a weak form of randomness. This challenge will give you an example of a contract using blockhash to create random numbers.  This randomness is exploitable and reproducable.  Other, stronger forms of randomness include commit/reveal schemes or VRF from chainlink.
+> 🎰 Randomness is tricky on a public, deterministic, blockchain. The block hash is the result proof of work (for now) and some builders use this as a weak form of randomness. This challenge will give you an example of a contract using blockhash to create random numbers.  This randomness is exploitable and reproducable.  Other, stronger forms of randomness include commit/reveal schemes or VRF from chainlink.
+
+> 👍 One day soon, randomness will be built into the Ethereum protocol!
 
 > 💬 Dice Game is a contract that allows users to roll the dice and try and win the prize.  If players roll either a 0, 1 or a 2 they will win the current prize amount.  The initial prize is 10% of the contract's balance, which starts out at .05 Eth.  
  
