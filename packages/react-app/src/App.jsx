@@ -463,13 +463,14 @@ function App(props) {
   }
 
   const rollTheDice = async () => {
+
+    setDiceRolled(true);
+    setDiceRollImage("ROLL");
+
     tx(
       writeContracts.DiceGame.rollTheDice({ value: ethers.utils.parseEther("0.002"), gasLimit: 500000 }),
       update => {
-        if (update?.status === "sent" || update?.status === 1) {
-          setDiceRolled(true);
-          setDiceRollImage("ROLL");
-        }
+
         if (update?.status === "failed") {
           setDiceRolled(false);
           setDiceRollImage(null);
@@ -478,20 +479,30 @@ function App(props) {
     );
   };
 
-{/*
+/*
   const riggedRoll = async () => {
+
+    setDiceRolled(true);
+    setDiceRollImage("ROLL");
+
     tx(
       writeContracts.RiggedRoll.riggedRoll({ gasLimit: 500000 }),
       update => {
-        if (update?.status === "sent" || update?.status === 1) {
-          setDiceRolled(true);
-          setDiceRollImage("ROLL");
-        }
+        console.log("TX UPDATE",update)
 
         if (update?.status === "failed") {
           setDiceRolled(false);
           setDiceRollImage(null);
         }
+
+        if(update?.status==1 || update?.status=="confirmed")
+        {
+          setTimeout(()=>{
+            setDiceRolled(false);
+            setDiceRollImage(null);
+          },1500)
+        }
+
       },
     );
   };
@@ -505,7 +516,7 @@ function App(props) {
       setDiceRolled(false);
     }
   });
-*/}
+*/
 
   const filter = readContracts.DiceGame?.filters.Roll(address, null);
 
@@ -556,7 +567,7 @@ function App(props) {
                 <List style={{ height: 258, overflow: 'hidden' }}
                   dataSource={rollEvents}
                   renderItem={item => {
-                    return (           
+                    return (
                       <List.Item key={item.args[0] + " " + item.args[1] + " " + date.getTime() + " " + item.blockNumber}>
                         <Address value={item.args[0]} ensProvider={mainnetProvider} fontSize={16} />
                         &nbsp;Roll:&nbsp;{item.args[1].toNumber().toString(16).toUpperCase()}
@@ -573,13 +584,26 @@ function App(props) {
                     Roll the dice!
                   </Button>
 
-                {/*
-                  &nbsp;&nbsp;
-                  <Button type="primary" disabled={diceRolled} onClick={riggedRoll}>
-                    Rigged Roll!
-                  </Button>
-                */}
+                  {/*
 
+                    <div style={{padding:16}}>
+                      <Account
+                        address={readContracts?.RiggedRoll?.address}
+                        localProvider={localProvider}
+                        userSigner={false}
+                        mainnetProvider={mainnetProvider}
+                        price={price}
+                        web3Modal={false}
+                        loadWeb3Modal={false}
+                        logoutOfWeb3Modal={false}
+                        blockExplorer={blockExplorer}
+                      />
+                      <Button type="primary" disabled={diceRolled} onClick={riggedRoll}>
+                        Rigged Roll!
+                      </Button>
+                    </div>
+
+                    */}
                 </div>
                 {diceRollImg}
               </div>
@@ -590,7 +614,7 @@ function App(props) {
                   dataSource={winnerEvents}
                   renderItem={item => {
                     return (
-                      <List.Item key={item.args[0] + " " + item.args[1] + " " + date.getTime() + " " + item.blockNumber}>             
+                      <List.Item key={item.args[0] + " " + item.args[1] + " " + date.getTime() + " " + item.blockNumber}>
                         <Address value={item.args[0]} ensProvider={mainnetProvider} fontSize={16} />
                         <br></br>
                         <Balance balance={item.args[1]} dollarMultiplier={price} />
