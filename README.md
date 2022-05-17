@@ -74,6 +74,7 @@ Next add a `riggedRoll()` function. This function should predict the randomness 
 
 - [ ] Look for the code to uncomment in `App.jsx` to show a riggedRoll button on the main tab for easier testing.
 - [ ] Does your riggedRoll function only call rollTheDice() when it's going to be a winning roll?  What happens when it does call rollTheDice()?  
+- [ ] Add a statement to require `address(this).balance >= .002 ether` in your riggedRoll function.  This will help prevent calling the rollTheDice() function without enough value.
 
 ---
 
