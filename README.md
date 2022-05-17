@@ -132,6 +132,8 @@ Update the `apikey` in `packages/hardhat/package.json`. You can get your key [he
 
 > Now you are ready to run the `yarn verify --network your_network` command to verify your contracts on etherscan 🛰
 
+Copy the verified address for your RiggedRoll contract and enter that into the appropriate Etherscan testnet.
+
 ---
 
 
