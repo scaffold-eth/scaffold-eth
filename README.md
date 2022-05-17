@@ -50,18 +50,47 @@ You'll have three terminals up for:
 #### 🥅 Goals
 
 - [ ] Track the solidity code to find out how the DiceGame contract is creating a random number.
-- [ ] Using blockhash provides a sudo random number.  Is it possible to predict what that number would be for any given roll?
+- [ ] Using blockhash provides a sudo random number.  Is it possible to predict what that number will be for any given roll?
 
 ---
 
 ### Checkpoint 3: 🔑 Rigged Contract
 
+To deploy your RiggedRoll contract, uncomment the appropriate lines in the `01_deploy_riggedRoll.js` file in `packages/hardhat/deploy`
+
 Edit the `RiggedRoll.sol` contract to include a `riggedRoll()` function. This function will predict the randomness of a roll, and if the outcome will be a winner, call `rollTheDice()` on the DiceGame contract.
 
- 🃏 Predict the outcome by generating your roll number in the exact same way as the DiceGame contract.
+ 🃏 Predict the outcome by generating your roll number in the exact way as the DiceGame contract.
 
 > 📣 Reminder!  Calling rollTheDice() will fail unless you send a message value of at least .002 Eth! [Here is one example of how to send value with a function call.](https://ethereum.stackexchange.com/questions/6665/call-contract-and-send-value-from-solidity)
 
-> 📍 You can call your riggedRoll function from the Debug tab to start, but look for the code to uncomment in `App.jsx` to show a button on the main tab!
+#### ⚔️ Side Quest
+
+- [ ] Look for the code to uncomment in `App.jsx` to show a riggedRoll button on the main tab for easier testing.
+- [ ] Does your riggedRoll function only call rollTheDice() when it's going to be a winning roll?  What happens when it does call rollTheDice()?
+
+> ⚠️ Oh no!  Getting an error when calling your riggedRoll function, but you should have rolled a winner?  You will need to fund the RiggedRoll contract!  
+
+Start by creating a `receive()` function in your contract to allow it to receive Eth.  Then fund your contract in the Debug tab using the wallet icon next to your RiggedRoll address.
+
+### Checkpoint 4: 💵 Where's my money?!?
+
+You have beaten the game, but where is your money?  Since the RiggedRoll contract is the one calling `rollTheDice()`, that is where the prize money is being sent.  
+
+📥 Create a `withdraw(address _addr, uint256 _amount)` function to allow you to send Eth from RiggedRoll to another address.
+
+#### 🥅 Goals
+
+- [ ] Can you send value from the riggedRoll contract to another address?
+- [ ] Is anyone able to call the withdraw function?  What would be the downside to that?
+
+
+#### ⚔️ Side Quest
+
+- [ ] Lock the withdraw function so it can only be called by the owner.
+
+> ⚠️ But wait, I am not the owner!  You will want to set your front end address as the owner in `01_deploy_riggedRoll.js`.  This will allow your front end address to call the withdraw function.
+
+
 
 
