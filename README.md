@@ -70,10 +70,13 @@ Next add a `riggedRoll()` function. This function should predict the randomness 
 
 🚀 To deploy your RiggedRoll contract, uncomment the appropriate lines in the `01_deploy_riggedRoll.js` file in `packages/hardhat/deploy`
 
+❓ If you're struggling to get the exact same random number as the DiceGame contract, try adding some `console.log()` statements in both contracts to help you track the values.
+
 #### ⚔️ Side Quest
 
 - [ ] Look for the code to uncomment in `App.jsx` to show a riggedRoll button on the main tab for easier testing.
 - [ ] Does your riggedRoll function only call rollTheDice() when it's going to be a winning roll?  What happens when it does call rollTheDice()?  
+- [ ] Add a statement to require `address(this).balance >= .002 ether` in your riggedRoll function.  This will help prevent calling the rollTheDice() function without enough value.
 
 ---
 
@@ -89,11 +92,12 @@ You have beaten the game, but where is your money?  Since the RiggedRoll contrac
 - [ ] Is anyone able to call the withdraw function?  What would be the downside to that?
 
 
+> ⚠️ But wait, I am not the owner!  You will want to set your front end address as the owner in `01_deploy_riggedRoll.js`.  This will allow your front end address to call the withdraw function.
+
 #### ⚔️ Side Quest
 
 - [ ] Lock the withdraw function so it can only be called by the owner.
 
-> ⚠️ But wait, I am not the owner!  You will want to set your front end address as the owner in `01_deploy_riggedRoll.js`.  This will allow your front end address to call the withdraw function.
 
 ### Checkpoint 5: 💾 Deploy it! 🛰
 
@@ -122,7 +126,7 @@ You have beaten the game, but where is your money?  Since the RiggedRoll contrac
 
 ⚙ If you get a permissions error `yarn surge` again until you get a unique URL, or customize it in the command line.
 
-🚔 Traffic to your url might break the [Infura](https://infura.io/) rate limit, edit your key: `constants.js` in `packages/react-app/src`.
+🚔 Traffic to your url might break the [Infura](https://infura.io/) rate limit, edit your key: `constants.js` in `packages/react-app/src`
 
 ---
 
@@ -131,6 +135,8 @@ You have beaten the game, but where is your money?  Since the RiggedRoll contrac
 Update the `apikey` in `packages/hardhat/package.json`. You can get your key [here](https://etherscan.io/myapikey).
 
 > Now you are ready to run the `yarn verify --network your_network` command to verify your contracts on etherscan 🛰
+
+Copy the verified address for your RiggedRoll contract and enter that into the appropriate Etherscan testnet.
 
 ---
 

@@ -27,7 +27,7 @@ contract DiceGame {
         uint256 roll = uint256(hash) % 16;
 
         console.log("THE ROLL IS ",roll);
-        
+
         nonce++;
         prize += ((msg.value * 40) / 100);
 
