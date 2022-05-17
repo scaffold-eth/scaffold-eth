@@ -51,7 +51,7 @@ You'll have three terminals up for:
 
 #### 🥅 Goals
 
-- [ ] Track the solidity code to find out how the DiceGame contract is creating a random number.
+- [ ] Track the solidity code to find out how the DiceGame contract is generating random numbers.
 - [ ] Using blockhash provides a sudo random number.  Is it possible to predict what that number will be for any given roll?
 
 ---
@@ -73,6 +73,7 @@ Next add a `riggedRoll()` function. This function should predict the randomness 
 - [ ] Look for the code to uncomment in `App.jsx` to show a riggedRoll button on the main tab for easier testing.
 - [ ] Does your riggedRoll function only call rollTheDice() when it's going to be a winning roll?  What happens when it does call rollTheDice()?  
 
+---
 
 ### Checkpoint 4: 💵 Where's my money?!?
 
@@ -104,7 +105,7 @@ You have beaten the game, but where is your money?  Since the RiggedRoll contrac
 
 > ⚠️ Make sure you fund your account with enough Eth! .05 is required to initially fund the DiceGame contract and .01 more is required to fund the riggedRoll contract.  Plus a bit extra to pay the gas.
 
-> 🚀 Run `yarn deploy` to deploy to your public network of choice (😅 wherever you can get ⛽️ gas)
+ 🚀 Run `yarn deploy` to deploy to your public network of choice (😅 wherever you can get ⛽️ gas)
 
 🔬 Inspect the block explorer for the network you deployed to... make sure your contract is there.
 
@@ -125,7 +126,7 @@ You have beaten the game, but where is your money?  Since the RiggedRoll contrac
 
 ### Checkpoint 7: 📜 Contract Verification
 
-Update the `api-key` in `packages/hardhat/package.json`. You can get your key [here](https://etherscan.io/myapikey).
+Update the `apikey` in `packages/hardhat/package.json`. You can get your key [here](https://etherscan.io/myapikey).
 
 > Now you are ready to run the `yarn verify --network your_network` command to verify your contracts on etherscan 🛰
 
