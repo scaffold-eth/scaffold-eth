@@ -85,7 +85,7 @@ You have beaten the game, but where is your money?  Since the RiggedRoll contrac
 
 #### 🥅 Goals
 
-- [ ] Can you send value from the riggedRoll contract to another address?
+- [ ] Can you send value from the riggedRoll contract to your front end address?
 - [ ] Is anyone able to call the withdraw function?  What would be the downside to that?
 
 
