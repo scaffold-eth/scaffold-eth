@@ -26,6 +26,7 @@
     "watch": "yarn workspace @scaffold-eth/hardhat watch",
     "accounts": "yarn workspace @scaffold-eth/hardhat accounts",
     "balance": "yarn workspace @scaffold-eth/hardhat balance",
+    "verify": "yarn workspace @scaffold-eth/hardhat verify",
     "send": "yarn workspace @scaffold-eth/hardhat send",
     "ipfs": "yarn workspace @scaffold-eth/react-app ipfs",
     "surge": "yarn workspace @scaffold-eth/react-app surge",
