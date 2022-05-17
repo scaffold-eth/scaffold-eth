@@ -92,11 +92,12 @@ You have beaten the game, but where is your money?  Since the RiggedRoll contrac
 - [ ] Is anyone able to call the withdraw function?  What would be the downside to that?
 
 
+> ⚠️ But wait, I am not the owner!  You will want to set your front end address as the owner in `01_deploy_riggedRoll.js`.  This will allow your front end address to call the withdraw function.
+
 #### ⚔️ Side Quest
 
 - [ ] Lock the withdraw function so it can only be called by the owner.
 
-> ⚠️ But wait, I am not the owner!  You will want to set your front end address as the owner in `01_deploy_riggedRoll.js`.  This will allow your front end address to call the withdraw function.
 
 ### Checkpoint 5: 💾 Deploy it! 🛰
 
