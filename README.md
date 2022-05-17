@@ -1,13 +1,15 @@
 # 🏗 scaffold-eth | 🏰 BuidlGuidl
 
-## 🚩 Challenge 2: 🎲 Dice Game 
+## 🚩 Challenge 3: 🎲 Dice Game 
 
- 🤖 Blurb about randomness on the blockchain...
+ > 🤖 Blurb about randomness on the blockchain...
 
- 💬  Dice game is a D16 dice, roll a 0, 1, or 2 to win the pot.  Initial prize is 10% of the contract's balance.  Every roll 40% goes to the prize, 60% goes to the dice game contract address, blah blah
-
- 🧨 A value of .002 Eth is sent to the DiceGame contract when the dice are rolled.  40% of that will be added to the current prize, while the remaining 60% will be used to fund future prizes.  Once a prize is won, the new prize amount is set to 10% of the total balance of the DiceGame contract. 
-
+>💬 Dice Game is a contract that allows users to roll the dice and try and win the prize.  If players roll either a 0, 1 or a 2 they will win the current prize amount.  The initial prize is 10% of the contract's balance, which starts out at .05 Eth.  
+ 
+>🧤 Every time a player rolls the dice, they are required to send .002 Eth.  40 percent of this value is added to the current prize amount, and other 60 percent stays in the contract to fund future prizes.  Once a prize is won, the new prize amount is set to 10% of the total balance of the DiceGame contract. 
+ 
+ >🧨 Your job is to attack the Dice Game contract!  You will create a new contract that will predict the randomness ahead of time, and only roll the dice when you're guaranteed to be a winner!
+ 
 ---
 
 ### Checkpoint 0: 📦 install 📚
@@ -56,22 +58,21 @@ You'll have three terminals up for:
 
 ### Checkpoint 3: 🔑 Rigged Contract
 
-To deploy your RiggedRoll contract, uncomment the appropriate lines in the `01_deploy_riggedRoll.js` file in `packages/hardhat/deploy`
+Start by creating a `receive()` function in the `RiggedRoll.sol` contract to allow it to receive Eth.  
 
-Edit the `RiggedRoll.sol` contract to include a `riggedRoll()` function. This function will predict the randomness of a roll, and if the outcome will be a winner, call `rollTheDice()` on the DiceGame contract.
+Next add a `riggedRoll()` function. This function should predict the randomness of a roll, and if the outcome will be a winner, call `rollTheDice()` on the DiceGame contract.
 
- 🃏 Predict the outcome by generating your roll number in the exact way as the DiceGame contract.
+ 🃏 Predict the outcome by generating your random numbers in the exact same way as the DiceGame contract.
 
 > 📣 Reminder!  Calling rollTheDice() will fail unless you send a message value of at least .002 Eth! [Here is one example of how to send value with a function call.](https://ethereum.stackexchange.com/questions/6665/call-contract-and-send-value-from-solidity)
+
+🚀 To deploy your RiggedRoll contract, uncomment the appropriate lines in the `01_deploy_riggedRoll.js` file in `packages/hardhat/deploy`
 
 #### ⚔️ Side Quest
 
 - [ ] Look for the code to uncomment in `App.jsx` to show a riggedRoll button on the main tab for easier testing.
-- [ ] Does your riggedRoll function only call rollTheDice() when it's going to be a winning roll?  What happens when it does call rollTheDice()?
+- [ ] Does your riggedRoll function only call rollTheDice() when it's going to be a winning roll?  What happens when it does call rollTheDice()?  
 
-> ⚠️ Oh no!  Getting an error when calling your riggedRoll function, but you should have rolled a winner?  You will need to fund the RiggedRoll contract!  
-
-Start by creating a `receive()` function in your contract to allow it to receive Eth.  Then fund your contract in the Debug tab using the wallet icon next to your RiggedRoll address.
 
 ### Checkpoint 4: 💵 Where's my money?!?
 
@@ -90,6 +91,45 @@ You have beaten the game, but where is your money?  Since the RiggedRoll contrac
 - [ ] Lock the withdraw function so it can only be called by the owner.
 
 > ⚠️ But wait, I am not the owner!  You will want to set your front end address as the owner in `01_deploy_riggedRoll.js`.  This will allow your front end address to call the withdraw function.
+
+### Checkpoint 5: 💾 Deploy it! 🛰
+
+📡 Edit the `defaultNetwork` in `packages/hardhat/hardhat.config.js`, as well as `targetNetwork` in `packages/react-app/src/App.jsx`, to [your choice of public EVM networks](https://ethereum.org/en/developers/docs/networks/)
+
+👩‍🚀 You will want to run `yarn account` to see if you have a **deployer address**.
+
+🔐 If you don't have one, run `yarn generate` to create a mnemonic and save it locally for deploying.
+
+🛰 Use a faucet like [faucet.paradigm.xyz](https://faucet.paradigm.xyz/) to fund your **deployer address** (run `yarn account` again to view balances)
+
+> ⚠️ Make sure you fund your account with enough Eth! .05 is required to initially fund the DiceGame contract and .01 more is required to fund the riggedRoll contract.  Plus a bit extra to pay the gas.
+
+> 🚀 Run `yarn deploy` to deploy to your public network of choice (😅 wherever you can get ⛽️ gas)
+
+🔬 Inspect the block explorer for the network you deployed to... make sure your contract is there.
+
+---
+### Checkpoint 6: 🚢 Ship it! 🚁
+
+📦 Run `yarn build` to package up your frontend.
+
+💽 Upload your app to surge with `yarn surge` (you could also `yarn s3` or maybe even `yarn ipfs`?)
+
+>  😬 Windows users beware!  You may have to change the surge code in `packages/react-app/package.json` to just `"surge": "surge ./build",`
+
+⚙ If you get a permissions error `yarn surge` again until you get a unique URL, or customize it in the command line.
+
+🚔 Traffic to your url might break the [Infura](https://infura.io/) rate limit, edit your key: `constants.js` in `packages/react-app/src`.
+
+---
+
+### Checkpoint 7: 📜 Contract Verification
+
+Update the `api-key` in `packages/hardhat/package.json`. You can get your key [here](https://etherscan.io/myapikey).
+
+> Now you are ready to run the `yarn verify --network your_network` command to verify your contracts on etherscan 🛰
+
+---
 
 
 
