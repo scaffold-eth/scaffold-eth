@@ -70,6 +70,8 @@ Next add a `riggedRoll()` function. This function should predict the randomness 
 
 🚀 To deploy your RiggedRoll contract, uncomment the appropriate lines in the `01_deploy_riggedRoll.js` file in `packages/hardhat/deploy`
 
+❓ If you're struggling to get the exact same random number as the DiceGame contract, try adding some `console.log()` statements in both contracts to help you track the values.
+
 #### ⚔️ Side Quest
 
 - [ ] Look for the code to uncomment in `App.jsx` to show a riggedRoll button on the main tab for easier testing.
