@@ -479,7 +479,7 @@ function App(props) {
     );
   };
 
-/*
+{/*
   const riggedRoll = async () => {
 
     setDiceRolled(true);
@@ -516,7 +516,8 @@ function App(props) {
       setDiceRolled(false);
     }
   });
-*/
+*/}
+
 
   const filter = readContracts.DiceGame?.filters.Roll(address, null);
 
@@ -583,31 +584,28 @@ function App(props) {
                   <Button type="primary" disabled={diceRolled} onClick={rollTheDice}>
                     Roll the dice!
                   </Button>
-
                   {/*
-
-                    <div style={{padding:16}}>
-                      <Account
-                        address={readContracts?.RiggedRoll?.address}
-                        localProvider={localProvider}
-                        userSigner={false}
-                        mainnetProvider={mainnetProvider}
-                        price={price}
-                        web3Modal={false}
-                        loadWeb3Modal={false}
-                        logoutOfWeb3Modal={false}
-                        blockExplorer={blockExplorer}
-                      />
-                      <Button type="primary" disabled={diceRolled} onClick={riggedRoll}>
-                        Rigged Roll!
-                      </Button>
-                    </div>
-
-                    */}
+                  <div style={{ padding: 16 }}> 
+                    <Account
+                      address={readContracts?.RiggedRoll?.address}
+                      localProvider={localProvider}
+                      userSigner={false}
+                      mainnetProvider={mainnetProvider}
+                      price={price}
+                      web3Modal={false}
+                      loadWeb3Modal={false}
+                      logoutOfWeb3Modal={false}
+                      blockExplorer={blockExplorer}
+                    />
+                    <Button style={{ margin: 16 }} type="primary" disabled={diceRolled} onClick={riggedRoll}>
+                      Rigged Roll!
+                    </Button>
+                  </div>
+                */}
                 </div>
                 {diceRollImg}
               </div>
-              <div style={{ width: 250, margin: "auto", marginTop: 64}}>
+              <div style={{ width: 250, margin: "auto", marginTop: 32}}>
 
                 <div>Winner Events:</div>
                 <List style={{ height: 258, overflow: 'hidden' }}

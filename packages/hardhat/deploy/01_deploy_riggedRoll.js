@@ -15,12 +15,12 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
    args: [diceGame.address],
    log: true,
   });
-
-
-  const riggedRoll = await ethers.getContract("RiggedRoll", deployer);
-
-  const ownershipTransaction = await riggedRoll.transferOwnership("0xB5e6dC8299bFbcf1748109C6aF52E9BD76b5AF83");
   */
+
+  //const riggedRoll = await ethers.getContract("RiggedRoll", deployer);
+
+  //const ownershipTransaction = await riggedRoll.transferOwnership("** YOUR FRONTEND ADDRESS **");
+  
 
 };
 
