@@ -167,12 +167,15 @@ function App(props) {
   ]);
 
   // keep track of a variable from the contract in the local React state:
-  const purpose = useContractReader(readContracts, "YourContract", "purpose");
+  const latestContractAddress = useContractReader(readContracts, "YourFactory", "latestContractAddress");
 
+  console.log("latestContractAddress",latestContractAddress)
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
   console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
   */
+
+  console.log("WETF IS ",contractConfig)
 
   //
   // 🧫 DEBUG 👨🏻‍🔬
@@ -244,6 +247,24 @@ function App(props) {
 
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
 
+  const customContractConfig = {
+    "deployedContracts": {
+      "31337":{
+        "localhost":{
+          "name":"localhost",
+          "chainId":"31337",
+          "contracts": {
+            "YourContract":{
+              address: latestContractAddress,
+              abi: contractConfig.deployedContracts['31337'].localhost.contracts.YourContract.abi
+            }
+          }
+        }
+      }
+  }}
+
+  console.log("customContractConfig",customContractConfig)
+
   return (
     <div className="App">
       {/* ✏️ Edit the header and change the title to your project name */}
@@ -290,20 +311,8 @@ function App(props) {
         <Menu.Item key="/">
           <Link to="/">App Home</Link>
         </Menu.Item>
-        <Menu.Item key="/debug">
-          <Link to="/debug">Debug Contracts</Link>
-        </Menu.Item>
-        <Menu.Item key="/hints">
-          <Link to="/hints">Hints</Link>
-        </Menu.Item>
-        <Menu.Item key="/exampleui">
-          <Link to="/exampleui">ExampleUI</Link>
-        </Menu.Item>
-        <Menu.Item key="/mainnetdai">
-          <Link to="/mainnetdai">Mainnet DAI</Link>
-        </Menu.Item>
-        <Menu.Item key="/subgraph">
-          <Link to="/subgraph">Subgraph</Link>
+        <Menu.Item key="/factory">
+          <Link to="/factory">Factory</Link>
         </Menu.Item>
       </Menu>
 
@@ -312,7 +321,7 @@ function App(props) {
           {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
           <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} />
         </Route>
-        <Route exact path="/debug">
+        <Route exact path="/factory">
           {/*
                 🎛 this scaffolding is full of commonly used components
                 this <Contract/> component will automatically parse your ABI
@@ -320,7 +329,7 @@ function App(props) {
             */}
 
           <Contract
-            name="YourContract"
+            name="YourFactory"
             price={price}
             signer={userSigner}
             provider={localProvider}
@@ -328,6 +337,18 @@ function App(props) {
             blockExplorer={blockExplorer}
             contractConfig={contractConfig}
           />
+
+          <Contract
+            name="YourContract"
+            customContract={readContracts && readContracts.contracts && readContracts.contracts.YourContract}
+            signer={userSigner}
+            provider={localProvider}
+            address={address}
+            blockExplorer="https://etherscan.io/"
+            contractConfig={customContractConfig}
+          />
+
+
         </Route>
         <Route path="/hints">
           <Hints
@@ -348,7 +369,7 @@ function App(props) {
             tx={tx}
             writeContracts={writeContracts}
             readContracts={readContracts}
-            purpose={purpose}
+            purpose={false}
           />
         </Route>
         <Route path="/mainnetdai">

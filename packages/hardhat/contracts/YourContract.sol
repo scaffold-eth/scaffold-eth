@@ -2,17 +2,17 @@ pragma solidity >=0.8.0 <0.9.0;
 //SPDX-License-Identifier: MIT
 
 import "hardhat/console.sol";
-// import "@openzeppelin/contracts/access/Ownable.sol"; 
+import "@openzeppelin/contracts/utils/Create2.sol"; 
 // https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol
 
 contract YourContract {
 
   event SetPurpose(address sender, string purpose);
 
-  string public purpose = "Building Unstoppable Apps!!!";
+  string public purpose;
 
-  constructor() payable {
-    // what should we do on deploy?
+  constructor(string memory startingPurpose) payable {
+    purpose = startingPurpose;
   }
 
   function setPurpose(string memory newPurpose) public {
