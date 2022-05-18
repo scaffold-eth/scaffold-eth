@@ -175,8 +175,6 @@ function App(props) {
   console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
   */
 
-  console.log("WETF IS ",contractConfig)
-
   //
   // 🧫 DEBUG 👨🏻‍🔬
   //
@@ -247,21 +245,23 @@ function App(props) {
 
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
 
-  const customContractConfig = {
-    "deployedContracts": {
-      "31337":{
-        "localhost":{
-          "name":"localhost",
-          "chainId":"31337",
-          "contracts": {
-            "YourContract":{
-              address: latestContractAddress,
-              abi: contractConfig.deployedContracts['31337'].localhost.contracts.YourContract.abi
-            }
-          }
+  const customDeployedContracts = {}
+  customDeployedContracts[targetNetwork.chainId] = {
+    "localhost":{
+      "name":"localhost",
+      "chainId":"31337",
+      "contracts": {
+        "YourContract":{
+          address: latestContractAddress,
+          abi: contractConfig.deployedContracts[targetNetwork.chainId].localhost.contracts.YourContract.abi
         }
       }
-  }}
+    }
+  }
+
+  const customContractConfig = {
+    "deployedContracts": customDeployedContracts
+  }
 
   console.log("customContractConfig",customContractConfig)
 
