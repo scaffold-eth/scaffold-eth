@@ -19,9 +19,9 @@ function App(props) {
       const mainnet = new ethers.providers.StaticJsonRpcProvider(
         'https://mainnet.infura.io/v3/1b3241e53c8d422aab3c7c0e4101de9c',
       )
-
-      await mainnet.ready
-
+      // console.log({ whatIsMainNet: mainnet })
+      // const readyMainNet = await mainnet.ready
+      // console.log({ whatIsMainNetReady: readyMainNet })
       setLocalProvider(localProvider)
       setMainnet(mainnet)
       setLoaded(true)
