@@ -60,7 +60,7 @@ You'll have three terminals up for:
 
 ### Checkpoint 3: 🔑 Rigged Contract
 
-Start by creating a `receive()` function in the `RiggedRoll.sol` contract to allow it to receive Eth.  
+Start by creating a `receive()` function in the `RiggedRoll.sol` contract to allow it to receive Eth.  This will allow us to fund the RiggedRoll contract from the faucet which is required for our contract to call the rollTheDice() function.
 
 Next add a `riggedRoll()` function. This function should predict the randomness of a roll, and if the outcome will be a winner, call `rollTheDice()` on the DiceGame contract.
 
@@ -70,13 +70,14 @@ Next add a `riggedRoll()` function. This function should predict the randomness 
 
 🚀 To deploy your RiggedRoll contract, uncomment the appropriate lines in the `01_deploy_riggedRoll.js` file in `packages/hardhat/deploy`
 
-❓ If you're struggling to get the exact same random number as the DiceGame contract, try adding some `console.log()` statements in both contracts to help you track the values.
+❓ If you're struggling to get the exact same random number as the DiceGame contract, try adding some `console.log()` statements in both contracts to help you track the values.  These messages will appear in the Hardhat node terminal.
 
 #### ⚔️ Side Quest
 
-- [ ] Look for the code to uncomment in `App.jsx` to show a riggedRoll button on the main tab for easier testing.
-- [ ] Does your riggedRoll function only call rollTheDice() when it's going to be a winning roll?  What happens when it does call rollTheDice()?  
 - [ ] Add a statement to require `address(this).balance >= .002 ether` in your riggedRoll function.  This will help prevent calling the rollTheDice() function without enough value.
+- [ ] Uncomment the code in `App.jsx` to show a riggedRoll button and contract balance on the main UI tab.  Now you can test your function without switching tabs.
+- [ ] Does your riggedRoll function only call rollTheDice() when it's going to be a winning roll?  What happens when it does call rollTheDice()?  
+
 
 ---
 
@@ -91,13 +92,11 @@ You have beaten the game, but where is your money?  Since the RiggedRoll contrac
 - [ ] Can you send value from the riggedRoll contract to your front end address?
 - [ ] Is anyone able to call the withdraw function?  What would be the downside to that?
 
-
-> ⚠️ But wait, I am not the owner!  You will want to set your front end address as the owner in `01_deploy_riggedRoll.js`.  This will allow your front end address to call the withdraw function.
-
 #### ⚔️ Side Quest
 
 - [ ] Lock the withdraw function so it can only be called by the owner.
 
+> ⚠️ But wait, I am not the owner!  You will want to set your front end address as the owner in `01_deploy_riggedRoll.js`.  This will allow your front end address to call the withdraw function.
 
 ### Checkpoint 5: 💾 Deploy it! 🛰
 
