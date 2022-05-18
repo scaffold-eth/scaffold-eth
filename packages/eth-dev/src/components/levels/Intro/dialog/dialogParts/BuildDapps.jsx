@@ -20,7 +20,7 @@ const _dialog = [
   {
     dialog: () => (
       <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>
-        I do hope you still know where you loyalty lies ...
+        I do hope you still know where your loyalty lies ...
       </SpeakerLeft>
     ),
     choices: ({ continueDialog }) => {
