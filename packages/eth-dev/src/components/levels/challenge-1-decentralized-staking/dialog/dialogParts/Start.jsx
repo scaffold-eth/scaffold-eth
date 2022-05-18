@@ -96,7 +96,7 @@ const _dialog = [
   {
     dialog: () => (
       <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>
-        I would like to show you some of my plans me an the gang have been working on
+        I would like to show you some of my plans me and the gang have been working on
       </SpeakerLeft>
     ),
     choices: null

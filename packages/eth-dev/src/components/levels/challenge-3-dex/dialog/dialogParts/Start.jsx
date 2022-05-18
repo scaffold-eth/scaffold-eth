@@ -77,7 +77,7 @@ const _dialog = [
   {
     dialog: () => (
       <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>
-        In the future I believe running this will almost tripple our income.
+        In the future I believe running this will almost triple our income.
       </SpeakerLeft>
     ),
     choices: null
