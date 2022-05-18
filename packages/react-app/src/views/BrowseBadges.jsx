@@ -28,10 +28,9 @@ export const isHexadecimal = value => {
   return /^[0-9a-fA-F]+$/.test(value) && value.length % 2 === 0
 }
 
-export default function BrowseBadges({ localProvider, mainnet, selectedChainId }) {
+export default function BrowseBadges({ localProvider, mainnet, selectedChainId, address, setAddress }) {
   const [contractEvents, setContractEvents] = useState([])
   const contractConfig = { deployedContracts: {}, externalContracts: externalContracts || {} }
-  const [address, setAddress] = useState('')
   const [badges, setBadges] = useState([])
   const [eventBadges, setEventBadges] = useState([])
   const [error, setErrorMessage] = useState('')
@@ -47,27 +46,23 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId }
   }
 
   async function addressFilterHandler(e) {
-    // setAddress(e.target.value)
-    // if (!e.target.value) {
-    //   console.log(e.target.value)
-    //   return
-    // }
-    try {
-      if (isHexadecimal(e.target.value.replace('0x', ''))) {
-        setAddress(e.target.value)
+    if (!e.target.value) {
+      setAddress('')
+      return
+    }
+    if (isHexadecimal(e.target.value.replace('0x', ''))) {
+      setAddress(e.target.value)
+      setErrorMessage('')
+    } else {
+      let name = e.target.value
+      if (!name.endsWith('.eth')) name = name + '.eth'
+      const address = await mainnet.resolveName(name)
+      if (address) {
+        setAddress(address)
+        if (error.length > 1) setErrorMessage('')
       } else {
-        let name = e.target.value
-        if (!name.endsWith('.eth')) name = name + '.eth'
-        const address = await mainnet.resolveName(name)
-        console.log({ addressNow: address })
-        if (!address) {
-          setAddress('')
-        } else {
-          setAddress(address)
-        }
+        setErrorMessage(`${name} not found`)
       }
-    } catch (err) {
-      setErrorMessage(err)
     }
   }
 
@@ -195,7 +190,6 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId }
               onChange={e => {
                 addressFilterHandler(e)
               }}
-              // value={address}
             />
           </FormControl>
           {error && error.length > 0 ? (
