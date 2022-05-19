@@ -347,6 +347,13 @@ function App(props) {
                 // Speed up transaction list is filtered by chainId
                 params.chainId = targetNetwork.chainId    
 
+                // Remove empty data
+                // I assume wallet connect adds "data" here: https://github.com/WalletConnect/walletconnect-monorepo/blob/7573fa9e1d91588d4af3409159b4fd2f9448a0e2/packages/helpers/utils/src/ethereum.ts#L78
+                // And ethers cannot hexlify this: https://github.com/ethers-io/ethers.js/blob/8b62aeff9cce44cbd16ff41f8fc01ebb101f8265/packages/providers/src.ts/json-rpc-provider.ts#L694
+                if (params.data === "") {
+                  delete params.data;  
+                }
+
                 result = await signer.sendTransaction(params);
 
                 const transactionManager = new TransactionManager(userProvider, signer, true);
