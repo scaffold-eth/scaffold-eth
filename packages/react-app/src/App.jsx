@@ -345,7 +345,9 @@ function App(props) {
                 delete params.gas;
 
                 // Speed up transaction list is filtered by chainId
-                params.chainId = targetNetwork.chainId    
+                if (!params.chainId) {
+                  params.chainId = targetNetwork.chainId;  
+                }
 
                 // Remove empty data
                 // I assume wallet connect adds "data" here: https://github.com/WalletConnect/walletconnect-monorepo/blob/7573fa9e1d91588d4af3409159b4fd2f9448a0e2/packages/helpers/utils/src/ethereum.ts#L78
