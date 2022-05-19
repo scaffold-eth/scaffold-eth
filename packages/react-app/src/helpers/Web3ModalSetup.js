@@ -36,6 +36,7 @@ const web3ModalSetup = () =>
             31337: "http://localhost:8545",
             42161: "https://arb1.arbitrum.io/rpc",
             80001: "https://rpc-mumbai.maticvigil.com",
+            71401: "https://godwoken-testnet-v1.ckbapp.dev",
           },
         },
       },
