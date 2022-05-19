@@ -245,19 +245,22 @@ function App(props) {
 
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
 
-  const customDeployedContracts = {}
-  customDeployedContracts[targetNetwork.chainId] = {
-    "localhost":{
-      "name":"localhost",
-      "chainId":"31337",
-      "contracts": {
-        "YourContract":{
-          address: latestContractAddress,
-          abi: contractConfig.deployedContracts[targetNetwork.chainId].localhost.contracts.YourContract.abi
-        }
+  console.log("targetNetwork",targetNetwork)
+
+  const customNetwork = {
+    "name":targetNetwork.name,
+    "chainId":targetNetwork.chainId,
+    "contracts": {
+      "YourContract":{
+        address: latestContractAddress,
+        abi: contractConfig.deployedContracts[targetNetwork.chainId][targetNetwork.name].contracts.YourContract.abi
       }
     }
   }
+
+  const customDeployedContracts = {}
+  customDeployedContracts[targetNetwork.chainId] = {}
+  customDeployedContracts[targetNetwork.chainId][targetNetwork.name] = customNetwork
 
   const customContractConfig = {
     "deployedContracts": customDeployedContracts
@@ -307,21 +310,10 @@ function App(props) {
         logoutOfWeb3Modal={logoutOfWeb3Modal}
         USE_NETWORK_SELECTOR={USE_NETWORK_SELECTOR}
       />
-      <Menu style={{ textAlign: "center", marginTop: 20 }} selectedKeys={[location.pathname]} mode="horizontal">
-        <Menu.Item key="/">
-          <Link to="/">App Home</Link>
-        </Menu.Item>
-        <Menu.Item key="/factory">
-          <Link to="/factory">Factory</Link>
-        </Menu.Item>
-      </Menu>
+
 
       <Switch>
         <Route exact path="/">
-          {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
-          <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} />
-        </Route>
-        <Route exact path="/factory">
           {/*
                 🎛 this scaffolding is full of commonly used components
                 this <Contract/> component will automatically parse your ABI
@@ -350,58 +342,7 @@ function App(props) {
 
 
         </Route>
-        <Route path="/hints">
-          <Hints
-            address={address}
-            yourLocalBalance={yourLocalBalance}
-            mainnetProvider={mainnetProvider}
-            price={price}
-          />
-        </Route>
-        <Route path="/exampleui">
-          <ExampleUI
-            address={address}
-            userSigner={userSigner}
-            mainnetProvider={mainnetProvider}
-            localProvider={localProvider}
-            yourLocalBalance={yourLocalBalance}
-            price={price}
-            tx={tx}
-            writeContracts={writeContracts}
-            readContracts={readContracts}
-            purpose={false}
-          />
-        </Route>
-        <Route path="/mainnetdai">
-          <Contract
-            name="DAI"
-            customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.DAI}
-            signer={userSigner}
-            provider={mainnetProvider}
-            address={address}
-            blockExplorer="https://etherscan.io/"
-            contractConfig={contractConfig}
-            chainId={1}
-          />
-          {/*
-            <Contract
-              name="UNI"
-              customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.UNI}
-              signer={userSigner}
-              provider={mainnetProvider}
-              address={address}
-              blockExplorer="https://etherscan.io/"
-            />
-            */}
-        </Route>
-        <Route path="/subgraph">
-          <Subgraph
-            subgraphUri={props.subgraphUri}
-            tx={tx}
-            writeContracts={writeContracts}
-            mainnetProvider={mainnetProvider}
-          />
-        </Route>
+
       </Switch>
 
       <ThemeSwitch />
