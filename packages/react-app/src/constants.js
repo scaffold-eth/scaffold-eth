@@ -201,6 +201,14 @@ export const NETWORKS = {
     blockExplorer: "https://moonbeam-explorer.netlify.app/",
     rpcUrl: "http://127.0.0.1:9933",
   },
+  godwoken: {
+    name: "godwoken",
+    color: "#000000",
+    chainId: 71401,
+    blockExplorer: "https://gw-explorer.nervosdao.community/",
+    rpcUrl: "https://godwoken-testnet-v1.ckbapp.dev",
+    faucet: "https://testnet.bridge.godwoken.io",
+  },
 };
 
 export const NETWORK = chainId => {
