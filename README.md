@@ -1,5 +1,17 @@
 # 🏗 eth.dev
 
+> a gamified experience that takes a developer through learning how to build on Ethereum
+
+![image](https://user-images.githubusercontent.com/2653167/169709929-97eafba7-db88-48ac-9041-1cca4b088d0b.png)
+
+## Installing
+
+```bash
+git clone https://github.com/scaffold-eth/scaffold-eth -b eth-dev eth-dev
+cd eth-dev
+yarn install
+```
+
 ## Start the game
 
 ```bash
