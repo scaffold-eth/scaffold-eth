@@ -243,7 +243,7 @@ function App(props) {
   }, [loadWeb3Modal]);
 
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
-
+  console.log('LOCAL BAL',yourLocalBalance)
   return (
     <div className="App">
       {/* ✏️ Edit the header and change the title to your project name */}

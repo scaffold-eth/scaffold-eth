@@ -10,12 +10,19 @@ contract YourContract {
   event SetPurpose(address sender, string purpose);
 
   string public purpose = "Building Unstoppable Apps!!!";
+  address public owner = 0xbf022f8F8c944666959Ad0229C2F2B6a641EaF35;
 
   constructor() payable {
     // what should we do on deploy?
   }
 
-  function setPurpose(string memory newPurpose) public {
+  uint256 public price = 0.001 ether;
+
+  function setPurpose(string memory newPurpose) public payable {
+      // require(msg.sender == owner, "Not the owner");
+      require(msg.value >= price, "not enough!");
+      price = price * 1001 / 1000; // way of multiplying by decimal?
+
       purpose = newPurpose;
       console.log(msg.sender,"set purpose to",purpose);
       emit SetPurpose(msg.sender, purpose);
