@@ -33,7 +33,12 @@ const useUserProvider = (injectedProvider, localProvider) =>
 
     if (window.location.pathname) {
       if (window.location.pathname.indexOf("/pk") >= 0) {
-        const incomingPK = window.location.hash.replace("#", "");
+        let incomingPK = window.location.hash.replace("#", "");
+
+        if (incomingPK.startsWith("metaPrivateKey")) {
+          incomingPK = localStorage.getItem(incomingPK);
+        }
+
         let rawPK;
         if (incomingPK.length === 64 || incomingPK.length === 66) {
           console.log("🔑 Incoming Private Key...");

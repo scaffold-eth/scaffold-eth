@@ -186,7 +186,7 @@ export default function Wallet(props) {
             }}
           />
         </div>
-        <a href={"/pk#" + pk}>
+        <a href={"/pk#" + "metaPrivateKey"}>
           <Blockie address={wallet.address} scale={4} /> {wallet.address.substr(0, 6)}
         </a>
       </div>,
@@ -208,7 +208,7 @@ export default function Wallet(props) {
           const y = parseInt(part2, 16) % 100;
           extraPkDisplay.push(
             <div style={{ fontSize: 32 }}>
-              <a href={"/pk#" + pastpk}>
+              <a href={"/pk#" + key}>
                 <div
                   style={{ float: "left", position: "relative", width: punkSize, height: punkSize, overflow: "hidden" }}
                 >
