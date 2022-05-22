@@ -4,6 +4,7 @@
 
 ![image](https://user-images.githubusercontent.com/2653167/169709929-97eafba7-db88-48ac-9041-1cca4b088d0b.png)
 
+
 ## Installing
 
 ```bash
@@ -33,3 +34,5 @@ To add a new level duplicate one of the level folders.
 
 Then do a find+replace using the folder name of the level you copied and replace all occurances with your new level name.
 It is important that you respect upper and lower cases!
+
+📽 [Watch Soren demonstrate level building](https://www.youtube.com/watch?v=31jb97uxEQ8&t=99s)
