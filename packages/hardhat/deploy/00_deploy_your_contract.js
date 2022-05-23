@@ -3,7 +3,8 @@
 const { ethers } = require("hardhat");
 const { starknet } = require("hardhat");
 
-const localChainId = "31337";
+// https://starknet.io/documentation/chain-ids/
+const localChainId = "SN_GOERLI";
 
 // const sleep = (ms) =>
 //   new Promise((r) =>

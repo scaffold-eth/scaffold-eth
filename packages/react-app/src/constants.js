@@ -17,10 +17,14 @@ export const NETWORKS = {
     blockExplorer: "",
     rpcUrl: "http://" + (global.window ? window.location.hostname : "localhost") + ":8545",
   },
-  starknet: {
+  starknetGoerli: {
     name: "starknet-goerli",
     color: "#4C4C86",
-    chainId: 31337,
+    // https://starknet.io/documentation/chain-ids/
+    // python:
+    // chainId: int.from_bytes(b'SN_GOERLI', byteorder="big", signed=False)
+    //      --> 1536727068981429685321
+    chainId: 1536727068981429685321,
     blockExplorer: "https://goerli.voyager.online/",
     rpcUrl: "http://" + (global.window ? window.location.hostname : "localhost") + ":5000",
   },
