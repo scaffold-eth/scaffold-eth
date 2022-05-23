@@ -17,8 +17,8 @@ export const NETWORKS = {
     blockExplorer: "",
     rpcUrl: "http://" + (global.window ? window.location.hostname : "localhost") + ":8545",
   },
-  starknetGoerli: {
-    name: "starknet-goerli",
+  starknet: {
+    name: "starknet",
     color: "#4C4C86",
     // https://starknet.io/documentation/chain-ids/
     // python:
