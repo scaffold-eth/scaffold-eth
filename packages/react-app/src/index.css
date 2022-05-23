@@ -10,3 +10,7 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
+
+#path3724:hover, #path3706:hover, #rect2893:hover, #path3694:hover, #path3698:hover, #path3702:hover {
+  cursor: pointer;
+}

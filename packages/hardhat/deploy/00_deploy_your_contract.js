@@ -17,10 +17,25 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const { deployer } = await getNamedAccounts();
   const chainId = await getChainId();
 
-  const waitConfirmations = 5;
-
-  const subscriptionId = 2801;
   const collectInterval = 60; // 1 minute, block.timestamp is in UNIX seconds
+
+  /*
+  // localhost
+  const loogiesContractAddress = "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707";
+  const loogieCoinContractAddress =
+    "0x5c74c94173F05dA1720953407cbb920F3DF9f887";
+
+
+  // kovan optimism
+  const loogiesContractAddress = "0x43693eeC62666D621ba33095090BE60d4aF6D6FA";
+  const loogieCoinContractAddress =
+    "0x37a76CFB334b62C0eAf8808Dc9B5Ff82bB246827";
+   */
+
+  // optimism
+  const loogiesContractAddress = "0xbE7706DFA9Cc5aEEB5b26698C1bc5c43829E808A";
+  const loogieCoinContractAddress =
+    "0x83eD2eE1e2744D27Ffd949314f4098f13535292F";
 
   console.log(
     `Attempting to deploy Game.sol to network number ${chainId} from ${deployer.address}`
@@ -29,124 +44,30 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const gameContract = await deploy("Game", {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
-    args: [subscriptionId, collectInterval],
+    args: [collectInterval, loogiesContractAddress, loogieCoinContractAddress],
     log: true,
-    waitConfirmations: waitConfirmations,
   });
 
   console.log(`Game contract deployed to ${gameContract.address}`);
-  console.log(
-    `Don't forget to add this contract as consumer at https://vrf.chain.link`
-  );
-
-  const gldInitialSupply = ethers.utils.parseEther("1000000");
-
-  console.log(
-    `Attempting to deploy GoldToken.sol to network number ${chainId} from ${deployer.address}`
-  );
-
-  const gldTokenContract = await deploy("GLDToken", {
-    from: deployer,
-    args: [gldInitialSupply, gameContract.address],
-    log: true,
-    waitConfirmations: waitConfirmations,
-  });
-
-  console.log(`GLD Token contract deployed to ${gldTokenContract.address}`);
 
   const GameContract = await ethers.getContract("Game", deployer);
 
-  const GLDContract = await ethers.getContract("GLDToken", deployer);
-
-  await GameContract.setGldToken(GLDContract.address);
-
-  console.log(
-    `Attempting to deploy NFTAvatar.sol to network number ${chainId} from ${deployer.address}`
-  );
-
-  console.log("deploying nftAvatar with game contract", gameContract.address);
-
-  const nftAvatarContract = await deploy("NFTAvatar", {
-    from: deployer,
-    args: [gameContract.address],
-    log: true,
-    waitConfirmations: waitConfirmations,
-    gasPrice: 3000000000,
-    gasLimit: 4000000,
-  });
-
-  console.log(`NFT Avatar contract deployed to ${nftAvatarContract.address}`);
-
-  await GameContract.setNftAvatar(nftAvatarContract.address);
-
-  console.log(
-    `Attempting to deploy Keeper.sol to network number ${chainId} from ${deployer.address}`
-  );
-
-  const updateInterval = 150;
-
-  const keeperContract = await deploy("Keeper", {
-    from: deployer,
-    args: [updateInterval, gameContract.address, subscriptionId],
-    log: true,
-    waitConfirmations: waitConfirmations,
-    gasPrice: 4000000000,
-    gasLimit: 2000000,
-  });
-
-  console.log(`Keeper contract deployed to ${keeperContract.address}`);
-  console.log(
-    `Don't forget to add this contract as consumer at https://vrf.chain.link`
-  );
-
-  await GameContract.setKeeper(keeperContract.address);
-
-  const VRFCoordinatorV2 = await ethers.getContractAt(
-    "VRFCoordinatorV2",
-    "0x6168499c0cFfCaCD319c818142124B7A15E857ab"
-  );
-
-  //await VRFCoordinatorV2.addConsumer(subscriptionId, gameContract.address);
-  //await VRFCoordinatorV2.addConsumer(subscriptionId, keeperContract.address);
-
-  await GameContract.setKeeper("0x34aA3F359A9D614239015126635CE7732c18fDF3");
-
-  await GameContract.setGldToken(gldTokenContract.address);
-
   await GameContract.start();
 
+  await GameContract.setDropOnCollect(true);
+
   await GameContract.transferOwnership(
-    "0x34aA3F359A9D614239015126635CE7732c18fDF3"
+    "0x5dCb5f4F39Caa6Ca25380cfc42280330b49d3c93"
   );
-
-
 
   try {
     await run("verify:verify", {
       address: gameContract.address,
       contract: "contracts/Game.sol:Game",
-      constructorArguments: [subscriptionId, collectInterval],
-    });
-
-    await run("verify:verify", {
-      address: gldTokenContract.address,
-      contract: "contracts/GoldToken.sol:GLDToken",
-      constructorArguments: [gldInitialSupply, gameContract.address],
-    });
-
-    await run("verify:verify", {
-      address: nftAvatarContract.address,
-      contract: "contracts/NFTAvatar.sol:NFTAvatar",
-      constructorArguments: [gameContract.address],
-    });
-
-    await run("verify:verify", {
-      address: keeperContract.address,
-      contract: "contracts/Keeper.sol:Keeper",
       constructorArguments: [
-        updateInterval,
-        gameContract.address,
-        subscriptionId,
+        collectInterval,
+        loogiesContractAddress,
+        loogieCoinContractAddress,
       ],
     });
   } catch (error) {

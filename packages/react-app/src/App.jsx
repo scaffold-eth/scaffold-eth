@@ -1,4 +1,4 @@
-import { Button, Col, Menu, Row } from "antd";
+import { Button, Col, Menu, Row, Card, List } from "antd";
 import "antd/dist/antd.css";
 import {
   useBalance,
@@ -26,7 +26,8 @@ import {
   FaucetHint,
   NetworkSwitch,
   Blockie,
-  Address
+  Address,
+  Joystick,
 } from "./components";
 import { NETWORKS, ALCHEMY_KEY } from "./constants";
 import externalContracts from "./contracts/external_contracts";
@@ -178,12 +179,88 @@ function App(props) {
   const width = useContractReader(readContracts, "Game", "width");
   const height = useContractReader(readContracts, "Game", "height");
 
-  const registerEvents = useEventListener(readContracts, "Game", "Register", localProvider, 1);
+  //const registerEvents = useEventListener(readContracts, "Game", "Register", localProvider, 623);
+
+  const players = useContractReader(readContracts, "Game", "getPlayers");
+
+  //const restartEvents = useEventListener(readContracts, "Game", "Restart", localProvider, 1);
+
+  const [restartBlockNumber, setRestartBlockNumber] = useState();
+
+  const [currentPlayer, setcurrentPlayer] = useState();
 
   //event NewDrop(bool isHealth, uint256 amount, uint256 x, uint256 y);
-  const dropEvents = useEventListener(readContracts, "Game", "NewDrop", localProvider, 1);
-
+  const dropEvents = useEventListener(readContracts, "Game", "NewDrop", localProvider, restartBlockNumber ? restartBlockNumber.toNumber() : 10000);
   const [drops, setDrops] = useState();
+
+  useEffect(() => {
+    const updateRestartBlockNumber = async () => {
+      if (DEBUG) console.log("Updating restartBlockNumber...");
+      if (readContracts.Game) {
+        const newRestartBlockNumber = await readContracts.Game.restartBlockNumber();
+        if (DEBUG) console.log("newRestartBlockNumber: ", newRestartBlockNumber);
+        setRestartBlockNumber(newRestartBlockNumber);
+      } else {
+        if (DEBUG) console.log("Contracts not defined yet.");
+      }
+    };
+    updateRestartBlockNumber();
+  }, [readContracts.Game]);
+
+  const [yourLoogieBalance, setYourLoogieBalance] = useState(0);
+  const [yourLoogies, setYourLoogies] = useState();
+  const [loadingLoogies, setLoadingLoogies] = useState(true);
+  const [page, setPage] = useState(1);
+  const perPage = 1;
+
+  useEffect(() => {
+    const updateBalances = async () => {
+      if (DEBUG) console.log("Updating loogies balance...");
+      if (readContracts.FancyLoogie) {
+        const loogieNewBalance = await readContracts.FancyLoogie.balanceOf(address);
+        if (DEBUG) console.log("NFT: FancyLoogie - Balance: ", loogieNewBalance);
+        const yourLoogieNewBalance = loogieNewBalance && loogieNewBalance.toNumber && loogieNewBalance.toNumber();
+        setYourLoogieBalance(yourLoogieNewBalance);
+      } else {
+        if (DEBUG) console.log("Contracts not defined yet.");
+      }
+    };
+    updateBalances();
+  }, [address, readContracts.FancyLoogie]);
+
+  useEffect(() => {
+    const updateYourLoogies = async () => {
+      setLoadingLoogies(true);
+      const loogieUpdate = [];
+      for (let tokenIndex = 0; tokenIndex < yourLoogieBalance; tokenIndex++) {
+        try {
+          const tokenId = await readContracts.FancyLoogie.tokenOfOwnerByIndex(address, tokenIndex);
+          if (DEBUG) console.log("Getting FancyLoogie tokenId: ", tokenId);
+          const tokenURI = await readContracts.FancyLoogie.tokenURI(tokenId);
+          if (DEBUG) console.log("tokenURI: ", tokenURI);
+          const jsonManifestString = atob(tokenURI.substring(29));
+
+          try {
+            const jsonManifest = JSON.parse(jsonManifestString);
+            loogieUpdate.push({
+              id: tokenId,
+              uri: tokenURI,
+              owner: address,
+              ...jsonManifest,
+            });
+          } catch (e) {
+            console.log(e);
+          }
+        } catch (e) {
+          console.log(e);
+        }
+      }
+      setYourLoogies(loogieUpdate.reverse());
+      setLoadingLoogies(false);
+    };
+    updateYourLoogies();
+  }, [address, readContracts.FancyLoogie, yourLoogieBalance]);
+
 
   useEffect(async ()=>{
     console.log("parsing dropEvents",dropEvents)
@@ -203,28 +280,32 @@ function App(props) {
     setDrops(allDrops)
   },[dropEvents, blockNumber])
 
+  /*
+  useEffect(async ()=>{
+    console.log("parsing restartEvents",restartEvents);
+    const lastRestart = restartEvents[restartEvents.length - 1];
+    if (lastRestart) {
+      console.log("lastRestart.blockNumber: ", lastRestart.blockNumber);
+      setRestartBlockNumber(lastRestart.blockNumber);
+    }
+  },[restartEvents])
+  */
+
   //console.log("registerEvents",registerEvents)
 
-  const [players, setPlayers] = useState();
   const [activePlayer, setActivePlayer] = useState();
 
   useEffect(()=>{
-    console.log("parsing registerEvents",registerEvents)
-    let allPlayers = []
+    console.log("parsing players",players)
     let active = false
-    for(let e in registerEvents){
-      if(!allPlayers.includes(registerEvents[e].args.txOrigin)){
-        allPlayers.push(registerEvents[e].args.txOrigin)
-        if(registerEvents[e].args.txOrigin==address){
-          active=true;
-        }
+    for (let p in players) {
+      if (players[p] == address) {
+        active = true;
       }
     }
     //console.log("ACTIVE:",setActivePlayer)
-    setActivePlayer(active)
-    //console.log("allPlayers",allPlayers)
-    setPlayers(allPlayers)
-  },[registerEvents])
+    setActivePlayer(active);
+  },[address, players])
 
 
 
@@ -235,12 +316,20 @@ function App(props) {
     console.log("PARSE PLAYERS:::",players)
     let playerInfo = {}
     for(let p in players){
-      console.log("loading info for ",players[p])
-      playerInfo[players[p]] = {
+      console.log("loading info for ",players[p]);
+      const tokenURI = await readContracts.Game.tokenURIOf(players[p]);
+      const jsonManifestString = atob(tokenURI.substring(29));
+      const jsonManifest = JSON.parse(jsonManifestString);
+      const info = {
         health: (await readContracts.Game.health(players[p])).toNumber(),
         position: await readContracts.Game.yourPosition(players[p]),
         contract: await readContracts.Game.yourContract(players[p]),
-        gold: await readContracts.GLDToken.balanceOf(players[p]),
+        image: jsonManifest.image,
+        gold: await readContracts.LoogieCoin.balanceOf(players[p]),
+      };
+      playerInfo[players[p]] = info;
+      if (players[p] == address) {
+        setcurrentPlayer(info);
       }
     }
     console.log("final player info",playerInfo)
@@ -262,7 +351,8 @@ function App(props) {
         playersSorted.push({
           address: players[p],
           health: playerData[players[p]].health,
-          gold: playerData[players[p]].gold
+          gold: playerData[players[p]].gold,
+          image: playerData[players[p]].image,
         })
       }
     }
@@ -286,8 +376,9 @@ function App(props) {
     //console.log("HIGH",highScores[i])
     highScoreDisplay.push(
       <div>
+        <img src={highScores[i].image} style={{transform:"scale(0.7,0.7)",width:70,height:70}} />
         <Address value={highScores[i].address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} fontSize={14}/>
-        <span style={{margin:16}}>{ethers.utils.formatEther(highScores[i].gold)}🏵</span>
+        <span style={{margin:16}}>{highScores[i].gold.toNumber()}🏵</span>
         <span style={{margin:16,opacity:0.77}}>{highScores[i].health}❤️</span>
 
       </div>
@@ -335,14 +426,14 @@ function App(props) {
             playerDisplay = (
               <div style={{position:"relative"}}>
                 <Blockie address={players[p]} size={8} scale={7.5} />
-                <img src="Warrior_1.svg" style={{transform:"rotate(45deg) scale(1,3)",width:170,height:170,marginLeft:90,marginTop:-400}} />
+                <img src={thisPlayerData.image} style={{transform:"rotate(45deg) scale(1,3)",width:170,height:170,marginLeft:-10,marginTop:-190}} />
               </div>
             )
           }
         }
         worldUpdate.push(
           <div style={{width:squareW,height:squareH,padding:1,position:"absolute",left:squareW*x,top:squareH*y}}>
-            <div style={{position:"realative",height:"100%",background:(x+y)%2?"#BBBBBB":"#EEEEEE"}}>
+            <div style={{position:"relative",height:"100%",background:(x+y)%2?"#BBBBBB":"#EEEEEE"}}>
               { playerDisplay ? playerDisplay : <span style={{opacity:0.4}}>{""+x+","+y}</span> }
               <div style={{opacity:0.7,position:"absolute",left:squareW/2-10,top:0}}>{ fieldDisplay }</div>
             </div>
@@ -430,60 +521,6 @@ function App(props) {
 
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
 
-
-  let playerButtons
-  if(activePlayer){
-    //show controls
-    playerButtons = (
-      <div>
-      <Address value={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} fontSize={14}/>
-
-      <div style={{padding:4}}>
-          <Button onClick={async ()=>{
-            const result = tx(writeContracts.Game.move(0))
-          }}>UP (0)</Button>
-      </div>
-      <div style={{padding:4}}>
-          <Button onClick={async ()=>{
-            const result = tx(writeContracts.Game.move(1))
-          }}>DOWN (1)</Button>
-      </div>
-      <div style={{padding:4}}>
-          <Button onClick={async ()=>{
-            const result = tx(writeContracts.Game.move(2))
-          }}>LEFT (2)</Button>
-      </div>
-      <div style={{padding:4}}>
-          <Button onClick={async ()=>{
-            const result = tx(writeContracts.Game.move(3))
-          }}>RIGHT (3)</Button>
-      </div>
-
-      <div style={{padding:8}}>
-          <Button onClick={async ()=>{
-            const result = tx(writeContracts.Game.collectHealth())
-          }}>Collect Health</Button>
-      </div>
-      <div style={{padding:8}}>
-          <Button onClick={async ()=>{
-            const result = tx(writeContracts.Game.collectTokens())
-          }}>Collect Gold</Button>
-      </div>
-      </div>
-    )
-  }else{
-    //register button
-    playerButtons = (
-      <div>
-        <div style={{padding:4}}>
-            <Button onClick={async ()=>{
-              const result = tx(writeContracts.Game.register())
-            }}>Register</Button>
-        </div>
-      </div>
-    )
-  }
-
   let extraDisplay
   if(DEBUG){
     extraDisplay = (
@@ -511,16 +548,123 @@ function App(props) {
         USE_NETWORK_SELECTOR={USE_NETWORK_SELECTOR}
       />
       <div style={{position:"absolute",left:"5%",top:"40%"}}>
-        <div style={{padding:4,}}>
-          <Address fontSize={48} value={readContracts && readContracts.Game && readContracts.Game.address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
-        </div>
         <div style={{paddingBottom:16,fontSize:32,marginBottom:16,borderBottom:"1px solid #555555"}}>
-          #{blockNumber}
+          Ranking
         </div>
         {highScoreDisplay}
       </div>
-      <div style={{position:"absolute",right:"5%",top:"30%"}}>
-              {playerButtons}
+      <div style={{position:"absolute",right:"5%",top:"30%",width:400}}>
+        {activePlayer ? (
+          <div>
+            {currentPlayer && (
+              <>
+                <div>
+                  <img src={currentPlayer.image} style={{transform:"scale(1,1)",width:150,height:150}} />
+                </div>
+                <div>
+                  <span style={{margin:16}}>{currentPlayer.gold.toNumber()}🏵</span>
+                  <span style={{margin:16,opacity:0.77}}>{currentPlayer.health}❤️</span>
+                </div>
+              </>
+            )}
+
+            <Joystick />
+
+            <Address value={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} fontSize={14}/>
+            <div style={{padding:4}}>
+                <Button onClick={async ()=>{
+                  const result = tx(writeContracts.Game.move(0))
+                }}>UP (0)</Button>
+            </div>
+            <div style={{padding:4}}>
+                <Button onClick={async ()=>{
+                  const result = tx(writeContracts.Game.move(1))
+                }}>DOWN (1)</Button>
+            </div>
+            <div style={{padding:4}}>
+                <Button onClick={async ()=>{
+                  const result = tx(writeContracts.Game.move(2))
+                }}>LEFT (2)</Button>
+            </div>
+            <div style={{padding:4}}>
+                <Button onClick={async ()=>{
+                  const result = tx(writeContracts.Game.move(3))
+                }}>RIGHT (3)</Button>
+            </div>
+
+            <div style={{padding:8}}>
+                <Button onClick={async ()=>{
+                  const result = tx(writeContracts.Game.collectHealth())
+                }}>Collect Health</Button>
+            </div>
+            <div style={{padding:8}}>
+                <Button onClick={async ()=>{
+                  const result = tx(writeContracts.Game.collectTokens())
+                }}>Collect Gold</Button>
+            </div>
+          </div>
+        ) : (
+          <div>
+            <div style={{padding:4}}>
+              {(loadingLoogies || (yourLoogies && yourLoogies.length > 0)) && (
+                <div
+                  id="your-loogies"
+                  style={{ paddingTop: 20 }}
+                >
+                  <div>
+                    <List
+                      grid={{
+                        gutter: 1,
+                        xs: 1,
+                        sm: 1,
+                        md: 1,
+                        lg: 1,
+                        xl: 1,
+                        xxl: 1,
+                      }}
+                      pagination={{
+                        total: yourLoogies ? yourLoogies.length : 0,
+                        defaultPageSize: perPage,
+                        defaultCurrent: page,
+                        onChange: currentPage => {
+                          setPage(currentPage);
+                        },
+                        showTotal: (total, range) => `${range[0]}-${range[1]} of ${yourLoogies ? yourLoogies.length : 0} items`,
+                      }}
+                      loading={loadingLoogies}
+                      dataSource={yourLoogies}
+                      renderItem={item => {
+                        const id = item.id.toNumber();
+
+                        return (
+                          <List.Item key={id + "_" + item.uri + "_" + item.owner}>
+                            <Card
+                              style={{ backgroundColor: "#b3e2f4", border: "1px solid #0071bb", borderRadius: 10, marginRight: 10 }}
+                              headStyle={{ paddingRight: 12, paddingLeft: 12 }}
+                              title={
+                                <div>
+                                  <span style={{ fontSize: 16, marginRight: 8 }}>{item.name}</span>
+                                  <Button onClick={async ()=>{
+                                    const result = tx(writeContracts.Game.register(id))
+                                    }}
+                                  >
+                                    Register
+                                  </Button>
+                                </div>
+                              }
+                            >
+                              <img alt={item.id} src={item.image} width="240" />
+                            </Card>
+                          </List.Item>
+                        );
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
       <Menu style={{ textAlign: "center", marginTop: 40 }} selectedKeys={[location.pathname]} mode="horizontal">
         <Menu.Item key="/">
@@ -536,7 +680,7 @@ function App(props) {
         <Route exact path="/">
 
 
-          <div style={{transform: "scale(1,0.4)"}}>
+          <div style={{transform: "scale(0.8,0.3)"}}>
             <div style={{transform:"rotate(-45deg)",color:"#111111",fontWeight:"bold",width:width*squareW,height:height*squareH,margin:"auto",position:"relative"}}>
               {worldView}
             </div>
@@ -562,7 +706,7 @@ function App(props) {
             contractConfig={contractConfig}
           />
           <Contract
-            name="GLDToken"
+            name="LoogieCoin"
             price={price}
             signer={userSigner}
             provider={localProvider}

@@ -2,10 +2,6 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "./GoldToken.sol";
-import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
-import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
-import "./NFTAvatar.sol";
 
 enum MoveDirection {
     Up,
@@ -14,14 +10,23 @@ enum MoveDirection {
     Right
 }
 
-contract Game is VRFConsumerBaseV2, Ownable  {
-    event Register(address txOrigin, address msgSender, uint8 x, uint8 y);
-    event Move(address txOrigin, uint8 x, uint8 y);
-    event NFTMinted(address txOrigin, uint256 tokenId);
-    event GameOver(address player);
-    event CollectedTokens(address player, uint256 amount);
-    event CollectedHealth(address player, uint256 amount);
-    event NewDrop(bool isHealth, uint256 amount, uint8 x, uint8 y);
+abstract contract LoogieCoinContract {
+  function mint(address to, uint256 amount) virtual public;
+}
+
+abstract contract LoogiesContract {
+  function tokenURI(uint256 id) external virtual view returns (string memory);
+  function ownerOf(uint256 id) external virtual view returns (address);
+}
+
+contract Game is Ownable  {
+    event Restart(uint8 width, uint8 height);
+    event Register(address indexed txOrigin, address indexed msgSender, uint8 x, uint8 y, uint256 loogieId);
+    event Move(address indexed txOrigin, uint8 x, uint8 y, uint256 health);
+    event GameOver(address indexed player);
+    event CollectedTokens(address indexed player, uint256 amount);
+    event CollectedHealth(address indexed player, uint256 amount);
+    event NewDrop(bool indexed isHealth, uint256 amount, uint8 x, uint8 y);
 
     struct Field {
         address player;
@@ -34,20 +39,11 @@ contract Game is VRFConsumerBaseV2, Ownable  {
         uint8 y;
     }
 
-    address public keeper;
+    LoogiesContract public loogiesContract;
+    LoogieCoinContract public loogieCoin;
+
     bool public gameOn;
-    GLDToken public gldToken;
-    NFTAvatar public nftAvatar;
     uint public collectInterval;
-
-    VRFCoordinatorV2Interface immutable coordinator;
-    address vrfCoordinator = 0x6168499c0cFfCaCD319c818142124B7A15E857ab;
-    uint64 immutable subscriptionId;
-    bytes32 immutable keyHash;
-    uint32 immutable callbackGasLimit;
-    uint16 immutable requestConfirmations;
-    uint32 immutable numWords;
-
 
     uint8 public constant width = 24;
     uint8 public constant height = 24;
@@ -56,34 +52,28 @@ contract Game is VRFConsumerBaseV2, Ownable  {
     mapping(address => address) public yourContract;
     mapping(address => Position) public yourPosition;
     mapping(address => uint256) public health;
-    mapping(uint256 => address) public requestIds;
     mapping(address => uint256) public lastCollectAttempt;
+    mapping(address => uint256) public loogies;
+    address[] public players;
 
-    constructor(uint64 _subscriptionId, uint256 _collectInterval) VRFConsumerBaseV2(vrfCoordinator) {
-        subscriptionId = _subscriptionId;
+    uint256 public restartBlockNumber;
+    bool public dropOnCollect;
+
+    constructor(uint256 _collectInterval, address _loogiesContractAddress, address _loogieCoinContractAddress) {
         collectInterval = _collectInterval;
-        // params for Rinkeby
-        coordinator = VRFCoordinatorV2Interface(vrfCoordinator);
-        keyHash = 0xd89b2bf150e3b9e13446986e571fb9cab24b13cea0a43ea20a6049a85cc807cc;
-        callbackGasLimit = 1000000;
-        requestConfirmations = 3;
-        numWords = 1;
-    }
+        loogiesContract = LoogiesContract(_loogiesContractAddress);
+        loogieCoin = LoogieCoinContract(_loogieCoinContractAddress);
+        restartBlockNumber = block.number;
 
-    function setKeeper(address _keeper) public onlyOwner {
-        keeper = _keeper;
-    }
-
-    function setGldToken(address _gldToken) public onlyOwner {
-        gldToken = GLDToken(_gldToken);
-    }
-
-    function setNftAvatar(address _nftAvatar) public onlyOwner {
-        nftAvatar = NFTAvatar(_nftAvatar);
+        emit Restart(width, height);
     }
 
     function setCollectInterval(uint256 _collectInterval) public onlyOwner {
         collectInterval = _collectInterval;
+    }
+
+    function setDropOnCollect(bool _dropOnCollect) public onlyOwner {
+        dropOnCollect = _dropOnCollect;
     }
 
     function start() public onlyOwner {
@@ -94,6 +84,28 @@ contract Game is VRFConsumerBaseV2, Ownable  {
         gameOn = false;
     }
 
+    function restart() public onlyOwner {
+        for (uint i=0; i<players.length; i++) {
+            yourContract[players[i]] = address(0);
+            Position memory playerPosition = yourPosition[players[i]];
+            worldMatrix[playerPosition.x][playerPosition.y] = Field(address(0),0,0);
+            yourPosition[players[i]] = Position(0,0);
+            health[players[i]] = 0;
+            lastCollectAttempt[players[i]] = 0;
+            loogies[players[i]] = 0;
+        }
+
+        delete players;
+
+        restartBlockNumber = block.number;
+
+        emit Restart(width, height);
+    }
+
+    function getPlayers() public view returns(address[] memory){
+        return players;
+    }
+
     function update(address newContract) public {
       require(gameOn, "TOO LATE");
       health[tx.origin] = (health[tx.origin]*80)/100; //20% loss of health on contract update?!!? lol
@@ -102,26 +114,27 @@ contract Game is VRFConsumerBaseV2, Ownable  {
       yourContract[tx.origin] = newContract;
     }
 
-
     bool public requireContract = false;
 
     function setRequireContract(bool newValue) public onlyOwner {
         requireContract = newValue;
     }
 
-    function register() public {
+    function register(uint256 loogieId) public {
         require(gameOn, "TOO LATE");
         if(requireContract) require(tx.origin != msg.sender, "NOT A CONTRACT");
         require(yourContract[tx.origin] == address(0), "NO MORE PLZ");
+        require(loogiesContract.ownerOf(loogieId) == tx.origin, "ONLY LOOGIES THAT YOU OWN");
+        require(players.length <= 50, "MAX 50 LOOGIES REACHED");
 
+        players.push(tx.origin);
         yourContract[tx.origin] = msg.sender;
         health[tx.origin] = 500;
-        //uint256 requestId = coordinator.requestRandomWords(keyHash, subscriptionId, requestConfirmations, callbackGasLimit, numWords);
-        //requestIds[requestId] = tx.origin;
+        loogies[tx.origin] = loogieId;
 
         randomlyPlace();
 
-        emit Register(tx.origin, msg.sender, yourPosition[tx.origin].x, yourPosition[tx.origin].y);
+        emit Register(tx.origin, msg.sender, yourPosition[tx.origin].x, yourPosition[tx.origin].y, loogieId);
     }
 
     function randomlyPlace() internal {
@@ -142,13 +155,7 @@ contract Game is VRFConsumerBaseV2, Ownable  {
         worldMatrix[x][y].player = tx.origin;
         worldMatrix[yourPosition[tx.origin].x][yourPosition[tx.origin].y].player = address(0);
         yourPosition[tx.origin] = Position(x, y);
-        emit Move(tx.origin, x, y);
-    }
-
-    function fulfillRandomWords(uint256 requestId, uint256[] memory randomWords) internal override {
-        nftAvatar.mint(randomWords[0], requestIds[requestId]);
-
-        emit NFTMinted(requestIds[requestId], requestId);
+        //emit Move(tx.origin, x, y);
     }
 
     function currentPosition() public view returns(Position memory) {
@@ -157,6 +164,10 @@ contract Game is VRFConsumerBaseV2, Ownable  {
 
     function positionOf(address player) public view returns(Position memory) {
         return yourPosition[player];
+    }
+
+    function tokenURIOf(address player) public view returns(string memory) {
+        return loogiesContract.tokenURI(loogies[player]);
     }
 
     function collectTokens() public {
@@ -169,10 +180,14 @@ contract Game is VRFConsumerBaseV2, Ownable  {
         require(field.tokenAmountToCollect > 0, "NOTHING TO COLLECT");
 
         if(field.tokenAmountToCollect > 0) {
-            // transfer tokens to tx.origin
-            gldToken.transfer(tx.origin, field.tokenAmountToCollect);
+            uint256 amount = field.tokenAmountToCollect;
+            // mint tokens to tx.origin
+            loogieCoin.mint(tx.origin, amount);
             worldMatrix[position.x][position.y].tokenAmountToCollect = 0;
-            emit CollectedTokens(tx.origin, field.tokenAmountToCollect);
+            emit CollectedTokens(tx.origin, amount);
+            if (dropOnCollect) {
+                dropToken(amount);
+            }
         }
 
     }
@@ -187,10 +202,14 @@ contract Game is VRFConsumerBaseV2, Ownable  {
         require(field.healthAmountToCollect > 0, "NOTHING TO COLLECT");
 
         if(field.healthAmountToCollect > 0) {
+            uint256 amount = field.healthAmountToCollect;
             // increase health
-            health[tx.origin] += field.healthAmountToCollect;
+            health[tx.origin] += amount;
             worldMatrix[position.x][position.y].healthAmountToCollect = 0;
-            emit CollectedHealth(tx.origin, field.healthAmountToCollect);
+            emit CollectedHealth(tx.origin, amount);
+            if (dropOnCollect) {
+                dropHealth(amount);
+            }
         }
     }
 
@@ -205,40 +224,20 @@ contract Game is VRFConsumerBaseV2, Ownable  {
         require(health[tx.origin] > 0, "YOU DED");
         if(requireContract) require(tx.origin != msg.sender, "NOT A CONTRACT");
         (uint8 x, uint8 y) = getCoordinates(direction, tx.origin);
-        require(x <= width && y <= height, "OUT OF BOUNDS");
+        require(x < width && y < height, "OUT OF BOUNDS");
 
         Field memory field = worldMatrix[x][y];
+
+        require(field.player == address(0), "ANOTHER LOOGIE ON THIS POSITION");
 
         bytes32 predictableRandom = keccak256(abi.encodePacked( blockhash(block.number-1), msg.sender, address(this)));
 
         health[tx.origin] -= uint8(predictableRandom[0])/attritionDivider;
 
-        if(field.player == address(0)) {
-            // empty field
-            worldMatrix[x][y].player = tx.origin;
-            worldMatrix[yourPosition[tx.origin].x][yourPosition[tx.origin].y].player = address(0);
-            yourPosition[tx.origin] = Position(x, y);
-            emit Move(tx.origin, x, y);
-        } else {
-            // fight
-            (/*uint attackerTokenId*/, uint attackerAttack, /*uint attackerDefence*/) = nftAvatar.getCharacterByOwner(tx.origin);
-            (/*uint defenderTokenId*/, /*uint defenderAttack*/, uint defenderDefence) = nftAvatar.getCharacterByOwner(field.player);
-
-            if(attackerAttack > defenderDefence) {
-                health[field.player] -= (attackerAttack - defenderDefence);
-            } else {
-                health[tx.origin] -= (defenderDefence - attackerAttack);
-            }
-
-            if(health[field.player] <= 0) {
-                // dead
-                emit GameOver(field.player);
-                worldMatrix[x][y].player = tx.origin;
-                worldMatrix[yourPosition[tx.origin].x][yourPosition[tx.origin].y].player = address(0);
-                yourPosition[tx.origin] = Position(x, y);
-                emit Move(tx.origin, x, y);
-            }
-        }
+        worldMatrix[x][y].player = tx.origin;
+        worldMatrix[yourPosition[tx.origin].x][yourPosition[tx.origin].y].player = address(0);
+        yourPosition[tx.origin] = Position(x, y);
+        emit Move(tx.origin, x, y, health[tx.origin]);
 
         if(health[tx.origin] <= 0) {
             worldMatrix[yourPosition[tx.origin].x][yourPosition[tx.origin].y].player = address(0);
@@ -275,21 +274,39 @@ contract Game is VRFConsumerBaseV2, Ownable  {
         }
     }
 
-function shufflePrizes(uint256 firstRandomNumber, uint256 secondRandomNumber) public {
-        require(msg.sender == keeper, "ONLY KEEPER CAN CALL");
+    function dropToken(uint256 amount) internal {
+        bytes32 predictableRandom = keccak256(abi.encodePacked( blockhash(block.number-1), msg.sender, address(this) ));
 
+        uint8 x = uint8(predictableRandom[0]) % width;
+        uint8 y = uint8(predictableRandom[1]) % height;
+
+        worldMatrix[x][y].tokenAmountToCollect += amount;
+        emit NewDrop(false, amount, x, y);
+    }
+
+    function dropHealth(uint256 amount) internal {
+        bytes32 predictableRandom = keccak256(abi.encodePacked( blockhash(block.number-1), msg.sender, address(this) ));
+
+        uint8 x = uint8(predictableRandom[0]) % width;
+        uint8 y = uint8(predictableRandom[1]) % height;
+
+        worldMatrix[x][y].healthAmountToCollect += amount;
+        emit NewDrop(true, amount, x, y);
+    }
+
+    function shufflePrizes(uint256 firstRandomNumber, uint256 secondRandomNumber) public onlyOwner {
         uint8 x;
         uint8 y;
 
         x = uint8(uint256(keccak256(abi.encode(firstRandomNumber, 1))) % width);
         y = uint8(uint256(keccak256(abi.encode(secondRandomNumber, 1))) % height);
-        worldMatrix[x][y].tokenAmountToCollect += 100 ether;
-        emit NewDrop(false, 100 ether, x, y);
+        worldMatrix[x][y].tokenAmountToCollect += 100;
+        emit NewDrop(false, 100, x, y);
 
         x = uint8(uint256(keccak256(abi.encode(firstRandomNumber, 2))) % width);
         y = uint8(uint256(keccak256(abi.encode(secondRandomNumber, 2))) % height);
-        worldMatrix[x][y].tokenAmountToCollect += 50 ether;
-        emit NewDrop(false, 50 ether, x, y);
+        worldMatrix[x][y].tokenAmountToCollect += 50;
+        emit NewDrop(false, 50, x, y);
 
         x = uint8(uint256(keccak256(abi.encode(firstRandomNumber, 3))) % width);
         y = uint8(uint256(keccak256(abi.encode(secondRandomNumber, 3))) % height);
@@ -300,7 +317,6 @@ function shufflePrizes(uint256 firstRandomNumber, uint256 secondRandomNumber) pu
         y = uint8(uint256(keccak256(abi.encode(secondRandomNumber, 4))) % height);
         worldMatrix[x][y].healthAmountToCollect += 50;
         emit NewDrop(true, 50, x, y);
-
     }
 
 }

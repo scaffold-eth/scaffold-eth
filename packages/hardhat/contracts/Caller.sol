@@ -17,8 +17,8 @@ contract Caller is Ownable {
         registry = Game(_registry);
     }
 
-    function register() public onlyOwner {
-        registry.register();
+    function register(uint256 loogieId) public onlyOwner {
+        registry.register(loogieId);
     }
 
     function move(MoveDirection direction) public onlyOwner {
