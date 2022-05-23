@@ -240,7 +240,17 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId, 
               const txLink = 'https://optimistic.etherscan.io/tx/' + event.transactionHash
               let title = event.name ? event.name : event.to
               return (
-                <Grid item mt={-12} mb={15} key={title}>
+                <Grid
+                  item
+                  mt={-12}
+                  mb={15}
+                  ml={'auto'}
+                  mr={'auto'}
+                  key={title}
+                  alignItems={'center'}
+                  justifyContent={'center'}
+                  direction={'row'}
+                >
                   <NftCard src={src} title={title} txLink={txLink} event={event} />
                 </Grid>
               )
