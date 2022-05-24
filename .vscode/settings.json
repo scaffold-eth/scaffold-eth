@@ -31,5 +31,6 @@
    "search.exclude": {
       "**/yarn-error.log": true,
       "**/yarn.lock": true
-   }
+   },
+   "git.detectSubmodules": false
 }

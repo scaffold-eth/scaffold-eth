@@ -1,0 +1,19 @@
+{
+  "name": "scaffold-eth",
+  "extensions": [
+    "dbaeumer.vscode-eslint",
+    "contractshark.solidity-lang@1.3.0"
+  ],
+  "forwardPorts": [
+    3000
+  ],
+  "hostRequirements": {
+    "memory": "8gb"
+  },
+  "remoteUser": "node",
+  "image": "mcr.microsoft.com/vscode/devcontainers/javascript-node:16-bullseye",
+  "containerEnv": {
+     "REACT_APP_CODESPACES": "true"
+  },
+  "onCreateCommand": "yarn install && yarn browserslist --update-db"
+}
