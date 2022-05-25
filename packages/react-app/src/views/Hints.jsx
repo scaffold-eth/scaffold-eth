@@ -1,8 +1,8 @@
-import { utils } from "ethers";
 import { Select } from "antd";
+import { useTokenList } from "eth-hooks/dapps/dex";
+import { utils } from "ethers";
 import React, { useState } from "react";
 import { Address, AddressInput } from "../components";
-import { useTokenList } from "eth-hooks/dapps/dex";
 
 const { Option } = Select;
 
