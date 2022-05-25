@@ -3,23 +3,33 @@ schema:
   file: ./src/schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: YourContract
+    name: Game
     network: localhost
     source:
-      address: "{{localhost_YourContractAddress}}"
-      abi: YourContract
+      address: "0x9849832a1d8274aaeDb1112ad9686413461e7101"
+      abi: Game
       startBlock: 1
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
-        - Purpose
-        - Sender
+        - WorldMatrix
+        - Player
       abis:
-        - name: YourContract
-          file: ./abis/localhost_YourContract.json
+        - name: Game
+          file: ./abis/localhost_Game.json
       eventHandlers:
-        - event: SetPurpose(address,string)
-          handler: handleSetPurpose
+        - event: Restart(uint8,uint8)
+          handler: handleRestart
+        - event: Register(indexed address,indexed address,uint8,uint8,uint256)
+          handler: handleRegister
+        - event: Move(indexed address,uint8,uint8,uint256)
+          handler: handleMove
+        - event: CollectedTokens(indexed address,uint256)
+          handler: handleCollectedTokens
+        - event: CollectedHealth(indexed address,uint256)
+          handler: handleCollectedHealth
+        - event: NewDrop(indexed bool,uint256,uint8,uint8)
+          handler: handleNewDrop
       file: ./src/mapping.ts

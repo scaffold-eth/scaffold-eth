@@ -58,6 +58,7 @@ contract Game is Ownable  {
 
     uint256 public restartBlockNumber;
     bool public dropOnCollect;
+    uint8 public attritionDivider = 50;
 
     constructor(uint256 _collectInterval, address _loogiesContractAddress, address _loogieCoinContractAddress) {
         collectInterval = _collectInterval;
@@ -213,12 +214,9 @@ contract Game is Ownable  {
         }
     }
 
-    uint8 public attritionDivider = 50;
-
     function setAttritionDivider(uint8 newDivider) public onlyOwner {
         attritionDivider = newDivider;
     }
-
 
     function move(MoveDirection direction) public {
         require(health[tx.origin] > 0, "YOU DED");
@@ -300,13 +298,13 @@ contract Game is Ownable  {
 
         x = uint8(uint256(keccak256(abi.encode(firstRandomNumber, 1))) % width);
         y = uint8(uint256(keccak256(abi.encode(secondRandomNumber, 1))) % height);
-        worldMatrix[x][y].tokenAmountToCollect += 100;
-        emit NewDrop(false, 100, x, y);
+        worldMatrix[x][y].tokenAmountToCollect += 1000;
+        emit NewDrop(false, 1000, x, y);
 
         x = uint8(uint256(keccak256(abi.encode(firstRandomNumber, 2))) % width);
         y = uint8(uint256(keccak256(abi.encode(secondRandomNumber, 2))) % height);
-        worldMatrix[x][y].tokenAmountToCollect += 50;
-        emit NewDrop(false, 50, x, y);
+        worldMatrix[x][y].tokenAmountToCollect += 500;
+        emit NewDrop(false, 500, x, y);
 
         x = uint8(uint256(keccak256(abi.encode(firstRandomNumber, 3))) % width);
         y = uint8(uint256(keccak256(abi.encode(secondRandomNumber, 3))) % height);
@@ -318,5 +316,4 @@ contract Game is Ownable  {
         worldMatrix[x][y].healthAmountToCollect += 50;
         emit NewDrop(true, 50, x, y);
     }
-
 }

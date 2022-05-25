@@ -696,6 +696,9 @@ const Joystick = (props) => (
               fill: "url(#radialGradient3163)",
             }}
             d="m174.91 341.66-10.416 7.2111 10.416 7.2111v-2.975h10.057v-8.4722h-10.057v-2.975z"
+            onClick={async () => {
+              props.tx(props.writeContracts.Game.move(2));
+            }}
           />
         </Tooltip>
         <Tooltip title="RIGHT" color="darkgreen" placement="right">
@@ -708,6 +711,9 @@ const Joystick = (props) => (
             }}
             transform="matrix(-1 0 0 1 378.43 -54.548)"
             d="m144.61 396.13-10.416 7.2111 10.416 7.2111v-2.975h10.057v-8.4722h-10.057v-2.975z"
+            onClick={async () => {
+              props.tx(props.writeContracts.Game.move(3));
+            }}
           />
         </Tooltip>
         <Tooltip title="UP" color="darkgreen" placement="top">
@@ -720,6 +726,9 @@ const Joystick = (props) => (
             }}
             transform="matrix(0 1 1 0 -198.37 175.07)"
             d="m144.61 396.13-10.416 7.2111 10.416 7.2111v-2.975h10.057v-8.4722h-10.057v-2.975z"
+            onClick={async () => {
+              props.tx(props.writeContracts.Game.move(0));
+            }}
           />
         </Tooltip>
         <Tooltip title="DOWN" color="darkgreen" placement="bottom">
@@ -732,6 +741,9 @@ const Joystick = (props) => (
             }}
             transform="matrix(0 -1 1 0 -198.37 523.53)"
             d="m144.61 396.13-10.416 7.2111 10.416 7.2111v-2.975h10.057v-8.4722h-10.057v-2.975z"
+            onClick={async () => {
+              props.tx(props.writeContracts.Game.move(1));
+            }}
           />
         </Tooltip>
         <Tooltip title="Collect LoogieCoins" color="darkgreen">
@@ -748,6 +760,9 @@ const Joystick = (props) => (
             transform="matrix(1.2037 0 0 1.2037 1582.3 -378.92)"
             sodipodiCy={625.2193}
             sodipodiCx={-860.71429}
+            onClick={async () => {
+              props.tx(props.writeContracts.Game.collectTokens());
+            }}
           />
         </Tooltip>
         <Tooltip title="Collect Health" color="darkgreen">
@@ -764,7 +779,9 @@ const Joystick = (props) => (
             transform="matrix(1.2037 0 0 1.2037 1516.6 -378.92)"
             sodipodiCy={625.2193}
             sodipodiCx={-860.71429}
-            onClick={() => {alert("hola")}}
+            onClick={async () => {
+              props.tx(props.writeContracts.Game.collectHealth());
+            }}
           />
         </Tooltip>
       </g>

@@ -5,12 +5,15 @@ import React from "react";
 
 export default function Header() {
   return (
-    <a href="https://github.com/austintgriffith/scaffold-eth" target="_blank" rel="noopener noreferrer">
+    <div id="header">
+      <div style={{ position: "absolute", left: -20, top: -30 }}>
+        <img src="loogie-board-small.png" alt="LoogieBoard" />
+      </div>
       <PageHeader
-        title="🏗 scaffold-eth"
-        subTitle="forkable Ethereum dev stack focused on fast product iteration"
-        style={{ cursor: "pointer" }}
+        title="LoogieBoard"
+        subTitle="eat LoogieCoins with your FancyLoogie"
+        style={{ cursor: "pointer", marginLeft: 500 }}
       />
-    </a>
+    </div>
   );
 }

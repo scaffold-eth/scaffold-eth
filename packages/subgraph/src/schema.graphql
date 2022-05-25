@@ -1,15 +1,20 @@
-type Purpose @entity {
+type WorldMatrix @entity {
   id: ID!
-  sender: Sender!
-  purpose: String!
-  createdAt: BigInt!
-  transactionHash: String!
+  x: Int!
+  y: Int!
+  player: Player
+  tokenAmountToCollect: BigInt!
+  healthAmountToCollect: BigInt!
 }
 
-type Sender @entity {
+type Player @entity {
   id: ID!
+  x: Int!
+  y: Int!
   address: Bytes!
-  purposes: [Purpose!] @derivedFrom(field: "sender")
+  fancyLoogieId: BigInt!
+  health: BigInt!
+  token: BigInt!
   createdAt: BigInt!
-  purposeCount: BigInt!
+  transactionHash: String!
 }

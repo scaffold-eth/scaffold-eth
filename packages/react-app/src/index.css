@@ -2,6 +2,10 @@
   text-align: center;
 }
 
+#root {
+  background-color: lightblue;
+}
+
 
 body {
   margin: 0;
@@ -13,4 +17,37 @@ code {
 
 #path3724:hover, #path3706:hover, #rect2893:hover, #path3694:hover, #path3698:hover, #path3702:hover {
   cursor: pointer;
+}
+
+.ranking-row {
+  background-color: #b3e2f4;
+}
+
+.ant-table-tbody tr.ranking-row > td {
+  padding: 0;
+}
+
+#ranking .ant-card-head-title {
+  padding: 5px;
+}
+
+#ranking .ant-card-head {
+    border-bottom: 1px solid #0071bb;
+}
+
+#ranking .ant-pagination-item-link, #ranking .ant-pagination-item {
+  background-color: #b3e2f4;
+}
+
+#header .ant-page-header-heading-title {
+  font-family: 'Pirata One', cursive;
+  font-size: 48px;
+  font-weight: normal;
+  line-height: 48px;
+}
+
+#header .ant-page-header-heading-sub-title {
+  font-family: 'Pirata One', cursive;
+  font-size: 26px;
+  line-height: 26px;
 }
