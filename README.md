@@ -59,6 +59,7 @@ Documentation, tutorials, challenges, and many more resources, visit: [docs.scaf
 - [eth-hooks](https://github.com/scaffold-eth/eth-hooks)
 - [eth-components](https://github.com/scaffold-eth/eth-components)
 - [scaffold-eth-expo](https://github.com/scaffold-eth/scaffold-eth-expo)
+- [scaffold-eth-truffle](https://github.com/trufflesuite/scaffold-eth)
 
 
 # 🔭 Learning Solidity
