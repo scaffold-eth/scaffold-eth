@@ -2,7 +2,7 @@
 
 ## 🚩 Challenge 3: 🎲 Dice Game 
 
-> 🎰 Randomness is tricky on a public deterministic blockchain. The block hash is the result proof of work (for now) and some builders use this as a weak form of randomness. This challenge will give you an example of a contract using block hash to create random numbers.  This randomness is exploitable.  Other, stronger forms of randomness include commit/reveal schemes, oracles, or VRF from Chainlink.
+> 🎰 Randomness is tricky on a public deterministic blockchain. The block hash is the result proof-of-work (for now) and some builders use this as a weak form of randomness. This challenge will give you an example of a contract using block hash to create random numbers.  This randomness is exploitable.  Other, stronger forms of randomness include commit/reveal schemes, oracles, or VRF from Chainlink.
 
 > 👍 One day soon, randomness will be built into the Ethereum protocol!
 
