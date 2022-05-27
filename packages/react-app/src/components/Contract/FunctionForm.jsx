@@ -188,7 +188,7 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
               const args = functionInfo.inputs.map((input, inputIndex) => {
                 const key = getFunctionInputKey(functionInfo, input, inputIndex);
                 let value = form[key];
-                if (input.baseType === "array") {
+                if (["array", "tuple"].includes(input.baseType)) {
                   value = JSON.parse(value);
                 } else if (input.type === "bool") {
                   if (value === "true" || value === "1" || value === "0x1" || value === "0x01" || value === "0x0001") {
