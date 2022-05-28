@@ -7,6 +7,7 @@ import Challenge1DecentralizedStaking from './components/levels/challenge-1-dece
 import Challenge2TokenVendor from './components/levels/challenge-2-token-vendor'
 import Challenge3Dex from './components/levels/challenge-3-dex'
 import Challenge5MultiSig from './components/levels/challenge-5-multi-sig'
+import Challenge3DiceGame from './components/levels/challenge-3-dice-game'
 
 import ScaffoldEthOverview from './components/levels/ScaffoldEthOverview'
 import UnderflowBug from './components/levels/UnderflowBug'
@@ -34,6 +35,11 @@ export const routesList = [
     name: 'Challenge0SimpleNFT',
     path: '/challenge-0-simple-nft',
     component: props => <Challenge0SimpleNFT {...props} />
+  },
+  {
+  name: 'Challenge3DiceGame',
+  path: '/challenge-3-dice-game',
+  component: props => <Challenge3DiceGame {...props} />
   },
   {
     name: 'Challenge1DecentralizedStaking',

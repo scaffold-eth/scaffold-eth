@@ -64,7 +64,7 @@ const WelcomeWindow = ({
           However, this is not a game for beginners!
           <br />
           This game is targeted towards more experienced developers that are proficient in
-          JavaScript, NodeJS and the basics of Solidity.
+          JavaScript, NodeJS, and the basics of Solidity.
         </p>
         <p style={{ lineHeight: '30px', color: '#16DC8C' }}>
           If you are looking to learn solidity basics, may we suggest that you head over to our

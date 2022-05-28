@@ -73,7 +73,7 @@ const _dialog = [
     choices: () => <></>
   },
   {
-    dialog: () => <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>Greate job!</SpeakerLeft>,
+    dialog: () => <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>Great job!</SpeakerLeft>,
     choices: null
   },
   {
