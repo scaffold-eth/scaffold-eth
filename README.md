@@ -40,4 +40,4 @@ It is important that you respect upper and lower cases!
 
 After creating a `build` you need to do a small hack to get `react-router` routes to work.
 Take a look the instructions [here](https://barcelonacodeschool.com/how-to-make-react-router-work-on-surge).
-Simply make a copy of the `index.html` file in the build folder and rename it to `200.html`.
+Simply make a copy of the `index.html` file in the build folder and name the copy `200.html`.
