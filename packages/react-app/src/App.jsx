@@ -13,7 +13,7 @@ import StackGrid from "react-stack-grid";
 import Web3Modal from "web3modal";
 import "./App.css";
 //import assets from "./assets.js";
-import { Account, Address, AddressInput, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
+import { Account, Address, AddressInput, Contract,Generator, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
 import { DAI_ABI, DAI_ADDRESS, INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 import {
@@ -399,6 +399,18 @@ function App(props) {
 
       <BrowserRouter>
         <Menu style={{ textAlign: "center" }} selectedKeys={[route]} mode="horizontal">
+
+        <Menu.Item key="/generate">
+            <Link
+              onClick={() => {
+                setRoute("/generate");
+              }}
+              to="/generate"
+            >
+              Generate
+            </Link>
+          </Menu.Item>
+
           <Menu.Item key="/">
             <Link
               onClick={() => {
@@ -406,9 +418,10 @@ function App(props) {
               }}
               to="/"
             >
-              Your Loogies
+              Your Art
             </Link>
           </Menu.Item>
+          
           <Menu.Item key="/debug">
             <Link
               onClick={() => {
@@ -420,7 +433,6 @@ function App(props) {
             </Link>
           </Menu.Item>
         </Menu>
-
         <Switch>
           <Route exact path="/">
             {/*
@@ -500,7 +512,7 @@ function App(props) {
 
               🛠 built with <a href="https://github.com/austintgriffith/scaffold-eth" target="_blank">🏗 scaffold-eth</a>
 
-              🍴 <a href="https://github.com/austintgriffith/scaffold-eth" target="_blank">Fork this repo</a> and build a cool SVG NFT!
+              🍴 <a href="https://github.com/austintgriffith/scaffold-eth" target="_blank">Fork this repo</a> and build a cool generative art NFT!
 
             </div>
           </Route>
@@ -517,6 +529,11 @@ function App(props) {
               address={address}
               blockExplorer={blockExplorer}
             />
+          </Route>
+          <Route path="/generate">
+             <div style={{padding:32}}>
+             <Generator/>
+            </div>
           </Route>
         </Switch>
       </BrowserRouter>

@@ -29,6 +29,7 @@ coverage
 
 # production
 build
+packages/react-app/src/components/wasm/build.bat
 
 # misc
 .DS_Store

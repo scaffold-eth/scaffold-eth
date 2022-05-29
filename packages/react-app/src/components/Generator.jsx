@@ -1,14 +1,14 @@
 import React, {Component} from "react";
 import { Button } from "antd";
 import { useThemeSwitcher } from "react-css-theme-switcher";
-const wasm = import("./WASM/generate.wasm");
-import { WebAssembly } from "@ungap/global-this";
+import Address from "./Address";
 
-class Canvas extends Component {
+class Generator extends Component {
 
     componentDidMount() {
-        wasm.then(wasm => {
-      
+        const canvas = this.refs.canvas;
+        const path = process.env.PUBLIC_URL + '/generate.wasm';
+        const publicKey = new String("0xdd50235d3EbA363Be8890baf05974823aCDda188");
         const DENSITY = 4; // how many bytes per pixel for our image (RGBA)
         const RESERVED_MEM = 3000;
         const PAGE_SIZE = 65536;
@@ -34,8 +34,6 @@ class Canvas extends Component {
         dv.setInt32(propertyIndex,canvas.height,true); // default the values to zero
         propertyIndex = propertyIndex+DENSITY;
 
-        //console.log("height and width: " + propertyIndex);
-
         var i = 0
         while (i < MAX_PARAMETERS){
             dv.setInt32(propertyIndex,0,true);
@@ -56,18 +54,18 @@ class Canvas extends Component {
             dv.setInt8(propertyIndex+3,parseInt(keyVal.slice(0,2),16));   //e5
             //console.log("0x"+keyVal.slice(6,8)+"_"+keyVal.slice(4,6)+"_"+keyVal.slice(2,4)+"_"+keyVal.slice(0,2));
             keyVal = keyVal.slice(8,keyVal.length);
-            propertyIndex=propertyIndex+4;
+            propertyIndex=propertyIndex+DENSITY;
         }
 
         //console.log("colours loaded: " + propertyIndex);
 
-        var complexity = Math.floor(Math.random()*1000);
+        var complexity = Math.floor(Math.random()*10);
         dv.setUint8(propertyIndex,complexity,true);
         //console.log("complexity loaded: " + propertyIndex);
         propertyIndex=propertyIndex+1;
 
         var colourMode = [0,1,2]; //nochange, increaseTransparency, decreaseTransparency
-        dv.setUint8(propertyIndex,colourMode[0],true);
+        dv.setUint8(propertyIndex,colourMode[2],true);
         //console.log("colourMode loaded: " + propertyIndex);
         propertyIndex=propertyIndex+1;
 
@@ -75,25 +73,47 @@ class Canvas extends Component {
         dv.setUint8(propertyIndex,debugMode[0],true);
         //console.log("debugMode loaded: " + propertyIndex);
         propertyIndex=propertyIndex+1;
-
-        const byteArray = new Uint8ClampedArray(memory.buffer, RESERVED_MEM, canvas.width * canvas.height * DENSITY );
-
-        // Create an ImageData instance from the array
-        const img = new ImageData( byteArray, canvas.width, canvas.height );
         
-        // Get a graphics context for the canvas
-        const ctx = canvas.getContext('2d');
+        // items imported into WASM for processing
+        const importObject = {
+            env: {
+                mem: memory,
+                print: function (str_pos) {
+                    //console.log("position: " + str_pos);
+                    const str_len = new Uint8Array(memory.buffer, str_pos, 1)[0];
+                    const attributeCount = new Uint8Array(memory.buffer, str_pos+1, 1)[0];
+                    const bytes = new Uint8Array(memory.buffer,	str_pos + 2, str_len);
+                    const log_string = new TextDecoder('utf8').decode(bytes);
+                    
+                    // error values start after canvas.width and canvas.height
+                    const parameters = new Uint32Array(memory.buffer, 8, 5);
+                    
+                    // parameters
+                    var paramString =  log_string + "(";
+                    for (i = 0 ; i < attributeCount ; i++){
+                        paramString = paramString + parameters[i].toString(10) + ",";
+                    }
+                    paramString = paramString.slice(0,paramString.length-1);
+                    paramString = paramString + ")";
+                    console.log(paramString);
+                }   
+            }
+        }
     
-        // Put the image data into the canvas
-        ctx.putImageData( img, 0, 0 );
-    });
-    }
-  
+        WebAssembly.instantiateStreaming(fetch(path), importObject).then(obj => {
+            const ctx = canvas.getContext("2d");
+            const byteArray = new Uint8ClampedArray(memory.buffer, RESERVED_MEM, canvas.width * canvas.height * DENSITY );
+            const img = new ImageData( byteArray, canvas.width, canvas.height );
+            ctx.putImageData( img, 0, 0 );
+        });
+    
+    };
+
     render() {
-      return (
-          <canvas ref="canvas"  width={this.props.width} height={this.props.height}/>
-      )
-    }
-  }
-  
-  export default Canvas;
+        return(
+            <canvas ref="canvas" width={256} height={256} />
+        )
+      }
+}
+
+export default Generator;
