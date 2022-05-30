@@ -816,9 +816,12 @@ function App(props) {
         </span>
       </div>
 
-      <div style={{ padding: 16, cursor: "pointer", backgroundColor: "#FFFFFF", width: 420, margin: "auto" }}>
-        <QRPunkBlockie withQr address={address} showAddress={true} />
-      </div>
+      {
+        address && 
+        <div style={{ padding: 16, cursor: "pointer", backgroundColor: "#FFFFFF", width: 420, margin: "auto" }}>
+          <QRPunkBlockie withQr address={address} showAddress={true} /> 
+        </div>
+      }
 
       <div style={{ position: "relative", width: 320, margin: "auto", textAlign: "center", marginTop: 32 }}>
         <div style={{ padding: 10 }}>
