@@ -54,7 +54,7 @@ You'll have three terminals up for:
 #### 🥅 Goals
 
 - [ ] Track the solidity code to find out how the DiceGame contract is generating random numbers.
-- [ ] Using blockhash provides a sudo random number.  Is it possible to predict what that number will be for any given roll?
+- [ ] Is it possible to predict what that number will be for any given roll?
 
 ---
 
