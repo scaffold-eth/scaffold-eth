@@ -71,7 +71,7 @@ export default function QRPunkBlockie(props) {
         //ethereum:0x34aA3F359A9D614239015126635CE7732c18fDF3
         value={props.address?props.address:""}//"https://punkwallet.io/"+
         size={hardcodedSizeForNow}
-        imageSettings={{width:105,height:105,excavate:true}}
+        imageSettings={{width:105,height:105,excavate:true,src:""}}
       /> : ""}
 
 

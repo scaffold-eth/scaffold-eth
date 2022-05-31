@@ -162,7 +162,7 @@ export default function Wallet(props) {
     const myy = parseInt(mypart2, 16) % 100;
     extraPkDisplayAdded[wallet.address] = true;
     extraPkDisplay.push(
-      <div style={{ fontSize: 38, fontWeight: "bolder", padding: 2, backgroundStyle: "#89e789" }}>
+      <div key={wallet.address} style={{ fontSize: 38, fontWeight: "bolder", padding: 2, backgroundStyle: "#89e789" }}>
         <div style={{float:'right'}}>
           <Button
             style={{ marginTop: 16 }}
@@ -207,7 +207,7 @@ export default function Wallet(props) {
           const x = parseInt(part1, 16) % 100;
           const y = parseInt(part2, 16) % 100;
           extraPkDisplay.push(
-            <div style={{ fontSize: 32 }}>
+            <div key={pastwallet.address} style={{ fontSize: 32 }}>
               <a href={"/pk#" + key}>
                 <div
                   style={{ float: "left", position: "relative", width: punkSize, height: punkSize, overflow: "hidden" }}

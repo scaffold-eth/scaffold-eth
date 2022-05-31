@@ -56,17 +56,17 @@ export default function Account({
   if (web3Modal) {
     if (web3Modal.cachedProvider) {
       modalButtons.push(
-        <span style={{ verticalAlign: "middle", paddingLeft: 16, fontSize: 32 }}>
+        <span key="logoutbutton" style={{ verticalAlign: "middle", paddingLeft: 16, fontSize: 32 }}>
           {/*<Tooltip title="Disconnect Wallet">*/}
-            <LogoutOutlined key="logoutbutton" onClick={logoutOfWeb3Modal} style={{ color: "#1890ff" }} />
+            <LogoutOutlined onClick={logoutOfWeb3Modal} style={{ color: "#1890ff" }} />
           {/*</Tooltip>*/}
         </span>,
       );
     } else {
       modalButtons.push(
-        <span style={{ verticalAlign: "middle", paddingLeft: 16, fontSize: 32 }}>
+        <span key="loginbutton" style={{ verticalAlign: "middle", paddingLeft: 16, fontSize: 32 }}>
           {/*<Tooltip title="Connect Wallet">*/}
-            <LoginOutlined key="loginbutton" onClick={loadWeb3Modal} style={{ color: "#1890ff" }} />
+            <LoginOutlined  onClick={loadWeb3Modal} style={{ color: "#1890ff" }} />
           {/*</Tooltip>*/}
         </span>,
       );

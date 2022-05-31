@@ -761,7 +761,7 @@ function App(props) {
     web3Modal && web3Modal.cachedProvider ? (
       ""
     ) : (
-      <Wallet address={address} provider={userProvider} ensProvider={mainnetProvider} price={price} />
+      <Wallet key="wallet" address={address} provider={userProvider} ensProvider={mainnetProvider} price={price} />
     );
 
   return (
@@ -769,7 +769,7 @@ function App(props) {
       <div className="site-page-header-ghost-wrapper">
         <Header
           extra={[
-            <Address fontSize={32} address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />,
+            <Address key="address" fontSize={32} address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />,
             /* <span style={{ verticalAlign: "middle", paddingLeft: 16, fontSize: 32 }}>
               <Tooltip title="History">
                 <HistoryOutlined onClick={async () => {
@@ -779,8 +779,9 @@ function App(props) {
             </span>, */
             walletDisplay,
 
-            <span style={{color: "#1890ff",cursor:"pointer",fontSize:30,opacity:checkingBalances?0.2:1,paddingLeft:16,verticalAlign:"middle"}} onClick={()=>{checkBalances(address)}}><ReloadOutlined /></span>,
+            <span key="checkBalances" style={{color: "#1890ff",cursor:"pointer",fontSize:30,opacity:checkingBalances?0.2:1,paddingLeft:16,verticalAlign:"middle"}} onClick={()=>{checkBalances(address)}}><ReloadOutlined /></span>,
             <Account
+              key="account"
               address={address}
               localProvider={localProvider}
               userProvider={userProvider}
@@ -815,9 +816,12 @@ function App(props) {
         </span>
       </div>
 
-      <div style={{ padding: 16, cursor: "pointer", backgroundColor: "#FFFFFF", width: 420, margin: "auto" }}>
-        <QRPunkBlockie withQr address={address} showAddress={true} />
-      </div>
+      {
+        address && 
+        <div style={{ padding: 16, cursor: "pointer", backgroundColor: "#FFFFFF", width: 420, margin: "auto" }}>
+          <QRPunkBlockie withQr address={address} showAddress={true} /> 
+        </div>
+      }
 
       <div style={{ position: "relative", width: 320, margin: "auto", textAlign: "center", marginTop: 32 }}>
         <div style={{ padding: 10 }}>
