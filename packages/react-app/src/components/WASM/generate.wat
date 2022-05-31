@@ -60,14 +60,99 @@
     (data (i32.const 2254) "\1E\05LLL-$plotLineLow (x0,y0,x1,y1)")
     (data (i32.const 2286) "\1F\05HHH-$plotLineHigh (x0,y0,x1,y1)")
 
-    (func $run
-        call $init
-        call $drawBackground
-        ;;call $test
-        call $generate
+    (func (export "initialize")
+        ;; for each byte of the PK iterate through the message sig
+        ;; use the left nibble to determine how far to rotate the version byte left 
+        ;; use the right nibble to determine how far to rotate the version nibble right
+        ;; there are 24 bytes in the PK (aVal, rVal, gVal, bVal)
+        ;; there are 65 bytes in the messageSig
+        (local $entropyIndex i32)
+        (local $messageSigIterator i32)
+        (local $direction i32) ;; direction of rotation
+        (local $pkByte i32)
+
+        ;; get the first location where the we can store bytes
+        (local.set $entropyIndex (call $getGeneratedEntropyStartMemoryIndex))
+
+        (loop $outerLoop
+            (block $publicKey
+
+                ;; if we have generated enough entropy break.
+                (i32.eq(local.get $entropyIndex)(call $getEntropyEnd))
+                br_if $publicKey 
+
+                ;; reset the iterator for the inner loop
+                (local.set $messageSigIterator (i32.const 0))
+
+                ;; get the next chunk of our Public Key (encoded in the pallet)
+                (local.set $pkByte (call $getNextPublicKeyByte)) ;; this is what you are rotating it by
+
+                ;; loop through the bytes of our messageSig using the value to rotate them
+                ;; alternate between rotate left and rotate right
+                (loop $innerLoop
+                    (block $messageSig
+
+                        ;; if we have used our message sig bytes, break and grab a new PK
+                        (i32.eq(local.get $messageSigIterator)(global.get $g_VERSIOSIG_LENGTH))
+                        br_if $messageSig
+
+                        ;; change the direction of rotation as you work through the values
+                        (i32.eq(local.get $direction)(i32.const 0))
+                        (if
+                            (then
+                                ;; this is the entropy slot we are trying to fill
+                                local.get $entropyIndex
+
+                                ;; load the value at the message sig byte
+                                call $getNextVersionSigByte ;; this is the thing you are rotating
+
+                                ;; get colour byte (Public Key)
+                                local.get $pkByte
+                                i32.rotl ;; rotate the data by that amount
+                                i32.const 256
+                                i32.rem_u
+                                i32.store8 ;; store in entropy index
+                                                                
+                                (local.set $direction (i32.const 1))
+                            )
+                            (else
+                                ;; this is the entropy slot we are trying to fill
+                                local.get $entropyIndex
+
+                                ;; load the value at the message sig byte
+                                call $getNextVersionSigByte ;; this is the thing you are rotating
+
+                                local.get $pkByte
+                                i32.rotr ;; rotate the data by that amount
+                                i32.const 256
+                                i32.rem_u
+                                i32.store8 ;; store in entropy index
+
+                                (local.set $direction (i32.const 0))                   
+                            )
+                        )
+                        (local.set $entropyIndex (i32.add(local.get $entropyIndex)(i32.const 1)))
+                        (local.set $messageSigIterator (i32.add(local.get $messageSigIterator)(i32.const 1)))
+                    
+                        br $innerLoop
+                    )
+                )
+                br $outerLoop
+            )
+        )
+    
+        ;; use the first generated entropy to choose the background colour
+        i32.const 0
+        global.get $g_PALLET_COLOUR_COUNT
+        call $getRangedRando
+        call $getColourByIndex
+        global.set $g_BACKGROUND_COLOUR
+
+        ;;(call $printWithParameters (i32.const 1400)(call $getWidth)(call $getHeight)(call $getComplexity)(call $getBackgroundColour)(call $getColourMode))
+        ;;(call $printWithParameters (i32.const 1400)(call $getWidth)(call $getHeight)(call $getDebugMode)(call $getBackgroundColour)(call $getColourMode))
     )
 
-    (func $generate
+    (func ( export "generate")
       (local $proposedColourMode i32) ;; 0 specific, 1 next sequential from pallet, 2 random from pallet
       (local $proposedColour i32) ;; if colourMode is 0, use this, solid colour
       (local $colourSequence i32) ;; if colourMode is 1, use this, as the current sequence
@@ -83,6 +168,8 @@
       (local.set $diamondCount (call $getRangedRando(call $getComplexity)(i32.add(call $getComplexity)(i32.const 200))))
       (local.set $horizontalLineCount (i32.add(i32.add(local.get $circleCount)(local.get $squareCount))(local.get $diamondCount)))
       (local.set $verticalLineCount (i32.add(i32.add(local.get $circleCount)(local.get $squareCount))(local.get $diamondCount)))
+
+      call $drawBackground
 
       (loop $outerloop
         (local.set $proposedColourMode (call $getRangedRando(i32.const 0)(i32.const 3)))      
@@ -185,111 +272,6 @@
           br $outerloop
         )
       )     
-    )
-    
-    (func $test
-
-        ;; change the debug mode for testing
-        global.get $g_DEBUGMODE_INDEX
-        i32.const 0
-        i32.store
-
-      ;; (param $proposedColourMode i32) ;; 0 specific, 1 next sequential from pallet, 2 random from pallet
-      ;; (param $proposedColour i32) ;; if colourMode is 0, use this, solid colour
-      ;; (param $colourSequence i32) ;; if colourMode is 1, use this, as the current sequence
-      ;; (param $blendingMode i32) ;; 0 overwrite, 1 lighten, 2 darken
-    )
-
-    (func $init
-        ;; for each byte of the PK iterate through the message sig
-        ;; use the left nibble to determine how far to rotate the version byte left 
-        ;; use the right nibble to determine how far to rotate the version nibble right
-        ;; there are 24 bytes in the PK (aVal, rVal, gVal, bVal)
-        ;; there are 65 bytes in the messageSig
-        (local $entropyIndex i32)
-        (local $messageSigIterator i32)
-        (local $direction i32) ;; direction of rotation
-        (local $pkByte i32)
-
-        ;; get the first location where the we can store bytes
-        (local.set $entropyIndex (call $getGeneratedEntropyStartMemoryIndex))
-
-        (loop $outerLoop
-            (block $publicKey
-
-                ;; if we have generated enough entropy break.
-                (i32.eq(local.get $entropyIndex)(call $getEntropyEnd))
-                br_if $publicKey 
-
-                ;; reset the iterator for the inner loop
-                (local.set $messageSigIterator (i32.const 0))
-
-                ;; get the next chunk of our Public Key (encoded in the pallet)
-                (local.set $pkByte (call $getNextPublicKeyByte)) ;; this is what you are rotating it by
-
-                ;; loop through the bytes of our messageSig using the value to rotate them
-                ;; alternate between rotate left and rotate right
-                (loop $innerLoop
-                    (block $messageSig
-
-                        ;; if we have used our message sig bytes, break and grab a new PK
-                        (i32.eq(local.get $messageSigIterator)(global.get $g_VERSIOSIG_LENGTH))
-                        br_if $messageSig
-
-                        ;; change the direction of rotation as you work through the values
-                        (i32.eq(local.get $direction)(i32.const 0))
-                        (if
-                            (then
-                                ;; this is the entropy slot we are trying to fill
-                                local.get $entropyIndex
-
-                                ;; load the value at the message sig byte
-                                call $getNextVersionSigByte ;; this is the thing you are rotating
-
-                                ;; get colour byte (Public Key)
-                                local.get $pkByte
-                                i32.rotl ;; rotate the data by that amount
-                                i32.const 256
-                                i32.rem_u
-                                i32.store8 ;; store in entropy index
-                                                                
-                                (local.set $direction (i32.const 1))
-                            )
-                            (else
-                                ;; this is the entropy slot we are trying to fill
-                                local.get $entropyIndex
-
-                                ;; load the value at the message sig byte
-                                call $getNextVersionSigByte ;; this is the thing you are rotating
-
-                                local.get $pkByte
-                                i32.rotr ;; rotate the data by that amount
-                                i32.const 256
-                                i32.rem_u
-                                i32.store8 ;; store in entropy index
-
-                                (local.set $direction (i32.const 0))                   
-                            )
-                        )
-                        (local.set $entropyIndex (i32.add(local.get $entropyIndex)(i32.const 1)))
-                        (local.set $messageSigIterator (i32.add(local.get $messageSigIterator)(i32.const 1)))
-                    
-                        br $innerLoop
-                    )
-                )
-                br $outerLoop
-            )
-        )
-    
-        ;; use the first generated entropy to choose the background colour
-        i32.const 0
-        global.get $g_PALLET_COLOUR_COUNT
-        call $getRangedRando
-        call $getColourByIndex
-        global.set $g_BACKGROUND_COLOUR
-
-        ;;(call $printWithParameters (i32.const 1400)(call $getWidth)(call $getHeight)(call $getComplexity)(call $getBackgroundColour)(call $getColourMode))
-        ;;(call $printWithParameters (i32.const 1400)(call $getWidth)(call $getHeight)(call $getDebugMode)(call $getBackgroundColour)(call $getColourMode))
     )
 
 ;; ========================== UTILITY METHODS=============================================    
@@ -1696,5 +1678,4 @@
 
 ;; ========================== DRAW METHODS=============================================
 
-    (start $run)
 )

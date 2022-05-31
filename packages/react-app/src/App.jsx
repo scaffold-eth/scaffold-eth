@@ -1,8 +1,8 @@
-import { LinkOutlined } from "@ant-design/icons";
+import { BgColorsOutlined, LinkOutlined, PicCenterOutlined } from "@ant-design/icons";
 import { StaticJsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import { formatEther, parseEther } from "@ethersproject/units";
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import { Alert, Button, Card, Col, Input, List, Menu, Row } from "antd";
+import { Alert, Button, Card, Col, Input, Space,Slider, List, Menu, Row, AutoComplete } from "antd";
 import "antd/dist/antd.css";
 import { useUserAddress } from "eth-hooks";
 import { utils } from "ethers";
@@ -410,7 +410,6 @@ function App(props) {
               Generate
             </Link>
           </Menu.Item>
-
           <Menu.Item key="/">
             <Link
               onClick={() => {
@@ -532,8 +531,35 @@ function App(props) {
           </Route>
           <Route path="/generate">
              <div style={{padding:32}}>
-             <Generator/>
+             <Generator
+              address = {address}
+              width = {256}
+              height = {256}
+              />
             </div>
+
+
+            <Space
+              direction="vertical"
+              style={{
+                width: '25%',
+              }}
+            >
+              <Input.Group>
+                <Input placeholder="Enter Width" size={"medium"} maxlength={"10"} width={"50"}></Input>
+                <div style={{padding:50}}>               
+                
+                <Slider vertical defaultValue={30} />
+                </div>
+                <Button>Generate</Button>               
+              </Input.Group>
+            </Space>
+{/* 
+            <div style={{padding:32}}>
+           <Button>Generate</Button>
+            </div> */}
+
+
           </Route>
         </Switch>
       </BrowserRouter>
