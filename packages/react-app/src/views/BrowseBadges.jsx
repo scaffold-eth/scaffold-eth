@@ -28,7 +28,7 @@ export const isHexadecimal = value => {
   return /^[0-9a-fA-F]+$/.test(value) && value.length % 2 === 0
 }
 
-export default function BrowseBadges({ localProvider, mainnet, selectedChainId, address, setAddress }) {
+export default function BrowseBadges({ localProvider, mainnet, selectedChainId, address, connectedAddress, setAddress, wallet, injectedProvider }) {
   const [contractEvents, setContractEvents] = useState([])
   const contractConfig = { deployedContracts: {}, externalContracts: externalContracts || {} }
   const [badges, setBadges] = useState([])
@@ -49,8 +49,8 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId, 
    * this mint a user badge from the current selected account
    */
   const mintBadge = async (receiverAddress) => {
-    let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
-    mintTx = await contract.publicMint(receiverAddress)
+    let contract = new ethers.Contract(contractRef.address, contractRef.abi, injectedProvider)
+    let mintTx = await contract.publicMint(receiverAddress)
     await mintTx.wait()
   }
   
@@ -58,7 +58,7 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId, 
    * this returns the number of user badge that the selected account is allowed to mint.
    */
   const allowedMinting = async (currentAccount) => {
-    let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
+    let contract = new ethers.Contract(contractRef.address, contractRef.abi, injectedProvider)
     return await contract.allowedMinting(currentAccount)    
   }
 
@@ -106,7 +106,6 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId, 
             console.error(e)
           }
         }
-        console.log('badges for address', address, badges)
         setBadges(badges)
         setErrorMessage('')
       } catch (e) {
@@ -121,8 +120,6 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId, 
   if (contractEvents.length !== events.length) {
     setContractEvents(events)
   }
-  console.log(events)
-
   useEffect(() => {
     const run = async () => {
       if (address) {
@@ -130,13 +127,11 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId, 
       }
       const eventsDecoded = []
       for (const event of contractEvents) {
-        console.log(event.args.to, event.args.tokenId.toString())
         let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
         let data = await contract.tokensData(event.args.tokenId)
         const name = await mainnet.lookupAddress(event.args.to)
         const badge = Object.assign({}, event.args, data, { decodedIpfsHash: toBase58(data.hash) }, event, { name })
 
-        console.log(event.args.to, event.args.tokenId.toString(), badge, event)
         eventsDecoded.push(badge)
       }
       setEventBadges(eventsDecoded)
@@ -151,13 +146,11 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId, 
       }
       const eventsDecoded = []
       for (const event of contractEvents) {
-        console.log(event.args.to, event.args.tokenId.toString())
         let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
         let data = await contract.tokensData(event.args.tokenId)
         const name = await mainnet.lookupAddress(event.args.to)
         const badge = Object.assign({}, event.args, data, { decodedIpfsHash: toBase58(data.hash) }, event, { name })
 
-        console.log(event.args.to, event.args.tokenId.toString(), badge, event)
         eventsDecoded.push(badge)
       }
       setEventBadges(eventsDecoded)
@@ -171,7 +164,7 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId, 
         {/*
         ⚙️ Here is an example UI that displays and sets the purpose in your smart contract:
       */}
-
+        {wallet}
         <Box sx={{ textAlign: 'left', padding: '10px', color: '#007aa6', marginLeft: 5 }}>
           <Typography variant={'h3'} fontWeight={700} sx={{ marginBottom: 5 }} color={'black'} fontFamily={'Noah'}>
             Remix Rewards
@@ -252,7 +245,6 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId, 
             </Grid>
           ) : eventBadges && eventBadges.length > 0 ? (
             eventBadges.reverse().map(event => {
-              console.log(event)
               const src = 'https://remix-project.mypinata.cloud/ipfs/' + toBase58(event.hash)
               const txLink = 'https://optimistic.etherscan.io/tx/' + event.transactionHash
               let title = event.name ? event.name : event.to
