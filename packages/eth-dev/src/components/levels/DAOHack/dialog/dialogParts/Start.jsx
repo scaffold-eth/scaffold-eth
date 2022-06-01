@@ -9,10 +9,58 @@ export const LEVEL_ID = 'DAOHack'
 export const DIALOG_PART_ID = `${LEVEL_ID}/Start`
 
 const _dialog = [
+  /*
   {
     dialog: () => <SpeakerLeft pathToAvatar='./assets/punk4551.png'>Hello there</SpeakerLeft>,
     choices: null
   },
+  */
+  {
+    dialog: ({ isLastVisibleDialog }) => (
+      <>
+        <SpeakerLeft pathToAvatar='./assets/punk4551.png'>U up?</SpeakerLeft>
+        <div style={{ marginLeft: 65, marginBottom: 10 }}>
+          [
+          <a
+            target='_blank'
+            rel='noreferrer'
+            href='https://medium.com/immunefi/the-u-up-files-with-samczsun-1a9116cf6e74'
+          >
+            {'->'} Ethereum lore
+          </a>
+          ]
+        </div>
+      </>
+    ),
+    choices: ({ continueDialog, setUserPickedPositiveResponse }) => (
+      <>
+        <Button
+          className='is-warning'
+          onClick={() => {
+            // setUserPickedPositiveResponse(true)
+            continueDialog()
+          }}
+        >
+          Yes
+        </Button>
+        <Button
+          className='is-warning'
+          onClick={() => {
+            // setUserPickedPositiveResponse(false)
+            continueDialog()
+          }}
+        >
+          No, let me sleep!
+        </Button>
+      </>
+    )
+  },
+  /*
+  {
+    dialog: () => <SpeakerLeft pathToAvatar='./assets/punk4551.png'>Hello there</SpeakerLeft>,
+    choices: null
+  },
+  */
   {
     dialog: () => (
       <SpeakerLeft pathToAvatar='./assets/punk4551.png'>

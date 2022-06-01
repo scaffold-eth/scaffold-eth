@@ -6,7 +6,7 @@ const FetchIntructionsWindow = ({ isOpen }) => {
     <WindowModal
       initTop={window.innerHeight * 0.02}
       initLeft={window.innerWidth / 2 - window.innerWidth * 0.05}
-      initHeight={400}
+      initHeight={600}
       initWidth={750}
       backgroundPath='./assets/items/window_large.png'
       dragAreaHeightPercent={6}
