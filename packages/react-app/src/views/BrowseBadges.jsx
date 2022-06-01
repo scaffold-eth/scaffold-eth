@@ -47,6 +47,9 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId, 
   
   /*
    * this mint a user badge from the current selected account
+   * this function throws an error 
+   *  - if the current network selected in the injected provider (metamask) is not optimism (chain id of optimism is 10)
+   *  - if the current user doesn't have anymore a slot for minting a badge
    */
   const mintBadge = async (receiverAddress) => {
     let contract = new ethers.Contract(contractRef.address, contractRef.abi, injectedProvider)
@@ -56,10 +59,11 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId, 
   
   /*
    * this returns the number of user badge that the selected account is allowed to mint.
+   * this function throws an error if the current network selected in the injected provider (metamask) is not optimism (chain id of optimism is 10)
    */
-  const allowedMinting = async (currentAccount) => {
+  const allowedMinting = async () => {
     let contract = new ethers.Contract(contractRef.address, contractRef.abi, injectedProvider)
-    return await contract.allowedMinting(currentAccount)    
+    return await contract.allowedMinting(connectedAddress)    
   }
 
   async function addressFilterHandler(e) {

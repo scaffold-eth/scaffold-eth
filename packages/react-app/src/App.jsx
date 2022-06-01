@@ -111,7 +111,7 @@ function App(props) {
           <BrowseBadges
             address={address}
             connectedAddress={connectedAddress}
-            injectedProvider={window.ethereum}
+            injectedProvider={injectedProvider}
             setAddress={setAddress}
             localProvider={localProvider}
             mainnet={mainnet}
