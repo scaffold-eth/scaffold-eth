@@ -24,14 +24,13 @@ export const toBase58 = contentHash => {
   return multihash.toB58String(buf)
 }
 
-export const isHexadecimal = (value) => {
-  return /^[0-9a-fA-F]+$/.test(value) && (value.length % 2 === 0)
+export const isHexadecimal = value => {
+  return /^[0-9a-fA-F]+$/.test(value) && value.length % 2 === 0
 }
 
-export default function BrowseBadges({ localProvider, mainnet, selectedChainId }) {
+export default function BrowseBadges({ localProvider, mainnet, selectedChainId, address, setAddress }) {
   const [contractEvents, setContractEvents] = useState([])
   const contractConfig = { deployedContracts: {}, externalContracts: externalContracts || {} }
-  const [address, setAddress] = useState('')
   const [badges, setBadges] = useState([])
   const [eventBadges, setEventBadges] = useState([])
   const [error, setErrorMessage] = useState('')
@@ -44,6 +43,27 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId }
     externalContracts[selectedChainId].contracts.REMIX_REWARD
   ) {
     contractRef = externalContracts[selectedChainId].contracts.REMIX_REWARD
+  }
+
+  async function addressFilterHandler(e) {
+    if (!e.target.value) {
+      setAddress('')
+      return
+    }
+    if (isHexadecimal(e.target.value.replace('0x', ''))) {
+      setAddress(e.target.value)
+      setErrorMessage('')
+    } else {
+      let name = e.target.value
+      if (!name.endsWith('.eth')) name = name + '.eth'
+      const address = await mainnet.resolveName(name)
+      if (address) {
+        setAddress(address)
+        if (error.length > 1) setErrorMessage('')
+      } else {
+        setErrorMessage(`${name} not found`)
+      }
+    }
   }
 
   useEffect(() => {
@@ -167,24 +187,24 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId }
               id="addressEnsSearch"
               sx={{ color: '#007aa6' }}
               label="Address or ENS name"
-              onChange={async e => {
-                if (!e.target.value) return
-                if (isHexadecimal(e.target.value.replace('0x', ''))) {
-                  setAddress(e.target.value)
-                } else {
-                  let name = e.target.value
-                  if (!name.endsWith('.eth')) name = name + '.eth'
-                  const address = await mainnet.resolveName(name)
-                  if (address) {
-                    setAddress(address)
-                  } else {
-                    setErrorMessage(`${name} not found`)
-                  }
-                }                            
+              onChange={e => {
+                addressFilterHandler(e)
               }}
             />
           </FormControl>
-          <Paper>{error}</Paper>
+          {error && error.length > 0 ? (
+            <Paper>
+              <Typography
+                sx={{
+                  color: 'red',
+                  fontWeight: 700,
+                }}
+                p={3}
+              >
+                {error}
+              </Typography>
+            </Paper>
+          ) : null}
         </Box>
       </Box>
       <Box
@@ -213,18 +233,29 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId }
             <Grid item md={'auto'} lg={'auto'} mt={-12} ml={'auto'} mr={'auto'}>
               <AddressedCard badges={badges} />
             </Grid>
+          ) : eventBadges && eventBadges.length > 0 ? (
+            eventBadges.reverse().map(event => {
+              console.log(event)
+              const src = 'https://remix-project.mypinata.cloud/ipfs/' + toBase58(event.hash)
+              const txLink = 'https://optimistic.etherscan.io/tx/' + event.transactionHash
+              let title = event.name ? event.name : event.to
+              return (
+                <Grid
+                  item
+                  mt={-12}
+                  mb={15}
+                  ml={'auto'}
+                  mr={'auto'}
+                  key={title}
+                  alignItems={'center'}
+                  justifyContent={'center'}
+                  direction={'row'}
+                >
+                  <NftCard src={src} title={title} txLink={txLink} event={event} />
+                </Grid>
+              )
+            })
           ) : null}
-          {eventBadges.reverse().map(event => {
-            console.log(event)
-            const src = 'https://remix-project.mypinata.cloud/ipfs/' + toBase58(event.hash)
-            const txLink = 'https://optimistic.etherscan.io/tx/' + event.transactionHash
-            let title = event.name ? event.name : event.to
-            return (
-              <Grid item mt={-12} mb={15} key={title}>
-                <NftCard src={src} title={title} txLink={txLink} event={event} />
-              </Grid>
-            )
-          })}
         </Grid>
       </Box>
     </>

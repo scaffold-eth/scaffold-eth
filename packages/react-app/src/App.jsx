@@ -9,6 +9,7 @@ function App(props) {
   const [loaded, setLoaded] = useState(false)
   const [localProvider, setLocalProvider] = useState(null)
   const [mainnet, setMainnet] = useState(null)
+  const [address, setAddress] = useState('')
 
   useEffect(() => {
     const run = async () => {
@@ -20,8 +21,6 @@ function App(props) {
         'https://mainnet.infura.io/v3/1b3241e53c8d422aab3c7c0e4101de9c',
       )
 
-      await mainnet.ready
-
       setLocalProvider(localProvider)
       setMainnet(mainnet)
       setLoaded(true)
@@ -32,7 +31,16 @@ function App(props) {
   return (
     <div className="App">
       <Layout>
-        {loaded && <BrowseBadges localProvider={localProvider} mainnet={mainnet} selectedChainId={10} {...props} />}
+        {loaded && (
+          <BrowseBadges
+            address={address}
+            setAddress={setAddress}
+            localProvider={localProvider}
+            mainnet={mainnet}
+            selectedChainId={10}
+            {...props}
+          />
+        )}
       </Layout>
     </div>
   )
