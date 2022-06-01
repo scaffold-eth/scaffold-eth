@@ -37,11 +37,6 @@ export const routesList = [
     component: props => <Challenge0SimpleNFT {...props} />
   },
   {
-  name: 'Challenge3DiceGame',
-  path: '/challenge-3-dice-game',
-  component: props => <Challenge3DiceGame {...props} />
-  },
-  {
     name: 'Challenge1DecentralizedStaking',
     path: '/challenge-1-decentralized-staking',
     component: props => <Challenge1DecentralizedStaking {...props} />
@@ -50,6 +45,11 @@ export const routesList = [
     name: 'Challenge2TokenVendor',
     path: '/challenge-2-token-vendor',
     component: props => <Challenge2TokenVendor {...props} />
+  },
+  {
+    name: 'Challenge3DiceGame',
+    path: '/challenge-3-dice-game',
+    component: props => <Challenge3DiceGame {...props} />
   },
   {
     name: 'Challenge3Dex',

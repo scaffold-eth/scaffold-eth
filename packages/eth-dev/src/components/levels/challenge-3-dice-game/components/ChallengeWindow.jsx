@@ -38,10 +38,10 @@ const ChallengeWindow = ({
       initWidth={window.innerWidth * 0.5}
       backgroundPath='./assets/items/window.png'
       dragAreaHeightPercent={12}
-      windowTitle='NFT Challenge'
+      windowTitle='Dice Game Challenge'
       isOpen={isOpen}
       contentContainerStyle={{ paddingTop: 0 }}
-    >
+    > 
       <div
         className='content'
         style={{

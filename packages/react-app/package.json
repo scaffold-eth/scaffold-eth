@@ -91,7 +91,7 @@
     "test": "react-scripts test",
     "lint": "eslint --config ./.eslintrc.js --ignore-path ./.eslintignore ./src/**/*",
     "ipfs": "node ./scripts/ipfs.js",
-    "surge": "cp build/index.html build/200.html && surge ./build",
+    "surge": "surge ./build",
     "s3": "node ./scripts/s3.js",
     "ship": "yarn surge",
     "theme": "npx gulp less",

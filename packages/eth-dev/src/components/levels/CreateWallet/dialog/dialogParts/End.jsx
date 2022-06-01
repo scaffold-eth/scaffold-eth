@@ -36,7 +36,7 @@ const _dialog = [
       </SpeakerLeft>
     ),
     choices: () => (
-      <Link to={routesMap.Challenge0SimpleNFT.path}>
+      <Link to={routesMap.Challenge3DiceGame.path}>
         <Button className='is-warning'>Go to coordinates</Button>
       </Link>
     )
