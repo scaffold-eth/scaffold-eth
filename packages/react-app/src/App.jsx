@@ -463,15 +463,15 @@ function App(props) {
   },[ walletConnectUrl ])
 
   useMemo(() => {
-    if (address && window.location.pathname) {
+    if (window.location.pathname) {
       if (window.location.pathname.indexOf("/wc") >= 0) {
         console.log("WALLET CONNECT!!!!!",window.location.search)
         let uri = window.location.search.replace("?uri=","")
         console.log("WC URI:",uri)
-        setWalletConnectUrl(decodeURIComponent(uri))
+        setWalletConnectUrl(uri)
       }
     }
-  }, [injectedProvider, localProvider, address]);
+  }, [injectedProvider, localProvider]);
 
 
   /*
