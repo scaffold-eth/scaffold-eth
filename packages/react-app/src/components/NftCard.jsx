@@ -17,7 +17,7 @@ export default function NftCard(props) {
         }}
         maxWidth={300}
       >
-        <Card variant={'outlined'} raised sx={{ borderRadius: 5, zIndex: 10 }}>
+        <Card variant={'outlined'} sx={{ borderRadius: 5, zIndex: 10 }}>
           <CardMedia component={'img'} width={200} image={src} alt={'nftimage'} />
           <CardContent
             sx={{
