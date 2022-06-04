@@ -3,6 +3,7 @@ import { Box, Button, Card, CardActions, CardContent, CardMedia, Typography } fr
 // import InfoIcon from '@mui/icons-material/info'
 
 export default function AddressedCard({ badges }) {
+  console.log({ currentBadge: badges })
   return (
     <>
       <Box
@@ -17,7 +18,8 @@ export default function AddressedCard({ badges }) {
       >
         {badges.map(badge => {
           const src = 'https://ipfs.io/ipfs/' + badge.decodedIpfsHash
-          console.log({ currentBadge: badge })
+          const txLink = 'https://optimistic.etherscan.io/tx/' + badge.transactionHash
+
           return (
             <Card key={badge.decodedIpfsHash} sx={{ zIndex: 10, borderRadius: 5 }} variant={'outlined'}>
               <CardMedia component={'img'} width={200} image={src} alt={'nftimage'} />
@@ -42,7 +44,7 @@ export default function AddressedCard({ badges }) {
                   variant={'contained'}
                   // startIcon={<InfoIcon />}
                   fullWidth
-                  href={'txLink'}
+                  href={txLink}
                   target="_blank"
                   rel="noreferrer"
                   sx={{ background: '#81a6f7', ':hover': { background: '#81a6f7', color: '#fff' } }}

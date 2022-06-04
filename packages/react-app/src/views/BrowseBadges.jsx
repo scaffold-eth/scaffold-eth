@@ -28,14 +28,23 @@ export const isHexadecimal = value => {
   return /^[0-9a-fA-F]+$/.test(value) && value.length % 2 === 0
 }
 
-export default function BrowseBadges({ localProvider, mainnet, selectedChainId, address, connectedAddress, setAddress, wallet, injectedProvider }) {
+export default function BrowseBadges({
+  localProvider,
+  mainnet,
+  selectedChainId,
+  address,
+  connectedAddress,
+  setAddress,
+  wallet,
+  injectedProvider,
+}) {
   const [contractEvents, setContractEvents] = useState([])
   const contractConfig = { deployedContracts: {}, externalContracts: externalContracts || {} }
   const [badges, setBadges] = useState([])
   const [eventBadges, setEventBadges] = useState([])
   const [error, setErrorMessage] = useState('')
 
-  console.log('current chain', selectedChainId)
+  // console.log('current chain', selectedChainId)
   let contractRef
   if (
     externalContracts[selectedChainId] &&
@@ -44,26 +53,33 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId, 
   ) {
     contractRef = externalContracts[selectedChainId].contracts.REMIX_REWARD
   }
-  
+
+  const contracts = useContractLoader(localProvider, contractConfig, 10)
+  // console.log({ contracts })
+  const events = useEventListener(contracts, 'REMIX_REWARD', 'Transfer', localProvider, 1)
+  console.log({ events })
+  if (contractEvents.length !== events.length) {
+    setContractEvents(events)
+  }
   /*
    * this mint a user badge from the current selected account
-   * this function throws an error 
+   * this function throws an error
    *  - if the current network selected in the injected provider (metamask) is not optimism (chain id of optimism is 10)
    *  - if the current user doesn't have anymore a slot for minting a badge
    */
-  const mintBadge = async (receiverAddress) => {
+  const mintBadge = async receiverAddress => {
     let contract = new ethers.Contract(contractRef.address, contractRef.abi, injectedProvider)
     let mintTx = await contract.publicMint(receiverAddress)
     await mintTx.wait()
   }
-  
+
   /*
    * this returns the number of user badge that the selected account is allowed to mint.
    * this function throws an error if the current network selected in the injected provider (metamask) is not optimism (chain id of optimism is 10)
    */
   const allowedMinting = async () => {
     let contract = new ethers.Contract(contractRef.address, contractRef.abi, injectedProvider)
-    return await contract.allowedMinting(connectedAddress)    
+    return await contract.allowedMinting(connectedAddress)
   }
 
   async function addressFilterHandler(e) {
@@ -104,7 +120,8 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId, 
           try {
             const tokenId = await contract.tokenOfOwnerByIndex(address, k)
             let data = await contract.tokensData(tokenId)
-            const badge = Object.assign({}, data, { decodedIpfsHash: toBase58(data.hash) })
+            const target = contractEvents.find(evt => evt.args.find(addy => addy === address))
+            const badge = Object.assign({}, target, data, { decodedIpfsHash: toBase58(data.hash) })
             badges.push(badge)
           } catch (e) {
             console.error(e)
@@ -117,13 +134,8 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId, 
       }
     }
     run()
-  }, [address, contractRef, localProvider, selectedChainId])
+  }, [address, contractEvents, contractRef, localProvider, selectedChainId])
 
-  const contracts = useContractLoader(localProvider, contractConfig, 10)
-  const events = useEventListener(contracts, 'REMIX_REWARD', 'Transfer', localProvider, 1)
-  if (contractEvents.length !== events.length) {
-    setContractEvents(events)
-  }
   useEffect(() => {
     const run = async () => {
       if (address) {
@@ -152,15 +164,29 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId, 
       for (const event of contractEvents) {
         let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
         let data = await contract.tokensData(event.args.tokenId)
+        // console.log({ data })
         const name = await mainnet.lookupAddress(event.args.to)
-        const badge = Object.assign({}, event.args, data, { decodedIpfsHash: toBase58(data.hash) }, event, { name })
-
+        const badge = Object.assign(
+          {},
+          { transactionHash: event.transactionHash },
+          event.args,
+          data,
+          { decodedIpfsHash: toBase58(data.hash) },
+          event,
+          { name },
+        )
+        console.log({ badge })
         eventsDecoded.push(badge)
       }
       setEventBadges(eventsDecoded)
+      // console.log({ eventBadges })
     }
     run()
   }, [contractEvents])
+
+  function checkeventBagesAndBadges(badges) {
+    return badges && badges.length > 0
+  }
 
   return (
     <>
@@ -243,7 +269,7 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId, 
               'linear-gradient(90deg, #f6e8fc, #f1e6fb, #ede5fb, #e8e4fa, #e3e2f9, #dee1f7, #d9dff6, #d4def4)',
           }}
         >
-          {badges && badges.length > 0 ? (
+          {checkeventBagesAndBadges(badges) ? (
             <Grid item md={'auto'} lg={'auto'} mt={-12} ml={'auto'} mr={'auto'}>
               <AddressedCard badges={badges} />
             </Grid>
