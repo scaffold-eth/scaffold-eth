@@ -56,19 +56,28 @@ export default function Account({
   accountButtonInfo = { name: 'Connect', action: loadWeb3Modal }
 
   const display = !minimized && (
-    <span>
-      {address && (
+    <Box>
+      {address && address.length > 1 ? (
         <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} fontSize={20} />
+      ) : (
+        <Typography variant={'body2'} fontWeight={600} mb={'5'}>
+          There is no address connected to this wallet! Click the button to connect and view your wallet!
+        </Typography>
       )}
       <Balance address={address} provider={localProvider} price={price} size={20} />
-    </span>
+    </Box>
   )
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex' }} alignItems={'center'} justifyContent={'center'}>
       {display}
       {
-        <Button variant={'contained'} sx={{ marginLeft: 8, borderRadius: 5 }} onClick={accountButtonInfo.action}>
+        <Button
+          variant={'contained'}
+          sx={{ borderRadius: 5, marginTop: 5, padding: 1.8, marginLeft: 3 }}
+          onClick={accountButtonInfo.action}
+          size={'large'}
+        >
           <Typography variant={'button'}>{accountButtonInfo.name}</Typography>
         </Button>
       }
