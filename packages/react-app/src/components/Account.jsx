@@ -1,8 +1,9 @@
 import React from 'react'
-import { Button } from 'antd'
-
+import Button from '@mui/material/Button'
+import Typography from '@mui/material/Typography'
 import Address from './Address'
 import Balance from './Balance'
+import Box from '@mui/material/Box'
 
 /** 
   ~ What it does? ~
@@ -64,13 +65,13 @@ export default function Account({
   )
 
   return (
-    <div style={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex' }}>
       {display}
       {
-        <Button style={{ marginLeft: 8 }} shape="round" onClick={accountButtonInfo.action}>
-          {accountButtonInfo.name}
+        <Button variant={'contained'} sx={{ marginLeft: 8, borderRadius: 5 }} onClick={accountButtonInfo.action}>
+          <Typography variant={'button'}>{accountButtonInfo.name}</Typography>
         </Button>
       }
-    </div>
+    </Box>
   )
 }
