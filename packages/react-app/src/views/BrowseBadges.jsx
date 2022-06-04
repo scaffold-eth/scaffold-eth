@@ -4,7 +4,9 @@ import { useEventListener } from 'eth-hooks/events/useEventListener'
 import { useContractLoader } from 'eth-hooks'
 
 import { ethers } from 'ethers'
-import { TextField } from '@mui/material'
+import TextField from '@mui/material/TextField'
+import Button from '@mui/material/Button'
+import { Search } from '@mui/icons-material'
 import multihash from 'multihashes'
 import { Typography } from '@mui/material'
 import { Box, Grid } from '@mui/material'
@@ -55,9 +57,7 @@ export default function BrowseBadges({
   }
 
   const contracts = useContractLoader(localProvider, contractConfig, 10)
-  // console.log({ contracts })
   const events = useEventListener(contracts, 'REMIX_REWARD', 'Transfer', localProvider, 1)
-  console.log({ events })
   if (contractEvents.length !== events.length) {
     setContractEvents(events)
   }
@@ -164,7 +164,6 @@ export default function BrowseBadges({
       for (const event of contractEvents) {
         let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
         let data = await contract.tokensData(event.args.tokenId)
-        // console.log({ data })
         const name = await mainnet.lookupAddress(event.args.to)
         const badge = Object.assign(
           {},
@@ -175,17 +174,19 @@ export default function BrowseBadges({
           event,
           { name },
         )
-        console.log({ badge })
         eventsDecoded.push(badge)
       }
       setEventBadges(eventsDecoded)
-      // console.log({ eventBadges })
     }
     run()
   }, [contractEvents])
 
   function checkeventBagesAndBadges(badges) {
     return badges && badges.length > 0
+  }
+
+  function submitHandler(e) {
+    console.log({ event: e })
   }
 
   return (
@@ -232,6 +233,15 @@ export default function BrowseBadges({
               }}
             />
           </FormControl>
+          <Button
+            type="submit"
+            variant="contained"
+            sx={{ padding: 1.8, marginLeft: 3 }}
+            onClick={e => submitHandler(e)}
+            disabled={address === ''}
+          >
+            <Search />
+          </Button>
           {error && error.length > 0 ? (
             <Paper>
               <Typography

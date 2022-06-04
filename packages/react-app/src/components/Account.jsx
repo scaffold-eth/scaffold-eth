@@ -1,8 +1,8 @@
-import { Button } from "antd";
-import React from "react";
+import React from 'react'
+import { Button } from 'antd'
 
-import Address from "./Address";
-import Balance from "./Balance";
+import Address from './Address'
+import Balance from './Balance'
 
 /** 
   ~ What it does? ~
@@ -51,35 +51,26 @@ export default function Account({
   blockExplorer,
   isContract,
 }) {
-  let accountButtonInfo;
-  accountButtonInfo = { name: 'Connect', action: loadWeb3Modal };
+  let accountButtonInfo
+  accountButtonInfo = { name: 'Connect', action: loadWeb3Modal }
 
   const display = !minimized && (
     <span>
       {address && (
-        <Address
-          address={address}
-          ensProvider={mainnetProvider}
-          blockExplorer={blockExplorer}
-          fontSize={20}
-        />
+        <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} fontSize={20} />
       )}
       <Balance address={address} provider={localProvider} price={price} size={20} />
     </span>
-  );
+  )
 
   return (
-    <div style={{ display: "flex" }}>
+    <div style={{ display: 'flex' }}>
       {display}
-      {(
-        <Button
-          style={{ marginLeft: 8 }}
-          shape="round"
-          onClick={accountButtonInfo.action}
-        >
+      {
+        <Button style={{ marginLeft: 8 }} shape="round" onClick={accountButtonInfo.action}>
           {accountButtonInfo.name}
         </Button>
-      )}
+      }
     </div>
-  );
+  )
 }

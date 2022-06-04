@@ -31,6 +31,8 @@ export default function MenuItems() {
             sx={{
               fontWeight: '700',
             }}
+            href={'/'}
+            component={'a'}
           />
         )}
         <Tab
