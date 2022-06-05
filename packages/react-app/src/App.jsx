@@ -59,7 +59,7 @@ const initialNetwork = NETWORKS.localhost; // <------- select your target fronte
 const DEBUG = true;
 const NETWORKCHECK = true;
 const USE_BURNER_WALLET = true; // toggle burner wallet feature
-const USE_NETWORK_SELECTOR = false;
+const USE_NETWORK_SELECTOR = true;
 
 const web3Modal = Web3ModalSetup();
 
@@ -251,16 +251,10 @@ function App(props) {
         {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
         <div style={{ position: "relative", display: "flex", flexDirection: "column" }}>
           <div style={{ display: "flex", flex: 1 }}>
-            {USE_NETWORK_SELECTOR && (
-              <div style={{ marginRight: 20 }}>
-                <NetworkSwitch
-                  networkOptions={networkOptions}
-                  selectedNetwork={selectedNetwork}
-                  setSelectedNetwork={setSelectedNetwork}
-                />
-              </div>
-            )}
             <Account
+              networkOptions={USE_NETWORK_SELECTOR ? networkOptions : []}
+              selectedNetwork={selectedNetwork}
+              setSelectedNetwork={setSelectedNetwork}
               useBurner={USE_BURNER_WALLET}
               address={address}
               localProvider={localProvider}

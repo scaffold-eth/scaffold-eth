@@ -1,10 +1,12 @@
 import { Button } from "antd";
-import React from "react";
+import React, { useState } from "react";
 import { useThemeSwitcher } from "react-css-theme-switcher";
 
 import Address from "./Address";
 import Balance from "./Balance";
 import Wallet from "./Wallet";
+import { BlockinUIDisplay } from "blockin/dist/ui";
+import { utils, constants } from 'ethers';
 
 /** 
   ~ What it does? ~
@@ -51,28 +53,16 @@ export default function Account({
   web3Modal,
   loadWeb3Modal,
   logoutOfWeb3Modal,
-  blockExplorer,
   isContract,
+  networkOptions,
+  setSelectedNetwork,
+  selectedNetwork
 }) {
   const { currentTheme } = useThemeSwitcher();
-
-  let accountButtonInfo;
-  if (web3Modal?.cachedProvider) {
-    accountButtonInfo = { name: 'Logout', action: logoutOfWeb3Modal };
-  } else {
-    accountButtonInfo = { name: 'Connect', action: loadWeb3Modal };
-  }
+  const [loggedIn, setLoggedIn] = useState(false);
 
   const display = !minimized && (
-    <span>
-      {address && (
-        <Address
-          address={address}
-          ensProvider={mainnetProvider}
-          blockExplorer={blockExplorer}
-          fontSize={20}
-        />
-      )}
+    <span style={{ alignItems: 'center', display: 'flex' }}>
       <Balance address={address} provider={localProvider} price={price} size={20} />
       {!isContract && (
         <Wallet
@@ -89,18 +79,84 @@ export default function Account({
     </span>
   );
 
+  const capitalizeFirstLetter = (string) => {
+    return string[0].toUpperCase() + string.slice(1);
+  }
+
   return (
     <div style={{ display: "flex" }}>
-      {display}
-      {web3Modal && (
-        <Button
-          style={{ marginLeft: 8 }}
-          shape="round"
-          onClick={accountButtonInfo.action}
-        >
-          {accountButtonInfo.name}
-        </Button>
-      )}
+      <BlockinUIDisplay
+        selectedChainName={'Ethereum ' + capitalizeFirstLetter(selectedNetwork)}
+        chainOptions={
+          networkOptions.map((network, idx) => {
+            return { name: 'Ethereum ' + capitalizeFirstLetter(network) }
+          })
+        }
+        loggedIn={loggedIn}
+        logout={() => {
+          setLoggedIn(false);
+        }}
+        onChainUpdate={(newChainProps) => {
+          const targetNetworkName = newChainProps.name.toLowerCase().split(' ')[1];
+          const targetNetworkIdx = networkOptions.indexOf(targetNetworkName);
+          if (targetNetworkIdx >= 0) {
+            console.log(newChainProps);
+            setSelectedNetwork(targetNetworkName);
+          }
+        }}
+        signAndVerifyChallenge={async (message) => {
+          setLoggedIn(true);
+          const from = address;
+          const msg = `0x${Buffer.from(message, 'utf8').toString('hex')}`;
+          const sign = await window.ethereum.request({
+            method: 'personal_sign',
+            params: [msg, from],
+          });
+
+          return { success: true, message: 'Success!' }
+        }}
+        customDisplay={display}
+        selectedChainInfo={{
+          getNameForAddress: async (address) => {
+            if (utils.isAddress(address)) {
+              try {
+                // Accuracy of reverse resolution is not enforced.
+                // We then manually ensure that the reported ens name resolves to address
+                const reportedName = await mainnetProvider.lookupAddress(address);
+                const resolvedAddress = await mainnetProvider.resolveName(reportedName ?? constants.AddressZero);
+                if (address && utils.getAddress(address) === utils.getAddress(resolvedAddress ?? '')) {
+                  return reportedName ?? undefined;
+                } else {
+                  return undefined;
+                }
+              } catch (e) {
+                return undefined;
+              }
+            }
+            return undefined;
+          }
+        }}
+        connected={web3Modal?.cachedProvider}
+        connect={() => {
+          loadWeb3Modal();
+        }}
+        disconnect={() => {
+          logoutOfWeb3Modal();
+        }}
+        address={address}
+        buttonStyle={undefined}
+        modalStyle={undefined}
+        hideLogin={false}
+        challengeParams={{
+          address: address,
+          domain: 'http://localhost:3000',
+          uri: 'http://localhost:3000',
+          nonce: 'abc123',
+          statement: 'Sign In using Blockin!'
+        }}
+      />
+
     </div>
+
   );
 }
