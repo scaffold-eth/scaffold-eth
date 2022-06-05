@@ -152,7 +152,7 @@ export default function Account({
           domain: 'http://localhost:3000',
           uri: 'http://localhost:3000',
           nonce: 'abc123',
-          statement: 'Sign In using Blockin!'
+          statement: 'Sign In using Blockin! To see a multi-chain example using Blockin, check out https://blockin.vercel.app. For documentation, see https://blockin.gitbook.io/blockin/.'
         }}
       />
 
