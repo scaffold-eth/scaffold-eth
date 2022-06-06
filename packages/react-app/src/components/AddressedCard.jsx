@@ -1,6 +1,6 @@
 import React from 'react'
 import { Box, Button, Card, CardActions, CardContent, CardMedia, Typography } from '@mui/material'
-// import InfoIcon from '@mui/icons-material/info'
+import InfoIcon from '@mui/icons-material/Info'
 
 export default function AddressedCard({ badges }) {
   return (
@@ -41,14 +41,16 @@ export default function AddressedCard({ badges }) {
               >
                 <Button
                   variant={'contained'}
-                  // startIcon={<InfoIcon />}
+                  startIcon={<InfoIcon />}
                   fullWidth
                   href={txLink}
                   target="_blank"
                   rel="noreferrer"
-                  sx={{ background: '#81a6f7', ':hover': { background: '#81a6f7', color: '#fff' } }}
+                  sx={{ background: '#81a6f7', ':hover': { background: '#1976d2', color: '#fff' } }}
                 >
-                  <Typography variant={'button'}>View Transaction</Typography>
+                  <Typography variant={'button'} fontWeight={'bolder'}>
+                    View Transaction
+                  </Typography>
                 </Button>
               </CardActions>
             </Card>

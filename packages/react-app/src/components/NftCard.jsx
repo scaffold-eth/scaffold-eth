@@ -15,7 +15,7 @@ export default function NftCard(props) {
           color: '#333333',
           borderRadius: 5,
         }}
-        maxWidth={300}
+        maxWidth={310}
       >
         <Card variant={'outlined'} sx={{ borderRadius: 5, zIndex: 10 }}>
           <CardMedia component={'img'} width={200} image={src} alt={'nftimage'} />
@@ -47,9 +47,11 @@ export default function NftCard(props) {
               href={txLink}
               target="_blank"
               rel="noreferrer"
-              sx={{ background: '#81a6f7', ':hover': { background: '#81a6f7', color: '#fff' } }}
+              sx={{ background: '#81a6f7', ':hover': { background: '#1976d2', color: '#fff' } }}
             >
-              <Typography variant={'button'}>View Transaction</Typography>
+              <Typography variant={'button'} fontWeight={'bolder'}>
+                View Transaction
+              </Typography>
             </Button>
           </CardActions>
         </Card>

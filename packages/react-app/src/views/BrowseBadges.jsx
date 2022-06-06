@@ -188,6 +188,29 @@ export default function BrowseBadges({
     return badges && badges.length > 0
   }
 
+  async function processAddress(address) {
+    let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
+    console.log({ contract }, 'contract created')
+    const balance = await contract.balanceOf(address)
+    console.log({ balance }, 'balance created')
+    const badges = []
+    console.log('badgesCreated')
+    try {
+      for (let k = 0; k < balance; k++) {
+        const tokenId = await contract.tokenOfOwnerByIndex(address, k)
+        let data = await contract.tokensData(tokenId)
+        const target = contractEvents.find(evt => evt.args.find(addy => addy === address))
+        const badge = Object.assign({}, target, data, { decodedIpfsHash: toBase58(data.hash) })
+        badges.push(badge)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+    console.log('forEach finished. badges going to be set')
+    setBadges(badges)
+    console.log('badges set and done')
+  }
+
   async function submitHandler(e) {
     try {
       if (address) {
@@ -195,35 +218,15 @@ export default function BrowseBadges({
         // if (error.length > 1) setErrorMessage('')
         // else setErrorMessage(`${address} not found`)
         // copy address to a temp var
-        let temp = address
-
-        let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
-        console.log({ contract }, 'contract created')
-        const balance = await contract.balanceOf(address)
-        console.log({ balance }, 'balance created')
-        const badges = []
-        console.log('badgesCreated')
-        try {
-          for (let k = 0; k < balance; k++) {
-            // let temp = address
-            // if (isHexadecimal(temp.replace('0x', ''))) {
-            //   temp = address.replace('0x', '')
-            // }
-            // let name = temp
-            // if (!name.endsWith('.eth')) name = name + '.eth'
-            // const resolvedAddress = await mainnet.resolveName(name)
-            const tokenId = await contract.tokenOfOwnerByIndex(address, k)
-            let data = await contract.tokensData(tokenId)
-            const target = contractEvents.find(evt => evt.args.find(addy => addy === address))
-            const badge = Object.assign({}, target, data, { decodedIpfsHash: toBase58(data.hash) })
-            badges.push(badge)
+        if (address.includes('.eth')) {
+          let resolvedAddress = await mainnet.resolveName(address)
+          if (!resolvedAddress) {
+            setErrorMessage(`Could not resolve this address ${address}`)
           }
-        } catch (error) {
-          console.log(error)
+          await processAddress(resolvedAddress)
+        } else {
+          await processAddress(address)
         }
-        console.log('forEach finished. badges going to be set')
-        setBadges(badges)
-        console.log('badges set and done')
       } else {
         setBadges([])
         setErrorMessage('')
@@ -269,7 +272,7 @@ export default function BrowseBadges({
           </Typography>
           <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>
             {badges && badges.length > 0 ? (
-              <IconButton onClick={() => setAddress('')} color={'primary'}>
+              <IconButton onClick={() => setAddress('')} sx={{ color: '#81a6f7', ':hover': { color: '#1976d2' } }}>
                 {'Back to Badge Gallery'}
                 <ArrowCircleLeftIcon fontSize="large" />
               </IconButton>
@@ -280,7 +283,6 @@ export default function BrowseBadges({
                 sx={{ color: '#007aa6' }}
                 label="Address or ENS name"
                 onChange={e => {
-                  // addressFilterHandler(e)
                   setAddress(e.target.value)
                 }}
                 value={address}
@@ -289,7 +291,7 @@ export default function BrowseBadges({
             <Button
               type="submit"
               variant="contained"
-              sx={{ padding: 1.8, marginLeft: 3 }}
+              sx={{ padding: 1.8, marginLeft: 3, background: '#81a6f7' }}
               onClick={e => submitHandler(e)}
               disabled={address === ''}
             >

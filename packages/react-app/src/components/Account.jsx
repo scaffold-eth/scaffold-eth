@@ -74,11 +74,13 @@ export default function Account({
       {
         <Button
           variant={'contained'}
-          sx={{ borderRadius: 5, marginTop: 5, padding: 1.8, marginLeft: 3 }}
+          sx={{ borderRadius: 5, marginTop: 5, padding: 1.8, marginLeft: 3, background: '#81a6f7' }}
           onClick={accountButtonInfo.action}
           size={'large'}
         >
-          <Typography variant={'button'}>{accountButtonInfo.name}</Typography>
+          <Typography variant={'button'} fontWeight={'bolder'}>
+            {accountButtonInfo.name}
+          </Typography>
         </Button>
       }
     </Box>
