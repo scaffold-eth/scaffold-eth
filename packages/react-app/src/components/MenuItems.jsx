@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Tabs } from '@mui/material'
 import { Tab } from '@mui/material'
 
-const menuNames = ['Browse Badges']
+const menuNames = ['Browse Badges', 'Mint Badge']
 
 export default function MenuItems() {
   const [tabValue, setTabValue] = useState(0)
