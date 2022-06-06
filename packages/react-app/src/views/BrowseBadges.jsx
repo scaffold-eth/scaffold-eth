@@ -114,48 +114,9 @@ export default function BrowseBadges({
         return
       }
       setErrorMessage('')
-      // try {
-      //   let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
-      //   const balance = await contract.balanceOf(address)
-      //   const badges = []
-      //   for (let k = 0; k < balance; k++) {
-      //     try {
-      //       const tokenId = await contract.tokenOfOwnerByIndex(address, k)
-      //       let data = await contract.tokensData(tokenId)
-      //       const target = contractEvents.find(evt => evt.args.find(addy => addy === address))
-      //       const badge = Object.assign({}, target, data, { decodedIpfsHash: toBase58(data.hash) })
-      //       badges.push(badge)
-      //     } catch (e) {
-      //       console.error(e)
-      //     }
-      //   }
-      //   setBadges(badges)
-      //   setErrorMessage('')
-      // } catch (e) {
-      //   setErrorMessage(e.message)
-      // }
     }
     run()
   }, [address, contractEvents, contractRef, localProvider, selectedChainId])
-
-  // useEffect(() => {
-  //   const run = async () => {
-  //     if (address) {
-  //       return setEventBadges([])
-  //     }
-  //     // const eventsDecoded = []
-  //     // for (const event of contractEvents) {
-  //     //   let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
-  //     //   let data = await contract.tokensData(event.args.tokenId)
-  //     //   const name = await mainnet.lookupAddress(event.args.to)
-  //     //   const badge = Object.assign({}, event.args, data, { decodedIpfsHash: toBase58(data.hash) }, event, { name })
-
-  //     //   eventsDecoded.push(badge)
-  //     // }
-  //     // setEventBadges(eventsDecoded)
-  //   }
-  //   run()
-  // }, [address])
 
   useEffect(() => {
     const run = async () => {
@@ -215,9 +176,6 @@ export default function BrowseBadges({
     try {
       if (address) {
         console.log({ address })
-        // if (error.length > 1) setErrorMessage('')
-        // else setErrorMessage(`${address} not found`)
-        // copy address to a temp var
         if (address.includes('.eth')) {
           let resolvedAddress = await mainnet.resolveName(address)
           if (!resolvedAddress) {
