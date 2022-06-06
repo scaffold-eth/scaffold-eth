@@ -15,7 +15,7 @@ export default function AddressedCard({ badges }) {
         maxWidth={300}
       >
         {badges.map(badge => {
-          const src = 'https://ipfs.io/ipfs/' + badge.decodedIpfsHash
+          const src = 'https://remix-project.mypinata.cloud/ipfs/' + badge.decodedIpfsHash
           console.log({ currentBadge: badge })
           return (
             <Card key={badge.decodedIpfsHash} raised sx={{ zIndex: 10, borderRadius: 5 }} variant={'outlined'}>
