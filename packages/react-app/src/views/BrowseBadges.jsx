@@ -6,6 +6,8 @@ import { useContractLoader } from 'eth-hooks'
 import { ethers } from 'ethers'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
+import IconButton from '@mui/material/IconButton'
+import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft'
 import { Search } from '@mui/icons-material'
 import multihash from 'multihashes'
 import { Typography } from '@mui/material'
@@ -157,26 +159,27 @@ export default function BrowseBadges({
 
   useEffect(() => {
     const run = async () => {
-      // if (address) {
-      //   return setEventBadges([])
-      // }
-      // const eventsDecoded = []
-      // for (const event of contractEvents) {
-      //   let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
-      //   let data = await contract.tokensData(event.args.tokenId)
-      //   const name = await mainnet.lookupAddress(event.args.to)
-      //   const badge = Object.assign(
-      //     {},
-      //     { transactionHash: event.transactionHash },
-      //     event.args,
-      //     data,
-      //     { decodedIpfsHash: toBase58(data.hash) },
-      //     event,
-      //     { name },
-      //   )
-      //   eventsDecoded.push(badge)
-      // }
-      // setEventBadges(eventsDecoded)
+      if (address) {
+        console.log('address o wa!')
+        return setEventBadges([])
+      }
+      const eventsDecoded = []
+      for (const event of contractEvents) {
+        let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
+        let data = await contract.tokensData(event.args.tokenId)
+        const name = await mainnet.lookupAddress(event.args.to)
+        const badge = Object.assign(
+          {},
+          { transactionHash: event.transactionHash },
+          event.args,
+          data,
+          { decodedIpfsHash: toBase58(data.hash) },
+          event,
+          { name },
+        )
+        eventsDecoded.push(badge)
+      }
+      setEventBadges(eventsDecoded)
     }
     run()
   }, [contractEvents, address, contractRef, localProvider, mainnet])
@@ -186,28 +189,46 @@ export default function BrowseBadges({
   }
 
   async function submitHandler(e) {
-    if (!address) {
-      setBadges([])
-      setErrorMessage('')
-      return
-    }
     try {
-      console.log({ address })
-      let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
-      const balance = await contract.balanceOf(address)
-      const badges = []
-      for (let k = 0; k < balance; k++) {
+      if (address) {
+        console.log({ address })
+        // if (error.length > 1) setErrorMessage('')
+        // else setErrorMessage(`${address} not found`)
+        // copy address to a temp var
+        let temp = address
+
+        let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
+        console.log({ contract }, 'contract created')
+        const balance = await contract.balanceOf(address)
+        console.log({ balance }, 'balance created')
+        const badges = []
+        console.log('badgesCreated')
         try {
-          const tokenId = await contract.tokenOfOwnerByIndex(address, k)
-          let data = await contract.tokensData(tokenId)
-          const target = contractEvents.find(evt => evt.args.find(addy => addy === address))
-          const badge = Object.assign({}, target, data, { decodedIpfsHash: toBase58(data.hash) })
-          badges.push(badge)
-        } catch (e) {
-          console.error(e)
+          for (let k = 0; k < balance; k++) {
+            // let temp = address
+            // if (isHexadecimal(temp.replace('0x', ''))) {
+            //   temp = address.replace('0x', '')
+            // }
+            // let name = temp
+            // if (!name.endsWith('.eth')) name = name + '.eth'
+            // const resolvedAddress = await mainnet.resolveName(name)
+            const tokenId = await contract.tokenOfOwnerByIndex(address, k)
+            let data = await contract.tokensData(tokenId)
+            const target = contractEvents.find(evt => evt.args.find(addy => addy === address))
+            const badge = Object.assign({}, target, data, { decodedIpfsHash: toBase58(data.hash) })
+            badges.push(badge)
+          }
+        } catch (error) {
+          console.log(error)
         }
+        console.log('forEach finished. badges going to be set')
+        setBadges(badges)
+        console.log('badges set and done')
+      } else {
+        setBadges([])
+        setErrorMessage('')
+        return
       }
-      setBadges(badges)
     } catch (error) {
       setErrorMessage(error)
     }
@@ -246,26 +267,35 @@ export default function BrowseBadges({
           <Typography variant={'h6'} fontWeight={700} fontFamily={'Noah'} mb={3} sx={{ color: '#333333' }}>
             Input a wallet address to see the Remix Rewards it holds:
           </Typography>
-          <FormControl sx={{ width: '50vw' }} variant="outlined">
-            {/* <InputLabel htmlFor="addressEnsSearch">Address or ENS name</InputLabel> */}
-            <TextField
-              id="addressEnsSearch"
-              sx={{ color: '#007aa6' }}
-              label="Address or ENS name"
-              onChange={e => {
-                addressFilterHandler(e)
-              }}
-            />
-          </FormControl>
-          <Button
-            type="submit"
-            variant="contained"
-            sx={{ padding: 1.8, marginLeft: 3 }}
-            onClick={e => submitHandler(e)}
-            disabled={address === ''}
-          >
-            <Search />
-          </Button>
+          <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>
+            {badges && badges.length > 0 ? (
+              <IconButton onClick={() => setAddress('')} color={'primary'}>
+                {'Back to Badge Gallery'}
+                <ArrowCircleLeftIcon fontSize="large" />
+              </IconButton>
+            ) : null}
+            <FormControl sx={{ width: '50vw' }} variant="outlined">
+              <TextField
+                id="addressEnsSearch"
+                sx={{ color: '#007aa6' }}
+                label="Address or ENS name"
+                onChange={e => {
+                  // addressFilterHandler(e)
+                  setAddress(e.target.value)
+                }}
+                value={address}
+              />
+            </FormControl>
+            <Button
+              type="submit"
+              variant="contained"
+              sx={{ padding: 1.8, marginLeft: 3 }}
+              onClick={e => submitHandler(e)}
+              disabled={address === ''}
+            >
+              <Search />
+            </Button>
+          </Box>
           {error && error.length > 0 ? (
             <Paper>
               <Typography
