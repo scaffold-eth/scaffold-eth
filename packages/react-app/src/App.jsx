@@ -294,6 +294,11 @@ function App(props) {
         <Route exact path="/">
           {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
 
+          <div style={{padding:32}}>
+            <Address value={readContracts&&readContracts.POSKing&&readContracts.POSKing.address} ensProvider={mainnetProvider} fontSize={16} />
+            <Balance address={readContracts&&readContracts.POSKing&&readContracts.POSKing.address} provider={localProvider} price={price} size={20}  />
+          </div>
+
           <div>
             <Button onClick={()=>{
               tx(writeContracts.POSKing.pos())

@@ -20,7 +20,7 @@ export default function Header({ link, title, subTitle, ...props }) {
 }
 
 Header.defaultProps = {
-  link: "https://github.com/austintgriffith/scaffold-eth",
+  link: "https://github.com/scaffold-eth/scaffold-eth/tree/pos-king",
   title: "👑 POS King",
   subTitle: "be the first transaction on POS to get paid!",
 };
