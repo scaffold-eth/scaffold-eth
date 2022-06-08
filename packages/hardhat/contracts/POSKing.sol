@@ -21,11 +21,16 @@ contract POSKing {
       posTime = block.timestamp;
       posKing = msg.sender;
       emit POS(posBlock, posTime, block.difficulty, address(this).balance, posKing);
-      (bool sent, ) = msg.sender.call{value: address(this).balance}("");
-      require(sent, "Failed to send Ether");
     }else{
       emit Attempt(block.number, block.timestamp, block.difficulty, msg.sender);
     }
+  }
+
+  function withdraw() public {
+    require(posBlock!=0,"no king yet?");
+    require(msg.sender == posKing,"Not the king");
+    (bool sent, ) = msg.sender.call{value: address(this).balance}("");
+    require(sent, "Failed to send Ether");
   }
 
   receive() external payable {

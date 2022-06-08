@@ -295,7 +295,7 @@ function App(props) {
           {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
 
           <div style={{padding:32}}>
-            <Address value={readContracts&&readContracts.POSKing&&readContracts.POSKing.address} ensProvider={mainnetProvider} fontSize={16} />
+            <Address blockExplorer={blockExplorer} value={readContracts&&readContracts.POSKing&&readContracts.POSKing.address} ensProvider={mainnetProvider} fontSize={16} />
             <Balance address={readContracts&&readContracts.POSKing&&readContracts.POSKing.address} provider={localProvider} price={price} size={20}  />
           </div>
 
@@ -328,6 +328,15 @@ function App(props) {
               }}
             />
           </div>
+
+          <div>
+            <Button onClick={()=>{
+              tx(writeContracts.POSKing.withdraw())
+            }}>
+              WITHDRAW
+            </Button>
+          </div>
+
 
           <div>
             <Events
