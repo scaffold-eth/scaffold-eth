@@ -1,4 +1,4 @@
-import { Button, Col, Menu, Row } from "antd";
+import { Button, Col, Menu, Row, List } from "antd";
 import "antd/dist/antd.css";
 import {
   useBalance,
@@ -13,6 +13,9 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Link, Route, Switch, useLocation } from "react-router-dom";
 import "./App.css";
 import {
+  Address,
+  Balance,
+  Events,
   Account,
   Contract,
   Faucet,
@@ -53,7 +56,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const initialNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const initialNetwork = NETWORKS.ropsten; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -286,99 +289,74 @@ function App(props) {
         logoutOfWeb3Modal={logoutOfWeb3Modal}
         USE_NETWORK_SELECTOR={USE_NETWORK_SELECTOR}
       />
-      <Menu style={{ textAlign: "center", marginTop: 20 }} selectedKeys={[location.pathname]} mode="horizontal">
-        <Menu.Item key="/">
-          <Link to="/">App Home</Link>
-        </Menu.Item>
-        <Menu.Item key="/debug">
-          <Link to="/debug">Debug Contracts</Link>
-        </Menu.Item>
-        <Menu.Item key="/hints">
-          <Link to="/hints">Hints</Link>
-        </Menu.Item>
-        <Menu.Item key="/exampleui">
-          <Link to="/exampleui">ExampleUI</Link>
-        </Menu.Item>
-        <Menu.Item key="/mainnetdai">
-          <Link to="/mainnetdai">Mainnet DAI</Link>
-        </Menu.Item>
-        <Menu.Item key="/subgraph">
-          <Link to="/subgraph">Subgraph</Link>
-        </Menu.Item>
-      </Menu>
 
       <Switch>
         <Route exact path="/">
           {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
-          <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} />
+
+          <div>
+            <Button onClick={()=>{
+              tx(writeContracts.POSKing.pos())
+            }}>
+              CHECK POS ON-CHAIN!
+            </Button>
+          </div>
+
+          <div>
+            <Events
+              title={"POS King"}
+              contracts={readContracts}
+              contractName="POSKing"
+              eventName="POS"
+              localProvider={localProvider}
+              mainnetProvider={mainnetProvider}
+              startBlock={1}
+              renderFunction={item => {
+                //event POS(uint256 block, uint256 time, uint256 diff, uint256 payout, address king);
+                return (
+                  <List.Item key={item.blockNumber + "_" + item.args.sender + "_" + item.args.purpose}>
+                    <Address address={item.args.king} ensProvider={mainnetProvider} fontSize={16} />
+                    <span>{item.args.block.toNumber()}</span>
+                    {item.args.time.toNumber()}
+                  </List.Item>
+                );
+              }}
+            />
+          </div>
+
+          <div>
+            <Events
+              title={"Attempts"}
+              contracts={readContracts}
+              contractName="POSKing"
+              eventName="Attempt"
+              localProvider={localProvider}
+              mainnetProvider={mainnetProvider}
+              startBlock={1}
+              renderFunction={item => {
+                //  event Attempt(uint256 block, uint256 time, uint256 diff, address clicker);
+                return (
+                  <List.Item key={item.blockNumber + "_" + item.args.sender + "_" + item.args.purpose}>
+                    <Address address={item.args.clicker} ensProvider={mainnetProvider} fontSize={16} />
+                    <span>{item.args.block.toNumber()}</span>
+                    {item.args.time.toNumber()}
+                    <span>{item.args.diff.toNumber()}</span>
+                  </List.Item>
+                );
+              }}
+            />
+          </div>
+
         </Route>
         <Route exact path="/debug">
-          {/*
-                🎛 this scaffolding is full of commonly used components
-                this <Contract/> component will automatically parse your ABI
-                and give you a form to interact with it locally
-            */}
-
           <Contract
-            name="YourContract"
+            name="POSKing"
             price={price}
             signer={userSigner}
             provider={localProvider}
             address={address}
             blockExplorer={blockExplorer}
             contractConfig={contractConfig}
-          />
-        </Route>
-        <Route path="/hints">
-          <Hints
-            address={address}
-            yourLocalBalance={yourLocalBalance}
-            mainnetProvider={mainnetProvider}
-            price={price}
-          />
-        </Route>
-        <Route path="/exampleui">
-          <ExampleUI
-            address={address}
-            userSigner={userSigner}
-            mainnetProvider={mainnetProvider}
-            localProvider={localProvider}
-            yourLocalBalance={yourLocalBalance}
-            price={price}
-            tx={tx}
-            writeContracts={writeContracts}
-            readContracts={readContracts}
-            purpose={purpose}
-          />
-        </Route>
-        <Route path="/mainnetdai">
-          <Contract
-            name="DAI"
-            customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.DAI}
-            signer={userSigner}
-            provider={mainnetProvider}
-            address={address}
-            blockExplorer="https://etherscan.io/"
-            contractConfig={contractConfig}
-            chainId={1}
-          />
-          {/*
-            <Contract
-              name="UNI"
-              customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.UNI}
-              signer={userSigner}
-              provider={mainnetProvider}
-              address={address}
-              blockExplorer="https://etherscan.io/"
-            />
-            */}
-        </Route>
-        <Route path="/subgraph">
-          <Subgraph
-            subgraphUri={props.subgraphUri}
-            tx={tx}
-            writeContracts={writeContracts}
-            mainnetProvider={mainnetProvider}
           />
         </Route>
       </Switch>

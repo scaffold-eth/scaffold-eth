@@ -8,12 +8,7 @@ import { useLookupAddress } from "eth-hooks/dapps/ens";
 
 const { Text } = Typography;
 
-/** 
-  ~ What it does? ~
-
-  Displays an address with a blockie image and option to copy address
-
-  ~ How can I use? ~
+/**
 
   <Address
     address={address}
@@ -22,13 +17,6 @@ const { Text } = Typography;
     fontSize={fontSize}
   />
 
-  ~ Features ~
-
-  - Provide ensProvider={mainnetProvider} and your address will be replaced by ENS name
-              (ex. "0xa870" => "user.eth")
-  - Provide blockExplorer={blockExplorer}, click on address and get the link
-              (ex. by default "https://etherscan.io/" or for xdai "https://blockscout.com/poa/xdai/")
-  - Provide fontSize={fontSize} to change the size of address text
 **/
 
 const blockExplorerLink = (address, blockExplorer) => `${blockExplorer || "https://etherscan.io/"}address/${address}`;
