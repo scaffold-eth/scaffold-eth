@@ -4,11 +4,6 @@ const { solidity } = require("ethereum-waffle");
 const { BigNumber } = require("ethers");
 
 use(solidity);
-// import { JsonRpcProvider } from "@ethersproject/providers";
-// import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-// import { expect } from "chai";
-// import { BigNumber, Contract } from "ethers";
-// import { ethers } from "hardhat";
 
 describe("🚩 Challenge 3: 🎲 Dice Game", function () {
   let deployer;
