@@ -16,9 +16,8 @@ export default function AddressedCard({ badges }) {
         maxWidth={300}
       >
         {badges.map(badge => {
-          const src = 'https://ipfs.io/ipfs/' + badge.decodedIpfsHash
+          const src = 'https://remix-project.mypinata.cloud/ipfs/' + badge.decodedIpfsHash
           const txLink = 'https://optimistic.etherscan.io/tx/' + badge.transactionHash
-
           return (
             <Card key={badge.decodedIpfsHash} sx={{ zIndex: 10, borderRadius: 5 }} variant={'outlined'}>
               <CardMedia component={'img'} width={200} image={src} alt={'nftimage'} />

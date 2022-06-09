@@ -1,6 +1,6 @@
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
 import React from 'react'
-import { BrowserRouter } from 'react-router-dom'
+import { BrowserRouter, Route } from 'react-router-dom'
 import ReactDOM from 'react-dom'
 import App from './App'
 import './index.css'
@@ -20,7 +20,9 @@ ReactDOM.render(
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <BrowserRouter>
-        <App subgraphUri={subgraphUri} />
+        <Route path="/">
+          <App subgraphUri={subgraphUri} />
+        </Route>
       </BrowserRouter>
     </ThemeProvider>
   </ApolloProvider>,

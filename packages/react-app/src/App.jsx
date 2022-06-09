@@ -6,6 +6,7 @@ import { NETWORKS } from './constants'
 import { Layout } from './components'
 import { BrowseBadges } from './views'
 import { Account } from './components'
+import MintingPage from './views/MintingPage'
 const { ethers } = require('ethers')
 
 function App(props) {
@@ -15,6 +16,7 @@ function App(props) {
   const [injectedProvider, setInjectedProvider] = useState()
   const [address, setAddress] = useState('')
   const [connectedAddress, setConnectedAddress] = useState()
+  const [tabValue, setTabValue] = useState(0)
 
   const targetNetwork = NETWORKS['optimism']
   /* 💵 This hook will get the price of ETH from 🦄 Uniswap: */
@@ -102,8 +104,8 @@ function App(props) {
 
   return (
     <div className="App">
-      <Layout>
-        {loaded && (
+      <Layout tabValue={tabValue} setTabValue={setTabValue}>
+        {loaded && tabValue === 0 && (
           <BrowseBadges
             address={address}
             connectedAddress={connectedAddress}
@@ -128,6 +130,8 @@ function App(props) {
             }
           />
         )}
+
+        {tabValue === 1 && <MintingPage tabValue={tabValue} setTabValue={setTabValue} />}
       </Layout>
     </div>
   )
