@@ -66,10 +66,3 @@ yarn-error.log*
 
 # doc directory
 /doc
-
-
-
-#for heroku, ignore all of the following
-packages/hardhat
-packages/services
-packages/subgraph
