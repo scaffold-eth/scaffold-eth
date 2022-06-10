@@ -1,8 +1,6 @@
-import { Button } from "antd";
 import React, { useState } from "react";
 import { useThemeSwitcher } from "react-css-theme-switcher";
 
-import Address from "./Address";
 import Balance from "./Balance";
 import Wallet from "./Wallet";
 import { BlockinUIDisplay } from "blockin/dist/ui";
