@@ -9,8 +9,6 @@ export default function NftCard(props) {
       <Box
         sx={{
           position: 'relative',
-          background:
-            'linear-gradient(to right, #d4def4, #d9dff6, #dee1f7, #e3e2f9, #e8e4fa, #ede5fb, #f1e6fb, #f6e8fc)',
           padding: '2px',
           color: '#333333',
           borderRadius: 5,

@@ -224,7 +224,7 @@ export default function BrowseBadges({
             </Typography>
           </Box>
         </Box>
-        <Box mt={8} xs={12} sm={12} md={8}>
+        <Box mt={8}>
           <Typography variant={'h6'} fontWeight={700} fontFamily={'Noah'} mb={3} sx={{ color: '#333333' }}>
             Input a wallet address to see the Remix Rewards it holds:
           </Typography>
@@ -274,7 +274,7 @@ export default function BrowseBadges({
       <Box
         sx={{
           background: 'linear-gradient(90deg, #f6e8fc, #f1e6fb, #ede5fb, #e8e4fa, #e3e2f9, #dee1f7, #d9dff6, #d4def4)',
-          maxHeight: '100vh',
+          height: '100vh',
         }}
         mt={15}
       >

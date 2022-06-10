@@ -89,7 +89,8 @@
       "plugin:prettier/recommended"
     ],
     "rules": {
-      "prettier/prettier": "warn"
+      "prettier/prettier": "warn",
+      "react/jsx-no-undef": "off"
     }
   },
   "scripts": {
