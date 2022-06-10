@@ -1,0 +1,8 @@
+[submodule "packages/services/arbitrum"]
+	path = packages/services/arbitrum
+	url = https://github.com/OffchainLabs/arbitrum
+	branch = master
+[submodule "packages/services/optimism"]
+	path = packages/services/optimism
+	url = https://github.com/ethereum-optimism/optimism
+	branch = regenesis/0.4.0

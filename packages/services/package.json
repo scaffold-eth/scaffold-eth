@@ -1,0 +1,18 @@
+{
+  "name": "@scaffold-eth/services",
+  "version": "1.0.0",
+  "license": "MIT",
+  "scripts": {
+    "submodule-init": "git submodule init && git submodule update --remote",
+    "arbitrum-init": "cd arbitrum && git submodule init && git submodule update && yarn install",
+    "arbitrum-build-l1": "cd arbitrum && yarn docker:build:geth",
+    "arbitrum-run-l1": "cd arbitrum && yarn docker:geth",
+    "arbitrum-init-l2": "cd arbitrum && yarn demo:initialize",
+    "arbitrum-run-l2": "cd arbitrum && yarn demo:deploy",
+    "run-optimism": "cd optimism/ops && make up",
+    "stop-optimism": "cd optimism/ops && make down",
+    "run-graph-node": "cd graph-node && docker-compose up",
+    "remove-graph-node": "cd graph-node && docker-compose down",
+    "clean-graph-node": "rm -rf graph-node/data/"
+  }
+}
