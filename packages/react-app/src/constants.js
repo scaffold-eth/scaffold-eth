@@ -211,7 +211,7 @@ export const NETWORKS = {
     chainId: 97,
     blockExplorer: "https://testnet.bscscan.com/",
     rpcUrl: "https://data-seed-prebsc-1-s1.binance.org:8545",
-    faucet:"https://testnet.binance.org/faucet-smart"
+    faucet: "https://testnet.binance.org/faucet-smart",
   },
   bscMainnet: {
     name: "Binance smart chain",
