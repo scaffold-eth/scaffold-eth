@@ -1,13 +1,13 @@
 // MY INFURA_ID, SWAP IN YOURS FROM https://infura.io/dashboard/ethereum
-export const INFURA_ID = "460f40a260564ac4a4f4b3fffb032dad";
+export const INFURA_ID = "a22b6958cc5449a6a5bc6dc4e2c26a7a";
 
 // MY ETHERSCAN_ID, SWAP IN YOURS FROM https://etherscan.io/myapikey
-export const ETHERSCAN_KEY = "DNXJA8RX2Q3VZ4URQIWP7Z68CJXQZSC6AW";
+export const ETHERSCAN_KEY = "67QKBSWHA6HPCXSAVSP5EIK9YIDQCCC2V5";
 
 // BLOCKNATIVE ID FOR Notify.js:
 export const BLOCKNATIVE_DAPPID = "0b58206a-f3c0-4701-a62f-73c7243e8c77";
 
-export const ALCHEMY_KEY = "oKxs-03sij-U_N0iOlrSsZFr29-IqbuF";
+export const ALCHEMY_KEY = "Qp-iC87Qj6n-2r7dRA_j9bvxGZPRdWrV";
 
 const localRpcUrl = process.env.REACT_APP_CODESPACES
   ? `https://${window.location.hostname.replace("3000", "8545")}`
@@ -204,6 +204,21 @@ export const NETWORKS = {
     chainId: 1281,
     blockExplorer: "https://moonbeam-explorer.netlify.app/",
     rpcUrl: "http://127.0.0.1:9933",
+  },
+  bscTestnet: {
+    name: "Binance Smart Chain-Testnet",
+    color: "#F4C23F",
+    chainId: 97,
+    blockExplorer: "https://testnet.bscscan.com/",
+    rpcUrl: "https://data-seed-prebsc-1-s1.binance.org:8545",
+    faucet: "https://testnet.binance.org/faucet-smart",
+  },
+  bscMainnet: {
+    name: "Binance smart chain",
+    color: "#F4C23F",
+    chainId: 56,
+    blockExplorer: "https://bscscan.com/",
+    rpcUrl: "https://bsc-dataseed.binance.org/",
   },
 };
 
