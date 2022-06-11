@@ -34,6 +34,7 @@ function App(props) {
     async function getAddress() {
       if (userSigner) {
         const newAddress = await userSigner.getAddress()
+        // @ts-ignore
         setConnectedAddress(newAddress)
         console.log(newAddress)
       }
@@ -42,7 +43,9 @@ function App(props) {
   }, [userSigner])
 
   const logoutOfWeb3Modal = async () => {
+    // @ts-ignore
     if (injectedProvider && injectedProvider.provider && typeof injectedProvider.provider.disconnect == 'function') {
+      // @ts-ignore
       await injectedProvider.provider.disconnect()
     }
     setTimeout(() => {
@@ -59,15 +62,18 @@ function App(props) {
     const provider = window.ethereum
     window.ethereum.request({ method: 'eth_requestAccounts' })
 
+    // @ts-ignore
     setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
 
     provider.on('chainChanged', chainId => {
       console.log(`chain changed to ${chainId}! updating providers`)
+      // @ts-ignore
       setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
     })
 
     provider.on('accountsChanged', () => {
       console.log(`account changed!`)
+      // @ts-ignore
       setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
     })
 
@@ -117,6 +123,7 @@ function App(props) {
             {...props}
             wallet={
               <Account
+                // @ts-ignore
                 useBurner={USE_BURNER_WALLET}
                 address={connectedAddress}
                 localProvider={localProvider}
@@ -131,7 +138,13 @@ function App(props) {
           />
         )}
 
-        {tabValue === 1 && <MintingPage tabValue={tabValue} setTabValue={setTabValue} />}
+        {tabValue === 1 && (
+          <MintingPage
+            // @ts-ignore
+            tabValue={tabValue}
+            setTabValue={setTabValue}
+          />
+        )}
       </Layout>
     </div>
   )

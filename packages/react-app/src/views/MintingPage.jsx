@@ -2,8 +2,38 @@ import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import MintingPageCard from '../components/MintingPageCard'
+import { ethers } from 'ethers'
+import externalContracts from '../contracts/external_contracts'
 
-export default function MintingPage() {
+export default function MintingPage({ selectedChainId, injectedProvider, connectedAddress }) {
+  let contractRef
+  if (
+    externalContracts[selectedChainId] &&
+    externalContracts[selectedChainId].contracts &&
+    externalContracts[selectedChainId].contracts.REMIX_REWARD
+  ) {
+    contractRef = externalContracts[selectedChainId].contracts.REMIX_REWARD
+  }
+  /*
+   * this mint a user badge from the current selected account
+   * this function throws an error
+   *  - if the current network selected in the injected provider (metamask) is not optimism (chain id of optimism is 10)
+   *  - if the current user doesn't have anymore a slot for minting a badge
+   */
+  const mintBadge = async receiverAddress => {
+    let contract = new ethers.Contract(contractRef.address, contractRef.abi, injectedProvider)
+    let mintTx = await contract.publicMint(receiverAddress)
+    await mintTx.wait()
+  }
+
+  /*
+   * this returns the number of user badge that the selected account is allowed to mint.
+   * this function throws an error if the current network selected in the injected provider (metamask) is not optimism (chain id of optimism is 10)
+   */
+  const allowedMinting = async () => {
+    let contract = new ethers.Contract(contractRef.address, contractRef.abi, injectedProvider)
+    return await contract.allowedMinting(connectedAddress)
+  }
   return (
     <>
       <Box pt="76px">
@@ -33,7 +63,11 @@ export default function MintingPage() {
               </a>
             </Typography>
             <Box component={'span'} sx={{ shapeOutside: 'inset(150px 100px 50%)', margin: 2 }}>
-              <Button variant={'contained'} size={'large'} sx={{ padding: 2, background: '#81a6f7', borderRadius: 3 }}>
+              <Button variant={'contained'}
+                size={'large'}
+                sx={{ padding: 2, background:    '#81a6f7', borderRadius: 3 }}
+                // onClick={}
+              >
                 <Typography variant={'button'} fontWeight="bolder">
                   Connect to Mint
                 </Typography>
