@@ -54,6 +54,7 @@ export default function Account({
 }) {
   let accountButtonInfo
   accountButtonInfo = { name: 'Connect to Mint', action: loadWeb3Modal }
+  const accountButtonConnected = 'Connected'
 
   const display = !minimized && (
     <Box>
@@ -79,7 +80,7 @@ export default function Account({
           size={'large'}
         >
           <Typography variant={'button'} fontWeight={'bolder'}>
-            {accountButtonInfo.name}
+            {address && address.length > 1 ? accountButtonConnected : accountButtonInfo.name}
           </Typography>
         </Button>
       }
