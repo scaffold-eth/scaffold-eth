@@ -53,14 +53,14 @@ export default function Account({
   isContract,
 }) {
   let accountButtonInfo
-  accountButtonInfo = { name: 'Connect', action: loadWeb3Modal }
+  accountButtonInfo = { name: 'Connect to Mint', action: loadWeb3Modal }
 
   const display = !minimized && (
     <Box>
       {address && address.length > 1 ? (
         <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} fontSize={20} />
       ) : (
-        <Typography variant={'body2'} fontWeight={600} mb={'5'}>
+        <Typography variant="subtitle1" fontWeight={500} mb={3} sx={{ color: '#333333' }} component={'span'}>
           There is no address connected to this wallet! Click the button to connect and view your wallet!
         </Typography>
       )}
@@ -69,7 +69,7 @@ export default function Account({
   )
 
   return (
-    <Box sx={{ display: 'flex' }} alignItems={'center'} justifyContent={'center'}>
+    <Box sx={{ display: 'flex' }} alignItems={'center'} justifyContent={'center'} pb={5}>
       {display}
       {
         <Button

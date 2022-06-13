@@ -7,6 +7,9 @@ import { Layout } from './components'
 import { BrowseBadges } from './views'
 import { Account } from './components'
 import MintingPage from './views/MintingPage'
+import CloseIcon from '@mui/icons-material/Close'
+import IconButton from '@mui/material/IconButton'
+import Toast from 'components/Toast'
 const { ethers } = require('ethers')
 
 function App(props) {
@@ -17,6 +20,7 @@ function App(props) {
   const [address, setAddress] = useState('')
   const [connectedAddress, setConnectedAddress] = useState()
   const [tabValue, setTabValue] = useState(0)
+  const [showToast, setShowToast] = useState(false)
 
   const targetNetwork = NETWORKS['optimism']
   /* 💵 This hook will get the price of ETH from 🦄 Uniswap: */
@@ -29,6 +33,14 @@ function App(props) {
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
   const userProviderAndSigner = useUserProviderAndSigner(injectedProvider, localProvider, USE_BURNER_WALLET)
   const userSigner = userProviderAndSigner.signer
+
+  const closeToast = () => {
+    setShowToast(false)
+  }
+
+  const displayToast = () => {
+    setShowToast(true)
+  }
 
   useEffect(() => {
     async function getAddress() {
@@ -53,9 +65,18 @@ function App(props) {
     }, 1)
   }
 
+  const snackBarAction = (
+    <>
+      <IconButton size="small" aria-label="close" color="inherit" onClick={closeToast}>
+        <CloseIcon fontSize="small" />
+      </IconButton>
+    </>
+  )
+
   const loadWeb3Modal = useCallback(async () => {
     if (typeof window.ethereum === 'undefined') {
-      console.log('MetaMask is not installed!')
+      // console.log('MetaMask is not installed!')
+      displayToast()
       // metamask not installed
       return
     }
@@ -121,6 +142,14 @@ function App(props) {
             mainnet={mainnet}
             selectedChainId={10}
             {...props}
+          />
+        )}
+
+        {tabValue === 1 && (
+          <MintingPage
+            // @ts-ignore
+            tabValue={tabValue}
+            setTabValue={setTabValue}
             wallet={
               <Account
                 // @ts-ignore
@@ -137,14 +166,7 @@ function App(props) {
             }
           />
         )}
-
-        {tabValue === 1 && (
-          <MintingPage
-            // @ts-ignore
-            tabValue={tabValue}
-            setTabValue={setTabValue}
-          />
-        )}
+        <Toast showToast={showToast} closeToast={closeToast} snackBarAction={snackBarAction} />
       </Layout>
     </div>
   )

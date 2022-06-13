@@ -5,7 +5,7 @@ import MintingPageCard from '../components/MintingPageCard'
 import { ethers } from 'ethers'
 import externalContracts from '../contracts/external_contracts'
 
-export default function MintingPage({ selectedChainId, injectedProvider, connectedAddress }) {
+export default function MintingPage({ selectedChainId, injectedProvider, connectedAddress, wallet }) {
   let contractRef
   if (
     externalContracts[selectedChainId] &&
@@ -63,15 +63,17 @@ export default function MintingPage({ selectedChainId, injectedProvider, connect
               </a>
             </Typography>
             <Box component={'span'} sx={{ shapeOutside: 'inset(150px 100px 50%)', margin: 2 }}>
-              <Button variant={'contained'}
+              {/* <Button
+                variant={'contained'}
                 size={'large'}
-                sx={{ padding: 2, background:    '#81a6f7', borderRadius: 3 }}
+                sx={{ padding: 2, background: '#81a6f7', borderRadius: 3 }}
                 // onClick={}
               >
                 <Typography variant={'button'} fontWeight="bolder">
                   Connect to Mint
                 </Typography>
-              </Button>
+              </Button> */}
+              {wallet}
             </Box>
           </Box>
         </Box>
