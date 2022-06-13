@@ -4,6 +4,9 @@ import Typography from '@mui/material/Typography'
 import MintingPageCard from '../components/MintingPageCard'
 import { ethers } from 'ethers'
 import externalContracts from '../contracts/external_contracts'
+import { useState } from 'react'
+import FormGroup from '@mui/material/FormGroup'
+import TextField from '@mui/material/TextField'
 
 export default function MintingPage({ selectedChainId, injectedProvider, connectedAddress, wallet }) {
   let contractRef
@@ -14,6 +17,7 @@ export default function MintingPage({ selectedChainId, injectedProvider, connect
   ) {
     contractRef = externalContracts[selectedChainId].contracts.REMIX_REWARD
   }
+
   /*
    * this mint a user badge from the current selected account
    * this function throws an error
@@ -30,10 +34,14 @@ export default function MintingPage({ selectedChainId, injectedProvider, connect
    * this returns the number of user badge that the selected account is allowed to mint.
    * this function throws an error if the current network selected in the injected provider (metamask) is not optimism (chain id of optimism is 10)
    */
-  const allowedMinting = async () => {
+  async function allowedMinting() {
     let contract = new ethers.Contract(contractRef.address, contractRef.abi, injectedProvider)
-    return await contract.allowedMinting(connectedAddress)
+    return await contract.allowedMinting()
   }
+  const [mintCount] = useState(async () => await allowedMinting())
+  const [walletAddress, setWalletAddress] = useState('')
+  console.log({ mintCount })
+
   return (
     <>
       <Box pt="76px">
@@ -48,34 +56,14 @@ export default function MintingPage({ selectedChainId, injectedProvider, connect
           >
             Mint a Remixer
           </Typography>
-          <Typography variant="subtitle1" fontWeight={500} mb={3} sx={{ color: '#333333' }}>
+          <Typography variant="h6" fontWeight={500} mb={3} sx={{ color: '#333333' }}>
             Remix project rewards contributors, beta testers and UX research participants with NFTs deployed on
-            Optimism. <br /> Remix Reward holders are able to mint a second "Remixer" user NFT badge to give to any
-            other user of their choice for every reward they receive.
+            Optimism. <br />
+            For every Remix Reward you have received, you are able to mint one additional "Remixer" badge to a different
+            wallet of your choice. <br />
+            See below for the number of "Remixer" badge mints you have remaining on your account. <br />
+            To mint a new "Remixer" badge, input a unique wallet address below.
           </Typography>
-          <Box>
-            <Typography variant="subtitle1" fontWeight={500} mb={3} sx={{ color: '#333333' }} component={'span'}>
-              Minting each "Remixer" badge will require a very small amount of ETH (0.15 DAI) on the Optimism network.{' '}
-              <br /> If you do not have ETH on Optimism, you can transfer some from Mainnet using the{' '}
-              <a href="https://app.optimism.io/bridge">Optimism Bridge</a> or{' '}
-              <a href="https://app.hop.exchange/#/send?sourceNetwork=optimism&destNetwork=ethereum&token=ETH">
-                Hop Exchange
-              </a>
-            </Typography>
-            <Box component={'span'} sx={{ shapeOutside: 'inset(150px 100px 50%)', margin: 2 }}>
-              {/* <Button
-                variant={'contained'}
-                size={'large'}
-                sx={{ padding: 2, background: '#81a6f7', borderRadius: 3 }}
-                // onClick={}
-              >
-                <Typography variant={'button'} fontWeight="bolder">
-                  Connect to Mint
-                </Typography>
-              </Button> */}
-              {wallet}
-            </Box>
-          </Box>
         </Box>
       </Box>
       <Box
@@ -87,8 +75,30 @@ export default function MintingPage({ selectedChainId, injectedProvider, connect
         display={'flex'}
         alignItems={'center'}
         justifyContent={'center'}
+        flexDirection={'column'}
       >
-        <MintingPageCard />
+        <MintingPageCard top={-62} />
+        <Box>
+          <Box sx={{ background: 'white' }} width={250}>
+            <Typography variant="h4" sx={{ padding: 2 }}>
+              {typeof mintCount === 'number' ? mintCount : 0}
+            </Typography>
+            <Typography variant="subtitle1" color={'#0c0c0c'}>
+              BADGES REMAINING TO MINT ON YOUR ACCT
+            </Typography>
+          </Box>
+          <Box pt={5}>
+            <Typography fontWeight={600}>Input a wallet address</Typography>
+            <FormGroup sx={{ paddingTop: 5 }}>
+              <TextField
+                placeholder="Address or ENS name"
+                variant="outlined"
+                value={walletAddress}
+                onChange={e => setWalletAddress(e.target.value)}
+              />
+            </FormGroup>
+          </Box>
+        </Box>
       </Box>
     </>
   )

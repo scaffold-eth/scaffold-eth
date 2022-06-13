@@ -40,6 +40,7 @@ export default function BrowseBadges({
   connectedAddress,
   setAddress,
   injectedProvider,
+  wallet,
 }) {
   const [contractEvents, setContractEvents] = useState([])
   const contractConfig = { deployedContracts: {}, externalContracts: externalContracts || {} }
@@ -200,12 +201,13 @@ export default function BrowseBadges({
         {/*
         ⚙️ Here is an example UI that displays and sets the purpose in your smart contract:
       */}
+        {wallet}
         <Box sx={{ textAlign: 'left', padding: '10px', color: '#007aa6', marginLeft: 5 }}>
           <Typography variant={'h3'} fontWeight={700} sx={{ marginBottom: 5 }} color={'black'} fontFamily={'Noah'}>
             Remix Rewards
           </Typography>
           <Box>
-            <Typography variant="subtitle1" fontWeight={500} mb={3} sx={{ color: '#333333' }}>
+            <Typography variant="h6" fontWeight={500} mb={3} sx={{ color: '#333333' }}>
               Remix Project rewards contributors, beta testers, and UX research participants with NFTs deployed on
               Optimism.
               <br />
@@ -215,11 +217,33 @@ export default function BrowseBadges({
               This feature is a way to reward Remix contributors to help grow our user base into a larger and more
               genuine open source community of practice.
             </Typography>
-            <Typography variant="subtitle1" fontWeight={500} sx={{ color: '#333333' }}>
+            <Typography variant="h6" fontWeight={500} sx={{ color: '#333333' }}>
               Remix Rewards are currently not transferable. This feature leaves open the possibility of granting holders
               proportional voting power to help the community decide on new features for the IDE and/or other issues
               governing the development of the Remix toolset.
             </Typography>
+          </Box>
+          <Box>
+            <Typography variant="h6" fontWeight={500} mb={3} sx={{ color: '#333333' }} component={'span'}>
+              Minting each "Remixer" badge will require a very small amount of ETH (0.15 DAI) on the Optimism network.{' '}
+              <br /> If you do not have ETH on Optimism, you can transfer some from Mainnet using the{' '}
+              <a href="https://app.optimism.io/bridge">Optimism Bridge</a> or{' '}
+              <a href="https://app.hop.exchange/#/send?sourceNetwork=optimism&destNetwork=ethereum&token=ETH">
+                Hop Exchange
+              </a>
+            </Typography>
+            <Box component={'span'} sx={{ shapeOutside: 'inset(150px 100px 50%)', margin: 2 }}>
+              {/* <Button
+                variant={'contained'}
+                size={'large'}
+                sx={{ padding: 2, background: '#81a6f7', borderRadius: 3 }}
+                // onClick={}
+              >
+                <Typography variant={'button'} fontWeight="bolder">
+                  Connect to Mint
+                </Typography>
+              </Button> */}
+            </Box>
           </Box>
         </Box>
         <Box mt={8}>

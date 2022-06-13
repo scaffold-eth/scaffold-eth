@@ -1,6 +1,6 @@
 import { Box, Card, CardMedia } from '@mui/material'
 
-export default function MintingPageCard() {
+export default function MintingPageCard({ top }) {
   return (
     <>
       <Box
@@ -14,7 +14,7 @@ export default function MintingPageCard() {
         }}
         maxWidth={410}
       >
-        <Card variant={'outlined'} sx={{ borderRadius: 5, zIndex: 50, marginTop: -62 }}>
+        <Card variant={'outlined'} sx={{ borderRadius: 5, zIndex: 50, marginTop: top }}>
           <CardMedia component={'img'} width={300} image={'/MyRemixer.png'} alt={'remixer'} />
         </Card>
       </Box>
