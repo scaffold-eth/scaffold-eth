@@ -476,28 +476,22 @@ function App(props) {
 
   /*
   const riggedRoll = async () => {
-    tx(
-      writeContracts.RiggedRoll.riggedRoll({ gasLimit: 500000 }),
-      update => {
-        console.log("TX UPDATE",update)
-        if (update?.status === "sent" || update?.status === 1) {
-          setDiceRolled(true);
-          setDiceRollImage("ROLL");
-        }
-
-        if (update?.status === "failed") {
+    tx(writeContracts.RiggedRoll.riggedRoll({ gasLimit: 500000 }), update => {
+      console.log("TX UPDATE", update);
+      if (update?.status === "sent" || update?.status === 1) {
+        setDiceRolled(true);
+        setDiceRollImage("ROLL");
+      }
+      if (update?.status === "failed") {
+        setDiceRolled(false);
+        //setDiceRollImage(null);
+      }
+      if (update?.status == 1 || update?.status == "confirmed") {
+        setTimeout(() => {
           setDiceRolled(false);
-          //setDiceRollImage(null);
-        }
-        if(update?.status==1 || update?.status=="confirmed")
-        {
-          setTimeout(()=>{
-            setDiceRolled(false);
-            //setDiceRollImage(null);
-          },1500)
-        }
-      },
-    );
+        }, 1500);
+      }
+    });
   };
 
   const riggedFilter = readContracts.DiceGame?.filters.Roll(riggedRoll.address, null);
@@ -509,7 +503,7 @@ function App(props) {
       setDiceRolled(false);
     }
   });
-*/
+  */
 
   const filter = readContracts.DiceGame?.filters.Roll(address, null);
 
