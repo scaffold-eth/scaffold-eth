@@ -9958,10 +9958,10 @@ eth-block-tracker@^3.0.0:
     pify "^2.3.0"
     tape "^4.6.3"
 
-eth-components@^3.0.19:
-  version "3.2.20"
-  resolved "https://registry.yarnpkg.com/eth-components/-/eth-components-3.2.20.tgz#54a80a54bfd05be2ac14124b399fdd9941957e1a"
-  integrity sha512-cNOsfv47NiXTdMynthV306Zsle719JDzYrKJ/ch4WVHAbklALBeaUY76OFI/iurkrMB/hNIRqshQ9SlobiDeiA==
+eth-components@^3.2.45:
+  version "3.2.45"
+  resolved "https://registry.yarnpkg.com/eth-components/-/eth-components-3.2.45.tgz#11a2bf5e02d1ec257779f38e23b8ff81259b97b9"
+  integrity sha512-mgfYQX3CLtHZtbA/LK5WKqV+NDpe8cvVr9UYRdLQZjKSj2aZbx5lLzHW0rn/VCbJq+zS2ea80i79ZcxbZUkptw==
   dependencies:
     "@ethersproject/abstract-signer" "^5.6.0"
     "@ethersproject/address" "^5.6.0"
@@ -9975,14 +9975,14 @@ eth-components@^3.0.19:
     "@ethersproject/units" "^5.6.0"
     axios "^0.27.2"
     bnc-notify "^1.9.4"
-    eth-hooks "^4.2.21"
+    eth-hooks "^4.2.37"
     ethers "^5.6.4"
     qrcode.react "^3.0.1"
     react-blockies "^1.4.1"
     react-qr-reader "^3.0.0-beta-1"
-    ts-invariant "^0.9.4"
-    use-debounce "^8.0.0"
-    usehooks-ts "^2.5.2"
+    ts-invariant "^0.10.3"
+    use-debounce "^8.0.1"
+    usehooks-ts "^2.5.4"
 
 eth-ens-namehash@2.0.8, eth-ens-namehash@^2.0.8:
   version "2.0.8"
@@ -10013,10 +10013,10 @@ eth-gas-reporter@^0.2.20:
     sha1 "^1.1.1"
     sync-request "^6.0.0"
 
-eth-hooks@^4.0.18, eth-hooks@^4.2.21:
-  version "4.2.21"
-  resolved "https://registry.yarnpkg.com/eth-hooks/-/eth-hooks-4.2.21.tgz#de6688948aaefbb6c63bc274b9bec96ad9fcb2d3"
-  integrity sha512-l+xoUTMd1I1sFcWMG+syqe6OU7sbbGi1v+yhyr2k8COBxU5yuEvHrHFrHAPzJSBORC11ZbhZ3fSTRCIEhp/I1A==
+eth-hooks@^4.2.37, eth-hooks@^4.2.38:
+  version "4.2.38"
+  resolved "https://registry.yarnpkg.com/eth-hooks/-/eth-hooks-4.2.38.tgz#a802d6017be4e0fdaee68431e5202c968d3746a7"
+  integrity sha512-alXFb+ZZqH8HdqydJuZBmxZyQMVBIByLW9bMTriD8YszCg41WGZm6Kx93smppr5u32lU1d+vWdChIqlid1VI/Q==
   dependencies:
     "@ethersproject/abi" "^5.6.1"
     "@ethersproject/abstract-provider" "^5.6.0"
@@ -10038,8 +10038,8 @@ eth-hooks@^4.0.18, eth-hooks@^4.2.21:
     merge-anything "^5.0.2"
     react-query "^3.38.*"
     ts-invariant "^0.9.4"
-    use-debounce "^8.0.0"
-    usehooks-ts "^2.5.2"
+    use-debounce "^8.0.1"
+    usehooks-ts "^2.5.4"
     web3modal "^1.9.7"
 
 eth-json-rpc-errors@^1.0.1:
@@ -11345,10 +11345,15 @@ follow-redirects@^1.0.0, follow-redirects@^1.10.0, follow-redirects@^1.12.1:
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.14.1.tgz#d9114ded0a1cfdd334e164e6662ad02bfd91ff43"
   integrity sha512-HWqDgT7ZEkqRzBvc2s64vSZ/hfOceEol3ac/7tKwzuvEyWx3/4UegXh5oBOIotkGsObyk3xznnSRVADBgWSQVg==
 
-follow-redirects@^1.14.0, follow-redirects@^1.14.9:
+follow-redirects@^1.14.0:
   version "1.15.0"
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.0.tgz#06441868281c86d0dda4ad8bdaead2d02dca89d4"
   integrity sha512-aExlJShTV4qOUOL7yF1U5tvLCB0xQuudbf6toyYA0E/acBNw71mvjFTnLaRp50aQaYocMR0a/RMMBIHeZnGyjQ==
+
+follow-redirects@^1.14.9:
+  version "1.15.1"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.1.tgz#0ca6a452306c9b276e4d3127483e29575e207ad5"
+  integrity sha512-yLAMQs+k0b2m7cVxpS1VKJVvoz7SS9Td1zss3XRwXj+ZDH00RJgnuLx7E44wx02kQLrdM3aOOy+FpzS7+8OizA==
 
 for-each@^0.3.3, for-each@~0.3.3:
   version "0.3.3"
@@ -13670,7 +13675,7 @@ is-valid-glob@^1.0.0:
   resolved "https://registry.yarnpkg.com/is-valid-glob/-/is-valid-glob-1.0.0.tgz#29bf3eff701be2d4d315dbacc39bc39fe8f601aa"
   integrity sha1-Kb8+/3Ab4tTTFdusw5vDn+j2Aao=
 
-is-what@^3.12.0:
+is-what@^3.12.0, is-what@^3.14.1:
   version "3.14.1"
   resolved "https://registry.yarnpkg.com/is-what/-/is-what-3.14.1.tgz#e1222f46ddda85dead0fd1c9df131760e77755c1"
   integrity sha512-sNxgpk9793nzSs7bA6JQJGeIuRBQhAaNGG77kzYQgMkrID+lS6SlK07K5LaptscDlSaIgH+GPFzf+d75FVxozA==
@@ -15716,6 +15721,14 @@ meow@^5.0.0:
     redent "^2.0.0"
     trim-newlines "^2.0.0"
     yargs-parser "^10.0.0"
+
+merge-anything@4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/merge-anything/-/merge-anything-4.0.1.tgz#5c837cfa7adbb65fa5a4df178b37312493cb3609"
+  integrity sha512-KsFjBYc3juDoHz9Vzd5fte1nqp06H8SQ+yU344Dd0ZunwSgtltnC0kgKds8cbocJGyViLcBQuHkitbDXAqW+LQ==
+  dependencies:
+    is-what "^3.14.1"
+    ts-toolbelt "^9.3.12"
 
 merge-anything@^5.0.2:
   version "5.0.2"
@@ -20081,9 +20094,9 @@ rollup@^1.31.1:
     acorn "^7.1.0"
 
 rollup@^2.67.2:
-  version "2.73.0"
-  resolved "https://registry.yarnpkg.com/rollup/-/rollup-2.73.0.tgz#128fef4b333fd92d02d6929afbb6ee38d7feb32d"
-  integrity sha512-h/UngC3S4Zt28mB3g0+2YCMegT5yoftnQplwzPqGZcKvlld5e+kT/QRmJiL+qxGyZKOYpgirWGdLyEO1b0dpLQ==
+  version "2.75.6"
+  resolved "https://registry.yarnpkg.com/rollup/-/rollup-2.75.6.tgz#ac4dc8600f95942a0180f61c7c9d6200e374b439"
+  integrity sha512-OEf0TgpC9vU6WGROJIk1JA3LR5vk/yvqlzxqdrE2CzzXnqKXNzbAwlWUXis8RS3ZPe7LAq+YUxsRa0l3r27MLA==
   optionalDependencies:
     fsevents "~2.3.2"
 
@@ -21953,6 +21966,13 @@ ts-generator@^0.1.1:
     resolve "^1.8.1"
     ts-essentials "^1.0.0"
 
+ts-invariant@^0.10.3:
+  version "0.10.3"
+  resolved "https://registry.yarnpkg.com/ts-invariant/-/ts-invariant-0.10.3.tgz#3e048ff96e91459ffca01304dbc7f61c1f642f6c"
+  integrity sha512-uivwYcQaxAucv1CzRp2n/QdYPo4ILf9VXgH19zEIjFx2EJufV16P0JtJVpYHy89DItG6Kwj2oIUjrcK5au+4tQ==
+  dependencies:
+    tslib "^2.1.0"
+
 ts-invariant@^0.4.0:
   version "0.4.4"
   resolved "https://registry.yarnpkg.com/ts-invariant/-/ts-invariant-0.4.4.tgz#97a523518688f93aafad01b0e80eb803eb2abd86"
@@ -21979,7 +21999,7 @@ ts-pnp@1.2.0, ts-pnp@^1.1.6:
   resolved "https://registry.yarnpkg.com/ts-pnp/-/ts-pnp-1.2.0.tgz#a500ad084b0798f1c3071af391e65912c86bca92"
   integrity sha512-csd+vJOb/gkzvcCHgTGSChYpy5f1/XKNsmvBGO4JXS+z1v2HobugDz4s1IeFXM3wZB44uczs+eazB5Q/ccdhQw==
 
-ts-toolbelt@^9.6.0:
+ts-toolbelt@^9.3.12, ts-toolbelt@^9.6.0:
   version "9.6.0"
   resolved "https://registry.yarnpkg.com/ts-toolbelt/-/ts-toolbelt-9.6.0.tgz#50a25426cfed500d4a09bd1b3afb6f28879edfd5"
   integrity sha512-nsZd8ZeNUzukXPlJmTBwUAuABDe/9qtVDelJeT/qW0ow3ZS3BsQJtNkan1802aM9Uf68/Y8ljw86Hu0h5IUW3w==
@@ -22455,7 +22475,7 @@ ursa-optional@~0.10.0:
     bindings "^1.5.0"
     nan "^2.14.2"
 
-use-debounce@^8.0.0:
+use-debounce@^8.0.1:
   version "8.0.1"
   resolved "https://registry.yarnpkg.com/use-debounce/-/use-debounce-8.0.1.tgz#5f3e11b067bdf9f2c554a20b4764e38b48022664"
   integrity sha512-6tGAFJKJ0qCalecaV7/gm/M6n238nmitNppvR89ff1yfwSFjwFKR7IQZzIZf1KZRQhqNireBzytzU6jgb29oVg==
@@ -22465,10 +22485,10 @@ use@^3.1.0:
   resolved "https://registry.yarnpkg.com/use/-/use-3.1.1.tgz#d50c8cac79a19fbc20f2911f56eb973f4e10070f"
   integrity sha512-cwESVXlO3url9YWlFW/TA9cshCEhtu7IKJ/p5soJ/gGpj7vbvFrAY/eIioQ6Dw23KjZhYgiIo8HOs1nQ2vr/oQ==
 
-usehooks-ts@^2.5.2:
-  version "2.5.2"
-  resolved "https://registry.yarnpkg.com/usehooks-ts/-/usehooks-ts-2.5.2.tgz#c6229a4dd59f7081e0b78569b23e7bb6f966e569"
-  integrity sha512-keONG+M5aax8eN9kEZeayNBgK+7MSLVGCuP18pSdce5D5iLiImCxqkm04GWYSkA7Xpo0GWnPOK3cXAOY/K+T1g==
+usehooks-ts@^2.5.4:
+  version "2.5.4"
+  resolved "https://registry.yarnpkg.com/usehooks-ts/-/usehooks-ts-2.5.4.tgz#e28ce0c1140e3ae172d9b8d2fca07dff68a476ab"
+  integrity sha512-NG4XKLh7csTFFtUgtUuR72zlJ1Bpt4+nDAnKQqcQcpxYnwAZZv3RpksKvxBIusPCHUL3NuC0xLwwJCpPxIuknQ==
 
 utf-8-validate@^5.0.2:
   version "5.0.5"

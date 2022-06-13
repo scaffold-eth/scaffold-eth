@@ -1,0 +1,17 @@
+{
+  "kovan": {
+    "YourContract": {
+      "address": "0xaD55D3c45dB4aD83991498b1690689DeacE3254C"
+    }
+  },
+  "localhost": {
+    "YourContract": {
+      "address": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"
+    }
+  },
+  "xdai": {
+    "YourContract": {
+      "address": "0x7714cB4a3494F78F8fD5865B74D429478a1F2a3C"
+    }
+  }
+}

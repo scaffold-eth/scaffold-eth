@@ -2,6 +2,7 @@
   "name": "@scaffold-eth/react-app",
   "version": "1.0.0",
   "homepage": ".",
+  "type": "module",
   "browserslist": {
     "production": [
       ">0.2%",
@@ -35,13 +36,14 @@
     "axios": "^0.21.4",
     "bnc-notify": "^1.5.0",
     "dotenv": "^8.2.0",
-    "eth-components": "^3.0.19",
-    "eth-hooks": "^4.0.18",
+    "eth-components": "^3.2.45",
+    "eth-hooks": "^4.2.38",
     "ethers": "^5.4.1",
     "fortmatic": "^2.2.1",
     "graphiql": "^1.4.7",
     "graphql": "^15.3.0",
     "isomorphic-fetch": "^3.0.0",
+    "merge-anything": "4.0.1",
     "node-watch": "^0.7.1",
     "postcss": "^8.2.6",
     "qrcode.react": "^1.0.0",
@@ -51,6 +53,7 @@
     "react-dom": "^17.0.2",
     "react-qr-reader": "^2.2.1",
     "react-router-dom": "^5.2.0",
+    "ts-invariant": "^0.10.3",
     "walletlink": "^2.1.5"
   },
   "devDependencies": {
