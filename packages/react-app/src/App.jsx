@@ -22,7 +22,6 @@ import {
   ThemeSwitch,
   NetworkDisplay,
   FaucetHint,
-  NetworkSwitch,
 } from "./components";
 import { NETWORKS, ALCHEMY_KEY } from "./constants";
 import externalContracts from "./contracts/external_contracts";

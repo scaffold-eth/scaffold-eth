@@ -5,173 +5,184 @@ import Balance from "./Balance";
 import Wallet from "./Wallet";
 import { BlockinUIDisplay } from "blockin/dist/ui";
 import { utils, constants } from "ethers";
-import { getChallengeParams, getLoggedInStatus, logoutHandler, verifyChallengeHandler } from "../helpers/siweBackendHandlers";
+import {
+  getChallengeParams,
+  getLoggedInStatus,
+  logoutHandler,
+  verifyChallengeHandler,
+} from "../helpers/siweBackendHandlers";
 
 const capitalizeFirstLetter = string => {
-    if (!string || !string[0]) return '';
-    return string[0].toUpperCase() + string.slice(1);
+  if (!string || !string[0]) return "";
+  return string[0].toUpperCase() + string.slice(1);
 };
 
 /**
  * Welcome to the Account UI! This is what is shown in the top right of the Scaffold-ETH template.
- * 
+ *
  * If you have used the Scaffold-ETH repo before, you may have noticed that this looks a little different
- * than previously. The template now supports using Blockin, a library built by a fellow Scaffold buidler 
+ * than previously. The template now supports using Blockin, a library built by a fellow Scaffold buidler
  * @trevormil! Blockin is a library that supports a few really cool things:
  * 1) Sign-In with Ethereum capabilities for any blockchain (not limited to just Ethereum if you want to expand)
- * 2) Adding NFTs to sign-in requests, only granting the request if ownership of the NFT is verified 
+ * 2) Adding NFTs to sign-in requests, only granting the request if ownership of the NFT is verified
  * 3) A UI display for connecting and signing in
- * 
+ *
  * Note that signing-in is different than connecting a wallet: (https://blog.spruceid.com/sign-in-with-ethereum-is-a-game-changer-part-1/)
- * 
+ *
  * By default, the sign-in functionalities are disabled and not displayed. Visit the Sign-In with Ethereum tab or views/SignIn.jsx.
- * 
+ *
  * This library is still in its early stages, so any feedback or new ideas would be greatly
  * appreciated. You can report issues at https://github.com/matt-davison/blockin or message @trevormil23
- * on Twitter. 
- * 
+ * on Twitter.
+ *
  * Blockin Links:
  * Code Repository: https://github.com/matt-davison/blockin
  * Docs: https://blockin.gitbook.io/blockin/
  * Demo Site: https://blockin.vercel.app/
- * 
- * If you would like to switch back to the old account UI which offers more customization, that code is provided 
+ *
+ * If you would like to switch back to the old account UI which offers more customization, that code is provided
  * but commented out below. You can also build your own UI easily for Blockin using the Blockin Library, if desired.
  */
 export default function Account({
-    hideLogin,
-    address,
-    userSigner,
-    localProvider,
-    mainnetProvider,
-    price,
-    minimized,
-    web3Modal,
-    loadWeb3Modal,
-    logoutOfWeb3Modal,
-    isContract,
-    networkOptions,
-    setSelectedNetwork,
-    selectedNetwork,
-    blockExplorer
+  hideLogin,
+  address,
+  userSigner,
+  localProvider,
+  mainnetProvider,
+  price,
+  minimized,
+  web3Modal,
+  loadWeb3Modal,
+  logoutOfWeb3Modal,
+  isContract,
+  networkOptions,
+  setSelectedNetwork,
+  selectedNetwork,
+  blockExplorer,
 }) {
-    const { currentTheme } = useThemeSwitcher();
-    const [loggedIn, setLoggedIn] = useState(false);
-    const [challengeParams, setChallengeParams] = useState({});
+  const { currentTheme } = useThemeSwitcher();
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [challengeParams, setChallengeParams] = useState({});
 
+  useEffect(() => {
+    const update = async () => {
+      if (!hideLogin) {
+        const loggedIn = await getLoggedInStatus();
+        const challengeParams = await getChallengeParams(address);
+        setLoggedIn(loggedIn);
+        setChallengeParams(challengeParams);
+        console.log(challengeParams);
+      }
+    };
+    update();
+    // eslint-disable-next-line
+  }, []);
 
-    useEffect(async () => {
-        if (!hideLogin) {
-            setLoggedIn(await getLoggedInStatus());
-            setChallengeParams(await getChallengeParams(address));
-        }
-    }, []);
+  useEffect(() => {
+    const update = async () => {
+      if (!hideLogin) {
+        setLoggedIn(await getLoggedInStatus());
+        setChallengeParams(await getChallengeParams(address));
+      }
+    };
+    update();
+  }, [hideLogin, address]);
 
-    useEffect(async () => {
-        if (!hideLogin) {
-            setChallengeParams(await getChallengeParams(address));
-        }
-    }, [address]);
+  const walletDisplay = !minimized && (
+    <span style={{ alignItems: "center", display: "flex" }}>
+      <Balance address={address} provider={localProvider} price={price} size={20} />
+      {!isContract && (
+        <Wallet
+          address={address}
+          provider={localProvider}
+          signer={userSigner}
+          ensProvider={mainnetProvider}
+          price={price}
+          color={currentTheme === "light" ? "#1890ff" : "#2caad9"}
+          size={22}
+          padding={"0px"}
+        />
+      )}
+    </span>
+  );
 
-    const walletDisplay = !minimized && (
-        <span style={{ alignItems: "center", display: "flex" }}>
-            <Balance address={address} provider={localProvider} price={price} size={20} />
-            {!isContract && (
-                <Wallet
-                    address={address}
-                    provider={localProvider}
-                    signer={userSigner}
-                    ensProvider={mainnetProvider}
-                    price={price}
-                    color={currentTheme === "light" ? "#1890ff" : "#2caad9"}
-                    size={22}
-                    padding={"0px"}
-                />
-            )}
-        </span>
-    );
+  return (
+    <div style={{ display: "flex" }}>
+      {/* https://blockin.gitbook.io/blockin/reference/library-documentation/react-ui-components/components */}
+      <BlockinUIDisplay
+        selectedChainName={"Ethereum " + capitalizeFirstLetter(selectedNetwork)}
+        address={address}
+        customDisplay={walletDisplay}
+        buttonStyle={undefined}
+        modalStyle={undefined}
+        //Chain Select Options
+        chainOptions={networkOptions.map((network, idx) => {
+          return { name: "Ethereum " + capitalizeFirstLetter(network) };
+        })}
+        onChainUpdate={newChainProps => {
+          const targetNetworkName = newChainProps.name.toLowerCase().split(" ")[1];
+          const targetNetworkIdx = networkOptions.indexOf(targetNetworkName);
+          if (targetNetworkIdx >= 0) {
+            setSelectedNetwork(targetNetworkName);
+          }
+        }}
+        //Connection Options
+        hideConnect={false}
+        connected={web3Modal?.cachedProvider}
+        connect={() => {
+          loadWeb3Modal();
+        }}
+        disconnect={() => {
+          logoutOfWeb3Modal();
+        }}
+        //Sign-In with Ethereum Options
+        hideLogin={hideLogin}
+        loggedIn={loggedIn}
+        logout={async () => {
+          await logoutHandler();
+          setLoggedIn(false);
+        }}
+        challengeParams={challengeParams}
+        signAndVerifyChallenge={async msg => {
+          const from = address;
+          const message = `0x${Buffer.from(msg, "utf8").toString("hex")}`;
+          const signature = await window.ethereum.request({
+            method: "personal_sign",
+            params: [message, from],
+          });
 
+          const verificationRes = await verifyChallengeHandler(message, signature);
 
-    return (
-        <div style={{ display: "flex" }}>
-            {/* https://blockin.gitbook.io/blockin/reference/library-documentation/react-ui-components/components */}
-            <BlockinUIDisplay
-                selectedChainName={"Ethereum " + capitalizeFirstLetter(selectedNetwork)}
-                address={address}
-                customDisplay={walletDisplay}
-                buttonStyle={undefined}
-                modalStyle={undefined}
-
-                //Chain Select Options
-                chainOptions={networkOptions.map((network, idx) => {
-                    return { name: "Ethereum " + capitalizeFirstLetter(network) };
-                })}
-                onChainUpdate={newChainProps => {
-                    const targetNetworkName = newChainProps.name.toLowerCase().split(" ")[1];
-                    const targetNetworkIdx = networkOptions.indexOf(targetNetworkName);
-                    if (targetNetworkIdx >= 0) {
-                        setSelectedNetwork(targetNetworkName);
-                    }
-                }}
-
-                //Connection Options
-                hideConnect={false}
-                connected={web3Modal?.cachedProvider}
-                connect={() => {
-                    loadWeb3Modal();
-                }}
-                disconnect={() => {
-                    logoutOfWeb3Modal();
-                }}
-
-                //Sign-In with Ethereum Options
-                hideLogin={hideLogin}
-                loggedIn={loggedIn}
-                logout={async () => {
-                    await logoutHandler();
-                    setLoggedIn(false);
-                }}
-                challengeParams={challengeParams}
-                signAndVerifyChallenge={async msg => {
-                    const from = address;
-                    const message = `0x${Buffer.from(msg, "utf8").toString("hex")}`;
-                    const signature = await window.ethereum.request({
-                        method: "personal_sign",
-                        params: [message, from],
-                    });
-
-                    const verificationRes = await verifyChallengeHandler(message, signature)
-
-                    if (verificationRes && verificationRes.verified) {
-                        setLoggedIn(true);
-                        return { success: true, message: "Success!" };
-                    } else {
-                        return { success: false, message: `${verificationRes.data.message}` };
-                    }
-                }}
-                displayedResources={[]}
-                canAddCustomAssets={undefined}
-                canAddCustomUris={undefined}
-                selectedChainInfo={{
-                    getNameForAddress: async address => {
-                        //Taken from the eth-hooks useLookupAddress()
-                        try {
-                            if (utils.isAddress(address)) {
-                                const reportedName = await mainnetProvider.lookupAddress(address);
-                                const resolvedAddress = await mainnetProvider.resolveName(reportedName ?? constants.AddressZero);
-                                if (address && utils.getAddress(address) === utils.getAddress(resolvedAddress ?? "")) {
-                                    return reportedName ?? undefined;
-                                }
-                            }
-                            return undefined;
-                        } catch (e) {
-                            return undefined;
-                        }
-                    }
-                }}
-            />
-        </div>
-    );
+          if (verificationRes && verificationRes.verified) {
+            setLoggedIn(true);
+            return { success: true, message: "Success!" };
+          } else {
+            return { success: false, message: `${verificationRes.data.message}` };
+          }
+        }}
+        displayedResources={[]}
+        canAddCustomAssets={undefined}
+        canAddCustomUris={undefined}
+        selectedChainInfo={{
+          getNameForAddress: async address => {
+            //Taken from the eth-hooks useLookupAddress()
+            try {
+              if (utils.isAddress(address)) {
+                const reportedName = await mainnetProvider.lookupAddress(address);
+                const resolvedAddress = await mainnetProvider.resolveName(reportedName ?? constants.AddressZero);
+                if (address && utils.getAddress(address) === utils.getAddress(resolvedAddress ?? "")) {
+                  return reportedName ?? undefined;
+                }
+              }
+              return undefined;
+            } catch (e) {
+              return undefined;
+            }
+          },
+        }}
+      />
+    </div>
+  );
 }
 
 // import { Button } from "antd";

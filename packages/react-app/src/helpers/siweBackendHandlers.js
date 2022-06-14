@@ -7,7 +7,7 @@ export const getLoggedInStatus = async () => {
     headers: { "Content-Type": "application/json" },
     credentials: "include",
   });
-console.log(res);
+  console.log(res);
   return res.ok;
 };
 
