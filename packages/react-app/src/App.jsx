@@ -10,17 +10,21 @@ import MintingPage from './views/MintingPage'
 import CloseIcon from '@mui/icons-material/Close'
 import IconButton from '@mui/material/IconButton'
 import Toast from 'components/Toast'
+import { BadgeContext } from 'contexts/BadgeContext'
+import externalContracts from 'contracts/external_contracts'
 const { ethers } = require('ethers')
 
 function App(props) {
   const [loaded, setLoaded] = useState(false)
   const [localProvider, setLocalProvider] = useState(null)
-  const [mainnet, setMainnet] = useState(null)
-  const [injectedProvider, setInjectedProvider] = useState()
-  const [address, setAddress] = useState('')
   const [connectedAddress, setConnectedAddress] = useState()
+  const [injectedProvider, setInjectedProvider] = useState()
+  const [mainnet, setMainnet] = useState(null)
+  const [address, setAddress] = useState('')
   const [tabValue, setTabValue] = useState(0)
   const [showToast, setShowToast] = useState(false)
+  const [selectedChainId] = useState(10)
+  const contractConfig = { deployedContracts: {}, externalContracts: externalContracts || {} }
 
   const targetNetwork = NETWORKS['optimism']
   /* 💵 This hook will get the price of ETH from 🦄 Uniswap: */
@@ -40,6 +44,14 @@ function App(props) {
 
   const displayToast = () => {
     setShowToast(true)
+  }
+  let contractRef
+  if (
+    externalContracts[selectedChainId] &&
+    externalContracts[selectedChainId].contracts &&
+    externalContracts[selectedChainId].contracts.REMIX_REWARD
+  ) {
+    contractRef = externalContracts[selectedChainId].contracts.REMIX_REWARD
   }
 
   useEffect(() => {
@@ -131,43 +143,58 @@ function App(props) {
 
   return (
     <div className="App">
-      <Layout tabValue={tabValue} setTabValue={setTabValue}>
-        {loaded && tabValue === 0 && (
-          <BrowseBadges
-            address={address}
-            connectedAddress={connectedAddress}
-            injectedProvider={injectedProvider}
-            setAddress={setAddress}
-            localProvider={localProvider}
-            mainnet={mainnet}
-            selectedChainId={10}
-            {...props}
-            wallet={
-              <Account
-                // @ts-ignore
-                useBurner={USE_BURNER_WALLET}
-                address={connectedAddress}
-                localProvider={localProvider}
-                userSigner={userSigner}
-                mainnetProvider={mainnet}
-                price={price}
-                loadWeb3Modal={loadWeb3Modal}
-                logoutOfWeb3Modal={logoutOfWeb3Modal}
-                blockExplorer={targetNetwork.blockExplorer}
-              />
-            }
-          />
-        )}
+      <BadgeContext.Provider
+        value={{
+          localProvider,
+          mainnet,
+          injectedProvider,
+          selectedChainId,
+          address,
+          setAddress,
+          connectedAddress,
+          contractConfig,
+          externalContracts,
+          contractRef,
+        }}
+      >
+        <Layout tabValue={tabValue} setTabValue={setTabValue}>
+          {loaded && tabValue === 0 && (
+            <BrowseBadges
+              address={address}
+              connectedAddress={connectedAddress}
+              injectedProvider={injectedProvider}
+              setAddress={setAddress}
+              localProvider={localProvider}
+              mainnet={mainnet}
+              selectedChainId={10}
+              {...props}
+              wallet={
+                <Account
+                  // @ts-ignore
+                  useBurner={USE_BURNER_WALLET}
+                  address={connectedAddress}
+                  localProvider={localProvider}
+                  userSigner={userSigner}
+                  mainnetProvider={mainnet}
+                  price={price}
+                  loadWeb3Modal={loadWeb3Modal}
+                  logoutOfWeb3Modal={logoutOfWeb3Modal}
+                  blockExplorer={targetNetwork.blockExplorer}
+                />
+              }
+            />
+          )}
 
-        {tabValue === 1 && (
-          <MintingPage
-            // @ts-ignore
-            tabValue={tabValue}
-            setTabValue={setTabValue}
-          />
-        )}
-        <Toast showToast={showToast} closeToast={closeToast} snackBarAction={snackBarAction} />
-      </Layout>
+          {tabValue === 1 && (
+            <MintingPage
+              // @ts-ignore
+              tabValue={tabValue}
+              setTabValue={setTabValue}
+            />
+          )}
+          <Toast showToast={showToast} closeToast={closeToast} snackBarAction={snackBarAction} />
+        </Layout>
+      </BadgeContext.Provider>
     </div>
   )
 }

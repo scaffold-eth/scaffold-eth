@@ -1,22 +1,23 @@
-import Button from '@mui/material/Button'
+// @ts-nocheck
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import MintingPageCard from '../components/MintingPageCard'
 import { ethers } from 'ethers'
-import externalContracts from '../contracts/external_contracts'
-import { useState } from 'react'
-import FormGroup from '@mui/material/FormGroup'
+import { useContext, useState } from 'react'
 import TextField from '@mui/material/TextField'
+import { styled } from '@mui/material/styles'
+import MintingActions from 'components/MintingActions'
+import { BadgeContext } from 'contexts/BadgeContext'
 
-export default function MintingPage({ selectedChainId, injectedProvider, connectedAddress, wallet }) {
-  let contractRef
-  if (
-    externalContracts[selectedChainId] &&
-    externalContracts[selectedChainId].contracts &&
-    externalContracts[selectedChainId].contracts.REMIX_REWARD
-  ) {
-    contractRef = externalContracts[selectedChainId].contracts.REMIX_REWARD
-  }
+const WalletAddressTextField = styled(TextField)(({ theme }) => ({
+  '& .MuiInputBase-input': {
+    backgroundColor: theme.palette.mode === 'light' ? '#fff' : '#2b2b2b',
+    padding: '10px 10px',
+  },
+}))
+
+export default function MintingPage({ selectedChainId, injectedProvider }) {
+  const { contractRef, connectedAddress } = useContext(BadgeContext)
 
   /*
    * this mint a user badge from the current selected account
@@ -36,11 +37,14 @@ export default function MintingPage({ selectedChainId, injectedProvider, connect
    */
   async function allowedMinting() {
     let contract = new ethers.Contract(contractRef.address, contractRef.abi, injectedProvider)
-    return await contract.allowedMinting()
+    return await contract.allowedMinting(connectedAddress)
   }
-  const [mintCount] = useState(async () => await allowedMinting())
+  const [mintCount, setMintCount] = useState(0)
   const [walletAddress, setWalletAddress] = useState('')
-  console.log({ mintCount })
+
+  function handleChange(e) {
+    setWalletAddress(e.target.value)
+  }
 
   return (
     <>
@@ -77,27 +81,17 @@ export default function MintingPage({ selectedChainId, injectedProvider, connect
         justifyContent={'center'}
         flexDirection={'column'}
       >
-        <MintingPageCard top={-62} />
-        <Box>
-          <Box sx={{ background: 'white' }} width={250}>
-            <Typography variant="h4" sx={{ padding: 2 }}>
-              {typeof mintCount === 'number' ? mintCount : 0}
-            </Typography>
-            <Typography variant="subtitle1" color={'#0c0c0c'}>
-              BADGES REMAINING TO MINT ON YOUR ACCT
-            </Typography>
-          </Box>
-          <Box pt={5}>
-            <Typography fontWeight={600}>Input a wallet address</Typography>
-            <FormGroup sx={{ paddingTop: 5 }}>
-              <TextField
-                placeholder="Address or ENS name"
-                variant="outlined"
-                value={walletAddress}
-                onChange={e => setWalletAddress(e.target.value)}
-              />
-            </FormGroup>
-          </Box>
+        <MintingPageCard top={-52} />
+        <Box mt={5}>
+          <MintingActions
+            mintCount={mintCount}
+            setMintCount={setMintCount}
+            mintBadge={mintBadge}
+            allowedMinting={allowedMinting}
+            walletAddress={walletAddress}
+            handleChange={handleChange}
+            WalletAddressTextField={WalletAddressTextField}
+          />
         </Box>
       </Box>
     </>
