@@ -1,0 +1,18 @@
+{
+  "name": "node-backend",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node app-starter.js"
+  },
+  "dependencies": {
+    "blockin": "^1.2.6",
+    "blockin-eth-driver": "^1.0.7",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "debug": "~2.6.9",
+    "express": "~4.16.1",
+    "morgan": "~1.9.1"
+  }
+}

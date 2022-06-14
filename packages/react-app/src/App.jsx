@@ -29,7 +29,7 @@ import externalContracts from "./contracts/external_contracts";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor, Web3ModalSetup } from "./helpers";
-import { Home, ExampleUI, Hints, Subgraph } from "./views";
+import { Home, ExampleUI, Hints, Subgraph, SignIn } from "./views";
 import { useStaticJsonRPC } from "./hooks";
 
 const { ethers } = require("ethers");
@@ -60,6 +60,7 @@ const DEBUG = true;
 const NETWORKCHECK = true;
 const USE_BURNER_WALLET = true; // toggle burner wallet feature
 const USE_NETWORK_SELECTOR = true;
+const USE_SIGN_IN_WITH_ETHEREUM = true;
 
 const web3Modal = Web3ModalSetup();
 
@@ -252,6 +253,7 @@ function App(props) {
         <div style={{ position: "relative", display: "flex", flexDirection: "column" }}>
           <div style={{ display: "flex", flex: 1 }}>
             <Account
+              hideLogin={!USE_SIGN_IN_WITH_ETHEREUM}
               networkOptions={USE_NETWORK_SELECTOR ? networkOptions : []}
               selectedNetwork={selectedNetwork}
               setSelectedNetwork={setSelectedNetwork}
@@ -298,6 +300,9 @@ function App(props) {
         </Menu.Item>
         <Menu.Item key="/subgraph">
           <Link to="/subgraph">Subgraph</Link>
+        </Menu.Item>
+        <Menu.Item key="/signin">
+          <Link to="/signin">Sign-In with Ethereum</Link>
         </Menu.Item>
       </Menu>
 
@@ -374,6 +379,9 @@ function App(props) {
             writeContracts={writeContracts}
             mainnetProvider={mainnetProvider}
           />
+        </Route>
+        <Route path="/signin">
+          <SignIn />
         </Route>
       </Switch>
 
