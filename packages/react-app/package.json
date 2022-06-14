@@ -99,6 +99,6 @@
     "ship": "yarn surge",
     "theme": "npx gulp less",
     "watch": "node ./scripts/watch.js",
-    "prettier": "npx prettier --write ./src"
+    "prettier": "npx prettier --write . '!(node_module|build)/**/*'"
   }
 }

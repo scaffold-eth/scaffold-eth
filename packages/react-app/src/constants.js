@@ -9,7 +9,7 @@ export const BLOCKNATIVE_DAPPID = "0b58206a-f3c0-4701-a62f-73c7243e8c77";
 
 export const ALCHEMY_KEY = "oKxs-03sij-U_N0iOlrSsZFr29-IqbuF";
 
-export const BACKEND_URL = "http://localhost:3001"; //This should be pointing at your backend node API, if you are running it for SIgn-In with Ethereum.
+export const BACKEND_URL = "http://localhost:3001"; //This should be pointing at your backend node API, if you are running it for Sign-In with Ethereum.
 
 const localRpcUrl = process.env.REACT_APP_CODESPACES
   ? `https://${window.location.hostname.replace("3000", "8545")}`
