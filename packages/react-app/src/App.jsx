@@ -319,6 +319,7 @@ function App(props) {
                 and give you a form to interact with it locally
             */}
 
+
           <Contract
             name="YourContract"
             price={price}
@@ -328,6 +329,17 @@ function App(props) {
             blockExplorer={blockExplorer}
             contractConfig={contractConfig}
           />
+
+          <Contract
+            name="Bank"
+            price={price}
+            signer={userSigner}
+            provider={localProvider}
+            address={address}
+            blockExplorer={blockExplorer}
+            contractConfig={contractConfig}
+          />
+          
         </Route>
         <Route path="/hints">
           <Hints
