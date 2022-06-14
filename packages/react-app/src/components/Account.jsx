@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useThemeSwitcher } from "react-css-theme-switcher";
-
 import Balance from "./Balance";
 import Wallet from "./Wallet";
 import { BlockinUIDisplay } from "blockin/dist/ui";
@@ -21,27 +20,28 @@ const capitalizeFirstLetter = string => {
  * Welcome to the Account UI! This is what is shown in the top right of the Scaffold-ETH template.
  *
  * If you have used the Scaffold-ETH repo before, you may have noticed that this looks a little different
- * than previously. The template now supports using Blockin, a library built by a fellow Scaffold buidler
+ * than previously. This new UI uses Blockin, a library built by a fellow Scaffold buidler
  * @trevormil! Blockin is a library that supports a few really cool things:
- * 1) Sign-In with Ethereum capabilities for any blockchain (not limited to just Ethereum if you want to expand)
- * 2) Adding NFTs to sign-in requests, only granting the request if ownership of the NFT is verified
- * 3) A UI display for connecting and signing in
+ * 1) A convenient, all-in-one UI display for connecting and signing in
+ * 2) Sign-In with Ethereum support for any blockchain (not limited to just Ethereum if you want to expand to different chains)
+ * 3) Adding NFTs to sign-in requests, only granting the request if ownership of the NFT is verified
  *
  * Note that signing-in is different than connecting a wallet: (https://blog.spruceid.com/sign-in-with-ethereum-is-a-game-changer-part-1/)
  *
- * By default, the sign-in functionalities are disabled and not displayed. Visit the Sign-In with Ethereum tab or views/SignIn.jsx.
+ * By default, the Sign-In with Ethereum functionalities are disabled and not displayed. Visit the Sign-In with Ethereum tab or 
+ * views/SignIn.jsx to see how to activate it.
  *
  * This library is still in its early stages, so any feedback or new ideas would be greatly
- * appreciated. You can report issues at https://github.com/matt-davison/blockin or message @trevormil23
- * on Twitter.
+ * appreciated. You can report issues on GitHub or message @trevormil23 on Twitter.
  *
  * Blockin Links:
- * Code Repository: https://github.com/matt-davison/blockin
+ * Code Repositories: https://github.com/Blockin-Labs
  * Docs: https://blockin.gitbook.io/blockin/
  * Demo Site: https://blockin.vercel.app/
  *
  * If you would like to switch back to the old account UI which offers more customization, that code is provided
- * but commented out below. You can also build your own UI easily for Blockin using the Blockin Library, if desired.
+ * but commented out at the bottom of this file. You can also build your own UI easily for Blockin using the Blockin Library 
+ * if desired. You don't have to use the Blockin UI to use Blockin.
  */
 export default function Account({
   hideLogin,
