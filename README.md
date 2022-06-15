@@ -1,11 +1,14 @@
-# 🏗 Scaffold-ETH
+# 🏗 FancyEarrings for FancyLoogies
 
-> everything you need to build on Ethereum! 🚀
+A super rare Earring NFT for your FancyLoogie minted with LoogieCoins!
 
-🧪 Quickly experiment with Solidity using a frontend that adapts to your smart contract:
+https://earrings.fancyloogies.com/
 
-![image](https://user-images.githubusercontent.com/2653167/124158108-c14ca380-da56-11eb-967e-69cde37ca8eb.png)
+![earring-red](https://user-images.githubusercontent.com/466652/173846270-c454233b-2524-44f8-9e30-6404400a7435.png)
 
+![logo](https://user-images.githubusercontent.com/466652/173845518-7b5b52e3-8e18-456f-89a1-c95154e6b4f4.png)
+
+More information about composable SVG NFTs at the FancyLoogies branch https://github.com/scaffold-eth/scaffold-eth/tree/fancy-loogies
 
 # 🏄‍♂️ Quick Start
 
@@ -14,13 +17,13 @@ Prerequisites: [Node (v16 LTS)](https://nodejs.org/en/download/) plus [Yarn](htt
 > clone/fork 🏗 scaffold-eth:
 
 ```bash
-git clone https://github.com/scaffold-eth/scaffold-eth.git
+git clone -b fancy-earring https://github.com/scaffold-eth/scaffold-eth.git fancy-earring
 ```
 
 > install and start your 👷‍ Hardhat chain:
 
 ```bash
-cd scaffold-eth
+cd fancy-earring
 yarn install
 yarn chain
 ```
@@ -28,18 +31,18 @@ yarn chain
 > in a second terminal window, start your 📱 frontend:
 
 ```bash
-cd scaffold-eth
+cd fancy-earring
 yarn start
 ```
 
 > in a third terminal window, 🛰 deploy your contract:
 
 ```bash
-cd scaffold-eth
+cd fancy-earring
 yarn deploy
 ```
 
-🔏 Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
+🔏 Edit your smart contract `Earring.sol` in `packages/hardhat/contracts`
 
 📝 Edit your frontend `App.jsx` in `packages/react-app/src`
 
