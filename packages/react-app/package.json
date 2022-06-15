@@ -2,7 +2,6 @@
   "name": "@scaffold-eth/react-app",
   "version": "2.0.0",
   "homepage": ".",
-  "type": "module",
   "browser": {
     "os": "./node_modules/os",
     "https": "./node_modules/https-browserify",
@@ -104,7 +103,7 @@
   "scripts": {
     "build": "react-scripts build",
     "eject": "react-scripts eject",
-    "prestart": "node ./scripts/create_contracts.js",
+    "prestart": "node ./scripts/create_contracts.mjs",
     "start": "react-scripts start",
     "test": "react-scripts test",
     "lint": "eslint --config ./.eslintrc.js --ignore-path ./.eslintignore ./src/**/*",
