@@ -2,7 +2,6 @@
   "name": "@scaffold-eth/react-app",
   "version": "2.0.0",
   "homepage": ".",
-  "type": "module",
   "browser": {
     "os": "./node_modules/os",
     "https": "./node_modules/https-browserify",
@@ -30,8 +29,11 @@
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
     "@apollo/client": "^3.6.8",
+    "@babel/core": "^7.16.0",
+    "@pmmmwh/react-refresh-webpack-plugin": "^0.5.3",
     "@portis/web3": "^4.0.7",
     "@ramp-network/ramp-instant-sdk": "^3.1.1",
+    "@svgr/webpack": "^5.5.0",
     "@uniswap/sdk": "^3.0.3",
     "@uniswap/v2-periphery": "^1.1.0-beta.0",
     "@walletconnect/web3-provider": "^1.7.8",
@@ -40,36 +42,78 @@
     "assert": "^2.0.0",
     "authereum": "^0.1.14",
     "axios": "^0.27.2",
+    "babel-jest": "^27.4.2",
+    "babel-loader": "^8.2.3",
+    "babel-plugin-named-asset-import": "0.4.0-next.14+9802941f",
+    "babel-preset-react-app": "10.1.0-next.14+9802941f",
+    "bfj": "^7.0.2",
     "bnc-notify": "^1.9.5",
+    "browserslist": "^4.18.1",
     "buffer": "^6.0.3",
-    "dotenv": "^16.0.1",
+    "camelcase": "^6.2.1",
+    "case-sensitive-paths-webpack-plugin": "^2.4.0",
+    "css-loader": "^6.5.1",
+    "css-minimizer-webpack-plugin": "^3.2.0",
+    "dotenv": "^10.0.0",
+    "dotenv-expand": "^5.1.0",
+    "eslint": "^8.3.0",
+    "eslint-config-react-app": "7.1.0-next.14+9802941f",
+    "eslint-webpack-plugin": "^3.1.1",
     "eth-components": "^3.2.46",
     "eth-hooks": "^4.2.39",
     "ethers": "^5.6.8",
+    "file-loader": "^6.2.0",
     "fortmatic": "^2.4.0",
+    "fs-extra": "^10.0.0",
     "graphiql": "^1.9.9",
     "graphql": "^16.5.0",
+    "html-webpack-plugin": "^5.5.0",
     "https-browserify": "^1.0.0",
+    "identity-obj-proxy": "^3.0.0",
     "isomorphic-fetch": "^3.0.0",
+    "jest": "^27.4.3",
+    "jest-resolve": "^27.4.2",
+    "jest-watch-typeahead": "^1.0.0",
     "merge-anything": "5.0.2",
+    "mini-css-extract-plugin": "^2.4.5",
     "node-watch": "^0.7.3",
     "os": "^0.1.2",
     "os-browserify": "^0.3.0",
     "path": "^0.12.7",
-    "postcss": "^8.4.14",
+    "postcss": "^8.4.4",
+    "postcss-flexbugs-fixes": "^5.0.2",
+    "postcss-loader": "^6.2.1",
+    "postcss-normalize": "^10.0.1",
+    "postcss-preset-env": "^7.0.1",
+    "process": "^0.11.10",
+    "prompts": "^2.4.2",
     "qrcode.react": "^3.0.2",
     "react": "^18.2.0",
+    "react-app-polyfill": "3.1.0-next.14+9802941f",
     "react-blockies": "^1.4.1",
     "react-css-theme-switcher": "^0.3.0",
+    "react-dev-utils": "12.1.0-next.14+9802941f",
     "react-dom": "^18.2.0",
     "react-qr-reader": "^3.0.0-beta-1",
+    "react-refresh": "^0.11.0",
     "react-router-dom": "^5.3.3",
+    "resolve": "^1.20.0",
+    "resolve-url-loader": "^4.0.0",
+    "sass-loader": "^12.3.0",
+    "semver": "^7.3.5",
+    "source-map-loader": "^3.0.0",
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
+    "style-loader": "^3.3.1",
+    "tailwindcss": "^3.0.2",
+    "terser-webpack-plugin": "^5.2.5",
     "url": "^0.11.0",
     "util": "^0.12.4",
     "walletlink": "^2.5.0",
-    "process": "^0.11.10"
+    "webpack": "^5.64.4",
+    "webpack-dev-server": "^4.6.0",
+    "webpack-manifest-plugin": "^4.0.2",
+    "workbox-webpack-plugin": "^6.4.1"
   },
   "devDependencies": {
     "@testing-library/dom": "^8.13.0",
@@ -87,8 +131,6 @@
     "less-plugin-npm-import": "^2.1.0",
     "path": "^0.12.7",
     "prettier": "^2.7.0",
-    "react-app-polyfill": "^3.0.0",
-    "react-scripts": "^5.1.0-next.14",
     "s3-folder-upload": "^2.3.1",
     "surge": "^0.23.1"
   },
@@ -102,11 +144,10 @@
     }
   },
   "scripts": {
-    "build": "react-scripts build",
-    "eject": "react-scripts eject",
-    "prestart": "node ./scripts/create_contracts.js",
-    "start": "react-scripts start",
-    "test": "react-scripts test",
+    "build": "node scripts/build.js",
+    "prestart": "node ./scripts/create_contracts.mjs",
+    "start": "node scripts/start.js",
+    "test": "node scripts/test.js",
     "lint": "eslint --config ./.eslintrc.js --ignore-path ./.eslintignore ./src/**/*",
     "ipfs": "node ./scripts/ipfs.js",
     "surge": "cp build/index.html build/200.html && surge ./build",
@@ -115,5 +156,61 @@
     "theme": "npx gulp less",
     "watch": "node ./scripts/watch.js",
     "prettier": "npx prettier --write . '!(node_module|build)/**/*'"
+  },
+  "jest": {
+    "roots": [
+      "<rootDir>/src"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx,ts,tsx}",
+      "!src/**/*.d.ts"
+    ],
+    "setupFiles": [
+      "react-app-polyfill/jsdom"
+    ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/src/setupTests.js"
+    ],
+    "testMatch": [
+      "<rootDir>/src/**/__tests__/**/*.{js,jsx,ts,tsx}",
+      "<rootDir>/src/**/*.{spec,test}.{js,jsx,ts,tsx}"
+    ],
+    "testEnvironment": "jsdom",
+    "transform": {
+      "^.+\\.(js|jsx|mjs|cjs|ts|tsx)$": "<rootDir>/config/jest/babelTransform.js",
+      "^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",
+      "^(?!.*\\.(js|jsx|mjs|cjs|ts|tsx|css|json)$)": "<rootDir>/config/jest/fileTransform.js"
+    },
+    "transformIgnorePatterns": [
+      "[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs|cjs|ts|tsx)$",
+      "^.+\\.module\\.(css|sass|scss)$"
+    ],
+    "modulePaths": [],
+    "moduleNameMapper": {
+      "^react-native$": "react-native-web",
+      "^.+\\.module\\.(css|sass|scss)$": "identity-obj-proxy"
+    },
+    "moduleFileExtensions": [
+      "web.js",
+      "js",
+      "web.ts",
+      "ts",
+      "web.tsx",
+      "tsx",
+      "json",
+      "web.jsx",
+      "jsx",
+      "node"
+    ],
+    "watchPlugins": [
+      "jest-watch-typeahead/filename",
+      "jest-watch-typeahead/testname"
+    ],
+    "resetMocks": true
+  },
+  "babel": {
+    "presets": [
+      "react-app"
+    ]
   }
 }
