@@ -8289,10 +8289,10 @@ eth-block-tracker@^3.0.0:
     pify "^2.3.0"
     tape "^4.6.3"
 
-eth-components@^3.2.46:
-  version "3.2.46"
-  resolved "https://registry.npmjs.org/eth-components/-/eth-components-3.2.46.tgz"
-  integrity sha512-FckFVVj2X0SbAUBJRNXA0tM7oFWhsCv1Y4EvM2J5gjPQMS3rTJsMsr0EhQ1S0A9wK701I6mHU9Fi/iSpY+Wreg==
+eth-components@^3.3.0-beta02:
+  version "3.3.0-beta02"
+  resolved "https://registry.yarnpkg.com/eth-components/-/eth-components-3.3.0-beta02.tgz#abc26e7cf85ceaa4147cf0ebafd22e2a56915bc9"
+  integrity sha512-0C1BI64zylJRILTqxwj5WEzMy+BWQ+HSytlm3mQBWFAeU99rfYIExEc17nVWIJp78yMgQ1PpKmp4FRORx5dRDA==
   dependencies:
     "@ethersproject/abstract-signer" "^5.6.2"
     "@ethersproject/address" "^5.6.1"
@@ -8348,6 +8348,35 @@ eth-hooks@^4.2.39:
   version "4.2.39"
   resolved "https://registry.npmjs.org/eth-hooks/-/eth-hooks-4.2.39.tgz"
   integrity sha512-eBH3V71H1dLwv2SlPRw4bErpQaszttFTXvpwHBdH6d1mCwsieN+x82YLDPpJscc2acGYA6RWhUWTPLmxTlYfag==
+  dependencies:
+    "@ethersproject/abi" "^5.6.3"
+    "@ethersproject/abstract-provider" "^5.6.1"
+    "@ethersproject/address" "^5.6.1"
+    "@ethersproject/bignumber" "^5.6.2"
+    "@ethersproject/bytes" "^5.6.1"
+    "@ethersproject/contracts" "^5.6.2"
+    "@ethersproject/networks" "^5.6.3"
+    "@ethersproject/providers" "^5.6.8"
+    "@ethersproject/signing-key" "^5.6.2"
+    "@ethersproject/solidity" "^5.6.1"
+    "@ethersproject/units" "^5.6.1"
+    "@uniswap/token-lists" "^1.0.0-beta.28"
+    "@web3-react/abstract-connector" "^6.0.7"
+    "@web3-react/core" "^6.1.9"
+    "@web3-react/types" "^6.0.7"
+    ethers "^5.6.8"
+    lodash.isequal "^4.5.0"
+    merge-anything "^5.0.2"
+    react-query "^3.39.1"
+    ts-invariant "^0.10.3"
+    use-debounce "^8.0.1"
+    usehooks-ts "^2.5.4"
+    web3modal "^1.9.8"
+
+eth-hooks@^4.3.0-beta01:
+  version "4.3.0-beta01"
+  resolved "https://registry.yarnpkg.com/eth-hooks/-/eth-hooks-4.3.0-beta01.tgz#16b73bbc55dd8db2e1dd0d48ed8d385400b5b00b"
+  integrity sha512-VY2KAfxh4xIeHBC7tY+Yba2I+ZpgSX6TH7vJRdErAcX+ykjqAtrVpnMiZVwMzGkdjYvNNiXJhaUxu634pJX1XA==
   dependencies:
     "@ethersproject/abi" "^5.6.3"
     "@ethersproject/abstract-provider" "^5.6.1"
