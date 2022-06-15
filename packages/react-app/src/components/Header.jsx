@@ -7,20 +7,13 @@ const { Title, Text } = Typography;
 
 export default function Header({ link, title, subTitle, ...props }) {
   return (
-    <div style={{ display: "flex", justifyContent: "space-between", padding: "1.2rem" }}>
-      <div style={{ display: "flex",  flexDirection: "column", flex: 1, alignItems: "start" }}>
-        <a href={link} target="_blank" rel="noopener noreferrer">
-          <Title level={4} style={{ margin: "0 0.5rem 0 0" }}>{title}</Title>
-        </a>
-        <Text type="secondary" style={{ textAlign: "left" }}>{subTitle}</Text>
+    <div>
+      <div style={{ float: "right", marginTop: 20, marginRight: 20 }}>
+        {props.children}
       </div>
-      {props.children}
+      <div style={{ margin: "0 auto", width: 400 }}>
+        <img src="loogie-earring.svg" width="400" alt="FancyLoogie with Earring" style={{ marginTop: -100, marginBottom: -100 }} />
+      </div>
     </div>
   );
 }
-
-Header.defaultProps = {
-  link: "https://github.com/austintgriffith/scaffold-eth",
-  title: "🏗 scaffold-eth",
-  subTitle: "forkable Ethereum dev stack focused on fast product iteration",
-};

@@ -17,16 +17,34 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const { deployer } = await getNamedAccounts();
   const chainId = await getChainId();
 
-  await deploy("YourContract", {
+  // localhost
+  const loogiesContractAddress = "0x8A791620dd6260079BF849Dc5567aDC3F2FdC318";
+  const loogieCoinContractAddress =
+    "0x4ed7c70F96B99c776995fB64377f0d4aB3B0e1C1";
+
+  /*
+  // kovan optimism
+  const loogiesContractAddress = "0x43693eeC62666D621ba33095090BE60d4aF6D6FA";
+  const loogieCoinContractAddress =
+    "0x37a76CFB334b62C0eAf8808Dc9B5Ff82bB246827";
+
+
+  // optimism
+  const loogiesContractAddress = "0xbE7706DFA9Cc5aEEB5b26698C1bc5c43829E808A";
+  const loogieCoinContractAddress =
+    "0x83eD2eE1e2744D27Ffd949314f4098f13535292F";
+  */
+
+  await deploy("Earring", {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
-    // args: [ "Hello", ethers.utils.parseEther("1.5") ],
+    args: [loogieCoinContractAddress, loogiesContractAddress],
     log: true,
     waitConfirmations: 5,
   });
 
   // Getting a previously deployed contract
-  const YourContract = await ethers.getContract("YourContract", deployer);
+  // const Earring = await ethers.getContract("Earring", deployer);
   /*  await YourContract.setPurpose("Hello");
   
     To take ownership of yourContract using the ownable library uncomment next line and add the 
