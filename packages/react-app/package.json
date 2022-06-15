@@ -10,7 +10,7 @@
     "stream": "./node_modules/stream-browserify",
     "util": "./node_modules/util",
     "url": "./node_modules/url",
-    "assert": false,
+    "assert": "./node_modules/assert",
     "crypto": false
   },
   "browserslist": {
@@ -21,6 +21,7 @@
       "not ie all"
     ],
     "development": [
+      ">1%",
       "last 20 chrome version",
       "last 20 firefox version",
       "last 20 safari version"
@@ -46,12 +47,15 @@
     "eth-hooks": "^4.2.39",
     "ethers": "^5.6.8",
     "fortmatic": "^2.4.0",
-    "graphiql": "^1.9.8",
+    "graphiql": "^1.9.9",
     "graphql": "^16.5.0",
     "https-browserify": "^1.0.0",
     "isomorphic-fetch": "^3.0.0",
     "merge-anything": "5.0.2",
     "node-watch": "^0.7.3",
+    "os": "^0.1.2",
+    "os-browserify": "^0.3.0",
+    "path": "^0.12.7",
     "postcss": "^8.4.14",
     "qrcode.react": "^3.0.2",
     "react": "^18.2.0",
@@ -61,9 +65,11 @@
     "react-qr-reader": "^3.0.0-beta-1",
     "react-router-dom": "^5.3.3",
     "stream-browserify": "^3.0.0",
+    "stream-http": "^3.2.0",
     "url": "^0.11.0",
     "util": "^0.12.4",
-    "walletlink": "^2.5.0"
+    "walletlink": "^2.5.0",
+    "process": "^0.11.10"
   },
   "devDependencies": {
     "@testing-library/dom": "^8.13.0",
@@ -79,6 +85,7 @@
     "gulp-postcss": "^9.0.1",
     "ipfs-http-client": "^57.0.1",
     "less-plugin-npm-import": "^2.1.0",
+    "path": "^0.12.7",
     "prettier": "^2.7.0",
     "react-app-polyfill": "^3.0.0",
     "react-scripts": "^5.1.0-next.14",
