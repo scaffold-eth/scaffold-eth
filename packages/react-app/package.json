@@ -16,8 +16,7 @@
     "production": [
       ">1%",
       "not dead",
-      "not op_mini all",
-      "not ie all"
+      "not op_mini all"
     ],
     "development": [
       ">1%",
@@ -28,8 +27,8 @@
   },
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
-    "@arbitrum/sdk": "2.0.3",
     "@apollo/client": "^3.6.8",
+    "@arbitrum/sdk": "2.0.3",
     "@portis/web3": "^4.0.7",
     "@ramp-network/ramp-instant-sdk": "^3.1.1",
     "@uniswap/sdk": "^3.0.3",
@@ -40,6 +39,7 @@
     "authereum": "^0.1.14",
     "axios": "^0.27.2",
     "bnc-notify": "^1.9.5",
+    "browserslist": "4.6.3",
     "buffer": "^6.0.3",
     "dotenv": "^16.0.1",
     "eth-components": "^3.3.0-beta02",
@@ -56,6 +56,7 @@
     "os-browserify": "^0.3.0",
     "path": "^0.12.7",
     "postcss": "^8.4.14",
+    "process": "^0.11.10",
     "qrcode.react": "^3.0.2",
     "react": "^18.2.0",
     "react-blockies": "^1.4.1",
@@ -68,7 +69,7 @@
     "url": "^0.11.0",
     "util": "^0.12.4",
     "walletlink": "^2.5.0",
-    "process": "^0.11.10"
+    "webpack": "^5.73.0"
   },
   "devDependencies": {
     "@testing-library/dom": "^8.13.0",
@@ -89,7 +90,8 @@
     "react-app-polyfill": "^3.0.0",
     "react-scripts": "^5.1.0-next.14",
     "s3-folder-upload": "^2.3.1",
-    "surge": "^0.23.1"
+    "surge": "^0.23.1",
+    "webpack-cli": "^4.10.0"
   },
   "eslintConfig": {
     "extends": [
