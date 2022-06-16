@@ -63,8 +63,7 @@
       "**/@graphprotocol/graph-ts/**",
       "**/hardhat",
       "**/hardhat/**",
-      "**/hardhat-ts",
-      "**/hardhat-ts/**"
+      "**/react-app/**"
     ]
   },
   "dependencies": {},
