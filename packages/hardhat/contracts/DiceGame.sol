@@ -8,6 +8,7 @@ contract DiceGame {
     uint256 public nonce = 0;
     uint256 public prize = 0;
 
+    event Difficulty(address indexed player, uint256 difficulty);
     event Roll(address indexed player, uint256 roll);
     event Winner(address winner, uint256 amount);
 
@@ -22,8 +23,11 @@ contract DiceGame {
     function rollTheDice() public payable {
         require(msg.value >= 0.002 ether, "Failed to send enough value");
 
-        bytes32 prevHash = blockhash(block.number - 1);
-        bytes32 hash = keccak256(abi.encodePacked(prevHash, address(this), nonce));
+        emit Difficulty(msg.sender, block.difficulty);
+
+        //bytes32 prevHash = blockhash(block.number - 1);
+        console.log("difficulty: ", block.difficulty);
+        bytes32 hash = keccak256(abi.encodePacked(block.difficulty, address(this), nonce));
         uint256 roll = uint256(hash) % 16;
 
         console.log("THE ROLL IS ",roll);

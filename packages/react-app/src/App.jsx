@@ -451,7 +451,11 @@ function App(props) {
 
   const winnerEvents = useEventListener(readContracts, "DiceGame", "Winner");
   const rollEvents = useEventListener(readContracts, "DiceGame", "Roll");
+  const difficultyEvents = useEventListener(readContracts, "DiceGame", "Difficulty");
   const prize = useContractReader(readContracts, "DiceGame", "prize");
+
+  const rollRiggedEvents = useEventListener(readContracts, "RiggedRoll", "Roll");
+  const difficultyRiggedEvents = useEventListener(readContracts, "RiggedRoll", "Difficulty");
 
   const [diceRolled, setDiceRolled] = useState(false);
   const [diceRollImage, setDiceRollImage] = useState(null);
@@ -474,7 +478,6 @@ function App(props) {
     });
   };
 
-  /*
   const riggedRoll = async () => {
     tx(writeContracts.RiggedRoll.riggedRoll({ gasLimit: 500000 }), update => {
       console.log("TX UPDATE", update);
@@ -503,7 +506,6 @@ function App(props) {
       setDiceRolled(false);
     }
   });
-  */
 
   const filter = readContracts.DiceGame?.filters.Roll(address, null);
 
@@ -546,6 +548,9 @@ function App(props) {
           </Menu.Item>
         </Menu>
         {console.log("roll events: ", rollEvents)}
+        {console.log("difficulty events: ", difficultyEvents)}
+        {console.log("roll rigged events: ", rollRiggedEvents)}
+        {console.log("difficulty rigged events: ", difficultyRiggedEvents)}
         <Switch>
           <Route exact path="/">
             <div style={{ display: "flex" }}>
@@ -565,6 +570,21 @@ function App(props) {
                     );
                   }}
                 />
+                <div>Roll Rigged Events:</div>
+                <List
+                  style={{ height: 258, overflow: "hidden" }}
+                  dataSource={rollRiggedEvents}
+                  renderItem={item => {
+                    return (
+                      <List.Item
+                        key={item.args[0] + " " + item.args[1] + " " + date.getTime() + " " + item.blockNumber}
+                      >
+                        <Address value={item.args[0]} ensProvider={mainnetProvider} fontSize={16} />
+                        &nbsp;Roll:&nbsp;{item.args[1].toNumber().toString(16).toUpperCase()}
+                      </List.Item>
+                    );
+                  }}
+                />
               </div>
               <div id="centerWrapper" style={{ padding: 16 }}>
                 <h2>Roll a 0, 1, or 2 to win the prize!</h2>
@@ -573,7 +593,6 @@ function App(props) {
                   <Button type="primary" disabled={diceRolled} onClick={rollTheDice}>
                     Roll the dice!
                   </Button>
-                  {/*
                   <div style={{ padding: 16 }}>
                     <Account
                       address={readContracts?.RiggedRoll?.address}
@@ -590,7 +609,6 @@ function App(props) {
                       Rigged Roll!
                     </Button>
                   </div>
-                */}
                 </div>
                 {diceRollImg}
               </div>
