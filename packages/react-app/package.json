@@ -45,6 +45,7 @@
     "babel-plugin-syntax-dynamic-import": "^6.18.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
+    "babel-preset-react": "^6.24.1",
     "bnc-notify": "^1.9.5",
     "browserslist": "4.6.3",
     "buffer": "^6.0.3",
