@@ -10,7 +10,7 @@ module.exports = {
     rules: [
       {
         test: /app\.js$/i,
-        loader: "raw-loader",
+        loader: "babel-loader",
         // query: {
         //   presets: ["es2015", "react"],
         // },
@@ -24,6 +24,7 @@ module.exports = {
   resolve: {
     symlinks: false,
     extensions: [".js", ".jsx", ".ts", ".tsx"],
+    mainFields: ["es2015", "browser", "module", "main"],
     modules: ["node_modules", path.resolve(__dirname, "app/react-app/")],
     fallback: {
       fs: false,

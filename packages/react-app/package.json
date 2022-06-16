@@ -29,6 +29,9 @@
     "@ant-design/icons": "^4.7.0",
     "@apollo/client": "^3.6.8",
     "@arbitrum/sdk": "2.0.3",
+    "@babel/core": "^7.18.5",
+    "@babel/preset-env": "^7.18.2",
+    "@babel/preset-react": "^7.17.12",
     "@portis/web3": "^4.0.7",
     "@ramp-network/ramp-instant-sdk": "^3.1.1",
     "@uniswap/sdk": "^3.0.3",
@@ -38,6 +41,9 @@
     "assert": "^2.0.0",
     "authereum": "^0.1.14",
     "axios": "^0.27.2",
+    "babel-loader": "^8.2.5",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "bnc-notify": "^1.9.5",
     "browserslist": "4.6.3",
     "buffer": "^6.0.3",
@@ -49,6 +55,7 @@
     "fortmatic": "^2.4.0",
     "graphiql": "^1.9.9",
     "graphql": "^16.5.0",
+    "html-webpack-plugin": "^5.5.0",
     "https-browserify": "^1.0.0",
     "isomorphic-fetch": "^3.0.0",
     "merge-anything": "5.0.2",
@@ -70,7 +77,9 @@
     "url": "^0.11.0",
     "util": "^0.12.4",
     "walletlink": "^2.5.0",
-    "webpack": "^5.73.0"
+    "webpack": "^5.73.0",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.9.2"
   },
   "devDependencies": {
     "@testing-library/dom": "^8.13.0",
@@ -116,6 +125,10 @@
     "ship": "yarn surge",
     "theme": "npx gulp less",
     "watch": "node ./scripts/watch.js",
-    "prettier": "npx prettier --write . '!(node_module|build)/**/*'"
+    "prettier": "npx prettier --write . '!(node_module|build)/**/*'",
+    "webpack": "webpack",
+    "webpack-dev-server": "webpack-dev-server",
+    "dev": "npm run webpack-dev-server -- --env mode=development",
+    "prod": "npm run webpack -- --env mode=production"
   }
 }
