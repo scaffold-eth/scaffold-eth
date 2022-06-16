@@ -41,6 +41,7 @@
     "bnc-notify": "^1.9.5",
     "browserslist": "4.6.3",
     "buffer": "^6.0.3",
+    "crypto-browserify": "^3.12.0",
     "dotenv": "^16.0.1",
     "eth-components": "^3.3.0-beta02",
     "eth-hooks": "^4.3.0-beta01",
