@@ -13,6 +13,7 @@ import { useDexEthPrice } from "eth-hooks/dapps";
 import { ethers } from "ethers";
 import React, { useCallback, useEffect, useState } from "react";
 import { useThemeSwitcher } from "react-css-theme-switcher";
+import { hot } from "react-hot-loader";
 import { Link, Route, Switch, useLocation } from "react-router-dom";
 import "./App.css";
 import { FaucetHint, Header, NetworkDisplay, NetworkSwitch, Ramp, ThemeSwitch } from "./components";
@@ -384,4 +385,4 @@ function App(props) {
   );
 }
 
-export default App;
+export default hot(module)(App);
