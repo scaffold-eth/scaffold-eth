@@ -16,7 +16,7 @@ const WalletAddressTextField = styled(TextField)(({ theme }) => ({
   },
 }))
 
-export default function MintingPage({ selectedChainId, injectedProvider }) {
+export default function MintingPage({ selectedChainId, injectedProvider, wallet }) {
   const { contractRef, connectedAddress } = useContext(BadgeContext)
 
   /*
@@ -49,6 +49,7 @@ export default function MintingPage({ selectedChainId, injectedProvider }) {
   return (
     <>
       <Box pt="76px">
+        {wallet}
         <Box sx={{ textAlign: 'left', padding: '10px', color: '#007aa6', marginLeft: 5 }}>
           <Typography
             textAlign={'left'}

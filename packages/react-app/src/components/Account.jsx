@@ -4,6 +4,8 @@ import Typography from '@mui/material/Typography'
 import Address from './Address'
 import Balance from './Balance'
 import Box from '@mui/material/Box'
+import Tooltip, { tooltipClasses } from '@mui/material/Tooltip'
+import { styled } from '@mui/material/styles'
 
 /** 
   ~ What it does? ~
@@ -40,6 +42,19 @@ import Box from '@mui/material/Box'
               (ex. by default "https://etherscan.io/" or for xdai "https://blockscout.com/poa/xdai/")
 **/
 
+const MetaMaskTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
+  ({ theme }) => ({
+    [`& .${tooltipClasses.tooltip}`]: {
+      // backgroundColor: '#f5f5f9',
+      color: 'rgba(255,165,0)',
+      maxWidth: 220,
+      fontSize: theme.typography.pxToRem(14),
+      fontWeight: 'bolder',
+      border: '1px solid #dadde9',
+    },
+  }),
+)
+
 export default function Account({
   address,
   userSigner,
@@ -73,16 +88,18 @@ export default function Account({
     <Box sx={{ display: 'flex' }} alignItems={'center'} justifyContent={'center'} pb={5}>
       {display}
       {
-        <Button
-          variant={'contained'}
-          sx={{ borderRadius: 5, marginTop: 5, padding: 1.8, marginLeft: 3, background: '#81a6f7' }}
-          onClick={accountButtonInfo.action}
-          size={'large'}
-        >
-          <Typography variant={'button'} fontWeight={'bolder'}>
-            {address && address.length > 1 ? accountButtonConnected : accountButtonInfo.name}
-          </Typography>
-        </Button>
+        <MetaMaskTooltip title="Please note that this REQUIRES a MetaMask account." placement="right">
+          <Button
+            variant={'contained'}
+            sx={{ borderRadius: 5, marginTop: 5, padding: 1.8, marginLeft: 3, background: '#81a6f7' }}
+            onClick={accountButtonInfo.action}
+            size={'large'}
+          >
+            <Typography variant={'button'} fontWeight={'bolder'}>
+              {address && address.length > 1 ? accountButtonConnected : accountButtonInfo.name}
+            </Typography>
+          </Button>
+        </MetaMaskTooltip>
       }
     </Box>
   )

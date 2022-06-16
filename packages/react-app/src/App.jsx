@@ -168,6 +168,14 @@ function App(props) {
               mainnet={mainnet}
               selectedChainId={10}
               {...props}
+            />
+          )}
+
+          {tabValue === 1 && (
+            <MintingPage
+              // @ts-ignore
+              tabValue={tabValue}
+              setTabValue={setTabValue}
               wallet={
                 <Account
                   // @ts-ignore
@@ -182,14 +190,6 @@ function App(props) {
                   blockExplorer={targetNetwork.blockExplorer}
                 />
               }
-            />
-          )}
-
-          {tabValue === 1 && (
-            <MintingPage
-              // @ts-ignore
-              tabValue={tabValue}
-              setTabValue={setTabValue}
             />
           )}
           <Toast showToast={showToast} closeToast={closeToast} snackBarAction={snackBarAction} />
