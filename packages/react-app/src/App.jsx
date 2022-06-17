@@ -2,7 +2,7 @@ import { CaretUpOutlined, ScanOutlined, SendOutlined, ReloadOutlined } from "@an
 import { JsonRpcProvider, StaticJsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import { formatEther, parseEther } from "@ethersproject/units";
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import { Alert, Button, Col, Row, Select, Input, Modal, notification } from "antd";
+import { Alert, Button, Col, Row, Select, Spin, Input, Modal, notification } from "antd";
 import "antd/dist/antd.css";
 import { useUserAddress } from "eth-hooks";
 import React, { useCallback, useEffect, useState, useMemo } from "react";
@@ -203,6 +203,9 @@ function App(props) {
   const address = useUserAddress(userProvider);
 
   // You can warn the user if you would like them to be on a specific network
+  // I think the naming is misleading a little bit
+  // localChainId is what we can select with the chainId selector on the UI
+  // selectedChainId is different in case we connect with MetaMask (or Wallet Connect) and we're on a different chain
   const localChainId = localProvider && localProvider._network && localProvider._network.chainId;
   const selectedChainId = userProvider && userProvider._network && userProvider._network.chainId;
 
@@ -235,6 +238,10 @@ function App(props) {
     let connector;
     try {
       connector = new WalletConnect(sessionDetails);
+      const { peerMeta } = connector;
+      if (peerMeta) {
+        setWalletConnectPeerMeta(peerMeta);
+      }
     }
     catch(error) {
       console.error("Coudn't connect to", sessionDetails, error);
@@ -260,8 +267,12 @@ function App(props) {
         chainId: targetNetwork.chainId               // required
       })
 
-      setConnected(true)
+      setWalletConnectConnected(true)
       setWallectConnectConnectorSession(connector.session)
+      const { peerMeta } = payload.params[0];
+      if (peerMeta) {
+        setWalletConnectPeerMeta(peerMeta);
+      }
 
       /* payload:
       {
@@ -409,6 +420,9 @@ function App(props) {
       }
       console.log("disconnect")
 
+      localStorage.removeItem("walletConnectUrl")
+      localStorage.removeItem("wallectConnectConnectorSession")
+
       setTimeout(() => {
         window.location.reload();
       }, 1);
@@ -418,14 +432,52 @@ function App(props) {
   }
 
   const [ walletConnectUrl, setWalletConnectUrl ] = useLocalStorage("walletConnectUrl")
-  const [ connected, setConnected ] = useState()
+  const [ walletConnectConnected, setWalletConnectConnected ] = useState()
+  const [ walletConnectPeerMeta, setWalletConnectPeerMeta ] = useState()
 
   const [ wallectConnectConnector, setWallectConnectConnector ] = useState()
   //store the connector session in local storage so sessions persist through page loads ( thanks Pedro <3 )
   const [ wallectConnectConnectorSession, setWallectConnectConnectorSession ] = useLocalStorage("wallectConnectConnectorSession")
 
   useEffect(()=>{
-    if(!connected){
+    if (wallectConnectConnector && wallectConnectConnector.connected && address && localChainId) {
+      const connectedAccounts = wallectConnectConnector?.accounts;
+      let connectedAddress;
+
+      if (connectedAccounts) {
+        connectedAddress = connectedAccounts[0];
+      }
+
+      // Use Checksummed addresses
+      if (connectedAddress && (ethers.utils.getAddress(connectedAddress) != ethers.utils.getAddress(address))) {
+        console.log("Updating wallet connect session with the new address");
+        console.log("Connected address", ethers.utils.getAddress(connectedAddress));
+        console.log("New address ", ethers.utils.getAddress(address));
+
+        updateWalletConnectSession(wallectConnectConnector, address, localChainId);
+      }
+
+      const connectedChainId = wallectConnectConnector?.chainId;
+
+      if (connectedChainId && (connectedChainId != localChainId)) {
+        console.log("Updating wallet connect session with the new chainId");
+        console.log("Connected chainId", connectedChainId);
+        console.log("New chainId ", localChainId);
+
+        updateWalletConnectSession(wallectConnectConnector, address, localChainId);
+      }
+    }
+  },[ address, localChainId ]);
+
+  const updateWalletConnectSession = (wallectConnectConnector, address, chainId) => {
+    wallectConnectConnector.updateSession({
+      accounts: [address],
+      chainId: localChainId,
+    });
+  }
+
+  useEffect(()=>{
+    if(!walletConnectConnected && address){
       let nextSession = localStorage.getItem("wallectConnectNextSession")
       if(nextSession){
         localStorage.removeItem("wallectConnectNextSession")
@@ -434,7 +486,7 @@ function App(props) {
       }else if(wallectConnectConnectorSession){
         console.log("NOT CONNECTED AND wallectConnectConnectorSession",wallectConnectConnectorSession)
         connectWallet( wallectConnectConnectorSession )
-        setConnected(true)
+        setWalletConnectConnected(true)
       }else if(walletConnectUrl/*&&!walletConnectUrlSaved*/){
         //CLEAR LOCAL STORAGE?!?
         console.log("clear local storage and connect...")
@@ -460,7 +512,7 @@ function App(props) {
               }*/)
       }
     }
-  },[ walletConnectUrl ])
+  },[ walletConnectUrl, address ])
 
   useMemo(() => {
     if (address && window.location.pathname) {
@@ -837,11 +889,11 @@ function App(props) {
             walletConnect={(wcLink)=>{
               //if(walletConnectUrl){
                 /*try{
-                  //setConnected(false);
+                  //setWalletConnectConnected(false);
                   //setWalletConnectUrl();
                   //if(wallectConnectConnector) wallectConnectConnector.killSession();
                   //if(wallectConnectConnectorSession) setWallectConnectConnectorSession("");
-                  setConnected(false);
+                  setWalletConnectConnected(false);
                   //if(wallectConnectConnector) wallectConnectConnector.killSession();
                   localStorage.removeItem("walletConnectUrl")
                   localStorage.removeItem("wallectConnectConnectorSession")
@@ -854,7 +906,7 @@ function App(props) {
 
               if(walletConnectUrl){
                 //existing session... need to kill it and then connect new one....
-                setConnected(false);
+                setWalletConnectConnected(false);
                 if(wallectConnectConnector) wallectConnectConnector.killSession();
                 localStorage.removeItem("walletConnectUrl")
                 localStorage.removeItem("wallectConnectConnectorSession")
@@ -1087,17 +1139,36 @@ function App(props) {
       </div>
 
       <div style={{ clear: "both", width: 500, margin: "auto" ,marginTop:32, position:"relative"}}>
-        {connected?<span style={{cursor:"pointer",padding:8,fontSize:30,position:"absolute",top:-16,left:28}}>✅</span>:""}
+        {(wallectConnectConnector && !wallectConnectConnector.connected) && 
+
+          <div>
+            <Spin />
+            <div>
+               Connecting to the Dapp...
+            </div>   
+          </div>}
+        {walletConnectConnected ?
+          <>
+            {(walletConnectPeerMeta?.icons[0]) ? 
+              <span >
+              {walletConnectPeerMeta?.icons[0] && <img style={{width: 40, top:-4, position:"absolute",left:26}} src={walletConnectPeerMeta.icons[0]} alt={walletConnectPeerMeta.name ? walletConnectPeerMeta.name : ""} />}
+              </span>
+              :
+              <span style={{cursor:"pointer",padding:8,fontSize:30,position:"absolute",top:-16,left:28}}>✅</span>
+            }
+          </>
+          :""
+        }
         <Input
           style={{width:"70%"}}
           placeholder={"wallet connect url (or use the scanner-->)"}
           value={walletConnectUrl}
-          disabled={connected}
+          disabled={walletConnectConnected}
           onChange={(e)=>{
             setWalletConnectUrl(e.target.value)
           }}
-        />{connected?<span style={{cursor:"pointer",padding:10,fontSize:30,position:"absolute", top:-18}} onClick={()=>{
-          setConnected(false);
+        />{walletConnectConnected?<span style={{cursor:"pointer",padding:10,fontSize:30,position:"absolute", top:-18}} onClick={()=>{
+          setWalletConnectConnected(false);
           if(wallectConnectConnector) wallectConnectConnector.killSession();
           localStorage.removeItem("walletConnectUrl")
           localStorage.removeItem("wallectConnectConnectorSession")
