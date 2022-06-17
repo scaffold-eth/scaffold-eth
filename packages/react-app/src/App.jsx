@@ -2,7 +2,7 @@ import { CaretUpOutlined, ScanOutlined, SendOutlined, ReloadOutlined } from "@an
 import { JsonRpcProvider, StaticJsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import { formatEther, parseEther } from "@ethersproject/units";
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import { Alert, Button, Col, Row, Select, Input, Modal, notification } from "antd";
+import { Alert, Button, Col, Row, Select, Spin, Input, Modal, notification } from "antd";
 import "antd/dist/antd.css";
 import { useUserAddress } from "eth-hooks";
 import React, { useCallback, useEffect, useState, useMemo } from "react";
@@ -1139,6 +1139,14 @@ function App(props) {
       </div>
 
       <div style={{ clear: "both", width: 500, margin: "auto" ,marginTop:32, position:"relative"}}>
+        {(wallectConnectConnector && !wallectConnectConnector.connected) && 
+
+          <div>
+            <Spin />
+            <div>
+               Connecting to the Dapp...
+            </div>   
+          </div>}
         {walletConnectConnected ?
           <>
             {(walletConnectPeerMeta?.icons[0]) ? 
