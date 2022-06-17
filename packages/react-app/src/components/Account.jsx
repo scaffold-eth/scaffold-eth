@@ -88,7 +88,7 @@ export default function Account({
     <Box sx={{ display: 'flex' }} alignItems={'center'} justifyContent={'center'} pb={5}>
       {display}
       {
-        <MetaMaskTooltip title="Please note that this REQUIRES a MetaMask account." placement="right">
+        <MetaMaskTooltip title="Please note that this REQUIRES MetaMask." placement="right">
           <Button
             variant={'contained'}
             sx={{ borderRadius: 5, marginTop: 5, padding: 1.8, marginLeft: 3, background: '#81a6f7' }}

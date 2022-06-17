@@ -206,7 +206,7 @@ export default function BrowseBadges({
             Remix Rewards
           </Typography>
           <Box>
-            <Typography variant="h6" fontWeight={500} mb={3} sx={{ color: '#333333' }}>
+            <Typography variant="inherit" fontWeight={500} mb={3} sx={{ color: '#333333' }}>
               Remix Project rewards contributors, beta testers, and UX research participants with NFTs deployed on
               Optimism.
               <br />
@@ -216,34 +216,13 @@ export default function BrowseBadges({
               This feature is a way to reward Remix contributors to help grow our user base into a larger and more
               genuine open source community of practice.
             </Typography>
-            <Typography variant="h6" fontWeight={500} sx={{ color: '#333333' }}>
+            <Typography variant="inherit" fontWeight={500} sx={{ color: '#333333' }}>
               Remix Rewards are currently not transferable. This feature leaves open the possibility of granting holders
               proportional voting power to help the community decide on new features for the IDE and/or other issues
               governing the development of the Remix toolset.
             </Typography>
           </Box>
-          <Box>
-            <Typography variant="h6" fontWeight={500} mb={3} sx={{ color: '#333333' }} component={'span'}>
-              Minting each "Remixer" badge will require a very small amount of ETH (0.15 DAI) on the Optimism network.{' '}
-              <br /> If you do not have ETH on Optimism, you can transfer some from Mainnet using the{' '}
-              <a href="https://app.optimism.io/bridge">Optimism Bridge</a> or{' '}
-              <a href="https://app.hop.exchange/#/send?sourceNetwork=optimism&destNetwork=ethereum&token=ETH">
-                Hop Exchange
-              </a>
-            </Typography>
-            <Box component={'span'} sx={{ shapeOutside: 'inset(150px 100px 50%)', margin: 2 }}>
-              {/* <Button
-                variant={'contained'}
-                size={'large'}
-                sx={{ padding: 2, background: '#81a6f7', borderRadius: 3 }}
-                // onClick={}
-              >
-                <Typography variant={'button'} fontWeight="bolder">
-                  Connect to Mint
-                </Typography>
-              </Button> */}
-            </Box>
-          </Box>
+          <Box></Box>
         </Box>
         <Box mt={8}>
           <Typography variant={'h6'} fontWeight={700} fontFamily={'Noah'} mb={3} sx={{ color: '#333333' }}>

@@ -12,7 +12,6 @@ import { BadgeContext } from 'contexts/BadgeContext'
 const WalletAddressTextField = styled(TextField)(({ theme }) => ({
   '& .MuiInputBase-input': {
     backgroundColor: theme.palette.mode === 'light' ? '#fff' : '#2b2b2b',
-    padding: '10px 10px',
   },
 }))
 
@@ -50,7 +49,7 @@ export default function MintingPage({ selectedChainId, injectedProvider, wallet 
     <>
       <Box pt="76px">
         {wallet}
-        <Box sx={{ textAlign: 'left', padding: '10px', color: '#007aa6', marginLeft: 5 }}>
+        <Box mb={10} sx={{ textAlign: 'left', padding: '10px', color: '#007aa6', marginLeft: 5, marginBottom: 5 }}>
           <Typography
             textAlign={'left'}
             variant={'h3'}
@@ -61,13 +60,21 @@ export default function MintingPage({ selectedChainId, injectedProvider, wallet 
           >
             Mint a Remixer
           </Typography>
-          <Typography variant="h6" fontWeight={500} mb={3} sx={{ color: '#333333' }}>
+          <Typography variant="inherit" fontWeight={500} mb={3} sx={{ color: '#333333' }}>
             Remix project rewards contributors, beta testers and UX research participants with NFTs deployed on
             Optimism. <br />
             For every Remix Reward you have received, you are able to mint one additional "Remixer" badge to a different
             wallet of your choice. <br />
             See below for the number of "Remixer" badge mints you have remaining on your account. <br />
             To mint a new "Remixer" badge, input a unique wallet address below.
+          </Typography>
+          <Typography variant="inherit" fontWeight={500} mb={5} sx={{ color: '#333333' }} component={'span'}>
+            Minting each "Remixer" badge will require a very small amount of ETH (0.15 DAI) on the Optimism network.{' '}
+            <br /> If you do not have ETH on Optimism, you can transfer some from Mainnet using the{' '}
+            <a href="https://app.optimism.io/bridge">Optimism Bridge</a> or{' '}
+            <a href="https://app.hop.exchange/#/send?sourceNetwork=optimism&destNetwork=ethereum&token=ETH">
+              Hop Exchange
+            </a>
           </Typography>
         </Box>
       </Box>
@@ -76,13 +83,13 @@ export default function MintingPage({ selectedChainId, injectedProvider, wallet 
           background: 'linear-gradient(90deg, #f6e8fc, #f1e6fb, #ede5fb, #e8e4fa, #e3e2f9, #dee1f7, #d9dff6, #d4def4)',
           height: '100vh',
         }}
-        mt={15}
+        mt={25}
         display={'flex'}
         alignItems={'center'}
         justifyContent={'center'}
         flexDirection={'column'}
       >
-        <MintingPageCard top={-52} />
+        <MintingPageCard top={-42} />
         <Box mt={5}>
           <MintingActions
             mintCount={mintCount}
