@@ -437,7 +437,7 @@ function App(props) {
   const [ wallectConnectConnectorSession, setWallectConnectConnectorSession ] = useLocalStorage("wallectConnectConnectorSession")
 
   useEffect(()=>{
-    if(!walletConnectConnected){
+    if(!walletConnectConnected && address){
       let nextSession = localStorage.getItem("wallectConnectNextSession")
       if(nextSession){
         localStorage.removeItem("wallectConnectNextSession")
@@ -472,7 +472,7 @@ function App(props) {
               }*/)
       }
     }
-  },[ walletConnectUrl ])
+  },[ walletConnectUrl, address ])
 
   useMemo(() => {
     if (address && window.location.pathname) {
