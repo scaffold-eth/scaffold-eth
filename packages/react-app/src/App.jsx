@@ -235,6 +235,10 @@ function App(props) {
     let connector;
     try {
       connector = new WalletConnect(sessionDetails);
+      const { peerMeta } = connector;
+      if (peerMeta) {
+        setWalletConnectPeerMeta(peerMeta);
+      }
     }
     catch(error) {
       console.error("Coudn't connect to", sessionDetails, error);
@@ -262,6 +266,10 @@ function App(props) {
 
       setWalletConnectConnected(true)
       setWallectConnectConnectorSession(connector.session)
+      const { peerMeta } = payload.params[0];
+      if (peerMeta) {
+        setWalletConnectPeerMeta(peerMeta);
+      }
 
       /* payload:
       {
@@ -419,6 +427,7 @@ function App(props) {
 
   const [ walletConnectUrl, setWalletConnectUrl ] = useLocalStorage("walletConnectUrl")
   const [ walletConnectConnected, setWalletConnectConnected ] = useState()
+  const [ walletConnectPeerMeta, setWalletConnectPeerMeta ] = useState()
 
   const [ wallectConnectConnector, setWallectConnectConnector ] = useState()
   //store the connector session in local storage so sessions persist through page loads ( thanks Pedro <3 )
@@ -1087,7 +1096,18 @@ function App(props) {
       </div>
 
       <div style={{ clear: "both", width: 500, margin: "auto" ,marginTop:32, position:"relative"}}>
-        {walletConnectConnected?<span style={{cursor:"pointer",padding:8,fontSize:30,position:"absolute",top:-16,left:28}}>✅</span>:""}
+        {walletConnectConnected ?
+          <>
+            {(walletConnectPeerMeta?.icons[0]) ? 
+              <span >
+              {walletConnectPeerMeta?.icons[0] && <img style={{width: 40, top:-4, position:"absolute",left:26}} src={walletConnectPeerMeta.icons[0]} alt={walletConnectPeerMeta.name ? walletConnectPeerMeta.name : ""} />}
+              </span>
+              :
+              <span style={{cursor:"pointer",padding:8,fontSize:30,position:"absolute",top:-16,left:28}}>✅</span>
+            }
+          </>
+          :""
+        }
         <Input
           style={{width:"70%"}}
           placeholder={"wallet connect url (or use the scanner-->)"}
