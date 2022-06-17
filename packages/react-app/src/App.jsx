@@ -417,6 +417,9 @@ function App(props) {
       }
       console.log("disconnect")
 
+      localStorage.removeItem("walletConnectUrl")
+      localStorage.removeItem("wallectConnectConnectorSession")
+
       setTimeout(() => {
         window.location.reload();
       }, 1);
