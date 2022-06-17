@@ -260,7 +260,7 @@ function App(props) {
         chainId: targetNetwork.chainId               // required
       })
 
-      setConnected(true)
+      setWalletConnectConnected(true)
       setWallectConnectConnectorSession(connector.session)
 
       /* payload:
@@ -418,14 +418,14 @@ function App(props) {
   }
 
   const [ walletConnectUrl, setWalletConnectUrl ] = useLocalStorage("walletConnectUrl")
-  const [ connected, setConnected ] = useState()
+  const [ walletConnectConnected, setWalletConnectConnected ] = useState()
 
   const [ wallectConnectConnector, setWallectConnectConnector ] = useState()
   //store the connector session in local storage so sessions persist through page loads ( thanks Pedro <3 )
   const [ wallectConnectConnectorSession, setWallectConnectConnectorSession ] = useLocalStorage("wallectConnectConnectorSession")
 
   useEffect(()=>{
-    if(!connected){
+    if(!walletConnectConnected){
       let nextSession = localStorage.getItem("wallectConnectNextSession")
       if(nextSession){
         localStorage.removeItem("wallectConnectNextSession")
@@ -434,7 +434,7 @@ function App(props) {
       }else if(wallectConnectConnectorSession){
         console.log("NOT CONNECTED AND wallectConnectConnectorSession",wallectConnectConnectorSession)
         connectWallet( wallectConnectConnectorSession )
-        setConnected(true)
+        setWalletConnectConnected(true)
       }else if(walletConnectUrl/*&&!walletConnectUrlSaved*/){
         //CLEAR LOCAL STORAGE?!?
         console.log("clear local storage and connect...")
@@ -837,11 +837,11 @@ function App(props) {
             walletConnect={(wcLink)=>{
               //if(walletConnectUrl){
                 /*try{
-                  //setConnected(false);
+                  //setWalletConnectConnected(false);
                   //setWalletConnectUrl();
                   //if(wallectConnectConnector) wallectConnectConnector.killSession();
                   //if(wallectConnectConnectorSession) setWallectConnectConnectorSession("");
-                  setConnected(false);
+                  setWalletConnectConnected(false);
                   //if(wallectConnectConnector) wallectConnectConnector.killSession();
                   localStorage.removeItem("walletConnectUrl")
                   localStorage.removeItem("wallectConnectConnectorSession")
@@ -854,7 +854,7 @@ function App(props) {
 
               if(walletConnectUrl){
                 //existing session... need to kill it and then connect new one....
-                setConnected(false);
+                setWalletConnectConnected(false);
                 if(wallectConnectConnector) wallectConnectConnector.killSession();
                 localStorage.removeItem("walletConnectUrl")
                 localStorage.removeItem("wallectConnectConnectorSession")
@@ -1087,17 +1087,17 @@ function App(props) {
       </div>
 
       <div style={{ clear: "both", width: 500, margin: "auto" ,marginTop:32, position:"relative"}}>
-        {connected?<span style={{cursor:"pointer",padding:8,fontSize:30,position:"absolute",top:-16,left:28}}>✅</span>:""}
+        {walletConnectConnected?<span style={{cursor:"pointer",padding:8,fontSize:30,position:"absolute",top:-16,left:28}}>✅</span>:""}
         <Input
           style={{width:"70%"}}
           placeholder={"wallet connect url (or use the scanner-->)"}
           value={walletConnectUrl}
-          disabled={connected}
+          disabled={walletConnectConnected}
           onChange={(e)=>{
             setWalletConnectUrl(e.target.value)
           }}
-        />{connected?<span style={{cursor:"pointer",padding:10,fontSize:30,position:"absolute", top:-18}} onClick={()=>{
-          setConnected(false);
+        />{walletConnectConnected?<span style={{cursor:"pointer",padding:10,fontSize:30,position:"absolute", top:-18}} onClick={()=>{
+          setWalletConnectConnected(false);
           if(wallectConnectConnector) wallectConnectConnector.killSession();
           localStorage.removeItem("walletConnectUrl")
           localStorage.removeItem("wallectConnectConnectorSession")
