@@ -203,6 +203,9 @@ function App(props) {
   const address = useUserAddress(userProvider);
 
   // You can warn the user if you would like them to be on a specific network
+  // I think the naming is misleading a little bit
+  // localChainId is what we can select with the chainId selector on the UI
+  // selectedChainId is different in case we connect with MetaMask (or Wallet Connect) and we're on a different chain
   const localChainId = localProvider && localProvider._network && localProvider._network.chainId;
   const selectedChainId = userProvider && userProvider._network && userProvider._network.chainId;
 
@@ -436,19 +439,41 @@ function App(props) {
   //store the connector session in local storage so sessions persist through page loads ( thanks Pedro <3 )
   const [ wallectConnectConnectorSession, setWallectConnectConnectorSession ] = useLocalStorage("wallectConnectConnectorSession")
 
-  if (wallectConnectConnector && wallectConnectConnector.connected && address) {
-    const connectedAddress = wallectConnectConnector.accounts[0];
+  useEffect(()=>{
+    if (wallectConnectConnector && wallectConnectConnector.connected && address && localChainId) {
+      const connectedAccounts = wallectConnectConnector?.accounts;
+      let connectedAddress;
 
-    // Use Checksummed addresses
-    if (ethers.utils.getAddress(connectedAddress) != ethers.utils.getAddress(address)) {
-      console.log("Updating wallet connect session with the new address");
-      console.log("Connected address", ethers.utils.getAddress(connectedAddress));
-      console.log("New address ", ethers.utils.getAddress(address));
+      if (connectedAccounts) {
+        connectedAddress = connectedAccounts[0];
+      }
 
-      wallectConnectConnector.updateSession({
-        accounts: [address],
-      });
+      // Use Checksummed addresses
+      if (connectedAddress && (ethers.utils.getAddress(connectedAddress) != ethers.utils.getAddress(address))) {
+        console.log("Updating wallet connect session with the new address");
+        console.log("Connected address", ethers.utils.getAddress(connectedAddress));
+        console.log("New address ", ethers.utils.getAddress(address));
+
+        updateWalletConnectSession(wallectConnectConnector, address, localChainId);
+      }
+
+      const connectedChainId = wallectConnectConnector?.chainId;
+
+      if (connectedChainId && (connectedChainId != localChainId)) {
+        console.log("Updating wallet connect session with the new chainId");
+        console.log("Connected chainId", connectedChainId);
+        console.log("New chainId ", localChainId);
+
+        updateWalletConnectSession(wallectConnectConnector, address, localChainId);
+      }
     }
+  },[ address, localChainId ]);
+
+  const updateWalletConnectSession = (wallectConnectConnector, address, chainId) => {
+    wallectConnectConnector.updateSession({
+      accounts: [address],
+      chainId: localChainId,
+    });
   }
 
   useEffect(()=>{
