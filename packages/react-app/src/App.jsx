@@ -436,6 +436,21 @@ function App(props) {
   //store the connector session in local storage so sessions persist through page loads ( thanks Pedro <3 )
   const [ wallectConnectConnectorSession, setWallectConnectConnectorSession ] = useLocalStorage("wallectConnectConnectorSession")
 
+  if (wallectConnectConnector && wallectConnectConnector.connected && address) {
+    const connectedAddress = wallectConnectConnector.accounts[0];
+
+    // Use Checksummed addresses
+    if (ethers.utils.getAddress(connectedAddress) != ethers.utils.getAddress(address)) {
+      console.log("Updating wallet connect session with the new address");
+      console.log("Connected address", ethers.utils.getAddress(connectedAddress));
+      console.log("New address ", ethers.utils.getAddress(address));
+
+      wallectConnectConnector.updateSession({
+        accounts: [address],
+      });
+    }
+  }
+
   useEffect(()=>{
     if(!walletConnectConnected && address){
       let nextSession = localStorage.getItem("wallectConnectNextSession")
