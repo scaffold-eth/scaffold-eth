@@ -1,4 +1,3 @@
-import 'antd/dist/antd.css'
 import React, { useEffect, useState, useCallback } from 'react'
 import { useUserProviderAndSigner } from 'eth-hooks'
 import { useExchangeEthPrice } from 'eth-hooks/dapps/dex'
