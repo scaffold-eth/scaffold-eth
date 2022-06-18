@@ -62,7 +62,7 @@ export default function Balance(props) {
         padding: 1,
         cursor: 'pointer',
         border: '2px solid #ccc',
-        borderRadius: 5,
+        borderRadius: 3,
       }}
       onClick={() => {
         setDollarMode(!dollarMode)

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useEffect } from 'react'
 import externalContracts from '../contracts/external_contracts'
 import { useEventListener } from 'eth-hooks/events/useEventListener'
@@ -16,6 +17,8 @@ import NftCard from '../components/NftCard'
 import { Paper } from '@mui/material'
 import { FormControl } from '@mui/material'
 import AddressedCard from '../components/AddressedCard'
+import { useContext } from 'react'
+import { BadgeContext } from 'contexts/BadgeContext'
 
 export const toHex = ipfsHash => {
   let buf = multihash.fromB58String(ipfsHash)
@@ -32,23 +35,14 @@ export const isHexadecimal = value => {
   return /^[0-9a-fA-F]+$/.test(value) && value.length % 2 === 0
 }
 
-export default function BrowseBadges({
-  localProvider,
-  mainnet,
-  selectedChainId,
-  address,
-  connectedAddress,
-  setAddress,
-  injectedProvider,
-  wallet,
-}) {
+export default function BrowseBadges() {
   const [contractEvents, setContractEvents] = useState([])
   const contractConfig = { deployedContracts: {}, externalContracts: externalContracts || {} }
   const [badges, setBadges] = useState([])
   const [eventBadges, setEventBadges] = useState([])
   const [error, setErrorMessage] = useState('')
+  const { localProvider, mainnet, selectedChainId, address, setAddress, injectedProvider, } = useContext(BadgeContext)
 
-  // console.log('current chain', selectedChainId)
   let contractRef
   if (
     externalContracts[selectedChainId] &&
@@ -62,26 +56,6 @@ export default function BrowseBadges({
   const events = useEventListener(contracts, 'REMIX_REWARD', 'Transfer', localProvider, 1)
   if (contractEvents.length !== events.length) {
     setContractEvents(events)
-  }
-  /*
-   * this mint a user badge from the current selected account
-   * this function throws an error
-   *  - if the current network selected in the injected provider (metamask) is not optimism (chain id of optimism is 10)
-   *  - if the current user doesn't have anymore a slot for minting a badge
-   */
-  const mintBadge = async receiverAddress => {
-    let contract = new ethers.Contract(contractRef.address, contractRef.abi, injectedProvider)
-    let mintTx = await contract.publicMint(receiverAddress)
-    await mintTx.wait()
-  }
-
-  /*
-   * this returns the number of user badge that the selected account is allowed to mint.
-   * this function throws an error if the current network selected in the injected provider (metamask) is not optimism (chain id of optimism is 10)
-   */
-  const allowedMinting = async () => {
-    let contract = new ethers.Contract(contractRef.address, contractRef.abi, injectedProvider)
-    return await contract.allowedMinting(connectedAddress)
   }
 
   async function addressFilterHandler(e) {
@@ -175,7 +149,6 @@ export default function BrowseBadges({
   async function submitHandler(e) {
     try {
       if (address) {
-        console.log({ address })
         if (address.includes('.eth')) {
           let resolvedAddress = await mainnet.resolveName(address)
           if (!resolvedAddress) {

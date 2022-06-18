@@ -1,4 +1,5 @@
-import React from 'react'
+// @ts-nocheck
+import React, { useContext } from 'react'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import Address from './Address'
@@ -6,6 +7,7 @@ import Balance from './Balance'
 import Box from '@mui/material/Box'
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip'
 import { styled } from '@mui/material/styles'
+import { BadgeContext } from 'contexts/BadgeContext'
 
 /** 
   ~ What it does? ~
@@ -55,32 +57,36 @@ const MetaMaskTooltip = styled(({ className, ...props }) => <Tooltip {...props} 
   }),
 )
 
-export default function Account({
-  address,
-  userSigner,
-  localProvider,
-  mainnetProvider,
-  price,
-  minimized,
-  loadWeb3Modal,
-  logoutOfWeb3Modal,
-  blockExplorer,
-  isContract,
-}) {
+// @ts-ignore
+export default function Account({ minimized }) {
+  const { localProvider, mainnet, loadWeb3Modal, price, targetNetwork, connectedAddress } = useContext(BadgeContext)
   let accountButtonInfo
   accountButtonInfo = { name: 'Connect to Mint', action: loadWeb3Modal }
   const accountButtonConnected = 'Connected'
 
   const display = !minimized && (
     <Box>
-      {address && address.length > 1 ? (
-        <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} fontSize={20} />
+      {connectedAddress && connectedAddress.length > 1 ? (
+        <Address
+          address={connectedAddress}
+          ensProvider={mainnet}
+          blockExplorer={targetNetwork.blockExplorer}
+          fontSize={20}
+        />
       ) : (
         <Typography variant="subtitle1" fontWeight={500} mb={3} sx={{ color: '#333333' }} component={'span'}>
           There is no address connected to this wallet! Click the button to connect and view your wallet!
         </Typography>
       )}
-      <Balance address={address} provider={localProvider} price={price} size={20} />
+      <Balance
+        address={
+          // @ts-ignore
+          connectedAddress
+        }
+        provider={localProvider}
+        price={price}
+        size={20}
+      />
     </Box>
   )
 
@@ -91,16 +97,27 @@ export default function Account({
         <MetaMaskTooltip title="Please note that this REQUIRES MetaMask." placement="right">
           <Button
             variant={'contained'}
-            sx={{ borderRadius: 5, marginTop: 5, padding: 1.8, marginLeft: 3, background: '#81a6f7' }}
+            sx={{ borderRadius: 3, marginTop: 5, padding: 1.8, marginLeft: 3, background: '#81a6f7' }}
             onClick={accountButtonInfo.action}
             size={'large'}
           >
             <Typography variant={'button'} fontWeight={'bolder'}>
-              {address && address.length > 1 ? accountButtonConnected : accountButtonInfo.name}
+              {
+                // @ts-ignore
+                connectedAddress && connectedAddress.length > 1 ? accountButtonConnected : accountButtonInfo.name
+              }
             </Typography>
           </Button>
         </MetaMaskTooltip>
       }
+      <Button
+        variant={'contained'}
+        sx={{ borderRadius: 3, marginTop: 5, padding: 1.8, marginLeft: 3, background: '#81a6f7' }}
+      >
+        <Typography variant={'button'} fontWeight={'bolder'}>
+          Switch to Optimism
+        </Typography>
+      </Button>
     </Box>
   )
 }

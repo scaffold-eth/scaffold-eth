@@ -11,6 +11,7 @@ import IconButton from '@mui/material/IconButton'
 import Toast from 'components/Toast'
 import { BadgeContext } from 'contexts/BadgeContext'
 import externalContracts from 'contracts/external_contracts'
+import { switchToOptimism } from 'helpers/SwitchToOptimism'
 const { ethers } = require('ethers')
 
 function App(props) {
@@ -139,36 +140,29 @@ function App(props) {
   }, [])
 
   /* END - SETUP MAINNET & OPTIMISM provider */
-
+  const contextPayload = {
+    localProvider,
+    mainnet,
+    injectedProvider,
+    selectedChainId,
+    address,
+    setAddress,
+    connectedAddress,
+    contractConfig,
+    externalContracts,
+    contractRef,
+    switchToOptimism,
+    price,
+    targetNetwork,
+    loadWeb3Modal,
+    logoutOfWeb3Modal,
+    userSigner,
+  }
   return (
     <div className="App">
-      <BadgeContext.Provider
-        value={{
-          localProvider,
-          mainnet,
-          injectedProvider,
-          selectedChainId,
-          address,
-          setAddress,
-          connectedAddress,
-          contractConfig,
-          externalContracts,
-          contractRef,
-        }}
-      >
+      <BadgeContext.Provider value={contextPayload}>
         <Layout tabValue={tabValue} setTabValue={setTabValue}>
-          {loaded && tabValue === 0 && (
-            <BrowseBadges
-              address={address}
-              connectedAddress={connectedAddress}
-              injectedProvider={injectedProvider}
-              setAddress={setAddress}
-              localProvider={localProvider}
-              mainnet={mainnet}
-              selectedChainId={10}
-              {...props}
-            />
-          )}
+          {loaded && tabValue === 0 && <BrowseBadges {...props} />}
 
           {tabValue === 1 && (
             <MintingPage
@@ -179,14 +173,7 @@ function App(props) {
                 <Account
                   // @ts-ignore
                   useBurner={USE_BURNER_WALLET}
-                  address={connectedAddress}
-                  localProvider={localProvider}
                   userSigner={userSigner}
-                  mainnetProvider={mainnet}
-                  price={price}
-                  loadWeb3Modal={loadWeb3Modal}
-                  logoutOfWeb3Modal={logoutOfWeb3Modal}
-                  blockExplorer={targetNetwork.blockExplorer}
                 />
               }
             />
