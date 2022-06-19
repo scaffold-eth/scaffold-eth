@@ -169,13 +169,6 @@ function App(props) {
               // @ts-ignore
               tabValue={tabValue}
               setTabValue={setTabValue}
-              wallet={
-                <Account
-                  // @ts-ignore
-                  useBurner={USE_BURNER_WALLET}
-                  userSigner={userSigner}
-                />
-              }
             />
           )}
           <Toast showToast={showToast} closeToast={closeToast} snackBarAction={snackBarAction} />

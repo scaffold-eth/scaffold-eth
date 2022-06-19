@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import SwitchAccessShortcutAddIcon from '@mui/icons-material/SwitchAccessShortcutAdd'
@@ -10,6 +10,7 @@ import Box from '@mui/material/Box'
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip'
 import { styled } from '@mui/material/styles'
 import { BadgeContext } from 'contexts/BadgeContext'
+import { Co2Sharp } from '@mui/icons-material'
 
 /** 
   ~ What it does? ~
@@ -138,9 +139,6 @@ export default function Account({ minimized }) {
             size={'large'}
           >
             <SwitchAccessShortcutAddIcon fontSize={'large'} htmlColor={'#81a6f7'} />
-            {/* <Typography variant={'button'} fontWeight={'bolder'}>
-          Switch to Optimism
-        </Typography> */}
           </IconButton>
         </MetaMaskTooltip>
       ) : null}

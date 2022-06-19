@@ -7,6 +7,7 @@ import { useContext, useState } from 'react'
 import TextField from '@mui/material/TextField'
 import { styled } from '@mui/material/styles'
 import MintingActions from 'components/MintingActions'
+import Account from 'components/Account'
 import { BadgeContext } from 'contexts/BadgeContext'
 
 const WalletAddressTextField = styled(TextField)(({ theme }) => ({
@@ -16,7 +17,7 @@ const WalletAddressTextField = styled(TextField)(({ theme }) => ({
 }))
 
 export default function MintingPage({ selectedChainId, injectedProvider, wallet }) {
-  const { contractRef, connectedAddress } = useContext(BadgeContext)
+  const { contractRef, connectedAddress, userSigner } = useContext(BadgeContext)
 
   /*
    * this mint a user badge from the current selected account
@@ -48,7 +49,10 @@ export default function MintingPage({ selectedChainId, injectedProvider, wallet 
   return (
     <>
       <Box pt="76px">
-        {wallet}
+        <Account
+          // @ts-ignore
+          userSigner={userSigner}
+        />
         <Box mb={10} sx={{ textAlign: 'left', padding: '10px', color: '#007aa6', marginLeft: 5, marginBottom: 5 }}>
           <Typography
             textAlign={'left'}
