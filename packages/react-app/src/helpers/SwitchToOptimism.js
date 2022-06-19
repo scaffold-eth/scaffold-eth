@@ -1,22 +1,22 @@
 const { ethers } = require('ethers')
 
 export async function switchToOptimism() {
-  console.log('switching to optimism net')
+  // console.log('switching to optimism net')
   const chainId = 0x0a
   const correctHexChainId = ethers.utils.hexValue(chainId)
-  console.log({ correctHexChainId })
+  // console.log({ correctHexChainId })
   try {
-    const result = await window.ethereum.request({
+    await window.ethereum.request({
       method: 'wallet_switchEthereumChain',
       params: [{ chainId: correctHexChainId }],
     })
-    console.log({ switchRequest: result })
+    // console.log({ switchRequest: result })
   } catch (switchError) {
     // This error code indicates that the chain has not been added to MetaMask.
     if (switchError.code === 4902) {
-      console.log('optimism chain has not been added to metamask yet!')
+      // console.log('optimism chain has not been added to metamask yet!')
       try {
-        console.log('adding optimism to metamask')
+        // console.log('adding optimism to metamask')
         await window.ethereum.request({
           method: 'wallet_addEthereumChain',
           params: [
@@ -27,7 +27,7 @@ export async function switchToOptimism() {
             },
           ],
         })
-        console.log('switch was successful')
+        // console.log('switch was successful')
         await window.ethereum.request({
           method: 'wallet_switchEthereumChain',
           params: [{ chainId: correctHexChainId }],
