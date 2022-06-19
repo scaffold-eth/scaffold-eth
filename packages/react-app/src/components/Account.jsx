@@ -1,6 +1,8 @@
 // @ts-nocheck
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import Button from '@mui/material/Button'
+import IconButton from '@mui/material/IconButton'
+import SwitchAccessShortcutAddIcon from '@mui/icons-material/SwitchAccessShortcutAdd'
 import Typography from '@mui/material/Typography'
 import Address from './Address'
 import Balance from './Balance'
@@ -59,10 +61,24 @@ const MetaMaskTooltip = styled(({ className, ...props }) => <Tooltip {...props} 
 
 // @ts-ignore
 export default function Account({ minimized }) {
-  const { localProvider, mainnet, loadWeb3Modal, price, targetNetwork, connectedAddress } = useContext(BadgeContext)
+  const { localProvider, mainnet, loadWeb3Modal, price, targetNetwork, connectedAddress, switchToOptimism } =
+    useContext(BadgeContext)
   let accountButtonInfo
   accountButtonInfo = { name: 'Connect to Mint', action: loadWeb3Modal }
   const accountButtonConnected = 'Connected'
+  const [disableOptimismButton, flipDisableOptimismButton] = useState(false)
+  const [showOptimismButton, setShowOptimismButton] = useState(false)
+
+  async function doOptimismSwitch() {
+    try {
+      flipDisableOptimismButton(true)
+      console.log('hit doOptimismSwitch')
+      await switchToOptimism()
+      flipDisableOptimismButton(false)
+    } catch (error) {
+      console.log({ error })
+    }
+  }
 
   const display = !minimized && (
     <Box>
@@ -94,11 +110,14 @@ export default function Account({ minimized }) {
     <Box sx={{ display: 'flex' }} alignItems={'center'} justifyContent={'center'} pb={5}>
       {display}
       {
-        <MetaMaskTooltip title="Please note that this REQUIRES MetaMask." placement="right">
+        <MetaMaskTooltip title="Please note that this REQUIRES MetaMask." placement="bottom">
           <Button
             variant={'contained'}
             sx={{ borderRadius: 3, marginTop: 5, padding: 1.8, marginLeft: 3, background: '#81a6f7' }}
-            onClick={accountButtonInfo.action}
+            onClick={() => {
+              accountButtonInfo.action()
+              setShowOptimismButton(true)
+            }}
             size={'large'}
           >
             <Typography variant={'button'} fontWeight={'bolder'}>
@@ -110,14 +129,21 @@ export default function Account({ minimized }) {
           </Button>
         </MetaMaskTooltip>
       }
-      <Button
-        variant={'contained'}
-        sx={{ borderRadius: 3, marginTop: 5, padding: 1.8, marginLeft: 3, background: '#81a6f7' }}
-      >
-        <Typography variant={'button'} fontWeight={'bolder'}>
+      {showOptimismButton ? (
+        <MetaMaskTooltip title="Click to switch to Optimism." placement="bottom">
+          <IconButton
+            sx={{ borderRadius: 3, marginTop: 5, padding: 1.8, marginLeft: 3 }}
+            onClick={doOptimismSwitch}
+            disabled={disableOptimismButton}
+            size={'large'}
+          >
+            <SwitchAccessShortcutAddIcon fontSize={'large'} htmlColor={'#81a6f7'} />
+            {/* <Typography variant={'button'} fontWeight={'bolder'}>
           Switch to Optimism
-        </Typography>
-      </Button>
+        </Typography> */}
+          </IconButton>
+        </MetaMaskTooltip>
+      ) : null}
     </Box>
   )
 }
