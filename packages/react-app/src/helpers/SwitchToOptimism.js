@@ -1,22 +1,16 @@
 const { ethers } = require('ethers')
 
 export async function switchToOptimism() {
-  // console.log('switching to optimism net')
   const chainId = 0x0a
   const correctHexChainId = ethers.utils.hexValue(chainId)
-  // console.log({ correctHexChainId })
   try {
     await window.ethereum.request({
       method: 'wallet_switchEthereumChain',
       params: [{ chainId: correctHexChainId }],
     })
-    // console.log({ switchRequest: result })
   } catch (switchError) {
-    // This error code indicates that the chain has not been added to MetaMask.
     if (switchError.code === 4902) {
-      // console.log('optimism chain has not been added to metamask yet!')
       try {
-        // console.log('adding optimism to metamask')
         await window.ethereum.request({
           method: 'wallet_addEthereumChain',
           params: [
@@ -27,15 +21,31 @@ export async function switchToOptimism() {
             },
           ],
         })
-        // console.log('switch was successful')
         await window.ethereum.request({
           method: 'wallet_switchEthereumChain',
           params: [{ chainId: correctHexChainId }],
         })
-      } catch (addError) {
-        // handle "add" error
-      }
+      } catch (addError) {}
     }
-    // handle other "switch" errors
   }
+}
+
+export async function getNetworkChainList() {
+  try {
+    const data = await (await fetch('https://chainid.network/chains.json')).json()
+    console.log({ data })
+    return data
+  } catch (error) {}
+}
+
+export async function getCurrentChainId() {
+  let networkList
+  try {
+    networkList = await getNetworkChainList()
+    const chainId = await window.ethereum.request({ method: 'eth_chainId' })
+    const netResult = await ethers.providers.getNetwork(Number(chainId))
+    const result = networkList.filter(net => net.chainId === netResult.chainId)
+    console.log({ result })
+    return result
+  } catch (error) {}
 }

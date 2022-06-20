@@ -9,6 +9,7 @@ import { styled } from '@mui/material/styles'
 import MintingActions from 'components/MintingActions'
 import Account from 'components/Account'
 import { BadgeContext } from 'contexts/BadgeContext'
+import { switchToOptimism } from 'helpers/SwitchToOptimism'
 
 const WalletAddressTextField = styled(TextField)(({ theme }) => ({
   '& .MuiInputBase-input': {
@@ -16,7 +17,7 @@ const WalletAddressTextField = styled(TextField)(({ theme }) => ({
   },
 }))
 
-export default function MintingPage({ selectedChainId, injectedProvider, wallet }) {
+export default function MintingPage({ selectedChainId, injectedProvider }) {
   const { contractRef, connectedAddress, userSigner } = useContext(BadgeContext)
 
   /*
@@ -41,6 +42,16 @@ export default function MintingPage({ selectedChainId, injectedProvider, wallet 
   }
   const [mintCount, setMintCount] = useState(0)
   const [walletAddress, setWalletAddress] = useState('')
+  const [enableButton, disableButton] = useState(false)
+
+  async function doOptimismSwitch() {
+    try {
+      disableButton(true)
+      await switchToOptimism()
+    } catch (error) {
+      console.log({ error })
+    }
+  }
 
   function handleChange(e) {
     setWalletAddress(e.target.value)
@@ -52,6 +63,9 @@ export default function MintingPage({ selectedChainId, injectedProvider, wallet 
         <Account
           // @ts-ignore
           userSigner={userSigner}
+          doOptimismSwitch={doOptimismSwitch}
+          enableButton={enableButton}
+          disableButton={disableButton}
         />
         <Box mb={10} sx={{ textAlign: 'left', padding: '10px', color: '#007aa6', marginLeft: 5, marginBottom: 5 }}>
           <Typography

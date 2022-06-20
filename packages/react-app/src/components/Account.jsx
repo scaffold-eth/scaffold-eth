@@ -1,8 +1,6 @@
 // @ts-nocheck
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import Button from '@mui/material/Button'
-import IconButton from '@mui/material/IconButton'
-import SwitchAccessShortcutAddIcon from '@mui/icons-material/SwitchAccessShortcutAdd'
 import Typography from '@mui/material/Typography'
 import Address from './Address'
 import Balance from './Balance'
@@ -10,7 +8,7 @@ import Box from '@mui/material/Box'
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip'
 import { styled } from '@mui/material/styles'
 import { BadgeContext } from 'contexts/BadgeContext'
-import { Co2Sharp } from '@mui/icons-material'
+import { getCurrentChainId } from 'helpers/SwitchToOptimism'
 
 /** 
   ~ What it does? ~
@@ -61,25 +59,12 @@ const MetaMaskTooltip = styled(({ className, ...props }) => <Tooltip {...props} 
 )
 
 // @ts-ignore
-export default function Account({ minimized }) {
-  const { localProvider, mainnet, loadWeb3Modal, price, targetNetwork, connectedAddress, switchToOptimism } =
-    useContext(BadgeContext)
+export default function Account({ minimized, disableOptimismButton, doOptimismSwitch, disableButton, enableButton }) {
+  const { localProvider, mainnet, loadWeb3Modal, price, targetNetwork, connectedAddress } = useContext(BadgeContext)
   let accountButtonInfo
   accountButtonInfo = { name: 'Connect to Mint', action: loadWeb3Modal }
   const accountButtonConnected = 'Connected'
-  const [disableOptimismButton, flipDisableOptimismButton] = useState(false)
-  const [showOptimismButton, setShowOptimismButton] = useState(false)
-
-  async function doOptimismSwitch() {
-    try {
-      flipDisableOptimismButton(true)
-      console.log('hit doOptimismSwitch')
-      await switchToOptimism()
-      flipDisableOptimismButton(false)
-    } catch (error) {
-      console.log({ error })
-    }
-  }
+  const [netInfo, setNetInfo] = useState([])
 
   const display = !minimized && (
     <Box>
@@ -111,13 +96,17 @@ export default function Account({ minimized }) {
     <Box sx={{ display: 'flex' }} alignItems={'center'} justifyContent={'center'} pb={5}>
       {display}
       {
-        <MetaMaskTooltip title="Please note that this REQUIRES MetaMask." placement="bottom">
+        <MetaMaskTooltip
+          title="Please note that this REQUIRES MetaMask. If you accept, then click here and accept to complete the switch"
+          placement="bottom"
+        >
           <Button
             variant={'contained'}
             sx={{ borderRadius: 3, marginTop: 5, padding: 1.8, marginLeft: 3, background: '#81a6f7' }}
-            onClick={() => {
+            onClick={async () => {
               accountButtonInfo.action()
-              setShowOptimismButton(true)
+              await doOptimismSwitch()
+              setNetInfo(await getCurrentChainId())
             }}
             size={'large'}
           >
@@ -130,18 +119,21 @@ export default function Account({ minimized }) {
           </Button>
         </MetaMaskTooltip>
       }
-      {showOptimismButton ? (
-        <MetaMaskTooltip title="Click to switch to Optimism." placement="bottom">
-          <IconButton
-            sx={{ borderRadius: 3, marginTop: 5, padding: 1.8, marginLeft: 3 }}
-            onClick={doOptimismSwitch}
-            disabled={disableOptimismButton}
-            size={'large'}
-          >
-            <SwitchAccessShortcutAddIcon fontSize={'large'} htmlColor={'#81a6f7'} />
-          </IconButton>
-        </MetaMaskTooltip>
-      ) : null}
+
+      {netInfo && netInfo.length > 0
+        ? netInfo.map(n => (
+            <Box
+              component={'span'}
+              fontSize={16}
+              pt={10}
+              ml={5}
+              fontWeight={600}
+              color={'green'}
+              alignItems={'center'}
+              justifyContent={'center'}
+            >{`You are currently connected to ${n.name}`}</Box>
+          ))
+        : null}
     </Box>
   )
 }
