@@ -119,6 +119,27 @@ export const NETWORKS = {
     blockExplorer: "https://optimistic.etherscan.io/",
     rpcUrl: `https://mainnet.optimism.io`,
   },
+  rinkebyArbitrum: {
+    name: "rinkebyArbitrum",
+    color: "#28a0f0",
+    chainId: 421611,
+    blockExplorer: "https://testnet.arbiscan.io/",
+    rpcUrl: 'https://rinkeby.arbitrum.io/rpc',
+  },
+  arbitrum: {
+    name: "arbitrum",
+    color: "#28a0f0",
+    chainId: 42161,
+    blockExplorer: "https://arbiscan.io/",
+    rpcUrl: 'https://arb1.arbitrum.io/rpc',
+  },
+  devnetArbitrum: {
+    name: "devnetArbitrum",
+    color: "#28a0f0",
+    chainId: 421612,
+    blockExplorer: "https://nitro-devnet-explorer.arbitrum.io/",
+    rpcUrl: 'https://nitro-devnet.arbitrum.io/rpc',
+  },
   localAvalanche: {
     name: "localAvalanche",
     color: "#666666",

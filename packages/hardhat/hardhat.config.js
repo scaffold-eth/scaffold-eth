@@ -265,6 +265,27 @@ module.exports = {
         mnemonic: mnemonic(),
       },
     },
+    arbitrum: {
+      url: 'https://arb1.arbitrum.io/rpc',
+      chainId: 42161,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
+    rinkebyArbitrum: {
+      url: 'https://rinkeby.arbitrum.io/rpc',
+      chainId: 421611,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
+    devnetArbitrum: {
+      url: 'https://nitro-devnet.arbitrum.io/rpc',
+      chainId: 421612,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
   },
   solidity: {
     compilers: [
