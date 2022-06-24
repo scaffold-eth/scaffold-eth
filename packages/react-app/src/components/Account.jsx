@@ -128,7 +128,7 @@ export default function Account({ minimized, disableOptimismButton, doOptimismSw
               pt={10}
               ml={5}
               fontWeight={600}
-              color={'green'}
+              color={'#ff0420'}
               alignItems={'center'}
               justifyContent={'center'}
             >{`You are currently connected to ${n.name}`}</Box>

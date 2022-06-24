@@ -72,7 +72,7 @@ export default function MintingPage({ selectedChainId, injectedProvider }) {
             textAlign={'left'}
             variant={'h3'}
             fontWeight={700}
-            sx={{ marginBottom: 5 }}
+            sx={{ marginBottom: 2 }}
             color={'black'}
             fontFamily={'Noah'}
           >
@@ -86,7 +86,13 @@ export default function MintingPage({ selectedChainId, injectedProvider }) {
             See below for the number of "Remixer" badge mints you have remaining on your account. <br />
             To mint a new "Remixer" badge, input a unique wallet address below.
           </Typography>
-          <Typography variant="inherit" fontWeight={500} mb={5} sx={{ color: '#333333' }} component={'span'}>
+          <Typography
+            variant="inherit"
+            fontWeight={500}
+            mb={5}
+            sx={{ color: '#333333', zIndex: 999 }}
+            component={'span'}
+          >
             Minting each "Remixer" badge will require a very small amount of ETH (0.15 DAI) on the Optimism network.{' '}
             <br /> If you do not have ETH on Optimism, you can transfer some from Mainnet using the{' '}
             <a href="https://app.optimism.io/bridge">Optimism Bridge</a> or{' '}
@@ -106,9 +112,10 @@ export default function MintingPage({ selectedChainId, injectedProvider }) {
         alignItems={'center'}
         justifyContent={'center'}
         flexDirection={'column'}
+        pb={10}
       >
-        <MintingPageCard top={-42} />
-        <Box mt={5}>
+        <MintingPageCard top={-15} />
+        <Box mt={2}>
           <MintingActions
             mintCount={mintCount}
             setMintCount={setMintCount}

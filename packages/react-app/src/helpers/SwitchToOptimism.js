@@ -45,7 +45,6 @@ export async function getCurrentChainId() {
     const chainId = await window.ethereum.request({ method: 'eth_chainId' })
     const netResult = await ethers.providers.getNetwork(Number(chainId))
     const result = networkList.filter(net => net.chainId === netResult.chainId)
-    console.log({ result })
     return result
   } catch (error) {}
 }

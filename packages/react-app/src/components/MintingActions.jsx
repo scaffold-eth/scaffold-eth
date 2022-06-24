@@ -14,7 +14,7 @@ export default function MintingActions({
 }) {
   return (
     <>
-      <Box display={'flex'} flexDirection={'column'} justifyContent={'center'} alignItems={'center'}>
+      <Box display={'flex'} flexDirection={'column'} justifyContent={'center'} alignItems={'center'} >
         <Box display={'flex'} flexDirection={'column'} sx={{ background: 'white' }} width={280} height={180}>
           <Typography variant="h2" fontWeight={900} sx={{ padding: 2, color: '#81a6f7' }}>
             {typeof mintCount === 'number' ? mintCount : 0}
@@ -23,8 +23,8 @@ export default function MintingActions({
             BADGES REMAINING TO <br /> MINT ON YOUR ACCT
           </Typography>
         </Box>
-        <Box pt={5}>
-          <Typography fontWeight={600} mb={5}>
+        <Box pt={2}>
+          <Typography fontWeight={600} mb={3}>
             Input a wallet address
           </Typography>
           <FormControl sx={{ width: '50vw' }} variant="outlined">
@@ -35,7 +35,7 @@ export default function MintingActions({
           sx={{
             background: '#81a6f7',
             ':hover': { background: '#1976d2', color: '#fff' },
-            marginTop: 3,
+            marginTop: 2,
             paddingRight: 5,
             paddingLeft: 5,
           }}
