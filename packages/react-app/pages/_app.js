@@ -5,6 +5,7 @@ import { Web3Provider } from "../helpers/Web3Context";
 import { DevUI, NetworkDisplay, ThemeSwitch } from "../components";
 import { ThemeSwitcherProvider } from "react-css-theme-switcher";
 import Head from "next/head";
+import 'semantic-ui-css/semantic.min.css';
 
 function MyApp({ Component, pageProps }) {
   const prevTheme = useRef("light");
