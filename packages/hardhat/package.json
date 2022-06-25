@@ -11,11 +11,14 @@
     "eslint-plugin-prettier": "^3.4.0"
   },
   "dependencies": {
+    "@chainlink/contracts": "^0.4.1",
     "@eth-optimism/hardhat-ovm": "^0.2.2",
     "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers",
     "@nomiclabs/hardhat-waffle": "^2.0.0",
     "@openzeppelin/contracts": "^4.3.3",
+    "@openzeppelin/contracts-upgradeable": "^4.6.0",
     "@tenderly/hardhat-tenderly": "^1.0.10",
+    "@uniswap/v3-periphery": "^1.4.1",
     "chai": "^4.2.0",
     "chalk": "^4.1.0",
     "dotenv": "^8.2.0",
