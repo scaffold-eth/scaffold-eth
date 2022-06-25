@@ -20,7 +20,7 @@ git clone https://github.com/UpgradeableStateMachine/PetroStake.git
 > checkout the `scaffold-nextjs` branch
 
 ```bash
-cd scaffold-nextjs
+cd Petrostake
 git checkout scaffold-nextjs
 ```
 
