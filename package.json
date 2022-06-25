@@ -67,6 +67,7 @@
     ]
   },
   "dependencies": {
+    "@superfluid-finance/sdk-core": "^0.4.2",
     "bootstrap": "^5.1.3",
     "react-bootstrap": "^2.4.0"
   },

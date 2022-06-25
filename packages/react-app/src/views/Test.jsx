@@ -10,8 +10,10 @@ import { Card, Row, Col, Button, Alert } from "react-bootstrap";
 
 import { Address, Balance, Events } from "../components";
 
+import { ethers } from "ethers";
+
 //create a page that says hey
-export default function Test({ price }) {
+export default function Test({ price, address, readContracts, mainnetProvider }) {
   return (
     <div>
       <Alert variant="success">
@@ -24,11 +26,17 @@ export default function Test({ price }) {
           <Col>
             <Card>
               <Card.Header>
-                <Card.Title>Card {idx + 1}</Card.Title>
+                <Card.Title>Stream {idx + 1}</Card.Title>
               </Card.Header>
               <Card.Body>
-                <Card.Title>Streaming...</Card.Title>
-                <Card.Text>
+                <Card.Title className="d-flex justify-content-start">
+                  <Address
+                    address={readContracts && readContracts.YourContract ? readContracts.YourContract.address : null}
+                    ensProvider={mainnetProvider}
+                    fontSize={16}
+                  />
+                </Card.Title>
+                <Card.Text className="d-flex justify-content-evenly">
                   <div>
                     <Button variant="primary">Primary</Button>
                   </div>
