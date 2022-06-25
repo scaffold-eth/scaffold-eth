@@ -14,7 +14,7 @@ Prerequisites: [Node](https://nodejs.org/en/download/) plus [Yarn](https://class
 > clone/fork 🏗 scaffold-eth:
 
 ```bash
-git clone (https://github.com/UpgradeableStateMachine/PetroStake.git)
+git clone https://github.com/UpgradeableStateMachine/PetroStake.git
 ```
 
 > checkout the `scaffold-nextjs` branch
