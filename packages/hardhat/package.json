@@ -11,7 +11,10 @@
     "eslint-plugin-prettier": "^3.4.0"
   },
   "dependencies": {
+    "@appliedblockchain/chainlink-contracts": "^0.0.4",
+    "@appliedblockchain/chainlink-plugins-fund-link": "^0.0.3",
     "@chainlink/contracts": "^0.4.1",
+    "@chainlink/test-helpers": "^0.0.7-alpha",
     "@eth-optimism/hardhat-ovm": "^0.2.2",
     "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers",
     "@nomiclabs/hardhat-waffle": "^2.0.0",
