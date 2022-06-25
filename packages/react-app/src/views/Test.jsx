@@ -13,7 +13,9 @@ import { Address, Balance, Events } from "../components";
 import { ethers } from "ethers";
 
 //create a page that says hey
-export default function Test({ price, address, readContracts, mainnetProvider }) {
+export default function Test({ price, address, readContracts, mainnetProvider, sf }) {
+  console.log("Test");
+  console.log(sf);
   return (
     <div>
       <Alert variant="success">
