@@ -57,13 +57,13 @@ import { ethers } from "ethers";
 */
 
 /// 📡 What chain are your contracts deployed to?
-const initialNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const initialNetwork = NETWORKS.rinkeby; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
 const NETWORKCHECK = true;
-const USE_BURNER_WALLET = true; // toggle burner wallet feature
-const USE_NETWORK_SELECTOR = false;
+const USE_BURNER_WALLET = false; // toggle burner wallet feature
+const USE_NETWORK_SELECTOR = true;
 
 const web3Modal = Web3ModalSetup();
 
@@ -73,20 +73,6 @@ const providers = [
   `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}`,
   "https://rpc.scaffoldeth.io:48544",
 ];
-
-const main = async () => {
-  //This seems like its connected to a different provider than the one we are using in the app
-  const provider = new ethers.providers.InfuraProvider("rinkeby", INFURA_ID);
-
-  const sf = await Framework.create({
-    chainId: 42,
-    provider: provider,
-  });
-
-  if (DEBUG) console.log("Framework loaded");
-
-  return sf;
-};
 
 function App(props) {
   // specify all the chains your app is available on. Eg: ['localhost', 'mainnet', ...otherNetworks ]

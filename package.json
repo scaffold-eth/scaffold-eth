@@ -69,7 +69,8 @@
   "dependencies": {
     "@superfluid-finance/sdk-core": "^0.4.2",
     "bootstrap": "^5.1.3",
-    "react-bootstrap": "^2.4.0"
+    "react-bootstrap": "^2.4.0",
+    "web3modal": "^1.9.8"
   },
   "devDependencies": {
     "husky": "^7.0.2"
