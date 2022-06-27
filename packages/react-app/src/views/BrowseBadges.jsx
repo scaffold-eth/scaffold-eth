@@ -35,13 +35,15 @@ export const isHexadecimal = value => {
   return /^[0-9a-fA-F]+$/.test(value) && value.length % 2 === 0
 }
 
+// const styles
+
 export default function BrowseBadges() {
   const [contractEvents, setContractEvents] = useState([])
   const contractConfig = { deployedContracts: {}, externalContracts: externalContracts || {} }
   const [badges, setBadges] = useState([])
   const [eventBadges, setEventBadges] = useState([])
   const [error, setErrorMessage] = useState('')
-  const { localProvider, mainnet, selectedChainId, address, setAddress, injectedProvider, } = useContext(BadgeContext)
+  const { localProvider, mainnet, selectedChainId, address, setAddress, injectedProvider } = useContext(BadgeContext)
 
   let contractRef
   if (
@@ -222,7 +224,15 @@ export default function BrowseBadges() {
             <Button
               type="submit"
               variant="contained"
-              sx={{ padding: 1.8, marginLeft: 3, background: '#81a6f7' }}
+              sx={{
+                padding: 1.8,
+                marginLeft: 3,
+                background: '#81a6f7',
+                ':disabled': {
+                  background: '#81a6f7',
+                  color: 'whitesmoke',
+                },
+              }}
               onClick={e => submitHandler(e)}
               disabled={address === ''}
             >

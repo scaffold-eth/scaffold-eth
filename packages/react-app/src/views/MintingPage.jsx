@@ -10,7 +10,8 @@ import MintingActions from 'components/MintingActions'
 import Account from 'components/Account'
 import { BadgeContext } from 'contexts/BadgeContext'
 import { switchToOptimism } from 'helpers/SwitchToOptimism'
-
+import { useTheme } from '@mui/material/styles'
+import useMediaQuery from '@mui/material/useMediaQuery'
 const WalletAddressTextField = styled(TextField)(({ theme }) => ({
   '& .MuiInputBase-input': {
     backgroundColor: theme.palette.mode === 'light' ? '#fff' : '#2b2b2b',
@@ -43,7 +44,14 @@ export default function MintingPage({ selectedChainId, injectedProvider }) {
   const [mintCount, setMintCount] = useState(0)
   const [walletAddress, setWalletAddress] = useState('')
   const [enableButton, disableButton] = useState(false)
+  const theme = useTheme()
+  const mobile400 = useMediaQuery(theme.breakpoints.between('sm', 'md'))
+  const mobile240 = useMediaQuery(theme.breakpoints.between('xs', 'sm'))
+  const mobile900 = useMediaQuery('(min-width:900px)')
+  const mobileResponsiveMatch = useMediaQuery('(min-width:600px)')
 
+  console.log({ mobileResponsiveMatch, now: new Date() })
+  console.log({ mobile400, mobile240, mobile900 })
   async function doOptimismSwitch() {
     try {
       disableButton(true)
@@ -107,13 +115,11 @@ export default function MintingPage({ selectedChainId, injectedProvider }) {
           background: 'linear-gradient(90deg, #f6e8fc, #f1e6fb, #ede5fb, #e8e4fa, #e3e2f9, #dee1f7, #d9dff6, #d4def4)',
           height: '100vh',
         }}
-        display={'flex'}
-        alignItems={'center'}
-        justifyContent={'center'}
-        flexDirection={'column'}
       >
-        <MintingPageCard top={-20} />
-        <Box mt={2}>
+        <Box display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'}>
+          <MintingPageCard
+            top={mobile900 ? -15 : mobileResponsiveMatch ? -16 : mobile400 ? -25 : mobile240 ? -14 : -15}
+          />
           <MintingActions
             mintCount={mintCount}
             setMintCount={setMintCount}

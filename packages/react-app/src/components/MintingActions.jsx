@@ -14,7 +14,7 @@ export default function MintingActions({
 }) {
   return (
     <>
-      <Box display={'flex'} flexDirection={'column'} justifyContent={'center'} alignItems={'center'} >
+      <Box display={'flex'} flexDirection={'column'} justifyContent={'center'} alignItems={'center'} mt={5}>
         <Box display={'flex'} flexDirection={'column'} sx={{ background: 'white' }} width={280} height={180}>
           <Typography variant="h2" fontWeight={900} sx={{ padding: 2, color: '#81a6f7' }}>
             {typeof mintCount === 'number' ? mintCount : 0}
