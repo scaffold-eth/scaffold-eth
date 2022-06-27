@@ -11,7 +11,6 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   await deploy("DiceGame", {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
-    value: ethers.utils.parseEther(".05"),
     log: true,
   });
 

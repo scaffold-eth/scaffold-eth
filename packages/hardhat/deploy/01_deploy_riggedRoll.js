@@ -9,7 +9,6 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
 
   const diceGame = await ethers.getContract("DiceGame", deployer);
 
-
   await deploy("RiggedRoll", {
    from: deployer,
    args: [diceGame.address],

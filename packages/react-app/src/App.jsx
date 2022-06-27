@@ -1,6 +1,6 @@
 import Portis from "@portis/web3";
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import { Alert, Button, Col, List, Menu, Row } from "antd";
+import { Alert, Button, Col, List, Menu, Row, Input } from "antd";
 import "antd/dist/antd.css";
 import Authereum from "authereum";
 import {
@@ -449,10 +449,14 @@ function App(props) {
     );
   }
 
-  const winnerEvents = useEventListener(readContracts, "DiceGame", "Winner");
-  const rollEvents = useEventListener(readContracts, "DiceGame", "Roll");
-  const difficultyEvents = useEventListener(readContracts, "DiceGame", "Difficulty");
+  const winnerEvents = useEventListener(readContracts, "DiceGame", "Winner", localProvider, 12458549);
+  const tipEvents = useEventListener(readContracts, "DiceGame", "Tip", localProvider, 12458549);
+  const rollEvents = useEventListener(readContracts, "DiceGame", "Roll", localProvider, 12458549);
+  const difficultyEvents = useEventListener(readContracts, "DiceGame", "Difficulty", localProvider, 12458549);
+  const betEvents = useEventListener(readContracts, "DiceGame", "Bet", localProvider, 12458549);
   const prize = useContractReader(readContracts, "DiceGame", "prize");
+  const canBet = useContractReader(readContracts, "DiceGame", "canBet");
+  const canRoll = useContractReader(readContracts, "DiceGame", "canRoll");
 
   const rollRiggedEvents = useEventListener(readContracts, "RiggedRoll", "Roll");
   const difficultyRiggedEvents = useEventListener(readContracts, "RiggedRoll", "Difficulty");
@@ -460,22 +464,37 @@ function App(props) {
   const [diceRolled, setDiceRolled] = useState(false);
   const [diceRollImage, setDiceRollImage] = useState(null);
   const [claiming, setClaiming] = useState(false);
+  const [number, setNumber] = useState();
 
   let diceRollImg = "";
   if (diceRollImage) {
-    diceRollImg = <img style={{ width: "300px", heigth: "300px" }} src={diceImages[`${diceRollImage}.png`].default} />;
+    // diceRollImg = <img style={{ width: "300px", heigth: "300px" }} src={diceImages[`${diceRollImage}.png`].default} />;
   }
 
-  const rollTheDice = async () => {
-    setDiceRolled(true);
-    setDiceRollImage("ROLL");
-
-    tx(writeContracts.DiceGame.rollTheDice({ value: ethers.utils.parseEther("0.002"), gasLimit: 500000 }), update => {
+  const bet = async () => {
+    tx(writeContracts.DiceGame.bet(number, { value: ethers.utils.parseEther("0.002"), gasLimit: 500000 }), update => {
       if (update?.status === "failed") {
         setDiceRolled(false);
         //setDiceRollImage(null);
       }
     });
+  };
+
+  const rollTheDice = async () => {
+    setDiceRolled(true);
+    setDiceRollImage("ROLL");
+
+    tx(writeContracts.DiceGame.rollTheDice({ gasLimit: 500000 }), update => {
+      if (update?.status === "failed" || !update.status) {
+        setDiceRolled(false);
+        //setDiceRollImage(null);
+      }
+    });
+  };
+
+  const handleChangeNumber = value => {
+    console.log(value.target.value);
+    setNumber(value.target.value);
   };
 
   const riggedRoll = async () => {
@@ -549,50 +568,54 @@ function App(props) {
         </Menu>
         {console.log("roll events: ", rollEvents)}
         {console.log("difficulty events: ", difficultyEvents)}
+        {console.log("bet events: ", betEvents)}
+        {console.log("winner events: ", winnerEvents)}
+        {console.log("tip events: ", tipEvents)}
         {console.log("roll rigged events: ", rollRiggedEvents)}
         {console.log("difficulty rigged events: ", difficultyRiggedEvents)}
         <Switch>
           <Route exact path="/">
             <div style={{ display: "flex" }}>
-              <div style={{ width: 250, margin: "auto", marginTop: 64 }}>
-                <div>Roll Events:</div>
+              <div style={{ width: 250, margin: "auto", marginTop: 32 }}>
+                <div>Bet Events:</div>
                 <List
-                  style={{ height: 258, overflow: "hidden" }}
-                  dataSource={rollEvents}
+                  style={{ height: 750, overflow: "hidden" }}
+                  dataSource={betEvents}
                   renderItem={item => {
                     return (
                       <List.Item
                         key={item.args[0] + " " + item.args[1] + " " + date.getTime() + " " + item.blockNumber}
                       >
-                        <Address value={item.args[0]} ensProvider={mainnetProvider} fontSize={16} />
-                        &nbsp;Roll:&nbsp;{item.args[1].toNumber().toString(16).toUpperCase()}
-                      </List.Item>
-                    );
-                  }}
-                />
-                <div>Roll Rigged Events:</div>
-                <List
-                  style={{ height: 258, overflow: "hidden" }}
-                  dataSource={rollRiggedEvents}
-                  renderItem={item => {
-                    return (
-                      <List.Item
-                        key={item.args[0] + " " + item.args[1] + " " + date.getTime() + " " + item.blockNumber}
-                      >
-                        <Address value={item.args[0]} ensProvider={mainnetProvider} fontSize={16} />
-                        &nbsp;Roll:&nbsp;{item.args[1].toNumber().toString(16).toUpperCase()}
+                        <Address value={item.args.player} ensProvider={mainnetProvider} fontSize={16} />
+                        &nbsp;BlockNumber:&nbsp;{item.args.blockNumber.toNumber()}<br />
+                        &nbsp;Bet:&nbsp;{item.args.number}
                       </List.Item>
                     );
                   }}
                 />
               </div>
               <div id="centerWrapper" style={{ padding: 16 }}>
-                <h2>Roll a 0, 1, or 2 to win the prize!</h2>
-                <Balance balance={prize} dollarMultiplier={price} fontSize={32} />
+                <div style={{ fontSize: 32 }}>
+                  Price: <Balance balance={prize} dollarMultiplier={price} fontSize={32} />
+                </div>
+                <div style={{ fontSize: 20 }}>
+                  Current Stage:
+                  {canBet && "Betting"}
+                  {canRoll && "Rolling"}
+                  {!canBet && !canRoll && "Waiting to Roll..."}
+                </div>
                 <div style={{ padding: 16, format: "flex", flexDirection: "row" }}>
-                  <Button type="primary" disabled={diceRolled} onClick={rollTheDice}>
-                    Roll the dice!
-                  </Button>
+                  <div style={{ padding: 16 }}>
+                    <Input value={number} placeholder={number} onChange={handleChangeNumber} />
+                    <Button type="primary" disabled={!canBet || diceRolled} onClick={bet}>
+                      Bet
+                    </Button>
+                  </div>
+                  <div style={{ padding: 16 }}>
+                    <Button type="primary" disabled={!canRoll || diceRolled} onClick={rollTheDice}>
+                      Roll the dice!
+                    </Button>
+                  </div>
                   <div style={{ padding: 16 }}>
                     <Account
                       address={readContracts?.RiggedRoll?.address}
@@ -605,7 +628,8 @@ function App(props) {
                       logoutOfWeb3Modal={false}
                       blockExplorer={blockExplorer}
                     />
-                    <Button style={{ margin: 16 }} type="primary" disabled={diceRolled} onClick={riggedRoll}>
+                    <h2>Rigged Roll will only roll the dice if a 0, 1, or 2 is rolled!</h2>
+                    <Button style={{ margin: 16 }} type="primary" disabled={!canRoll || diceRolled} onClick={riggedRoll}>
                       Rigged Roll!
                     </Button>
                   </div>
@@ -623,8 +647,40 @@ function App(props) {
                         key={item.args[0] + " " + item.args[1] + " " + date.getTime() + " " + item.blockNumber}
                       >
                         <Address value={item.args[0]} ensProvider={mainnetProvider} fontSize={16} />
-                        <br></br>
-                        <Balance balance={item.args[1]} dollarMultiplier={price} />
+                        &nbsp;BlockNumber:&nbsp;{item.args.blockNumber.toNumber()}<br />
+                        &nbsp;Amount:&nbsp;Ξ{ethers.utils.formatEther(item.args.amount.toString())}
+                      </List.Item>
+                    );
+                  }}
+                />
+                <div>Roll Events:</div>
+                <List
+                  style={{ height: 258, overflow: "hidden" }}
+                  dataSource={rollEvents}
+                  renderItem={item => {
+                    return (
+                      <List.Item
+                        key={item.args[0] + " " + item.args[1] + " " + date.getTime() + " " + item.blockNumber}
+                      >
+                        <Address value={item.args.player} ensProvider={mainnetProvider} fontSize={16} />
+                        &nbsp;BlockNumber:&nbsp;{item.args.blockNumber.toNumber()}<br />
+                        &nbsp;Roll:&nbsp;{item.args.roll}
+                      </List.Item>
+                    );
+                  }}
+                />
+                <div>Roll Rigged Events:</div>
+                <List
+                  style={{ height: 258, overflow: "hidden" }}
+                  dataSource={rollRiggedEvents}
+                  renderItem={item => {
+                    return (
+                      <List.Item
+                        key={item.args[0] + " " + item.args[1] + " " + date.getTime() + " " + item.blockNumber}
+                      >
+                        <Address value={item.args[0]} ensProvider={mainnetProvider} fontSize={16} />
+                        &nbsp;BlockNumber:&nbsp;{item.args.blockNumber.toNumber()}<br />
+                        &nbsp;Roll:&nbsp;{item.args.roll}
                       </List.Item>
                     );
                   }}
