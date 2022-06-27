@@ -97,7 +97,7 @@ export default function Account({ minimized, disableOptimismButton, doOptimismSw
       {display}
       {
         <MetaMaskTooltip
-          title="Please note that this REQUIRES MetaMask. If you accept, then click here and accept to complete the switch"
+          title="This connection requires MetaMask. By clicking here, you accept a connection to Metamask"
           placement="bottom"
         >
           <Button
