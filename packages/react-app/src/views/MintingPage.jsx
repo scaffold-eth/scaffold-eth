@@ -59,7 +59,7 @@ export default function MintingPage({ selectedChainId, injectedProvider }) {
 
   return (
     <>
-      <Box pt="76px">
+      <Box pt="76px" mb={20}>
         <Account
           // @ts-ignore
           userSigner={userSigner}
@@ -107,14 +107,12 @@ export default function MintingPage({ selectedChainId, injectedProvider }) {
           background: 'linear-gradient(90deg, #f6e8fc, #f1e6fb, #ede5fb, #e8e4fa, #e3e2f9, #dee1f7, #d9dff6, #d4def4)',
           height: '100vh',
         }}
-        mt={25}
         display={'flex'}
         alignItems={'center'}
         justifyContent={'center'}
         flexDirection={'column'}
-        pb={10}
       >
-        <MintingPageCard top={-15} />
+        <MintingPageCard top={-20} />
         <Box mt={2}>
           <MintingActions
             mintCount={mintCount}
