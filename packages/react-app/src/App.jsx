@@ -673,8 +673,8 @@ function App(props) {
         </Switch>
       </BrowserRouter>
 
-      <ThemeSwitch />
-
+{/* Move themeSwitch component to line 710 to avoid overlaping with the "fork me" Div   */}
+      
       {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
       <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>
         <Account
@@ -704,6 +704,10 @@ function App(props) {
           🍴 Fork me!
         </a>
       </div>
+      
+      {/* moved themeSwitch Here */}
+      
+      <ThemeSwitch />
 
       {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
       <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
