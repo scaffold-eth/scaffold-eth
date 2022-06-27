@@ -1,23 +1,28 @@
 # 🏗 scaffold-eth | 🏰 BuidlGuidl
 
-## 🚩 🎲 Dice Game using block.difficulty
+## 🚩 🎲 Dice Game using future block.difficulty
 
-Ethereum PoS introduce randoness usign block.difficulty. Look at https://eips.ethereum.org/EIPS/eip-4399 for more information.
+Ethereum PoS introduce randomness usign block.difficulty. Look at https://eips.ethereum.org/EIPS/eip-4399 for more information.
 
-This build resolves the Dice Game Challenge (https://github.com/scaffold-eth/scaffold-eth-challenges/tree/challenge-3-dice-game) using block.difficulty for the random dice value and try to attack it using the same strategy that when using block.number.
+In the build https://github.com/scaffold-eth/scaffold-eth/tree/dice-game-using-difficulty a dice game using block.difficulty as randomness source was developed and then it was attacked using the same strategy from the Dice Game Challenge (https://github.com/scaffold-eth/scaffold-eth-challenges/tree/challenge-3-dice-game).
 
-It was deployed to Ropsten test networks (already on PoS) and the frontend was deployed at https://dice-ropsten.surge.sh/
+Now the game have 3 stages:
+1. **Bidding Stage:** the players can bid on the numbers. Each bid costs 0.002 ethers (90% go to the prize and 10% to the contract). Duration: 10 blocks
+2. **Cooldown Stage:** nobody can bid and the roll can’t be rolled yet. Duration: 5 blocks.
+3. **Rolling Stage:** anyone can roll the dice and get a tip for it (set at 10% of the prize now). All the winners get the prize splitted to the winners count. If nobody wins, the prize is kept for the next round. Duration: 5 blocks.
 
-The same attack is feasible here. The block.difficulty value is the same on the RiggedRoll contract and on the DiceGame one, so you can predict if you will win or not, and only make the call to the DiceGame contract when you are expecting to win.
+It was deployed to Ropsten test networks (already on PoS) and the frontend was deployed at http://dice-future-ropsten.surge.sh/
+
+Now it is harder to attack the game. You can make a RiggedRoll that only rolls the dice if the number is one that you have played, but you compete with other players trying to roll the dice too, and you only have 5 blocks to roll it.
  
 ---
 
 ### Checkpoint 0: 📦 install 📚
 
 ```bash
-git clone https://github.com/scaffold-eth/scaffold-eth dice-game-using-difficulty
-cd dice-game-using-difficulty
-git checkout dice-game-using-difficulty
+git clone https://github.com/scaffold-eth/scaffold-eth dice-game-future-difficulty
+cd dice-game-future-difficulty
+git checkout dice-game-future-difficulty
 yarn install
 ```
 ---
