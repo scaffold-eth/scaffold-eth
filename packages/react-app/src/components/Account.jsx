@@ -66,17 +66,6 @@ export default function Account({ minimized, disableOptimismButton, doOptimismSw
   const accountButtonConnected = 'Connected'
   const [netInfo, setNetInfo] = useState([])
   console.log({ connectedAddress })
-  // const [clientAddress, setClientAddress] = useState({})
-
-  // useEffect(() => {
-  //   const getAccount = async () => {
-  //     const provider = window.ethereum
-  //     const result = await provider.request({ method: 'eth_requestAccounts' })
-  //     console.log(result)
-  //   }
-  //   const connectedAccount = getAccount()
-  //   return () => setClientAddress(connectedAccount)
-  // }, [])
 
   const display = !minimized && (
     <Box>
