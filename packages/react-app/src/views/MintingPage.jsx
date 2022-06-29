@@ -50,8 +50,8 @@ export default function MintingPage({ selectedChainId, injectedProvider }) {
   const mobile900 = useMediaQuery('(min-width:900px)')
   const mobileResponsiveMatch = useMediaQuery('(min-width:600px)')
 
-  console.log({ mobileResponsiveMatch, now: new Date() })
-  console.log({ mobile400, mobile240, mobile900 })
+  // console.log({ mobileResponsiveMatch, now: new Date() })
+  // console.log({ mobile400, mobile240, mobile900 })
   async function doOptimismSwitch() {
     try {
       disableButton(true)

@@ -60,7 +60,7 @@ function App(props) {
         const newAddress = await userSigner.getAddress()
         // @ts-ignore
         setConnectedAddress(newAddress)
-        console.log(newAddress)
+        console.log({ newAddress, userSigner })
       }
     }
     getAddress()
@@ -93,7 +93,9 @@ function App(props) {
       return
     }
     const provider = window.ethereum
-    window.ethereum.request({ method: 'eth_requestAccounts' })
+    const result = await provider.request({ method: 'eth_requestAccounts' })
+
+    console.log({ result })
 
     // @ts-ignore
     setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
@@ -115,6 +117,9 @@ function App(props) {
       console.log(code, reason)
       logoutOfWeb3Modal()
     })
+
+    console.log({ injectedProvider })
+    setTabValue(1)
     // eslint-disable-next-line
   }, [setInjectedProvider])
 

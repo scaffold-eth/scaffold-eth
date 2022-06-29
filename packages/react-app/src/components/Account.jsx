@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import Address from './Address'
@@ -65,6 +65,18 @@ export default function Account({ minimized, disableOptimismButton, doOptimismSw
   accountButtonInfo = { name: 'Connect to Mint', action: loadWeb3Modal }
   const accountButtonConnected = 'Connected'
   const [netInfo, setNetInfo] = useState([])
+  console.log({ connectedAddress })
+  // const [clientAddress, setClientAddress] = useState({})
+
+  // useEffect(() => {
+  //   const getAccount = async () => {
+  //     const provider = window.ethereum
+  //     const result = await provider.request({ method: 'eth_requestAccounts' })
+  //     console.log(result)
+  //   }
+  //   const connectedAccount = getAccount()
+  //   return () => setClientAddress(connectedAccount)
+  // }, [])
 
   const display = !minimized && (
     <Box>
@@ -120,9 +132,10 @@ export default function Account({ minimized, disableOptimismButton, doOptimismSw
         </MetaMaskTooltip>
       }
 
-      {netInfo && netInfo.length > 0
+      {netInfo && netInfo.length > 0 && connectedAddress && connectedAddress.length > 1
         ? netInfo.map(n => (
             <Box
+              key={n.chainId}
               component={'span'}
               fontSize={16}
               pt={10}
