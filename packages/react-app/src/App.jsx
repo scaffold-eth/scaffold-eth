@@ -27,6 +27,7 @@ import { Transactor } from "./helpers";
 import { useBalance, useExchangePrice, useGasPrice, useLocalStorage, usePoller, useUserProvider } from "./hooks";
 
 import WalletConnect from "@walletconnect/client";
+import { convertHexToNumber, convertHexToUtf8 } from "@walletconnect/utils";
 
 import { TransactionManager } from "./helpers/TransactionManager";
 
@@ -232,6 +233,14 @@ function App(props) {
     }
   }, 7777);*/
 
+  const convertHexToUtf8IfPossible = (hex) => {
+    try {
+      return convertHexToUtf8(hex);
+    } catch (e) {
+      return hex;
+    }
+  }
+
   const connectWallet = (sessionDetails)=>{
     console.log(" 📡 Connecting to Wallet Connect....",sessionDetails)
 
@@ -330,6 +339,68 @@ function App(props) {
       */
 
       //setWalletModalData({payload:payload,connector: connector})
+
+      // https://github.com/WalletConnect/walletconnect-test-wallet/blob/7b209c10f02014ed5644fc9991de94f9d96dcf9d/src/engines/ethereum.ts#L45-L104
+      let params = [{ label: "Method", value: payload.method }];
+
+      switch (payload.method) {
+        case "eth_sendTransaction":
+        case "eth_signTransaction":
+          params = [
+            ...params,
+            { label: "From", value: payload.params[0].from },
+            { label: "To", value: payload.params[0].to },
+            {
+              label: "Gas Limit",
+              value: payload.params[0].gas
+                ? convertHexToNumber(payload.params[0].gas)
+                : payload.params[0].gasLimit
+                ? convertHexToNumber(payload.params[0].gasLimit)
+                : "",
+            },
+            {
+              label: "Gas Price",
+              value: convertHexToNumber(payload.params[0].gasPrice),
+            },
+            {
+              label: "Nonce",
+              value: convertHexToNumber(payload.params[0].nonce),
+            },
+            {
+              label: "Value",
+              value: payload.params[0].value ? convertHexToNumber(payload.params[0].value) : "",
+            },
+            { label: "Data", value: payload.params[0].data },
+          ];
+          break;
+
+        case "eth_sign":
+          params = [
+            ...params,
+            { label: "Address", value: payload.params[0] },
+            { label: "Message", value: payload.params[1] },
+          ];
+          break;
+        case "personal_sign":
+          params = [
+            ...params,
+            { label: "Address", value: payload.params[1] },
+            {
+              label: "Message",
+              value: convertHexToUtf8IfPossible(payload.params[0]),
+            },
+          ];
+          break;
+        default:
+          params = [
+            ...params,
+            {
+              label: "params",
+              value: JSON.stringify(payload.params, null, "\t"),
+            },
+          ];
+          break;
+      }
 
       confirm({
           width: "90%",
