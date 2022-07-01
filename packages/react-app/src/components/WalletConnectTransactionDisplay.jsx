@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { convertHexToNumber, convertHexToUtf8 } from "@walletconnect/utils";
 const { ethers } = require("ethers");
 
@@ -11,7 +11,61 @@ const convertHexToUtf8IfPossible = (hex) => {
 }
 
 export default function WalletConnectTransactionDisplay({payload, provider}) {
-  const getValue = async (param, key) => {
+  const [paramsArray, setParamsArray] = useState([]);
+
+  useEffect(()=>{
+    for (let i = 0; i < paramsArray.length; i++) {
+      let param = paramsArray[i];
+      let label = param.label;
+      let value = param.value;
+
+      if ((label == "From") || (label == "To")) {
+        provider.lookupAddress(value).then((ensName) => {
+          if (ensName) {
+            paramsArray[i] = {label: label, value: ensName};
+            setParamsArray(JSON.parse(JSON.stringify(paramsArray)));
+          }
+        })
+        .catch((error) => {
+          console.log("Coudn't fetch ENS name for", value, error);
+        })
+      }
+    }
+  },[]);
+
+  if (!payload || !payload.params) {
+    return (
+        <div>
+          Cannot decouple payload.
+        </div>
+    );
+  }
+
+  if (paramsArray.length > 0) {
+    const options = [];
+    paramsArray.forEach((param) => {
+        if (param.value) {
+          let marginBottom = "0em";
+          if (param.label == "Value") {
+            marginBottom = "2em";
+          }
+
+          options.push(
+            <div style={{ display: "flex", justifyContent:"center", marginTop: "0.5em", marginBottom: marginBottom }}>
+             <div style={{ color: "grey"}}> {param.label}:</div> <div style={{ fontWeight: "bold"}}> {param.value}</div>
+            </div>
+          )  
+        }
+    })
+
+    return (
+      <div style={{ display: "flex", flexDirection: "column", justifyContent:"space-around"}}>
+        {options}
+      </div>
+    );  
+  }
+
+  const getValue = (param, key) => {
     if (!param[key]) {
       return "";
     }
@@ -36,15 +90,7 @@ export default function WalletConnectTransactionDisplay({payload, provider}) {
     return value;
   }
 
-  if (!payload || !payload.params) {
-    return (
-        <div>
-          Cannot decouple payload.
-        </div>
-    );
-  }
-
-  let params = [];
+  let params;
   let param_0 = payload.params[0];
   let param_1 = payload.params[1];
 
@@ -52,7 +98,6 @@ export default function WalletConnectTransactionDisplay({payload, provider}) {
     case "eth_sendTransaction":
     case "eth_signTransaction":
       params = [
-        ...params,
         { label: "From", value: getValue(param_0, "from") },
         { label: "To", value: getValue(param_0, "to") },
         {
@@ -77,14 +122,12 @@ export default function WalletConnectTransactionDisplay({payload, provider}) {
 
     case "eth_sign":
       params = [
-        ...params,
         { label: "Address", value: param_0 },
         { label: "Message", value: param_1 },
       ];
       break;
     case "personal_sign":
       params = [
-        ...params,
         { label: "Address", value: param_1 },
         {
           label: "Message",
@@ -94,7 +137,6 @@ export default function WalletConnectTransactionDisplay({payload, provider}) {
       break;
     default:
       params = [
-        ...params,
         {
           label: "params",
           value: JSON.stringify(payload.params, null, "\t"),
@@ -104,27 +146,6 @@ export default function WalletConnectTransactionDisplay({payload, provider}) {
   }
 
   params.push({ label: "Method", value: payload.method });
-  console.log(params);
 
-  const options = [];
-  params.forEach((param) => {
-      if (param.value) {
-        let marginBottom = "0em";
-        if (param.label == "Value") {
-          marginBottom = "2em";
-        }
-
-        options.push(
-          <div style={{ display: "flex", justifyContent:"center", marginTop: "0.5em", marginBottom: marginBottom }}>
-           <div style={{ color: "grey"}}> {param.label}:</div> <div style={{ fontWeight: "bold"}}> {param.value}</div>
-          </div>
-        )  
-      }
-  })
-
-  return (
-      <div style={{ display: "flex", flexDirection: "column", justifyContent:"space-around"}}>
-        {options}
-      </div>
-  );
+  setParamsArray(params);
 }
