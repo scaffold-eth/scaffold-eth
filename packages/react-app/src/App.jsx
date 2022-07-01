@@ -414,15 +414,16 @@ function App(props) {
             //let result = await userSigner.signMessage(msg)
             console.log("RESULT:",result)
 
+            let wcRecult = result.hash ? result.hash : (result.raw ? result.raw : result)
 
             connector.approveRequest({
               id: payload.id,
-              result: result.hash ? result.hash : result
+              result: wcRecult
             });
 
             notification.info({
               message: "Wallet Connect Transaction Sent",
-              description: result.hash ? result.hash : result,
+              description: wcRecult,
               placement: "bottomRight",
             });
           },
