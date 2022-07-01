@@ -51,7 +51,7 @@ export default function WalletConnectTransactionDisplay({payload, provider}) {
           }
 
           options.push(
-            <div style={{ display: "flex", justifyContent:"center", marginTop: "0.5em", marginBottom: marginBottom }}>
+            <div key={param.label + param.value} style={{ display: "flex", justifyContent:"center", marginTop: "0.5em", marginBottom: marginBottom }}>
              <div style={{ color: "grey"}}> {param.label}:</div> <div style={{ fontWeight: "bold"}}> {param.value}</div>
             </div>
           )  
