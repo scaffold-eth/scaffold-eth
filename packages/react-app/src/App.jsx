@@ -428,6 +428,10 @@ function App(props) {
           },
           onCancel: ()=>{
             console.log('Cancel');
+            connector.rejectRequest({
+              id: payload.id,
+              error: { message:"User rejected" },
+            });
           },
         });
       //setIsWalletModalVisible(true)
