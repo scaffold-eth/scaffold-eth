@@ -19,3 +19,4 @@ export { default as Timeline } from "./Timeline";
 export { default as TokenBalance } from "./TokenBalance";
 export { default as TransactionResponseDisplay } from "./TransactionResponseDisplay";
 export { default as Wallet } from "./Wallet";
+export { default as WalletConnectTransactionDisplay } from "./WalletConnectTransactionDisplay";
