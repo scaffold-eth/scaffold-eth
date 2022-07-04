@@ -21,6 +21,7 @@ import {
   Ramp,
   SpeedUpTransactions,
   Wallet,
+  WalletConnectTransactionDisplay,
 } from "./components";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
@@ -331,12 +332,34 @@ function App(props) {
 
       //setWalletModalData({payload:payload,connector: connector})
 
+      // https://github.com/WalletConnect/walletconnect-test-wallet/blob/7b209c10f02014ed5644fc9991de94f9d96dcf9d/src/engines/ethereum.ts#L45-L104
+      let title;
+
+      switch (payload.method) {
+        case "eth_sendTransaction":
+          title = "Send Transaction?";
+          break;
+        case "eth_signTransaction":
+          title = "Sign Transaction?";
+          break;
+        case "eth_sign":
+        case "personal_sign":
+          title = "Sign Message?";
+          break;
+        case "eth_signTypedData":
+          title = "Sign Typed Data?";
+          break;
+        default:
+          title = "Unknown method";
+          break;
+      }
+
       confirm({
           width: "90%",
           size: "large",
-          title: 'Send Transaction?',
+          title: title,
           icon: <SendOutlined/>,
-          content: <pre>{payload && JSON.stringify(payload.params, null, 2)}</pre>,
+          content: <pre><WalletConnectTransactionDisplay payload={payload} provider={mainnetProvider}/></pre>,
           onOk:async ()=>{
             let result;
 
@@ -391,20 +414,25 @@ function App(props) {
             //let result = await userSigner.signMessage(msg)
             console.log("RESULT:",result)
 
+            let wcRecult = result.hash ? result.hash : (result.raw ? result.raw : result)
 
             connector.approveRequest({
               id: payload.id,
-              result: result.hash ? result.hash : result
+              result: wcRecult
             });
 
             notification.info({
               message: "Wallet Connect Transaction Sent",
-              description: result.hash ? result.hash : result,
+              description: wcRecult,
               placement: "bottomRight",
             });
           },
           onCancel: ()=>{
             console.log('Cancel');
+            connector.rejectRequest({
+              id: payload.id,
+              error: { message:"User rejected" },
+            });
           },
         });
       //setIsWalletModalVisible(true)
