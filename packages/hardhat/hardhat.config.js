@@ -13,6 +13,8 @@ require("hardhat-abi-exporter");
 require("@nomiclabs/hardhat-ethers");
 require("@nomiclabs/hardhat-etherscan");
 
+const EthUtil = require("ethereumjs-util");
+
 const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 
 /*
@@ -31,17 +33,25 @@ const defaultNetwork = "localhost";
 
 const mainnetGwei = 21;
 
-function mnemonic() {
-  try {
-    return fs.readFileSync("./mnemonic.txt").toString().trim();
-  } catch (e) {
-    if (defaultNetwork !== "localhost") {
-      console.log(
-        "☢️ WARNING: No mnemonic file created for a deploy account. Try `yarn run generate` and then `yarn run account`."
-      );
-    }
-  }
-  return "";
+const { PRIVATE_KEY, MNEMONIC } = process.env;
+
+// You can add options that are equal across your networks here, like gas prices, gas limits, etc.
+const sharedNetworkConfig = {};
+
+// Order of priority for account/signer instantiation:
+// 1) .env/PRIVATE_KEY
+// 2) .env/MNEMONIC
+// 3) ./mnemonic.txt
+if (PRIVATE_KEY) {
+  sharedNetworkConfig.accounts = [PRIVATE_KEY];
+} else if (MNEMONIC) {
+  sharedNetworkConfig.accounts = {
+    mnemonic: MNEMONIC,
+  };
+} else {
+  sharedNetworkConfig.accounts = {
+    mnemonic: loadMnemonic(),
+  };
 }
 
 module.exports = {
@@ -76,106 +86,78 @@ module.exports = {
     rinkeby: {
       url: "https://rinkeby.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", // <---- YOUR INFURA ID! (or it won't work)
       //    url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXX/eth/rinkeby", // <---- YOUR MORALIS ID! (not limited to infura)
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      ...sharedNetworkConfig,
     },
     kovan: {
       url: "https://kovan.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", // <---- YOUR INFURA ID! (or it won't work)
       //    url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXX/eth/kovan", // <---- YOUR MORALIS ID! (not limited to infura)
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      ...sharedNetworkConfig,
     },
     mainnet: {
       url: "https://mainnet.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", // <---- YOUR INFURA ID! (or it won't work)
       //      url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXXXX/eth/mainnet", // <---- YOUR MORALIS ID! (not limited to infura)
       gasPrice: mainnetGwei * 1000000000,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      ...sharedNetworkConfig,
     },
     ropsten: {
       url: "https://ropsten.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", // <---- YOUR INFURA ID! (or it won't work)
       //      url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXXXX/eth/ropsten",// <---- YOUR MORALIS ID! (not limited to infura)
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      ...sharedNetworkConfig,
     },
     goerli: {
       url: "https://goerli.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", // <---- YOUR INFURA ID! (or it won't work)
       //      url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXXXX/eth/goerli", // <---- YOUR MORALIS ID! (not limited to infura)
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      ...sharedNetworkConfig,
     },
     xdai: {
       url: "https://rpc.xdaichain.com/",
       gasPrice: 1000000000,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      ...sharedNetworkConfig,
     },
     fantom: {
       url: "https://rpcapi.fantom.network",
       gasPrice: 1000000000,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      ...sharedNetworkConfig,
     },
     testnetFantom: {
       url: "https://rpc.testnet.fantom.network",
       gasPrice: 1000000000,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      ...sharedNetworkConfig,
     },
     polygon: {
       url: "https://polygon-rpc.com",
       // url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXx/polygon/mainnet", // <---- YOUR MORALIS ID! (not limited to infura)
       gasPrice: 3200000000,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      ...sharedNetworkConfig,
     },
     mumbai: {
       url: "https://rpc-mumbai.maticvigil.com",
       // url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXX/polygon/mumbai", // <---- YOUR MORALIS ID! (not limited to infura)
       gasPrice: 3200000000,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      ...sharedNetworkConfig,
     },
     matic: {
       url: "https://rpc-mainnet.maticvigil.com/",
       gasPrice: 1000000000,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      ...sharedNetworkConfig,
     },
     optimism: {
       url: "https://mainnet.optimism.io",
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      ...sharedNetworkConfig,
       companionNetworks: {
         l1: "mainnet",
       },
     },
     kovanOptimism: {
       url: "https://kovan.optimism.io",
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      ...sharedNetworkConfig,
       companionNetworks: {
         l1: "kovan",
       },
     },
     localOptimism: {
       url: "http://localhost:8545",
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      ...sharedNetworkConfig,
       companionNetworks: {
         l1: "localOptimismL1",
       },
@@ -183,9 +165,7 @@ module.exports = {
     localOptimismL1: {
       url: "http://localhost:9545",
       gasPrice: 0,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      ...sharedNetworkConfig,
       companionNetworks: {
         l2: "localOptimism",
       },
@@ -194,97 +174,71 @@ module.exports = {
       url: "http://localhost:9650/ext/bc/C/rpc",
       gasPrice: 225000000000,
       chainId: 43112,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      ...sharedNetworkConfig,
     },
     fujiAvalanche: {
       url: "https://api.avax-test.network/ext/bc/C/rpc",
       gasPrice: 225000000000,
       chainId: 43113,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      ...sharedNetworkConfig,
     },
     mainnetAvalanche: {
       url: "https://api.avax.network/ext/bc/C/rpc",
       gasPrice: 225000000000,
       chainId: 43114,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      ...sharedNetworkConfig,
     },
     testnetHarmony: {
       url: "https://api.s0.b.hmny.io",
       gasPrice: 1000000000,
       chainId: 1666700000,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      ...sharedNetworkConfig,
     },
     mainnetHarmony: {
       url: "https://api.harmony.one",
       gasPrice: 1000000000,
       chainId: 1666600000,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      ...sharedNetworkConfig,
     },
     moonbeam: {
       url: 'https://rpc.api.moonbeam.network',
       chainId: 1284,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      ...sharedNetworkConfig,
     },
     moonriver: {
       url: 'https://rpc.api.moonriver.moonbeam.network',
       chainId: 1285,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      ...sharedNetworkConfig,
     },
     moonbaseAlpha: {
       url: 'https://rpc.api.moonbase.moonbeam.network',
       chainId: 1287,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      ...sharedNetworkConfig,
     },
     moonbeamDevNode: {
       url: 'http://127.0.0.1:9933',
       chainId: 1281,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      ...sharedNetworkConfig,
     },
     godwoken: {
       url: 'https://godwoken-testnet-v1.ckbapp.dev',
       chainId: 71401,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      ...sharedNetworkConfig,
     },
     arbitrum: {
       url: 'https://arb1.arbitrum.io/rpc',
       chainId: 42161,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      ...sharedNetworkConfig,
     },
     rinkebyArbitrum: {
       url: 'https://rinkeby.arbitrum.io/rpc',
       chainId: 421611,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      ...sharedNetworkConfig,
     },
     devnetArbitrum: {
       url: 'https://nitro-devnet.arbitrum.io/rpc',
       chainId: 421612,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      ...sharedNetworkConfig,
     },
   },
   solidity: {
@@ -342,6 +296,66 @@ function debug(...text) {
   }
 }
 
+// generates a new mnemonic when called without mnemonic argument
+async function getWallet(mnemonic) {
+  const bip39 = require("bip39");
+  const hdkey = require("ethereumjs-wallet/hdkey");
+
+  if (!mnemonic) {
+    debug("generating new wallet");
+    mnemonic = bip39.generateMnemonic();
+    debug("mnemonic", mnemonic);
+  }
+  const seed = await bip39.mnemonicToSeed(mnemonic);
+  debug("seed", seed);
+  const hdwallet = hdkey.fromMasterSeed(seed);
+  const wallet_hdpath = "m/44'/60'/0'/0/";
+  const account_index = 0;
+  const fullPath = wallet_hdpath + account_index;
+  debug("fullPath", fullPath);
+  const wallet = hdwallet.derivePath(fullPath).getWallet();
+  const privateKey = "0x" + wallet._privKey.toString("hex");
+  debug("privateKey", privateKey);
+  const address =
+    "0x" + EthUtil.privateToAddress(wallet._privKey).toString("hex");
+  return [address, mnemonic];
+}
+
+function loadMnemonic() {
+  if (MNEMONIC) return MNEMONIC;
+
+  try {
+    return fs.readFileSync("./mnemonic.txt").toString().trim();
+  } catch (e) {
+    if (defaultNetwork !== "localhost") {
+      console.log(
+        "☢️ WARNING: No mnemonic file created for a deploy account. Try `yarn run generate` and then `yarn run account`."
+      );
+    }
+    return undefined;
+  }
+}
+
+async function loadWalletAddress() {
+  if (!PRIVATE_KEY) {
+    console.log("No private key found, trying mnemonic");
+    const mnemonic = loadMnemonic();
+    if (!mnemonic) {
+      throw new Error("Neither private key nor mnemonic found.");
+    }
+
+    const [address] = await getWallet(mnemonic);
+    return address;
+  }
+
+  console.log("Private key found in environment variables");
+  const uniformKey = PRIVATE_KEY.startsWith("0x")
+    ? PRIVATE_KEY.substring(2, 66)
+    : PRIVATE_KEY;
+  const buffer = Buffer.from(uniformKey, "hex");
+  return "0x" + EthUtil.privateToAddress(buffer).toString("hex");
+}
+
 task("wallet", "Create a wallet (pk) link", async (_, { ethers }) => {
   const randomWallet = ethers.Wallet.createRandom();
   const privateKey = randomWallet._signingKey().privateKey;
@@ -361,13 +375,7 @@ task("fundedwallet", "Create a wallet (pk) link and fund it with deployer?")
     console.log("🔐 WALLET Generated as " + randomWallet.address + "");
     const url = taskArgs.url ? taskArgs.url : "http://localhost:3000";
 
-    let localDeployerMnemonic;
-    try {
-      localDeployerMnemonic = fs.readFileSync("./mnemonic.txt");
-      localDeployerMnemonic = localDeployerMnemonic.toString().trim();
-    } catch (e) {
-      /* do nothing - this file isn't always there */
-    }
+    let localDeployerMnemonic = loadMnemonic();
 
     const amount = taskArgs.amount ? taskArgs.amount : "0.01";
     const tx = {
@@ -404,70 +412,33 @@ task("fundedwallet", "Create a wallet (pk) link and fund it with deployer?")
     }
   });
 
-task(
-  "generate",
-  "Create a mnemonic for builder deploys",
-  async (_, { ethers }) => {
-    const bip39 = require("bip39");
-    const hdkey = require("ethereumjs-wallet/hdkey");
-    const mnemonic = bip39.generateMnemonic();
-    if (DEBUG) console.log("mnemonic", mnemonic);
-    const seed = await bip39.mnemonicToSeed(mnemonic);
-    if (DEBUG) console.log("seed", seed);
-    const hdwallet = hdkey.fromMasterSeed(seed);
-    const wallet_hdpath = "m/44'/60'/0'/0/";
-    const account_index = 0;
-    const fullPath = wallet_hdpath + account_index;
-    if (DEBUG) console.log("fullPath", fullPath);
-    const wallet = hdwallet.derivePath(fullPath).getWallet();
-    const privateKey = "0x" + wallet._privKey.toString("hex");
-    if (DEBUG) console.log("privateKey", privateKey);
-    const EthUtil = require("ethereumjs-util");
-    const address =
-      "0x" + EthUtil.privateToAddress(wallet._privKey).toString("hex");
-    console.log(
-      "🔐 Account Generated as " +
-        address +
-        " and set as mnemonic in packages/hardhat"
-    );
-    console.log(
-      "💬 Use 'yarn run account' to get more information about the deployment account."
-    );
+task("generate", "Create a mnemonic for builder deploys", async () => {
+  const [address, mnemonic] = await getWallet();
+  console.log(
+    "🔐 Account Generated as " +
+      address +
+      " and set as mnemonic in packages/hardhat"
+  );
+  console.log(
+    "💬 Use 'yarn run account' to get more information about the deployment account."
+  );
 
-    fs.writeFileSync("./" + address + ".txt", mnemonic.toString());
-    fs.writeFileSync("./mnemonic.txt", mnemonic.toString());
-  }
-);
+  fs.writeFileSync("./" + address + ".txt", mnemonic.toString());
+  fs.writeFileSync("./mnemonic.txt", mnemonic.toString());
+});
 
 task(
   "mineContractAddress",
   "Looks for a deployer account that will give leading zeros"
 )
   .addParam("searchFor", "String to search for")
-  .setAction(async (taskArgs, { network, ethers }) => {
+  .setAction(async (taskArgs, _) => {
     let contract_address = "";
-    let address;
-
-    const bip39 = require("bip39");
-    const hdkey = require("ethereumjs-wallet/hdkey");
-
+    let address = "";
     let mnemonic = "";
+
     while (contract_address.indexOf(taskArgs.searchFor) != 0) {
-      mnemonic = bip39.generateMnemonic();
-      if (DEBUG) console.log("mnemonic", mnemonic);
-      const seed = await bip39.mnemonicToSeed(mnemonic);
-      if (DEBUG) console.log("seed", seed);
-      const hdwallet = hdkey.fromMasterSeed(seed);
-      const wallet_hdpath = "m/44'/60'/0'/0/";
-      const account_index = 0;
-      const fullPath = wallet_hdpath + account_index;
-      if (DEBUG) console.log("fullPath", fullPath);
-      const wallet = hdwallet.derivePath(fullPath).getWallet();
-      const privateKey = "0x" + wallet._privKey.toString("hex");
-      if (DEBUG) console.log("privateKey", privateKey);
-      const EthUtil = require("ethereumjs-util");
-      address =
-        "0x" + EthUtil.privateToAddress(wallet._privKey).toString("hex");
+      [address, mnemonic] = await getWallet();
 
       const rlp = require("rlp");
       const keccak = require("keccak");
@@ -509,25 +480,8 @@ task(
   "account",
   "Get balance informations for the deployment account.",
   async (_, { ethers }) => {
-    const hdkey = require("ethereumjs-wallet/hdkey");
-    const bip39 = require("bip39");
     try {
-      const mnemonic = fs.readFileSync("./mnemonic.txt").toString().trim();
-      if (DEBUG) console.log("mnemonic", mnemonic);
-      const seed = await bip39.mnemonicToSeed(mnemonic);
-      if (DEBUG) console.log("seed", seed);
-      const hdwallet = hdkey.fromMasterSeed(seed);
-      const wallet_hdpath = "m/44'/60'/0'/0/";
-      const account_index = 0;
-      const fullPath = wallet_hdpath + account_index;
-      if (DEBUG) console.log("fullPath", fullPath);
-      const wallet = hdwallet.derivePath(fullPath).getWallet();
-      const privateKey = "0x" + wallet._privKey.toString("hex");
-      if (DEBUG) console.log("privateKey", privateKey);
-      const EthUtil = require("ethereumjs-util");
-      const address =
-        "0x" + EthUtil.privateToAddress(wallet._privKey).toString("hex");
-
+      const address = await loadWalletAddress();
       const qrcode = require("qrcode-terminal");
       qrcode.generate(address);
       console.log("‍📬 Deployer Account is " + address);
