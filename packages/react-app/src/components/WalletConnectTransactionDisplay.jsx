@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { convertHexToNumber, convertHexToUtf8 } from "@walletconnect/utils";
-const { ethers } = require("ethers");
+const { BigNumber, ethers } = require("ethers");
 
 const convertHexToUtf8IfPossible = (hex) => {
   try {
@@ -33,6 +33,7 @@ export default function WalletConnectTransactionDisplay({payload, provider}) {
     }
   },[]);
 
+try {  
   if (!payload || !payload.params) {
     return (
         <div>
@@ -59,9 +60,11 @@ export default function WalletConnectTransactionDisplay({payload, provider}) {
     })
 
     return (
-      <div style={{ display: "flex", flexDirection: "column", justifyContent:"space-around"}}>
-        {options}
-      </div>
+      <pre>
+        <div style={{ display: "flex", flexDirection: "column", justifyContent:"space-around"}}>
+          {options}
+        </div>
+      </pre>
     );  
   }
 
@@ -73,7 +76,7 @@ export default function WalletConnectTransactionDisplay({payload, provider}) {
     let value = param[key];
 
     if (key == "value") {
-      return ethers.utils.formatEther(convertHexToNumber(value).toString()).toString() + " Ξ"
+      return ethers.utils.formatEther(BigNumber.from(value.toString())).toString() + " Ξ"
     }
 
     if (key == "gasPrice") {
@@ -149,3 +152,14 @@ export default function WalletConnectTransactionDisplay({payload, provider}) {
 
   setParamsArray(params);
 }
+catch (error) {
+    console.error("Cannot prettify transaction", error);
+
+    return (
+      <pre>
+        {JSON.stringify(payload.params, null, 2)}
+      </pre>
+    );  
+  }
+}
+
