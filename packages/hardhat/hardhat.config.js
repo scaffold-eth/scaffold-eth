@@ -336,9 +336,9 @@ module.exports = {
 
 const DEBUG = false;
 
-function debug(text) {
+function debug(...text) {
   if (DEBUG) {
-    console.log(text);
+    console.log(...text);
   }
 }
 
