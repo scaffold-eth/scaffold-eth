@@ -359,7 +359,7 @@ function App(props) {
           size: "large",
           title: title,
           icon: <SendOutlined/>,
-          content: <pre><WalletConnectTransactionDisplay payload={payload} provider={mainnetProvider}/></pre>,
+          content: <WalletConnectTransactionDisplay payload={payload} provider={mainnetProvider}/>,
           onOk:async ()=>{
             let result;
 
