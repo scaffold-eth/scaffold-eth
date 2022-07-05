@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { convertHexToNumber, convertHexToUtf8 } from "@walletconnect/utils";
-const { ethers } = require("ethers");
+const { BigNumber, ethers } = require("ethers");
 
 const convertHexToUtf8IfPossible = (hex) => {
   try {
@@ -76,7 +76,7 @@ try {
     let value = param[key];
 
     if (key == "value") {
-      return ethers.utils.formatEther(convertHexToNumber(value).toString()).toString() + " Ξ"
+      return ethers.utils.formatEther(BigNumber.from(value.toString())).toString() + " Ξ"
     }
 
     if (key == "gasPrice") {
