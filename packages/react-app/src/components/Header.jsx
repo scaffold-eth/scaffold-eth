@@ -8,13 +8,13 @@ export default function Header( props ) {
 
       <PageHeader
         title={(
-          <a href="https://punkwallet.io" >
-            {window.innerWidth<600?"🧑‍🎤":"🧑‍🎤  PunkWallet.io"}
+          <a href="https://punkwallet.io" style={{color:"#48a9a6"}}>
+            {window.innerWidth<600?"🦉":"🦉 gno.cash"}
           </a>
         )}
-        subTitle=<a href="https://github.com/scaffold-eth/scaffold-eth/tree/punk-wallet">
+        /*subTitle=<a href="https://github.com/scaffold-eth/scaffold-eth/tree/punk-wallet">
           {window.innerWidth<600?"":"info/code"}
-        </a>
+        </a>*/
         style={{ cursor: "pointer",fontSize:32 }}
         extra={props.extra}
       />

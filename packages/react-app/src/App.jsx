@@ -55,10 +55,8 @@ const { ethers } = require("ethers");
 
 /// 📡 What chain are your contracts deployed to?
 const cachedNetwork = window.localStorage.getItem("network");
-let targetNetwork = NETWORKS[cachedNetwork || "ethereum"]; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
-if (!targetNetwork) {
-  targetNetwork = NETWORKS["ethereum"];
-}
+let targetNetwork = NETWORKS["gnosis"] // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+
 // 😬 Sorry for all the console logging
 const DEBUG = false;
 
@@ -380,14 +378,14 @@ function App(props) {
 
                 // Speed up transaction list is filtered by chainId
                 if (!params.chainId) {
-                  params.chainId = targetNetwork.chainId;  
+                  params.chainId = targetNetwork.chainId;
                 }
 
                 // Remove empty data
                 // I assume wallet connect adds "data" here: https://github.com/WalletConnect/walletconnect-monorepo/blob/7573fa9e1d91588d4af3409159b4fd2f9448a0e2/packages/helpers/utils/src/ethereum.ts#L78
                 // And ethers cannot hexlify this: https://github.com/ethers-io/ethers.js/blob/8b62aeff9cce44cbd16ff41f8fc01ebb101f8265/packages/providers/src.ts/json-rpc-provider.ts#L694
                 if (params.data === "") {
-                  delete params.data;  
+                  delete params.data;
                 }
 
                 result = await signer.sendTransaction(params);
@@ -687,8 +685,8 @@ function App(props) {
     }
   } else {
     networkDisplay = (
-      <div style={{ zIndex: -1, position: "absolute", right: 154, top: 28, padding: 16, color: targetNetwork.color }}>
-        {targetNetwork.name}
+      <div style={{ zIndex: -1, position: "absolute", right: 120, top: 28, padding: 16, color: targetNetwork.color }}>
+        xdai on gnosis chain
       </div>
     );
   }
@@ -859,7 +857,7 @@ function App(props) {
             </span>, */
             walletDisplay,
 
-            <span key="checkBalances" style={{color: "#1890ff",cursor:"pointer",fontSize:30,opacity:checkingBalances?0.2:1,paddingLeft:16,verticalAlign:"middle"}} onClick={()=>{checkBalances(address)}}><ReloadOutlined /></span>,
+
             <Account
               key="account"
               address={address}
@@ -883,7 +881,7 @@ function App(props) {
            provider={userProvider}
            signer={userProvider.getSigner()}
            injectedProvider={injectedProvider}
-           address={address} 
+           address={address}
            chainId={targetNetwork.chainId}
          />
       </div>
@@ -891,15 +889,15 @@ function App(props) {
       <div style={{ clear: "both", opacity: yourLocalBalance ? 1 : 0.2, width: 500, margin: "auto",position:"relative" }}>
         <Balance value={yourLocalBalance} size={12+window.innerWidth/16} price={price} />
         <span style={{ verticalAlign: "middle" }}>
-          {networkSelect}
+          {/*networkSelect*/}
           {faucetHint}
         </span>
       </div>
 
       {
-        address && 
+        address &&
         <div style={{ padding: 16, cursor: "pointer", backgroundColor: "#FFFFFF", width: 420, margin: "auto" }}>
-          <QRPunkBlockie withQr address={address} showAddress={true} /> 
+          <QRPunkBlockie withQr address={address} showAddress={true} />
         </div>
       }
 
@@ -1142,42 +1140,42 @@ function App(props) {
         </Switch>
       </BrowserRouter>
 */}
+{/*<div style={{ zIndex: -1, paddingTop: 128, opacity: 0.5, fontSize: 12 }}>
+  <Button
+    style={{ margin:8, marginTop: 16 }}
+    onClick={() => {
+      window.open("https://zapper.fi/account/"+address+"?tab=history");
+    }}
+  >
+    <span style={{ marginRight: 8 }}>📜</span>History
+  </Button>
 
-      <div style={{ zIndex: -1, paddingTop: 128, opacity: 0.5, fontSize: 12 }}>
-        <Button
-          style={{ margin:8, marginTop: 16 }}
-          onClick={() => {
-            window.open("https://zapper.fi/account/"+address+"?tab=history");
-          }}
-        >
-          <span style={{ marginRight: 8 }}>📜</span>History
-        </Button>
-
-        <Button
-          style={{  margin:8, marginTop: 16, }}
-          onClick={() => {
-            window.open("https://zapper.fi/account/"+address);
-          }}
-        >
-          <span style={{ marginRight: 8 }}>👛</span> Inventory
-        </Button>
-
+  <Button
+    style={{  margin:8, marginTop: 16, }}
+    onClick={() => {
+      window.open("https://zapper.fi/account/"+address);
+    }}
+  >
+    <span style={{ marginRight: 8 }}>👛</span> Inventory
+  </Button>
 
 
-      </div>
+
+</div>*/}
+      <div style={{ zIndex: -1, paddingTop: 64, opacity: 0.5, fontSize: 12 }}></div>
 
       <div style={{ clear: "both", width: 500, margin: "auto" ,marginTop:32, position:"relative"}}>
-        {(wallectConnectConnector && !wallectConnectConnector.connected) && 
+        {(wallectConnectConnector && !wallectConnectConnector.connected) &&
 
           <div>
             <Spin />
             <div>
                Connecting to the Dapp...
-            </div>   
+            </div>
           </div>}
         {walletConnectConnected ?
           <>
-            {(walletConnectPeerMeta?.icons[0]) ? 
+            {(walletConnectPeerMeta?.icons[0]) ?
               <span >
               {walletConnectPeerMeta?.icons[0] && <img style={{width: 40, top:-4, position:"absolute",left:26}} src={walletConnectPeerMeta.icons[0]} alt={walletConnectPeerMeta.name ? walletConnectPeerMeta.name : ""} />}
               </span>
@@ -1299,7 +1297,7 @@ function App(props) {
       <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
         <Row align="middle" gutter={[16, 16]}>
           <Col span={12}>
-            <Ramp price={price} address={address} networks={NETWORKS} />
+            {/*<Ramp price={price} address={address} networks={NETWORKS} />*/}
           </Col>
 
           {targetNetwork.name=="arbitrum"||targetNetwork.name=="gnosis"||targetNetwork.name=="optimism"||targetNetwork.name=="polygon"?"":<Col span={12} style={{ textAlign: "center", opacity: 0.8 }}>
