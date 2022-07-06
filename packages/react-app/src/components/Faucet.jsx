@@ -82,7 +82,7 @@ export default function Faucet(props) {
                   to: address,
                   value: utils.parseEther("0.01"),
                 });
-                setAddress("");
+                //setAddress("");
               }}
               shape="circle"
               icon={<SendOutlined />}
