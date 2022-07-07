@@ -26,8 +26,18 @@ export default function MintingActions({ contractRef }) {
   const { injectedProvider } = useContext(BadgeContext)
 
   const mintBadge = async receiverAddress => {
+    if (injectedProvider === undefined) {
+      // console.log('Provider is in an invalid state please connect to metamask first!')
+      return
+    }
+    if (receiverAddress === '' || receiverAddress === undefined || receiverAddress === null) {
+      // console.log('the form must have an input with a valid account hash!')
+      return
+    }
     let contract = new ethers.Contract(contractRef.address, contractRef.abi, injectedProvider)
+    // console.log({ contract })
     let mintTx = await contract.publicMint(receiverAddress)
+    // console.log({ mintTx })
     await mintTx.wait()
   }
   const [walletAddress, setWalletAddress] = useState('')
