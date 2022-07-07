@@ -23,6 +23,9 @@ import {
   NetworkDisplay,
   FaucetHint,
   NetworkSwitch,
+  AddressInput,
+  EtherInput,
+  BytesStringInput,
 } from "./components";
 import { NETWORKS, ALCHEMY_KEY } from "./constants";
 import externalContracts from "./contracts/external_contracts";
@@ -290,6 +293,9 @@ function App(props) {
         <Menu.Item key="/">
           <Link to="/">App Home</Link>
         </Menu.Item>
+        <Menu.Item key="/home">
+          <Link to="/home">Home</Link>
+        </Menu.Item>
         <Menu.Item key="/debug">
           <Link to="/debug">Debug Contracts</Link>
         </Menu.Item>
@@ -309,6 +315,20 @@ function App(props) {
 
       <Switch>
         <Route exact path="/">
+          {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
+          <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} />
+          
+          To
+          <AddressInput></AddressInput>
+          Data
+          <BytesStringInput></BytesStringInput>
+          Value
+          <EtherInput></EtherInput>
+          
+          Tip
+          <EtherInput></EtherInput>
+        </Route>
+        <Route exact path="/home">
           {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
           <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} />
         </Route>
