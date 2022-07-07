@@ -43,7 +43,7 @@ export default function BrowseBadges() {
   const [badges, setBadges] = useState([])
   const [eventBadges, setEventBadges] = useState([])
   const [error, setErrorMessage] = useState('')
-  const { localProvider, mainnet, selectedChainId, address, setAddress, injectedProvider } = useContext(BadgeContext)
+  const { localProvider, mainnet, selectedChainId, address, setAddress } = useContext(BadgeContext)
 
   let contractRef
   if (
@@ -60,26 +60,26 @@ export default function BrowseBadges() {
     setContractEvents(events)
   }
 
-  async function addressFilterHandler(e) {
-    if (!e.target.value) {
-      setAddress('')
-      return
-    }
-    if (isHexadecimal(e.target.value.replace('0x', ''))) {
-      setAddress(e.target.value)
-      setErrorMessage('')
-    } else {
-      let name = e.target.value
-      if (!name.endsWith('.eth')) name = name + '.eth'
-      const address = await mainnet.resolveName(name)
-      if (address) {
-        setAddress(address)
-        if (error.length > 1) setErrorMessage('')
-      } else {
-        setErrorMessage(`${name} not found`)
-      }
-    }
-  }
+  // async function addressFilterHandler(e) {
+  //   if (!e.target.value) {
+  //     setAddress('')
+  //     return
+  //   }
+  //   if (isHexadecimal(e.target.value.replace('0x', ''))) {
+  //     setAddress(e.target.value)
+  //     setErrorMessage('')
+  //   } else {
+  //     let name = e.target.value
+  //     if (!name.endsWith('.eth')) name = name + '.eth'
+  //     const address = await mainnet.resolveName(name)
+  //     if (address) {
+  //       setAddress(address)
+  //       if (error.length > 1) setErrorMessage('')
+  //     } else {
+  //       setErrorMessage(`${name} not found`)
+  //     }
+  //   }
+  // }
 
   useEffect(() => {
     const run = async () => {
@@ -281,7 +281,7 @@ export default function BrowseBadges() {
               <AddressedCard badges={badges} />
             </Grid>
           ) : eventBadges && eventBadges.length > 0 ? (
-            eventBadges.reverse().map(event => {
+            eventBadges.reverse().map((event, idx) => {
               const src = 'https://remix-project.mypinata.cloud/ipfs/' + toBase58(event.hash)
               const txLink = 'https://optimistic.etherscan.io/tx/' + event.transactionHash
               let title = event.name ? event.name : event.to
@@ -292,7 +292,7 @@ export default function BrowseBadges() {
                   mb={15}
                   ml={'auto'}
                   mr={'auto'}
-                  key={title}
+                  key={`${title}-${idx}`}
                   alignItems={'center'}
                   justifyContent={'center'}
                 >

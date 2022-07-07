@@ -2,47 +2,17 @@
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import MintingPageCard from '../components/MintingPageCard'
-import { ethers } from 'ethers'
 import { useContext, useState } from 'react'
-import TextField from '@mui/material/TextField'
-import { styled } from '@mui/material/styles'
 import MintingActions from 'components/MintingActions'
 import Account from 'components/Account'
 import { BadgeContext } from 'contexts/BadgeContext'
 import { switchToOptimism } from 'helpers/SwitchToOptimism'
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
-const WalletAddressTextField = styled(TextField)(({ theme }) => ({
-  '& .MuiInputBase-input': {
-    backgroundColor: theme.palette.mode === 'light' ? '#fff' : '#2b2b2b',
-  },
-}))
 
-export default function MintingPage({ selectedChainId, injectedProvider }) {
-  const { contractRef, connectedAddress, userSigner } = useContext(BadgeContext)
+export default function MintingPage() {
+  const { contractRef, userSigner } = useContext(BadgeContext)
 
-  /*
-   * this mint a user badge from the current selected account
-   * this function throws an error
-   *  - if the current network selected in the injected provider (metamask) is not optimism (chain id of optimism is 10)
-   *  - if the current user doesn't have anymore a slot for minting a badge
-   */
-  const mintBadge = async receiverAddress => {
-    let contract = new ethers.Contract(contractRef.address, contractRef.abi, injectedProvider)
-    let mintTx = await contract.publicMint(receiverAddress)
-    await mintTx.wait()
-  }
-
-  /*
-   * this returns the number of user badge that the selected account is allowed to mint.
-   * this function throws an error if the current network selected in the injected provider (metamask) is not optimism (chain id of optimism is 10)
-   */
-  async function allowedMinting() {
-    let contract = new ethers.Contract(contractRef.address, contractRef.abi, injectedProvider)
-    return await contract.allowedMinting(connectedAddress)
-  }
-  const [mintCount, setMintCount] = useState(0)
-  const [walletAddress, setWalletAddress] = useState('')
   const [enableButton, disableButton] = useState(false)
   const theme = useTheme()
   const mobile400 = useMediaQuery(theme.breakpoints.between('sm', 'md'))
@@ -59,10 +29,6 @@ export default function MintingPage({ selectedChainId, injectedProvider }) {
     } catch (error) {
       console.log({ error })
     }
-  }
-
-  function handleChange(e) {
-    setWalletAddress(e.target.value)
   }
 
   return (
@@ -120,15 +86,7 @@ export default function MintingPage({ selectedChainId, injectedProvider }) {
           <MintingPageCard
             top={mobile900 ? -15 : mobileResponsiveMatch ? -16 : mobile400 ? -25 : mobile240 ? -14 : -15}
           />
-          <MintingActions
-            mintCount={mintCount}
-            setMintCount={setMintCount}
-            mintBadge={mintBadge}
-            allowedMinting={allowedMinting}
-            walletAddress={walletAddress}
-            handleChange={handleChange}
-            WalletAddressTextField={WalletAddressTextField}
-          />
+          <MintingActions contractRef={contractRef} />
         </Box>
       </Box>
     </>

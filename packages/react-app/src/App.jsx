@@ -4,7 +4,6 @@ import { useExchangeEthPrice } from 'eth-hooks/dapps/dex'
 import { NETWORKS } from './constants'
 import { Layout } from './components'
 import { BrowseBadges } from './views'
-import { Account } from './components'
 import MintingPage from './views/MintingPage'
 import CloseIcon from '@mui/icons-material/Close'
 import IconButton from '@mui/material/IconButton'
@@ -14,12 +13,12 @@ import externalContracts from 'contracts/external_contracts'
 import { switchToOptimism } from 'helpers/SwitchToOptimism'
 const { ethers } = require('ethers')
 
-function App(props) {
+function App({ mainnet, localProvider }) {
   const [loaded, setLoaded] = useState(false)
-  const [localProvider, setLocalProvider] = useState(null)
+  // const [localProvider, setLocalProvider] = useState(null)
   const [connectedAddress, setConnectedAddress] = useState()
   const [injectedProvider, setInjectedProvider] = useState()
-  const [mainnet, setMainnet] = useState(null)
+  // const [mainnet, setMainnet] = useState(null)
   const [address, setAddress] = useState('')
   const [tabValue, setTabValue] = useState(0)
   const [showToast, setShowToast] = useState(false)
@@ -93,10 +92,6 @@ function App(props) {
       return
     }
     const provider = window.ethereum
-    const result = await provider.request({ method: 'eth_requestAccounts' })
-
-    console.log({ result })
-
     // @ts-ignore
     setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
 
@@ -129,20 +124,20 @@ function App(props) {
 
   useEffect(() => {
     const run = async () => {
-      const localProvider = new ethers.providers.StaticJsonRpcProvider('https://mainnet.optimism.io')
+      // const localProvider = new ethers.providers.StaticJsonRpcProvider('https://mainnet.optimism.io')
 
       await localProvider.ready
 
-      const mainnet = new ethers.providers.StaticJsonRpcProvider(
-        'https://mainnet.infura.io/v3/1b3241e53c8d422aab3c7c0e4101de9c',
-      )
+      // const mainnet = new ethers.providers.StaticJsonRpcProvider(
+      //   'https://mainnet.infura.io/v3/1b3241e53c8d422aab3c7c0e4101de9c',
+      // )
 
-      setLocalProvider(localProvider)
-      setMainnet(mainnet)
+      // setLocalProvider(localProvider)
+      // setMainnet(mainnet)
       setLoaded(true)
     }
     run()
-  }, [])
+  }, [localProvider.ready])
 
   /* END - SETUP MAINNET & OPTIMISM provider */
   const contextPayload = {
@@ -163,11 +158,13 @@ function App(props) {
     logoutOfWeb3Modal,
     userSigner,
   }
+
+  console.log({ injectedProvider, contractRef, connectedAddress, userSigner })
   return (
     <div className="App">
       <BadgeContext.Provider value={contextPayload}>
         <Layout tabValue={tabValue} setTabValue={setTabValue}>
-          {loaded && tabValue === 0 && <BrowseBadges {...props} />}
+          {loaded && tabValue === 0 && <BrowseBadges />}
 
           {tabValue === 1 && (
             <MintingPage
