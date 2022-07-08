@@ -5,14 +5,16 @@ const { Title, Text } = Typography;
 
 // displays a page header
 
-export default function Header({ link, title, subTitle, ...props }) {
+export default function Header({ link, ...props }) {
   return (
     <div style={{ display: "flex", justifyContent: "space-between", padding: "1.2rem" }}>
       <div style={{ display: "flex",  flexDirection: "column", flex: 1, alignItems: "start" }}>
         <a href={link} target="_blank" rel="noopener noreferrer">
-          <Title level={4} style={{ margin: "0 0.5rem 0 0" }}>{title}</Title>
+          <Title level={4} style={{ margin: "0 0.5rem 0 0" }}>🍌 Banana Auction Machine</Title>
         </a>
-        <Text type="secondary" style={{ textAlign: "left" }}>{subTitle}</Text>
+        <Text type="secondary" style={{ textAlign: "left" , opacity:0.77, marginLeft:27}}><span>
+<a href={"https://github.com/scaffold-eth/scaffold-eth-challenges/tree/banana-auction-machine"} target="_blank">fork/code</a>
+</span></Text>
       </div>
       {props.children}
     </div>
