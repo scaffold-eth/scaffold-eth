@@ -3,6 +3,7 @@ import { useContractReader, useContractLoader } from "eth-hooks";
 import { useEventListener } from "eth-hooks/events/useEventListener";
 import { ethers } from "ethers";
 
+
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -10,9 +11,15 @@ import { Account, Address, AddressInput, Contract, Faucet, GasGauge, Header, Ram
 
 import { Button, Col, Menu, Row, Input, List, Card } from "antd";
 
-const { BufferList } = require("bl");
-const ipfsAPI = require("ipfs-http-client");
-const ipfs = ipfsAPI({ host: "ipfs.infura.io", port: "5001", protocol: "https" });
+import { create } from "ipfs-http-client";
+import { BufferList } from "bl";
+
+const ipfs = create({ host: "ipfs.infura.io", port: "5001", protocol: "https" });
+
+
+//const { BufferList } = require("bl");
+//const ipfsAPI = require("ipfs-http-client");
+//const ipfs = ipfsAPI({ host: "ipfs.infura.io", port: "5001", protocol: "https" });
 
 
 /**
@@ -24,10 +31,11 @@ const ipfs = ipfsAPI({ host: "ipfs.infura.io", port: "5001", protocol: "https" }
 function Home({ localChainId, contractConfig, userSigner,yourLocalBalance, readContracts, address, localProvider, mainnetProvider, tx, blockExplorer }) {
 
 
+
   const writeContracts = useContractLoader(userSigner, contractConfig, localChainId);
 
 
-  
+
   // you can also use hooks locally in your component of choice
   // in this case, let's keep track of 'purpose' variable from our contract
   const purpose = useContractReader(readContracts, "YourContract", "purpose");
@@ -37,40 +45,26 @@ function Home({ localChainId, contractConfig, userSigner,yourLocalBalance, readC
     // keep track of a variable from the contract in the local React state:
     const balance = useContractReader(readContracts, "YourCollectible", "balanceOf", [ address ]);
     console.log("🤗 balance:", balance);
-  
+
     const highestBid = useContractReader(readContracts, "YourCollectible", "highestBid");
     console.log("🤗 highestBid:", highestBid);
-  
+
     const highestBidder = useContractReader(readContracts, "YourCollectible", "highestBidder");
     console.log("🤗 highestBidder:", highestBidder);
-  
+
     const timeLeft = useContractReader(readContracts, "YourCollectible", "timeLeft");
     console.log("🤗 timeLeft:", timeLeft);
-  
+
     // 📟 Listen for broadcast events
     const transferEvents = useEventListener(readContracts, "YourCollectible", "Transfer", localProvider, 1);
     console.log("📟 Transfer events:", transferEvents);
-  
+
     const bidEvents = useEventListener(readContracts, "YourCollectible", "Bid", localProvider, 1);
     console.log("📟 Bid events:", bidEvents);
-  
+
 
     // helper function to "Get" from IPFS
   // you usually go content.toString() after this...
-  const getFromIPFS = async hashToGet => {
-    console.log("GETTING hashToGet",hashToGet)
-
-    for await (const file of ipfs.cat(hashToGet)) {
-      console.log(file.path);
-      if (!file.content) continue;
-      const content = new BufferList();
-      for await (const chunk of file.content) {
-        content.append(chunk);
-      }
-      console.log(content.toString());
-      return content;
-    }
-  };
 
   //
   // 🧠 This effect will update yourCollectibles by polling when your balance changes
@@ -78,7 +72,7 @@ function Home({ localChainId, contractConfig, userSigner,yourLocalBalance, readC
   const yourBalance = balance && balance.toNumber && balance.toNumber();
   const [yourCollectibles, setYourCollectibles] = useState();
 
-  
+
 
 
 
@@ -120,6 +114,14 @@ function Home({ localChainId, contractConfig, userSigner,yourLocalBalance, readC
   useEffect(()=>{
     setBids(bidEvents.reverse().slice(0,4))
   },[ bidEvents ])
+
+  const getFromIPFS = async (hashToGet) => {
+    for await (const file of ipfs.cat(hashToGet)) {
+      const content = new BufferList(file).toString();
+
+      return content;
+    }
+  }
 
 
   const [transferToAddresses, setTransferToAddresses] = useState({});
