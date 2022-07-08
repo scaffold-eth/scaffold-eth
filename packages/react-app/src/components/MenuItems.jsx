@@ -1,11 +1,24 @@
-import React, { useState } from 'react'
-import { Tabs } from '@mui/material'
-import { Tab } from '@mui/material'
+import React from 'react'
+import Tabs from '@mui/material/Tabs'
+import Tab from '@mui/material/Tab'
 
-const menuNames = ['Browse Badges']
+const browseBage = {
+  name: 'Browse Badges',
+  url: '',
+  component: 'a',
+}
+const mintBadge = {
+  name: 'Mint Badge',
+  url: '/mintbadge',
+  // component: 'button',
+}
 
-export default function MenuItems() {
-  const [tabValue, setTabValue] = useState(0)
+export default function MenuItems(props) {
+  const { tabValue, setTabValue } = props
+  function handleChange(evt, newValue) {
+    console.log(`The new value of the tab clicked is ${newValue}`)
+    setTabValue(newValue)
+  }
   return (
     <>
       <Tabs
@@ -13,36 +26,31 @@ export default function MenuItems() {
           marginLeft: 'auto',
         }}
         value={tabValue}
-        onChange={(evt, value) => setTabValue(value)}
+        onChange={handleChange}
       >
-        {menuNames && menuNames.length ? (
-          menuNames.map(name => (
-            <Tab
-              key={name}
-              label={name}
-              sx={{
-                fontWeight: '700',
-              }}
-            />
-          ))
-        ) : (
-          <Tab
-            label={'BrowseBadges'}
-            sx={{
-              fontWeight: '700',
-            }}
-          />
-        )}
+        <Tab
+          key={browseBage.name}
+          label={browseBage.name}
+          sx={{
+            fontWeight: '700',
+          }}
+        />
+        <Tab
+          key={mintBadge.name}
+          label={mintBadge.name}
+          sx={{
+            fontWeight: '700',
+          }}
+        />
         <Tab
           label={'Head to Remix IDE'}
           sx={{
             fontWeight: 700,
           }}
-          component={'a'}
           href={'https://remix.ethereum.org'}
           target={'_blank'}
           rel={'noreferrer'}
-          onClick={(e, value) => setTabValue(0)}
+          onClick={() => setTabValue(0)}
         />
       </Tabs>
     </>
