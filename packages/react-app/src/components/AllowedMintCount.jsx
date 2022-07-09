@@ -12,9 +12,9 @@ export default function AllowedMintCount() {
    */
   const allowedMinting = useCallback(async () => {
     let contract = new ethers.Contract(contractRef.address, contractRef.abi, injectedProvider)
-    return await contract.allowedMinting(connectedAddress)
+    return contract.allowedMinting(connectedAddress)
   }, [connectedAddress, contractRef.abi, contractRef.address, injectedProvider])
-  const [mintCount, setMintCount] = useState(0)
+  const [mintCount, setMintCount] = useState('0')
 
   useEffect(() => {
     if (injectedProvider === undefined || connectedAddress === undefined) {
@@ -23,7 +23,7 @@ export default function AllowedMintCount() {
     }
     const run = async () => {
       // @ts-ignore
-      const result = parseFloat(ethers.utils.formatEther(await allowedMinting()))
+      const result = (await allowedMinting()).toString()
       console.log({ result })
       setMintCount(result)
     }
@@ -36,7 +36,7 @@ export default function AllowedMintCount() {
   return (
     <>
       <Typography variant="h2" fontWeight={900} sx={{ padding: 2, color: '#81a6f7' }}>
-        {typeof mintCount === 'number' ? mintCount : 0}
+        {mintCount}
       </Typography>
     </>
   )
