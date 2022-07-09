@@ -17,7 +17,7 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 })
 
-const appChainId = 5
+const appChainId = 10
 let contractRef
 let providerRef
 if (
@@ -40,7 +40,7 @@ ReactDOM.render(
       <CssBaseline />
       <BrowserRouter>
         <Route path="/">
-          <App mainnet={mainnet} localProvider={localProvider} />
+          <App mainnet={mainnet} localProvider={localProvider} appChainId={appChainId} />
         </Route>
       </BrowserRouter>
     </ThemeProvider>
