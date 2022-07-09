@@ -24,7 +24,7 @@ export default function MintingActions({ contractRef }) {
    *  - if the current user doesn't have anymore a slot for minting a badge
    */
   // @ts-ignore
-  const { injectedProvider } = useContext(BadgeContext)
+  const { injectedProvider, userSigner } = useContext(BadgeContext)
 
   const mintBadge = async receiverAddress => {
     if (injectedProvider === undefined) {
@@ -35,7 +35,7 @@ export default function MintingActions({ contractRef }) {
       // console.log('the form must have an input with a valid account hash!')
       return
     }
-    let contract = new ethers.Contract(contractRef.address, contractRef.abi, injectedProvider)
+    let contract = new ethers.Contract(contractRef.address, contractRef.abi, userSigner)
     // console.log({ contract })
     try {
       setMessage('Please approve the transaction and wait for the validation')
@@ -44,7 +44,7 @@ export default function MintingActions({ contractRef }) {
       await mintTx.wait()
       setMessage('Transaction validated')
     } catch (e) {
-      setMessage('error while sending the transaction. ' + e.setMessage)
+      setMessage('error while sending the transaction. ' + e.message)
     }   
     setTimeout(() => setMessage(''), 10000)
   }
