@@ -3,7 +3,6 @@ import { Box, Button, Card, CardActions, CardMedia, CardContent, Typography } fr
 import InfoIcon from '@mui/icons-material/Info'
 import { ethers } from 'ethers'
 import multihash from 'multihashes'
-import { stringify } from 'postcss'
 
 export const toBase58 = contentHash => {
   let hex = contentHash.substring(2)
@@ -20,8 +19,8 @@ export default function NftCard(props) {
     txLink: ''
   })
   useEffect(() => {
-    (async () => {  
-      let data = await contract.tokensData(id === '0x' ? '0x0' : id)
+    (async () => {
+      let data = await contract.tokensData(ethers.BigNumber.from(id === '0x' ? '0x0' : id))
       let toFormatted = ethers.utils.hexStripZeros(to)
       const name = await mainnet.lookupAddress(toFormatted)
       let title = name ? name : toFormatted
