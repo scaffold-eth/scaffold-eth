@@ -22,7 +22,7 @@ function App({ mainnet, localProvider }) {
   const [address, setAddress] = useState('')
   const [tabValue, setTabValue] = useState(0)
   const [showToast, setShowToast] = useState(false)
-  const [selectedChainId] = useState(10)
+  const [selectedChainId] = useState(5)
   const contractConfig = { deployedContracts: {}, externalContracts: externalContracts || {} }
 
   const targetNetwork = NETWORKS['optimism']
@@ -45,12 +45,14 @@ function App({ mainnet, localProvider }) {
     setShowToast(true)
   }
   let contractRef
+  let providerRef
   if (
     externalContracts[selectedChainId] &&
     externalContracts[selectedChainId].contracts &&
     externalContracts[selectedChainId].contracts.REMIX_REWARD
   ) {
     contractRef = externalContracts[selectedChainId].contracts.REMIX_REWARD
+    providerRef = externalContracts[selectedChainId].provider
   }
 
   useEffect(() => {
@@ -124,7 +126,7 @@ function App({ mainnet, localProvider }) {
 
   useEffect(() => {
     const run = async () => {
-      // const localProvider = new ethers.providers.StaticJsonRpcProvider('https://mainnet.optimism.io')
+      const localProvider = new ethers.providers.StaticJsonRpcProvider(providerRef)
 
       await localProvider.ready
 
@@ -171,6 +173,7 @@ function App({ mainnet, localProvider }) {
               // @ts-ignore
               tabValue={tabValue}
               setTabValue={setTabValue}
+              injectedProvider={injectedProvider}
             />
           )}
           <Toast showToast={showToast} closeToast={closeToast} snackBarAction={snackBarAction} />

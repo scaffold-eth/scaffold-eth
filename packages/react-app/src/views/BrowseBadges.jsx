@@ -1,8 +1,7 @@
 // @ts-nocheck
 import React, { useState, useEffect } from 'react'
 import externalContracts from '../contracts/external_contracts'
-import { useEventListener } from 'eth-hooks/events/useEventListener'
-import { useContractLoader } from 'eth-hooks'
+import { getAllRewards } from '../helpers/getAllRewards'
 
 import { ethers } from 'ethers'
 import TextField from '@mui/material/TextField'
@@ -16,19 +15,12 @@ import { Box, Grid } from '@mui/material'
 import NftCard from '../components/NftCard'
 import { Paper } from '@mui/material'
 import { FormControl } from '@mui/material'
-import AddressedCard from '../components/AddressedCard'
 import { useContext } from 'react'
 import { BadgeContext } from 'contexts/BadgeContext'
 
 export const toHex = ipfsHash => {
   let buf = multihash.fromB58String(ipfsHash)
   return '0x' + multihash.toHexString(buf)
-}
-
-export const toBase58 = contentHash => {
-  let hex = contentHash.substring(2)
-  let buf = multihash.fromHexString(hex)
-  return multihash.toB58String(buf)
 }
 
 export const isHexadecimal = value => {
@@ -38,94 +30,61 @@ export const isHexadecimal = value => {
 // const styles
 
 export default function BrowseBadges() {
-  const [contractEvents, setContractEvents] = useState([])
-  const contractConfig = { deployedContracts: {}, externalContracts: externalContracts || {} }
-  const [badges, setBadges] = useState([])
   const [eventBadges, setEventBadges] = useState([])
   const [error, setErrorMessage] = useState('')
   const { localProvider, mainnet, selectedChainId, address, setAddress } = useContext(BadgeContext)
 
   let contractRef
+  let providerRef
   if (
     externalContracts[selectedChainId] &&
     externalContracts[selectedChainId].contracts &&
     externalContracts[selectedChainId].contracts.REMIX_REWARD
   ) {
     contractRef = externalContracts[selectedChainId].contracts.REMIX_REWARD
+    providerRef = externalContracts[selectedChainId].provider
   }
-
-  const contracts = useContractLoader(localProvider, contractConfig, 10)
-  const events = useEventListener(contracts, 'REMIX_REWARD', 'Transfer', localProvider, 1)
-  if (contractEvents.length !== events.length) {
-    setContractEvents(events)
-  }
-
-  // async function addressFilterHandler(e) {
-  //   if (!e.target.value) {
-  //     setAddress('')
-  //     return
-  //   }
-  //   if (isHexadecimal(e.target.value.replace('0x', ''))) {
-  //     setAddress(e.target.value)
-  //     setErrorMessage('')
-  //   } else {
-  //     let name = e.target.value
-  //     if (!name.endsWith('.eth')) name = name + '.eth'
-  //     const address = await mainnet.resolveName(name)
-  //     if (address) {
-  //       setAddress(address)
-  //       if (error.length > 1) setErrorMessage('')
-  //     } else {
-  //       setErrorMessage(`${name} not found`)
-  //     }
-  //   }
-  // }
 
   useEffect(() => {
     const run = async () => {
       if (!contractRef) return setErrorMessage('chain not supported. ' + selectedChainId)
       if (!address) {
-        setBadges([])
+        setEventBadges([])
         setErrorMessage('')
         return
       }
       setErrorMessage('')
     }
     run()
-  }, [address, contractEvents, contractRef, localProvider, selectedChainId])
+  }, [address, contractRef, localProvider, selectedChainId])
 
-  useEffect(() => {
-    const run = async () => {
-      if (address) {
-        console.log('address o wa!')
-        return setEventBadges([])
-      }
-      const eventsDecoded = []
-      for (const event of contractEvents) {
-        let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
-        let data = await contract.tokensData(event.args.tokenId)
-        const name = await mainnet.lookupAddress(event.args.to)
-        const badge = Object.assign(
-          {},
-          { transactionHash: event.transactionHash },
-          event.args,
-          data,
-          { decodedIpfsHash: toBase58(data.hash) },
-          event,
-          { name },
-        )
-        eventsDecoded.push(badge)
-      }
-      setEventBadges(eventsDecoded)
+  const run = async () => {
+    if (address) {
+      console.log('address o wa!')
+      return setEventBadges([])
     }
-    run()
-  }, [contractEvents, address, contractRef, localProvider, mainnet])
-
-  function checkeventBagesAndBadges(badges) {
-    return badges && badges.length > 0
+    let badges = await getAllRewards(contractRef.address, providerRef)
+    badges = badges.map((badge) => {
+      return {
+        id: ethers.utils.hexStripZeros(badge.topics[3]),
+        to: ethers.utils.hexStripZeros(badge.topics[2]),
+        transactionHash: badge.transactionHash
+      }
+    })
+    setEventBadges(badges)
   }
 
+  useEffect(() => {    
+    run()
+  }, [])
+
+  useEffect(() => {
+    if (address.length > 0) return
+    run()
+  }, [address])
+
   async function processAddress(address) {
+    setEventBadges([])
     let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
     console.log({ contract }, 'contract created')
     const balance = await contract.balanceOf(address)
@@ -135,16 +94,17 @@ export default function BrowseBadges() {
     try {
       for (let k = 0; k < balance; k++) {
         const tokenId = await contract.tokenOfOwnerByIndex(address, k)
-        let data = await contract.tokensData(tokenId)
-        const target = contractEvents.find(evt => evt.args.find(addy => addy === address))
-        const badge = Object.assign({}, target, data, { decodedIpfsHash: toBase58(data.hash) })
-        badges.push(badge)
+        badges.push({
+          id: tokenId,
+          to: ethers.utils.hexStripZeros(address),
+          transactionHash: ''
+        })
       }
     } catch (error) {
       console.log(error)
     }
     console.log('forEach finished. badges going to be set')
-    setBadges(badges)
+    setEventBadges(badges)
     console.log('badges set and done')
   }
 
@@ -161,7 +121,7 @@ export default function BrowseBadges() {
           await processAddress(address)
         }
       } else {
-        setBadges([])
+        setEventBadges([])
         setErrorMessage('')
         return
       }
@@ -204,7 +164,7 @@ export default function BrowseBadges() {
             Input a wallet address to see the Remix Rewards it holds:
           </Typography>
           <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>
-            {badges && badges.length > 0 ? (
+            {address.length > 0 ? (
               <IconButton onClick={() => setAddress('')} sx={{ color: '#81a6f7', ':hover': { color: '#1976d2' } }}>
                 {'Back to Badge Gallery'}
                 <ArrowCircleLeftIcon fontSize="large" />
@@ -276,15 +236,9 @@ export default function BrowseBadges() {
               'linear-gradient(90deg, #f6e8fc, #f1e6fb, #ede5fb, #e8e4fa, #e3e2f9, #dee1f7, #d9dff6, #d4def4)',
           }}
         >
-          {checkeventBagesAndBadges(badges) ? (
-            <Grid item md={'auto'} lg={'auto'} mt={-12} ml={'auto'} mr={'auto'}>
-              <AddressedCard badges={badges} />
-            </Grid>
-          ) : eventBadges && eventBadges.length > 0 ? (
-            eventBadges.reverse().map((event, idx) => {
-              const src = 'https://remix-project.mypinata.cloud/ipfs/' + toBase58(event.hash)
-              const txLink = 'https://optimistic.etherscan.io/tx/' + event.transactionHash
-              let title = event.name ? event.name : event.to
+          {eventBadges && eventBadges.length > 0 ? (
+            eventBadges.map(event => {         
+              let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)     
               return (
                 <Grid
                   item
@@ -292,11 +246,11 @@ export default function BrowseBadges() {
                   mb={15}
                   ml={'auto'}
                   mr={'auto'}
-                  key={`${title}-${idx}`}
+                  key={`${event.to}-${event.id}`}
                   alignItems={'center'}
                   justifyContent={'center'}
                 >
-                  <NftCard src={src} title={title} txLink={txLink} event={event} />
+                  <NftCard to={event.to} id={event.id} contract={contract} mainnet={mainnet} />
                 </Grid>
               )
             })
