@@ -12,7 +12,7 @@ export const toBase58 = contentHash => {
 }
 
 export default function NftCard(props) {
-  const { contract, mainnet, to, id, transactionHash } = props
+  const { contract, mainnet, to, id, transactionHash, etherscan } = props
   const [ state, setState ] = useState({
     data: {},
     title: '',
@@ -27,7 +27,7 @@ export default function NftCard(props) {
       let title = name ? name : toFormatted
 
       const src = 'https://remix-project.mypinata.cloud/ipfs/' + toBase58(data.hash)
-      const txLink = 'https://optimistic.etherscan.io/tx/' + transactionHash      
+      const txLink = etherscan + transactionHash      
 
       setState({ data, title, src, txLink })
     })()

@@ -67,7 +67,7 @@ export default function MintingActions({ contractRef }) {
         <Box display={'flex'} flexDirection={'column'} sx={{ background: 'white' }} width={280} height={180}>
           <AllowedMintCount />
           <Typography variant="subtitle1" color={'#0c0c0c'} alignItems={'flex-end'} justifyContent={'flex-end'}>
-            BADGES REMAINING TO <br /> MINT ON YOUR ACCT
+            BADGES REMAINING TO <br /> MINT ON YOUR ACCOUNT
           </Typography>
         </Box>
         <Box pt={2}>

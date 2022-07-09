@@ -36,6 +36,7 @@ export default function BrowseBadges() {
 
   let contractRef
   let providerRef
+  let etherscanRef
   if (
     externalContracts[selectedChainId] &&
     externalContracts[selectedChainId].contracts &&
@@ -43,6 +44,7 @@ export default function BrowseBadges() {
   ) {
     contractRef = externalContracts[selectedChainId].contracts.REMIX_REWARD
     providerRef = externalContracts[selectedChainId].provider
+    etherscanRef = externalContracts[selectedChainId].etherscan
   }
 
   useEffect(() => {
@@ -250,7 +252,7 @@ export default function BrowseBadges() {
                   alignItems={'center'}
                   justifyContent={'center'}
                 >
-                  <NftCard to={event.to} id={event.id} contract={contract} mainnet={mainnet} />
+                  <NftCard etherscan={etherscanRef} to={event.to} id={event.id} transactionHash={event.transactionHash} contract={contract} mainnet={mainnet} />
                 </Grid>
               )
             })

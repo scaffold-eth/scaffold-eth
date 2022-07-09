@@ -1613,7 +1613,8 @@ module.exports = {
         abi: remixRewardAbi
       }
     },
-    provider: 'https://opt-mainnet.g.alchemy.com/v2/cdGnPX6sQLXv-YWkbzYAXnTVVfuL8fhb'
+    provider: 'https://opt-mainnet.g.alchemy.com/v2/cdGnPX6sQLXv-YWkbzYAXnTVVfuL8fhb',
+    etherscan: 'https://optimistic.etherscan.io/tx/'
   },
   5: {
     contracts: {
@@ -1622,6 +1623,7 @@ module.exports = {
         abi: remixRewardAbi
       }
     },
-    provider: 'https://eth-goerli.g.alchemy.com/v2/1fpzjlzdaT-hFeeTXFY-yzM-WujQLfEl'
+    provider: 'https://eth-goerli.g.alchemy.com/v2/1fpzjlzdaT-hFeeTXFY-yzM-WujQLfEl',
+    etherscan: 'https://goerli.etherscan.io/tx/'
   }
 };
