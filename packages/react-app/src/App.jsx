@@ -22,7 +22,7 @@ function App({ mainnet, localProvider }) {
   const [address, setAddress] = useState('')
   const [tabValue, setTabValue] = useState(0)
   const [showToast, setShowToast] = useState(false)
-  const [selectedChainId] = useState(5)
+  const [selectedChainId] = useState(10)
   const contractConfig = { deployedContracts: {}, externalContracts: externalContracts || {} }
 
   const targetNetwork = NETWORKS['optimism']
