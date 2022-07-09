@@ -16,6 +16,7 @@ const WalletAddressTextField = styled(TextField)(({ theme }) => ({
 }))
 
 export default function MintingActions({ contractRef }) {
+  const [message, setMessage] = useState('')
   /*
    * this mint a user badge from the current selected account
    * this function throws an error
@@ -36,9 +37,16 @@ export default function MintingActions({ contractRef }) {
     }
     let contract = new ethers.Contract(contractRef.address, contractRef.abi, injectedProvider)
     // console.log({ contract })
-    let mintTx = await contract.publicMint(receiverAddress)
-    // console.log({ mintTx })
-    await mintTx.wait()
+    try {
+      setMessage('Please approve the transaction and wait for the validation')
+      let mintTx = await contract.publicMint(receiverAddress)
+      // console.log({ mintTx })
+      await mintTx.wait()
+      setMessage('Transaction validated')
+    } catch (e) {
+      setMessage('error while sending the transaction. ' + e.setMessage)
+    }   
+    setTimeout(() => setMessage(''), 10000)
   }
   const [walletAddress, setWalletAddress] = useState('')
 
@@ -83,8 +91,9 @@ export default function MintingActions({ contractRef }) {
         >
           <Typography variant={'subtitle1'} color={'white'} fontWeight={600}>
             Mint Badge
-          </Typography>
+          </Typography>          
         </Button>
+        <span>{message}</span>
       </Box>
     </>
   )
