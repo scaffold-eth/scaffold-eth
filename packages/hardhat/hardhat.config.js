@@ -231,57 +231,71 @@ module.exports = {
       },
     },
     moonbeam: {
-      url: 'https://rpc.api.moonbeam.network',
+      url: "https://rpc.api.moonbeam.network",
       chainId: 1284,
       accounts: {
         mnemonic: mnemonic(),
       },
     },
     moonriver: {
-      url: 'https://rpc.api.moonriver.moonbeam.network',
+      url: "https://rpc.api.moonriver.moonbeam.network",
       chainId: 1285,
       accounts: {
         mnemonic: mnemonic(),
       },
     },
     moonbaseAlpha: {
-      url: 'https://rpc.api.moonbase.moonbeam.network',
+      url: "https://rpc.api.moonbase.moonbeam.network",
       chainId: 1287,
       accounts: {
         mnemonic: mnemonic(),
       },
     },
     moonbeamDevNode: {
-      url: 'http://127.0.0.1:9933',
+      url: "http://127.0.0.1:9933",
       chainId: 1281,
       accounts: {
         mnemonic: mnemonic(),
       },
     },
     godwoken: {
-      url: 'https://godwoken-testnet-v1.ckbapp.dev',
+      url: "https://godwoken-testnet-v1.ckbapp.dev",
       chainId: 71401,
       accounts: {
         mnemonic: mnemonic(),
       },
     },
     arbitrum: {
-      url: 'https://arb1.arbitrum.io/rpc',
+      url: "https://arb1.arbitrum.io/rpc",
       chainId: 42161,
       accounts: {
         mnemonic: mnemonic(),
       },
     },
     rinkebyArbitrum: {
-      url: 'https://rinkeby.arbitrum.io/rpc',
+      url: "https://rinkeby.arbitrum.io/rpc",
       chainId: 421611,
       accounts: {
         mnemonic: mnemonic(),
       },
     },
     devnetArbitrum: {
-      url: 'https://nitro-devnet.arbitrum.io/rpc',
+      url: "https://nitro-devnet.arbitrum.io/rpc",
       chainId: 421612,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
+    binanceSmartChain: {
+      url: "https://bsc-dataseed.binance.org/",
+      chainId: 56,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
+    testnetBinanceSmartChain: {
+      url: "https://data-seed-prebsc-1-s1.binance.org:8545",
+      chainId: 97,
       accounts: {
         mnemonic: mnemonic(),
       },

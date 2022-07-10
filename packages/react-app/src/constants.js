@@ -226,6 +226,21 @@ export const NETWORKS = {
     blockExplorer: "https://moonbeam-explorer.netlify.app/",
     rpcUrl: "http://127.0.0.1:9933",
   },
+  testnetBinanceSmartChain: {
+    name: "Binance Smart Chain-Testnet",
+    color: "#F4C23F",
+    chainId: 97,
+    blockExplorer: "https://testnet.bscscan.com/",
+    rpcUrl: "https://data-seed-prebsc-1-s1.binance.org:8545",
+    faucet: "https://testnet.binance.org/faucet-smart",
+  },
+  binanceSmartChain: {
+    name: "Binance smart chain",
+    color: "#F4C23F",
+    chainId: 56,
+    blockExplorer: "https://bscscan.com/",
+    rpcUrl: "https://bsc-dataseed.binance.org/",
+  },
 };
 
 export const NETWORK = chainId => {
