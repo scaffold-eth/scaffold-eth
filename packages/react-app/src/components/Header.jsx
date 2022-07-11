@@ -11,12 +11,12 @@ export default function Header() {
       rel="noopener noreferrer"
     >
       <PageHeader
-        title="ABI Ninja"
-        subTitle="Interact with Ethereum contracts using their address and ABI"
+        title="Flashbots Bundler"
+        subTitle="Bundle TXs"
         style={{ cursor: "pointer" }}
         className="site-page-header"
         avatar={{
-          src: "https://user-images.githubusercontent.com/17074344/143511127-9e24b576-d1e2-42e0-b3c4-23e4a594a561.png",
+          src: "https://avatars.githubusercontent.com/u/71380475?s=200&v=4",
         }}
       />
     </a>

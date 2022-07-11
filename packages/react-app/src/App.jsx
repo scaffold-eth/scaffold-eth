@@ -3,15 +3,17 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import { StaticJsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 //import Torus from "@toruslabs/torus-embed"
 import WalletLink from "walletlink";
-import { Alert, Button, Col, Menu, Row, Input, Select } from "antd";
+import { Alert, Button, Col, Menu, Row, Input, Select, Divider, Image } from "antd";
+import ReactJson from "react-json-view";
 import "antd/dist/antd.css";
 import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Link, Route, Switch, useParams } from "react-router-dom";
 import Web3Modal from "web3modal";
 import "./App.css";
-import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch, AddressInput } from "./components";
+import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch, AddressInput, EtherInput } from "./components";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
+import { uuid } from "uuidv4";
 import {
   useBalance,
   useContractLoader,
@@ -19,11 +21,11 @@ import {
   useGasPrice,
   useOnBlock,
   useUserProviderAndSigner,
+  usePoller,
 } from "eth-hooks";
-import { useEventListener } from "eth-hooks/events/useEventListener";
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
 // import Hints from "./Hints";
-import { ExampleUI, Hints, Subgraph } from "./views";
+import { FlashbotsBundleProvider } from "@flashbots/ethers-provider-bundle";
 
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
@@ -58,7 +60,7 @@ const { ethers } = require("ethers");
 const cachedNetwork = window.localStorage.getItem("network");
 let targetNetwork = NETWORKS[cachedNetwork || NETWORKS.ropsten]; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 if (!targetNetwork) {
-  targetNetwork = NETWORKS.xdai;
+  targetNetwork = NETWORKS.goerli;
 }
 
 // 😬 Sorry for all the console logging
@@ -114,6 +116,34 @@ function App(props) {
 
   const [injectedProvider, setInjectedProvider] = useState();
   const [address, setAddress] = useState();
+  const [toAddress, setToAddress] = useState();
+  const [route, setRoute] = useState();
+  const [txValue, setTxValue] = useState();
+  const [bundle, setBundle] = useState();
+  const [flashbotsRpc, setFlashbotsRpc] = useState();
+  const [flashbotsBundleQuery, setFlashbotsBundleQuery] = useState();
+  const [bundleUuid, setBundleUuid] = useState();
+
+  usePoller(async () => {
+    try {
+      if (bundleUuid) {
+        const bundle = await fetch(flashbotsBundleQuery);
+        const bundleJson = await bundle.json();
+        console.log({ bundleJson });
+        if (bundleJson.rawTxs) {
+          setBundle(bundleJson?.rawTxs);
+        }
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }, 3000);
+
+  useEffect(() => {
+    console.log("new bundle");
+    setFlashbotsRpc("https://rpc.flashbots.net?bundle=" + bundleUuid);
+    setFlashbotsBundleQuery("https://rpc.flashbots.net/bundle?id=" + bundleUuid);
+  }, [bundleUuid]);
 
   const logoutOfWeb3Modal = async () => {
     await web3Modal.clearCachedProvider();
@@ -365,7 +395,7 @@ function App(props) {
           customContract={theExternalContract}
           signer={userSigner}
           provider={localProvider}
-          chainId={selectedChainId} 
+          chainId={selectedChainId}
         />
       </div>
     );
@@ -383,7 +413,7 @@ function App(props) {
           customContract={theExternalContractFromURL}
           signer={userSigner}
           provider={localProvider}
-          chainId={selectedChainId} 
+          chainId={selectedChainId}
         />
       </div>
     );
@@ -398,13 +428,18 @@ function App(props) {
   console.log("==-- theExternalContract: ", theExternalContract);
 
   const options = [];
-  for (const id in NETWORKS) {
-    options.push(
-      <Select.Option key={id} value={NETWORKS[id].name}>
-        <span style={{ color: NETWORKS[id].color, fontSize: 24 }}>{NETWORKS[id].name}</span>
-      </Select.Option>,
-    );
-  }
+  // Restrict to goerli and mainnet
+  options.push(
+    <Select.Option key={"goerli"} value={NETWORKS.goerli.name}>
+      <span style={{ color: NETWORKS.goerli.color, fontSize: 24 }}>{NETWORKS.goerli.name}</span>
+    </Select.Option>,
+  );
+
+  options.push(
+    <Select.Option key={"mainnet"} value={NETWORKS["mainnet"].name}>
+      <span style={{ color: NETWORKS["mainnet"].color, fontSize: 24 }}>{NETWORKS["mainnet"].name}</span>
+    </Select.Option>,
+  );
 
   const networkSelect = (
     <Select
@@ -430,17 +465,49 @@ function App(props) {
       <Header />
       {networkDisplay}
       <span style={{ verticalAlign: "middle" }}>
-          {networkSelect}
-          {/*faucetHint*/}
+        {networkSelect}
+        {/*faucetHint*/}
       </span>
       <BrowserRouter>
+        <Menu style={{ textAlign: "center" }} selectedKeys={[route]} mode="horizontal">
+          <Menu.Item key="/">
+            <Link
+              onClick={() => {
+                setRoute("/");
+              }}
+              to="/"
+            >
+              ABI
+            </Link>
+          </Menu.Item>
+          <Menu.Item key="/sendeth">
+            <Link
+              onClick={() => {
+                setRoute("/sendeth");
+              }}
+              to="/sendeth"
+            >
+              Send ETH
+            </Link>
+          </Menu.Item>
+          <Menu.Item key="/rpc">
+            <Link
+              onClick={() => {
+                setRoute("/rpc");
+              }}
+              to="/rpc"
+            >
+              Flashbots RPC
+            </Link>
+          </Menu.Item>
+        </Menu>
         <Switch>
           <Route path="/contract/:addr/:abi">
             <AddressFromURL />
           </Route>
           <Route exact path="/">
-          <div>Paste the contract's address and ABI below:</div>
-            <div class="center" style={{ width: "50%"}}>
+            <div>Paste the contract's address and ABI below:</div>
+            <div class="center" style={{ width: "50%" }}>
               <div style={{ padding: 4 }}>
                 <AddressInput
                   placeholder="Enter Contract Address"
@@ -451,7 +518,7 @@ function App(props) {
               </div>
               <div style={{ padding: 4 }}>
                 <TextArea
-                  rows={6} 
+                  rows={6}
                   placeholder="Enter Contract ABI JSON"
                   value={contractABI}
                   onChange={e => {
@@ -460,8 +527,79 @@ function App(props) {
                 />
               </div>
             </div>
+            <div>{externalContractDisplay}</div>
+          </Route>
+          <Route exact path="/sendeth">
+            <div class="center" style={{ width: "50%" }}>
+              To Address
+              <div style={{ padding: 4 }}>
+                <AddressInput
+                  placeholder="Enter Recipient Address"
+                  ensProvider={mainnetProvider}
+                  value={toAddress}
+                  onChange={setToAddress}
+                />
+                Amount
+                <EtherInput
+                  price={price}
+                  value={txValue}
+                  onChange={value => {
+                    setTxValue(value);
+                  }}
+                />
+              </div>
+              <Button
+                onClick={async () => {
+                  try {
+                    await userSigner.sendTransaction({ to: toAddress, value: ethers.utils.parseEther(txValue) });
+                  } catch (e) {
+                    console.log({ e });
+                  }
+                }}
+              >
+                Send Transaction
+              </Button>
+            </div>
+          </Route>
+          <Route exact path="/rpc">
+            <div>{flashbotsRpc}</div>
+            <Input
+              value={bundleUuid}
+              onChange={e => {
+                setBundleUuid(e.target.value);
+              }}
+            />
+            <Button
+              onClick={() => {
+                const newUuid = uuid();
+                setBundleUuid(newUuid);
+              }}
+            >
+              Get new RPC
+            </Button>
+            <Divider />
+            {bundle && <ReactJson src={bundle} />}
+            <Divider />
             <div>
-              {externalContractDisplay}
+              <h2>How to use Flashbots Protect RPC in MetaMask</h2>
+              <div>To add Flashbots Protect RPC endpoint follow these steps:</div>
+              <ol>
+                <li>
+                  Enter your MetaMask and click on your RPC endpoint at the top of your MetaMask. By default it says
+                  “Ethereum mainnet.”
+                </li>
+                <li>Click “Custom RPC”</li>
+                <li>Add https://rpc.flashbots.net with a chainID of 1 and currency of ETH.</li>
+                <li>Scroll to the bottom and click “Save”</li>
+              </ol>
+              <Image
+                src="https://docs.flashbots.net/assets/images/flashbotsRPC-metamask1-1b4ec099182551fc7a8ff47237f4efa2.png"
+                fallback="data:image/png;base64,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"
+              />
+              <Image
+                src="https://docs.flashbots.net/assets/images/flashbotsRPC-metamask2-f416be97f84809e9b976996b7bd2bbe0.png"
+                fallback="data:image/png;base64,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"
+              />
             </div>
           </Route>
         </Switch>
