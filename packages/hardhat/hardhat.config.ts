@@ -14,6 +14,9 @@ import { task } from 'hardhat/config'
 
 import "./tasks/accounts"
 import "./tasks/bundle"
+import "./tasks/searcher-stats"
+import "./tasks/bundle-stats"
+import "./tasks/providertest"
 
 /*
       📡 This is where you configure your deploy configuration for 🏗 scaffold-eth

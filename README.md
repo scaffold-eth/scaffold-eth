@@ -1,8 +1,10 @@
-# 🏗 Scaffold-ETH - ABI Uploader
+# 🏗 Scaffold-ETH - Flashbots bundler
 
-🧪 Interact with Solidity contracts - call methods visually
+https://www.youtube.com/watch?v=itPz35FGGJk
 
-Given a constract's address and ABI, generates a dynamic form that allows the user to interact with the contract and call its methods
+🧪 Interact with Solidity contracts, bundle transactions with Flashbots
+
+Generate Flashbots bundles and broadcast them directly from the UI!
 
 # 🏄‍♂️ Quick Start
 

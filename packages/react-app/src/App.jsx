@@ -60,7 +60,7 @@ const { ethers } = require("ethers");
 const cachedNetwork = window.localStorage.getItem("network");
 let targetNetwork = NETWORKS[cachedNetwork || NETWORKS.ropsten]; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 if (!targetNetwork) {
-  targetNetwork = NETWORKS.goerli;
+  targetNetwork = NETWORKS.mainnet;
 }
 
 // 😬 Sorry for all the console logging
@@ -91,7 +91,7 @@ const localProviderUrl = targetNetwork.rpcUrl;
 // as you deploy to other networks you can set REACT_APP_PROVIDER=https://dai.poa.network in packages/react-app/.env
 const localProviderUrlFromEnv = process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : localProviderUrl;
 if (DEBUG) console.log("🏠 Connecting to provider:", localProviderUrlFromEnv);
-const localProvider = new ethers.providers.StaticJsonRpcProvider(localProviderUrlFromEnv);
+const localProvider = new ethers.providers.StaticJsonRpcProvider(localProviderUrl);
 
 // 🔭 block explorer URL
 const blockExplorer = targetNetwork.blockExplorer;
@@ -102,8 +102,6 @@ const walletLink = new WalletLink({
 });
 
 // WalletLink provider
-const walletLinkProvider = walletLink.makeWeb3Provider(`https://mainnet.infura.io/v3/${INFURA_ID}`, 1);
-
 // Portis ID: 6255fb2b-58c8-433b-a2c9-62098c05ddc9
 
 function App(props) {
@@ -131,7 +129,7 @@ function App(props) {
         const bundleJson = await bundle.json();
         console.log({ bundleJson });
         if (bundleJson.rawTxs) {
-          setBundle(bundleJson?.rawTxs);
+          setBundle(bundleJson?.rawTxs.reverse());
         }
       }
     } catch (e) {
@@ -551,7 +549,7 @@ function App(props) {
               <Button
                 onClick={async () => {
                   try {
-                    await userSigner.sendTransaction({ to: toAddress, value: ethers.utils.parseEther(txValue) });
+                    await userSigner.sendTransaction({ to: toAddress, value: ethers.utils.parseEther(txValue) , gasLimit: 50000});
                   } catch (e) {
                     console.log({ e });
                   }
@@ -578,7 +576,35 @@ function App(props) {
               Get new RPC
             </Button>
             <Divider />
-            {bundle && <ReactJson src={bundle} />}
+            {bundle && (
+              <div class="center" style={{ width: "50%" }}>
+                <ReactJson src={bundle} />
+                <Button
+                  onClick={async () => {
+                    try {
+                      const res = await fetch('https://ip3z9fy5va.execute-api.us-east-1.amazonaws.com/dev/relay', {
+
+                        method: 'POST',
+                        headers: {
+                          'Accept': 'application/json',
+                          'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({signedTransactions: bundle})
+                      })
+                      
+                      const resJson = await res.json()
+                      console.log({resJson})
+                        console.log("bundles submitted");
+                    } catch (error) {
+                      console.log({error})
+                    }
+                  }}
+                >
+                  Submit Bundle
+                </Button>
+              </div>
+            )}
+
             <Divider />
             <div>
               <h2>How to use Flashbots Protect RPC in MetaMask</h2>
