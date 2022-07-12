@@ -67,8 +67,8 @@ The flashbots RPC 'pretends' that each account has 100 ETH so that transactions 
 🎉 Finally, we queued up a second transaction to rescue the ETH, sending it to the recovery target account!
 
 As seen below, since the transaction was executed via. Flashbots bundle, they were all included in the same block, consecutively!
-<img width="619" alt="Bundled" src="https://user-images.githubusercontent.com/76530366/178616159-f7583ff0-141b-4489-a787-390cd14e00e7.png">
 
+<img width="619" alt="Bundled" src="https://user-images.githubusercontent.com/76530366/178616159-f7583ff0-141b-4489-a787-390cd14e00e7.png">
 
 ================================================================================================
 
