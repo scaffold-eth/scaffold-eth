@@ -36,13 +36,13 @@ yarn start
 
 The application has three windows.
 
-First, an interactive mode where the user can enter the contract's address and ABI.
+📝 First, an interactive mode where the user can enter the contract's address and ABI.
 
-The second window is a UI to send funds to a specific address (can take in ENS addresses).
+💌 The second window is a UI to send funds to a specific address (can take in ENS addresses).
 
-The third window is where the user can generate their user-specific flashbots RPC and get bundling! 
+🤖 The third window is where the user can generate their user-specific flashbots RPC and get bundling! 
 
-## Interactive Mode:
+## 💻 Interactive Mode:
 
 In this mode the user can input the contract's address and ABI. See the image below
 
@@ -65,6 +65,9 @@ The flashbots RPC 'pretends' that each account has 100 ETH so that transactions 
 💧 Then, we queued up a withdraw transaction from the BuidlGuidl stream... 
 
 🎉 Finally, we queued up a second transaction to rescue the ETH, sending it to the recovery target account!
+
+As seen below, since the transaction was executed via. Flashbots bundle, they were all included in the same block, consecutively!
+<img width="933" alt="Screen Shot 2022-05-17 at 3 42 44 PM" src="https://user-images.githubusercontent.com/76530366/178615877-4fa1734e-a1c0-4732-9652-55f12b2b9736.png">
 
 
 ================================================================================================
