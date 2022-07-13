@@ -1,7 +1,9 @@
 # 🏗 Scaffold-ETH - Flashbots bundler
 
 
-Watch the walkthrough here!
+🎥 Watch the walkthrough here:
+
+[![preview](https://user-images.githubusercontent.com/2653167/178758732-20de2ab8-31ad-4c15-9c72-7bd0c96ea2e1.jpg)](https://www.youtube.com/watch?v=itPz35FGGJk)
 
 https://www.youtube.com/watch?v=itPz35FGGJk
 
