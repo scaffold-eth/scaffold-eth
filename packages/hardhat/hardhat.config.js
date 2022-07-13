@@ -12,6 +12,7 @@ require("hardhat-abi-exporter");
 
 require("@nomiclabs/hardhat-ethers");
 require("@nomiclabs/hardhat-etherscan");
+require("@nomiclabs/hardhat-vyper");
 
 const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 
@@ -308,6 +309,9 @@ module.exports = {
         },
       },
     ],
+  },
+  vyper: {
+    version: "0.3.3",
   },
   ovm: {
     solcVersion: "0.7.6",
