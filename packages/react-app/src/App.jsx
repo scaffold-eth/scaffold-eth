@@ -29,8 +29,8 @@ import externalContracts from "./contracts/external_contracts";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor, Web3ModalSetup } from "./helpers";
-import { Home, Subgraph } from "./views";
-import { useStaticJsonRPC } from "./hooks";
+import { Create, Home, Subgraph } from "./views";
+import { useStaticJsonRPC, useTypedSigner } from "./hooks";
 
 const { ethers } = require("ethers");
 /*
@@ -53,7 +53,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const initialNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const initialNetwork = NETWORKS.rinkeby; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -148,6 +148,13 @@ function App(props) {
   // If you want to make 🔐 write transactions to your contracts, use the userSigner:
   const writeContracts = useContractLoader(userSigner, contractConfig, localChainId);
 
+  const typedSigner = useTypedSigner(userSigner, {
+    name: "POEMS",
+    version: "1",
+    chainId: targetNetwork.chainId,
+    verifyingContract: readContracts?.Poems?.address,
+  });
+
   // If you want to call a function on a new block
   useOnBlock(mainnetProvider, () => {
     console.log(`⛓ A new mainnet block is here: ${mainnetProvider._lastBlockNumber}`);
@@ -186,7 +193,7 @@ function App(props) {
   return (
     <div className="App">
       {/* ✏️ Edit the header and change the title to your project name */}
-      <Header>
+      <Header title="🌊 Poets & Poems" link="/" subTitle="Mint poems from creators as NFT">
         {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
         <div style={{ position: "relative", display: "flex", flexDirection: "column" }}>
           <div style={{ display: "flex", flex: 1 }}>
@@ -227,20 +234,32 @@ function App(props) {
       />
       <Menu style={{ textAlign: "center", marginTop: 20 }} selectedKeys={[location.pathname]} mode="horizontal">
         <Menu.Item key="/">
-          <Link to="/">App Home</Link>
+          <Link to="/">Poem Marketplace</Link>
+        </Menu.Item>
+        <Menu.Item key="/create">
+          <Link to="/create">Create Poem</Link>
         </Menu.Item>
         <Menu.Item key="/debug">
           <Link to="/debug">Debug Contracts</Link>
-        </Menu.Item>
-        <Menu.Item key="/subgraph">
-          <Link to="/subgraph">Subgraph</Link>
         </Menu.Item>
       </Menu>
 
       <Switch>
         <Route exact path="/">
           {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
-          <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} />
+          <Home
+            tx={tx}
+            price={price}
+            address={address}
+            typedSigner={typedSigner}
+            readContracts={readContracts}
+            ensProvider={mainnetProvider}
+            writeContracts={writeContracts}
+          />
+        </Route>
+        <Route exact path="/create">
+          {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
+          <Create price={price} address={address} typedSigner={typedSigner} />
         </Route>
         <Route exact path="/debug">
           {/*
@@ -257,14 +276,6 @@ function App(props) {
             address={address}
             blockExplorer={blockExplorer}
             contractConfig={contractConfig}
-          />
-        </Route>
-        <Route path="/subgraph">
-          <Subgraph
-            subgraphUri={props.subgraphUri}
-            tx={tx}
-            writeContracts={writeContracts}
-            mainnetProvider={mainnetProvider}
           />
         </Route>
       </Switch>
