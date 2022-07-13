@@ -1,5 +1,8 @@
 # 🏗 Scaffold-ETH - Flashbots bundler
 
+
+Watch the walkthrough here!
+
 https://www.youtube.com/watch?v=itPz35FGGJk
 
 🧪 Interact with Solidity contracts, bundle transactions with Flashbots
@@ -13,9 +16,9 @@ Prerequisites: [Node](https://nodejs.org/en/download/) plus [Yarn](https://class
 > clone/fork 🏗 scaffold-eth:
 
 ```bash
-git clone https://github.com/scaffold-eth/scaffold-eth.git abi-uploader
-cd abi-uploader
-git checkout abi-uploader
+git clone https://github.com/scaffold-eth/scaffold-eth.git flashbots-bundler
+cd flashbots-bundler
+git checkout flashbots-bundler
 ```
 
 > install and start your 👷‍ front-end:
@@ -31,11 +34,15 @@ yarn start
 
 # 📚 Documentation
 
-The application supports two modes of operation.
+The application has three windows.
 
-First, an interactive mode where the user can enter the contract's address and ABI. The second mode is the URL parameters mode where the contract's address and ABI are passed as URL parameters.
+📝 First, an interactive mode where the user can enter the contract's address and ABI.
 
-## Interactive Mode:
+💌 The second window is a UI to send funds to a specific address (can take in ENS addresses).
+
+🤖 The third window is where the user can generate their user-specific flashbots RPC and get bundling! 
+
+## 💻 Interactive Mode:
 
 In this mode the user can input the contract's address and ABI. See the image below
 
@@ -43,22 +50,26 @@ In this mode the user can input the contract's address and ABI. See the image be
 
 Use the network selector at the top of the page to change the target network
 
-<img width="280" alt="ABI-Uploader-Interactive-Input-NetworkSelector" src="https://user-images.githubusercontent.com/17074344/142741692-d4d0db8a-7c47-4553-929c-77534816f51e.png">
-
-If a valid address and ABI are entered, the application will build a form that contains the contract's functions. Please see the image below for a sample output.
+If a valid address and ABI are entered, the application will build a UI that contains the contract's functions. Please see the image below for a sample output.
 
 <img width="1206" alt="ABI-Uploader-Interactve-Output" src="https://user-images.githubusercontent.com/17074344/142741696-c9e0e85a-0635-47ee-b8da-45989c31e9ff.png">
 
-## URL Parameters Mode:
+## 🤖 Bundlin' with the Bots
 
-In this mode, the URL will contain the contract's address and ABI. The URL should follow the pattern below:
+Every time the user wants to send private transactions that bypass the mempool, they have to first go to the Flashbots RPC window to generate their own flashbots RPC. They can then use that RPC to now ✨[add `Flashbots` as a custom network](https://metamask.zendesk.com/hc/en-us/articles/360043227612-How-to-add-a-custom-network-RPC)✨. 
 
-```
-/cantract/CONTRACT_ADDRESS/CONTRACT_ABI
-```
+The flashbots RPC 'pretends' that each account has 100 ETH so that transactions happening inside a bundle will not revert.
 
-This mode allows the user to create a URL that can be passed to other users. Once opened, the user will have a form ready to interact with the contract.
+⛓️ You can queue multiple transactions together! In the example, we first queued up a transaction to send some ETH to the compromised account... 
 
----
+💧 Then, we queued up a withdraw transaction from the BuidlGuidl stream... 
+
+🎉 Finally, we queued up a second transaction to rescue the ETH, sending it to the recovery target account!
+
+As seen below, since the transaction was executed via. Flashbots bundle, they were all included in the same block, consecutively!
+
+<img width="619" alt="Bundled" src="https://user-images.githubusercontent.com/76530366/178616159-f7583ff0-141b-4489-a787-390cd14e00e7.png">
+
+================================================================================================
 
 🙏 Please check out our [Gitcoin grant](https://gitcoin.co/grants/2851/scaffold-eth) too!
