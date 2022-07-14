@@ -29,7 +29,7 @@ const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 //
 const defaultNetwork = "localhost";
 
-const mainnetGwei = 21;
+const mainnetGwei = 41;
 
 function mnemonic() {
   try {
@@ -67,10 +67,10 @@ module.exports = {
   networks: {
     localhost: {
       url: "http://localhost:8545",
-      /*      
+      /*
         notice no mnemonic here? it will just use account 0 of the hardhat node to deploy
         (you can put in a mnemonic here to set the deployer locally)
-      
+
       */
     },
     rinkeby: {
@@ -577,6 +577,15 @@ task("accounts", "Prints the list of accounts", async (_, { ethers }) => {
 task("blockNumber", "Prints the block number", async (_, { ethers }) => {
   const blockNumber = await ethers.provider.getBlockNumber();
   console.log(blockNumber);
+});
+
+task("ff", "fast forward one hour", async (_, { ethers }) => {
+  const blockNumber = await ethers.provider.getBlockNumber();
+  console.log(blockNumber);
+  const result = await ethers.provider.send("evm_increaseTime", [3600]);
+  console.log(result);
+  const blockNumberAfter = await ethers.provider.getBlockNumber();
+  console.log(blockNumberAfter);
 });
 
 task("balance", "Prints an account's balance")
