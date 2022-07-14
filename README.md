@@ -17,6 +17,12 @@ Prerequisites: [Node (v16 LTS)](https://nodejs.org/en/download/) plus [Yarn (v1.
 git clone https://github.com/scaffold-eth/scaffold-eth.git
 ```
 
+or using `scaffold-eth-cli`:
+
+```bash
+npx scaffold-eth
+```
+
 > install and start your 👷‍ Hardhat chain:
 
 ```bash
