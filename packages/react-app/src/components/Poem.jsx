@@ -48,7 +48,9 @@ const Poem = ({ tx, writeContracts, readContracts, poem, ensProvider }) => {
       </div>
       {!isNotMinted && (
         <div>
-          <Typography.Text>Current Owner: owner</Typography.Text>
+          <Typography.Text>
+            Current Owner: <Address fontSize={14} address={owner} ensProvider={ensProvider} />{" "}
+          </Typography.Text>
         </div>
       )}
 
