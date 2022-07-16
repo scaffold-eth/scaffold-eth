@@ -11,7 +11,13 @@ export default function useMultiCall(contracts, params = {}, provider) {
   const blockNumber = useBlockNumber(provider);
 
   const multicall = useMemo(() => {
-    return provider ? new Multicall({ ethersProvider: provider, tryAggregate: true }) : null;
+    return provider
+      ? new Multicall({
+          multicallCustomContractAddress: "0x5BA1e12693Dc8F9c48aAD8770482f4739bEeD696",
+          ethersProvider: provider,
+          tryAggregate: true,
+        })
+      : null;
   }, [provider]);
 
   const contractCallContext = useMemo(() => {
