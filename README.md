@@ -1,3 +1,7 @@
+# toools and links
+### open zeppelin
+- [open zeppelin contract wizard](https://docs.openzeppelin.com/contracts/4.x/wizard)
+
 # 🏗 Scaffold-ETH
 
 > everything you need to build on Ethereum! 🚀
