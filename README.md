@@ -1,45 +1,62 @@
-# 🏗 Scaffold-ETH
+# 🏗 Scaffold-ETH - Poets & Poems
 
-> everything you need to build on Ethereum! 🚀
-
-🧪 Quickly experiment with Solidity using a frontend that adapts to your smart contract:
-
-![image](https://user-images.githubusercontent.com/2653167/124158108-c14ca380-da56-11eb-967e-69cde37ca8eb.png)
-
+> Write and sign poems without paying gas, buyer pays mint fees.
 
 # 🏄‍♂️ Quick Start
 
 Prerequisites: [Node (v16 LTS)](https://nodejs.org/en/download/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
 
-> clone/fork 🏗 scaffold-eth:
+> clone/fork this branch:
 
 ```bash
-git clone https://github.com/scaffold-eth/scaffold-eth.git
+git clone -b poets-and-poems https://github.com/scaffold-eth/scaffold-eth.git poets-and-poems
 ```
 
 > install and start your 👷‍ Hardhat chain:
 
 ```bash
-cd scaffold-eth
+cd poets-and-poems
 yarn install
 yarn chain
 ```
 
-> in a second terminal window, start your 📱 frontend:
+> Setup a new firebase project, create `env.js` file in `packages/react-app/src/env.js` and add your firebase config:
+
+```js
+const env = {
+  firebase: {
+    apiKey: "...",
+    authDomain: "...",
+    projectId: "...",
+    appId: "...",
+  },
+};
+
+export default env;
+```
+
+> in a second terminal, deploy firebase functions:
 
 ```bash
-cd scaffold-eth
+cd poets-and-poems/packages/firebase
+firebase deploy --only functions
+```
+
+> start your 📱 frontend:
+
+```bash
+cd poets-and-poems
 yarn start
 ```
 
 > in a third terminal window, 🛰 deploy your contract:
 
 ```bash
-cd scaffold-eth
+cd poets-and-poems
 yarn deploy
 ```
 
-🔏 Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
+🔏 Edit your smart contract `Poems.sol` in `packages/hardhat/contracts`
 
 📝 Edit your frontend `App.jsx` in `packages/react-app/src`
 
