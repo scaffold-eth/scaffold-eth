@@ -2,6 +2,9 @@
 
 > Write and sign poems without paying gas, buyer pays mint fees.
 
+<img width="1440" alt="Screen Shot 2022-07-16 at 2 03 59 PM" src="https://user-images.githubusercontent.com/14002941/179368721-8a8ca323-6247-4add-9c32-505b5e9057b8.png">
+
+
 # 🏄‍♂️ Quick Start
 
 Prerequisites: [Node (v16 LTS)](https://nodejs.org/en/download/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
