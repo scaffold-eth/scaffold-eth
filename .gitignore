@@ -51,6 +51,7 @@ artifacts
 # misc
 .DS_Store
 .env*
+env.js
 
 # debug
 npm-debug.log*
