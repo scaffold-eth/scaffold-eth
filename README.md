@@ -1,6 +1,14 @@
 # toools and links
 ### open zeppelin
-- [open zeppelin contract wizard](https://docs.openzeppelin.com/contracts/4.x/wizard)
+- [contract wizard](https://docs.openzeppelin.com/contracts/4.x/wizard)
+- [erc-1155 docs](https://docs.openzeppelin.com/contracts/3.x/erc1155)
+### varcel
+used to host metadata
+- [varcel](https://vercel.com/dashboard)
+
+### chainlink
+- [vrf](https://docs.chain.link/docs/chainlink-vrf/)
+- [polygon matic datafeeds](https://docs.chain.link/docs/matic-addresses/)
 
 # 🏗 Scaffold-ETH
 
