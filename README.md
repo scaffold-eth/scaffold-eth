@@ -10,6 +10,12 @@ used to host metadata
 - [vrf](https://docs.chain.link/docs/chainlink-vrf/)
 - [polygon matic datafeeds](https://docs.chain.link/docs/matic-addresses/)
 
+### solidity 
+- [bit shift operator >>=](https://ethereum.stackexchange.com/questions/94675/what-does-the-operator-do-in-solidity)
+
+### svg
+- [w3schools SVG Intro](https://www.w3schools.com/graphics/svg_intro.asp)
+
 # 🏗 Scaffold-ETH
 
 > everything you need to build on Ethereum! 🚀
