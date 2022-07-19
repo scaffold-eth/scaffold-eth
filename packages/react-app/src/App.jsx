@@ -45,14 +45,12 @@ function App({ mainnet, localProvider, appChainId }) {
     setShowToast(true)
   }
   let contractRef
-  let providerRef
   if (
     externalContracts[selectedChainId] &&
     externalContracts[selectedChainId].contracts &&
     externalContracts[selectedChainId].contracts.REMIX_REWARD
   ) {
     contractRef = externalContracts[selectedChainId].contracts.REMIX_REWARD
-    providerRef = externalContracts[selectedChainId].provider
   }
 
   useEffect(() => {
