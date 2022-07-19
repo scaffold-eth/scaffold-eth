@@ -8,6 +8,7 @@ import { ThemeProvider } from '@mui/material/styles'
 import { theme } from './themes/createTheme'
 import { CssBaseline } from '@mui/material'
 import { ethers } from 'ethers'
+import externalContracts from 'contracts/external_contracts'
 
 const subgraphUri = 'http://localhost:8000/subgraphs/name/scaffold-eth/your-contract'
 
@@ -16,7 +17,19 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 })
 
-const localProvider = new ethers.providers.StaticJsonRpcProvider('https://mainnet.optimism.io')
+const appChainId = 10
+let contractRef
+let providerRef
+if (
+  externalContracts[appChainId] &&
+  externalContracts[appChainId].contracts &&
+  externalContracts[appChainId].contracts.REMIX_REWARD
+) {
+  contractRef = externalContracts[appChainId].contracts.REMIX_REWARD
+  providerRef = externalContracts[appChainId].provider
+}
+
+const localProvider = new ethers.providers.StaticJsonRpcProvider(providerRef)
 const mainnet = new ethers.providers.StaticJsonRpcProvider(
   'https://mainnet.infura.io/v3/1b3241e53c8d422aab3c7c0e4101de9c',
 )
@@ -27,7 +40,7 @@ ReactDOM.render(
       <CssBaseline />
       <BrowserRouter>
         <Route path="/">
-          <App mainnet={mainnet} localProvider={localProvider} />
+          <App mainnet={mainnet} localProvider={localProvider} appChainId={appChainId} />
         </Route>
       </BrowserRouter>
     </ThemeProvider>

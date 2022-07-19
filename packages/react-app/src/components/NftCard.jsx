@@ -1,9 +1,36 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, Button, Card, CardActions, CardMedia, CardContent, Typography } from '@mui/material'
 import InfoIcon from '@mui/icons-material/Info'
+import { ethers } from 'ethers'
+import multihash from 'multihashes'
+
+export const toBase58 = contentHash => {
+  let hex = contentHash.substring(2)
+  let buf = multihash.fromHexString(hex)
+  return multihash.toB58String(buf)
+}
 
 export default function NftCard(props) {
-  const { src, event, title, txLink } = props
+  const { contract, mainnet, to, id, transactionHash, etherscan } = props
+  const [ state, setState ] = useState({
+    data: {},
+    title: '',
+    src: '',
+    txLink: ''
+  })
+  useEffect(() => {
+    (async () => {
+      let data = await contract.tokensData(ethers.BigNumber.from(id === '0x' ? '0x0' : id))
+      let toFormatted = ethers.utils.hexStripZeros(to)
+      const name = await mainnet.lookupAddress(toFormatted)
+      let title = name ? name : toFormatted
+
+      const src = 'https://remix-project.mypinata.cloud/ipfs/' + toBase58(data.hash)
+      const txLink = etherscan + transactionHash      
+
+      setState({ data, title, src, txLink })
+    })()
+  }, [])
   return (
     <>
       <Box
@@ -16,7 +43,7 @@ export default function NftCard(props) {
         maxWidth={310}
       >
         <Card variant={'outlined'} sx={{ borderRadius: 5, zIndex: 10 }}>
-          <CardMedia component={'img'} width={200} image={src} alt={'nftimage'} />
+          <CardMedia component={'img'} width={200} image={state.src} alt={'nftimage'} />
           <CardContent
             sx={{
               background:
@@ -25,10 +52,10 @@ export default function NftCard(props) {
           >
             <Typography fontWeight={700}>{'Owner'}</Typography>
             <Typography variant={'body2'} noWrap={false} fontWeight={400} color={'#333333'}>
-              {title}
+              {state.title}
             </Typography>
             <Typography variant={'caption'} fontWeight={700} color={'#333333'}>
-              {event.tokenType} {event.payload}
+              {state.data.tokenType} {state.data.payload}
             </Typography>
           </CardContent>
           <CardActions
@@ -42,7 +69,7 @@ export default function NftCard(props) {
               variant={'contained'}
               startIcon={<InfoIcon />}
               fullWidth
-              href={txLink}
+              href={state.txLink}
               target="_blank"
               rel="noreferrer"
               sx={{ background: '#81a6f7', ':hover': { background: '#1976d2', color: '#fff' } }}

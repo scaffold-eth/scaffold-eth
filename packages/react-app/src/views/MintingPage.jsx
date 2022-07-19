@@ -73,6 +73,7 @@ export default function MintingPage() {
             <a href="https://app.hop.exchange/#/send?sourceNetwork=optimism&destNetwork=ethereum&token=ETH">
               Hop Exchange
             </a>
+            Execution this transaction will cost you approximately 253,679 gas
           </Typography>
         </Box>
       </Box>

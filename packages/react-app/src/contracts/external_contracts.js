@@ -1612,14 +1612,18 @@ module.exports = {
         address: "0x5d470270e889b61c08C51784cDC73442c4554011",
         abi: remixRewardAbi
       }
-    }
+    },
+    provider: 'https://opt-mainnet.g.alchemy.com/v2/cdGnPX6sQLXv-YWkbzYAXnTVVfuL8fhb',
+    etherscan: 'https://optimistic.etherscan.io/tx/'
   },
   5: {
     contracts: {
       REMIX_REWARD: {
-        address: '0x0394B7caFf1ead4F2a207106dc5Ba571f5cfF75E',
+        address: '0xaec1a92e3177905C3C82284AD4B0c7c567874Aa3',
         abi: remixRewardAbi
       }
-    }
+    },
+    provider: 'https://eth-goerli.g.alchemy.com/v2/1fpzjlzdaT-hFeeTXFY-yzM-WujQLfEl',
+    etherscan: 'https://goerli.etherscan.io/tx/'
   }
 };

@@ -13,7 +13,7 @@ import externalContracts from 'contracts/external_contracts'
 import { switchToOptimism } from 'helpers/SwitchToOptimism'
 const { ethers } = require('ethers')
 
-function App({ mainnet, localProvider }) {
+function App({ mainnet, localProvider, appChainId }) {
   const [loaded, setLoaded] = useState(false)
   // const [localProvider, setLocalProvider] = useState(null)
   const [connectedAddress, setConnectedAddress] = useState()
@@ -22,7 +22,7 @@ function App({ mainnet, localProvider }) {
   const [address, setAddress] = useState('')
   const [tabValue, setTabValue] = useState(0)
   const [showToast, setShowToast] = useState(false)
-  const [selectedChainId] = useState(10)
+  const [selectedChainId] = useState(appChainId)
   const contractConfig = { deployedContracts: {}, externalContracts: externalContracts || {} }
 
   const targetNetwork = NETWORKS['optimism']
@@ -124,8 +124,7 @@ function App({ mainnet, localProvider }) {
 
   useEffect(() => {
     const run = async () => {
-      // const localProvider = new ethers.providers.StaticJsonRpcProvider('https://mainnet.optimism.io')
-
+      
       await localProvider.ready
 
       // const mainnet = new ethers.providers.StaticJsonRpcProvider(
@@ -171,6 +170,7 @@ function App({ mainnet, localProvider }) {
               // @ts-ignore
               tabValue={tabValue}
               setTabValue={setTabValue}
+              injectedProvider={injectedProvider}
             />
           )}
           <Toast showToast={showToast} closeToast={closeToast} snackBarAction={snackBarAction} />

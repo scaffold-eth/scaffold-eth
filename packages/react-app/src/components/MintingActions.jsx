@@ -16,6 +16,7 @@ const WalletAddressTextField = styled(TextField)(({ theme }) => ({
 }))
 
 export default function MintingActions({ contractRef }) {
+  const [message, setMessage] = useState('')
   /*
    * this mint a user badge from the current selected account
    * this function throws an error
@@ -23,7 +24,7 @@ export default function MintingActions({ contractRef }) {
    *  - if the current user doesn't have anymore a slot for minting a badge
    */
   // @ts-ignore
-  const { injectedProvider } = useContext(BadgeContext)
+  const { injectedProvider, userSigner } = useContext(BadgeContext)
 
   const mintBadge = async receiverAddress => {
     if (injectedProvider === undefined) {
@@ -34,11 +35,18 @@ export default function MintingActions({ contractRef }) {
       // console.log('the form must have an input with a valid account hash!')
       return
     }
-    let contract = new ethers.Contract(contractRef.address, contractRef.abi, injectedProvider)
+    let contract = new ethers.Contract(contractRef.address, contractRef.abi, userSigner)
     // console.log({ contract })
-    let mintTx = await contract.publicMint(receiverAddress)
-    // console.log({ mintTx })
-    await mintTx.wait()
+    try {
+      setMessage('Please approve the transaction and wait for the validation')
+      let mintTx = await contract.publicMint(receiverAddress)
+      // console.log({ mintTx })
+      await mintTx.wait()
+      setMessage('Transaction validated')
+    } catch (e) {
+      setMessage('error while sending the transaction. ' + e.message)
+    }   
+    setTimeout(() => setMessage(''), 10000)
   }
   const [walletAddress, setWalletAddress] = useState('')
 
@@ -59,7 +67,7 @@ export default function MintingActions({ contractRef }) {
         <Box display={'flex'} flexDirection={'column'} sx={{ background: 'white' }} width={280} height={180}>
           <AllowedMintCount />
           <Typography variant="subtitle1" color={'#0c0c0c'} alignItems={'flex-end'} justifyContent={'flex-end'}>
-            BADGES REMAINING TO <br /> MINT ON YOUR ACCT
+            BADGES REMAINING TO <br /> MINT ON YOUR ACCOUNT
           </Typography>
         </Box>
         <Box pt={2}>
@@ -83,8 +91,9 @@ export default function MintingActions({ contractRef }) {
         >
           <Typography variant={'subtitle1'} color={'white'} fontWeight={600}>
             Mint Badge
-          </Typography>
+          </Typography>          
         </Button>
+        <span>{message}</span>
       </Box>
     </>
   )
