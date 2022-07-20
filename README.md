@@ -10,7 +10,7 @@ git clone https://github.com/austintgriffith/scaffold-eth.git simple-nextjs-nft-
 ```
 ```
 cd simple-nextjs-nft-example
-git checkout scaffold-Nextjs-simple-NFT
+git checkout scaffold-nextjs-simple-NFT
 yarn install
 yarn start
 ```
