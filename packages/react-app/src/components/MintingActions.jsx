@@ -45,7 +45,7 @@ export default function MintingActions({ contractRef }) {
       setMessage('Transaction validated')
     } catch (e) {
       setMessage('error while sending the transaction. ' + e.message)
-    }   
+    }
     setTimeout(() => setMessage(''), 10000)
   }
   const [walletAddress, setWalletAddress] = useState('')
@@ -91,7 +91,7 @@ export default function MintingActions({ contractRef }) {
         >
           <Typography variant={'subtitle1'} color={'white'} fontWeight={600}>
             Mint Badge
-          </Typography>          
+          </Typography>
         </Button>
         <span>{message}</span>
       </Box>
