@@ -3289,10 +3289,10 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
-"@openzeppelin/contracts@^4.4.2":
-  version "4.4.2"
-  resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-4.4.2.tgz#4e889c9c66e736f7de189a53f8ba5b8d789425c2"
-  integrity sha512-NyJV7sJgoGYqbtNUWgzzOGW4T6rR19FmX1IJgXGdapGPWsuMelGJn9h03nos0iqfforCbCB0iYIR0MtIuIFLLw==
+"@openzeppelin/contracts@^4.7.1":
+  version "4.7.1"
+  resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-4.7.1.tgz#33d0a857b76b18d313e6bb6ed28cdaf367e90cfe"
+  integrity sha512-UXmAjKARsXORHlHZu5GCD7ZbRKm6nU8UHnbuT/QJJa2JEOEcbvV/X8w/sUk62Sl9VZuuljM1akrZLyAtzUgsxw==
 
 "@pmmmwh/react-refresh-webpack-plugin@0.4.2":
   version "0.4.2"
@@ -11829,9 +11829,10 @@ glogg@^1.0.0:
   dependencies:
     sparkles "^1.0.0"
 
-"gluegun@git+https://github.com/edgeandnode/gluegun.git#v4.3.1-pin-colors-dep":
+"gluegun@https://github.com/edgeandnode/gluegun#v4.3.1-pin-colors-dep":
   version "4.3.1"
-  resolved "git+https://github.com/edgeandnode/gluegun.git#b34b9003d7bf556836da41b57ef36eb21570620a"
+  uid b34b9003d7bf556836da41b57ef36eb21570620a
+  resolved "https://github.com/edgeandnode/gluegun#b34b9003d7bf556836da41b57ef36eb21570620a"
   dependencies:
     apisauce "^1.0.1"
     app-module-path "^2.2.0"

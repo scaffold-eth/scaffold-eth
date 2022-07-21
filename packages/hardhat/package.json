@@ -13,7 +13,7 @@
   "dependencies": {
     "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers",
     "@nomiclabs/hardhat-waffle": "^2.0.0",
-    "@openzeppelin/contracts": "^4.4.2",
+    "@openzeppelin/contracts": "^4.7.1",
     "@tenderly/hardhat-tenderly": "^1.0.10",
     "@nomiclabs/hardhat-etherscan": "^3.0.1",
     "chai": "^4.2.0",
