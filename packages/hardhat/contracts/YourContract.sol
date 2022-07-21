@@ -8,7 +8,13 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import {ISplitMain} from "./ISplitMain.sol";
 
 contract YourContract is Ownable {
+  ISplitMain constant splitMain =
+    ISplitMain(0x2ed6c4B5dA6378c7897AC67Ba9e43102Feb694EE);
 
+
+  /**
+    Project state 
+   */
   struct Project {
     string githubURL;
     address payable receiveMoneyAddress;
@@ -31,8 +37,6 @@ contract YourContract is Ownable {
     uint32 communityPoolPercentage,
     address payable communityPoolAddress
   ) public onlyOwner {
-    ISplitMain splitMain = ISplitMain(address(0x2ed6c4B5dA6378c7897AC67Ba9e43102Feb694EE)); // Ropsten
-
     // intialize the project
     Project storage project = githubURLToProject[githubURL];
     project.githubURL = githubURL;
@@ -46,7 +50,7 @@ contract YourContract is Ownable {
       string memory splitGithubURL = splitGithubURLs[i];
       Project storage splitProject = githubURLToProject[splitGithubURL];
       if (!splitProject.init) {
-        initializeGithubURL(splitGithubURL, splitMain);
+        initializeGithubURL(splitGithubURL);
       }
       splitAddresses[i] = splitProject.splitProxyAddress;
       newPercentAllocations[i] = percentAllocations[i] * 1e4;
@@ -71,12 +75,8 @@ contract YourContract is Ownable {
     for (uint i = 0; i < splitAddresses.length; i++) {
       for (uint j = i + 1; j < splitAddresses.length; j++) {
         if (splitAddresses[i] > splitAddresses[j]) {
-          address temp = splitAddresses[i];
-          splitAddresses[i] = splitAddresses[j];
-          splitAddresses[j] = temp;
-          uint32 temp2 = newPercentAllocations[i];
-          newPercentAllocations[i] = newPercentAllocations[j];
-          newPercentAllocations[j] = temp2;
+          (splitAddresses[i], splitAddresses[j]) = (splitAddresses[j], splitAddresses[i]);
+          (newPercentAllocations[i], newPercentAllocations[j]) = (newPercentAllocations[j], newPercentAllocations[i]);
         }
       }
     }
@@ -84,20 +84,39 @@ contract YourContract is Ownable {
     project.splitProxyAddress = payable(splitMain.createSplit(splitAddresses, newPercentAllocations, 0, msg.sender));
   }
 
-  function initializeGithubURL(string memory githubURL, ISplitMain splitMain) public {
+  function initializeGithubURL(string memory githubURL) internal {    
     Project storage project = githubURLToProject[githubURL];
     project.init = true;
     project.githubURL = githubURL;
     
-    uint32[] memory initialPercentage = new uint32[](1);
-    initialPercentage[0] = (1e6);
+    uint32[] memory initialPercentage = new uint32[](2);
+    initialPercentage[0] = uint32(1e6-1);
+    initialPercentage[1] = uint32(1);
     
-    address[] memory initialAddresses = new address[](1);
-    initialAddresses[0] = payable(0x0);
+    address[] memory initialAddresses = new address[](2);
+    if (address(0xEf4D00efF106727524453A48680EA968498AFF4c) > address(this)) {
+      initialAddresses[0] = address(this);
+      initialAddresses[1] = 0xEf4D00efF106727524453A48680EA968498AFF4c;
+    } else {
+      initialAddresses[1] = address(this);
+      initialAddresses[0] = 0xEf4D00efF106727524453A48680EA968498AFF4c;
+    }
+    
+    // create split with distributor fee of 0.5%
+    project.splitProxyAddress = payable(splitMain.createSplit(initialAddresses, initialPercentage, 500, address(this)));
 
-    project.splitProxyAddress = payable(splitMain.createSplit(initialAddresses, initialPercentage, 0, payable(this)));
-
-    initialAddresses[0] = (project.splitProxyAddress);
+    // reroute the payments back to the split
+    if (project.splitProxyAddress > address(this)) {
+      initialAddresses[0] = address(this);
+      initialPercentage[0] = uint32(1);
+      initialAddresses[1] = project.splitProxyAddress;
+      initialPercentage[1] = uint32(1e6-1);
+    } else {
+      initialAddresses[1] = address(this);
+      initialPercentage[1] = uint32(1);
+      initialAddresses[0] = project.splitProxyAddress;
+      initialPercentage[0] = uint32(1e6-1);
+    }
 
     splitMain.updateSplit(project.splitProxyAddress, initialAddresses, initialPercentage, 0);
   }
