@@ -124,7 +124,6 @@ function App({ mainnet, localProvider, appChainId }) {
 
   useEffect(() => {
     const run = async () => {
-      
       await localProvider.ready
 
       // const mainnet = new ethers.providers.StaticJsonRpcProvider(
