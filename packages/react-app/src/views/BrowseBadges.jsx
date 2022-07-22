@@ -17,6 +17,7 @@ import { Paper } from '@mui/material'
 import { FormControl } from '@mui/material'
 import { useContext } from 'react'
 import { BadgeContext } from 'contexts/BadgeContext'
+import BadgesPaginatedSection from 'components/BadgesPaginatedSection'
 
 export const toHex = ipfsHash => {
   let buf = multihash.fromB58String(ipfsHash)
@@ -62,7 +63,6 @@ export default function BrowseBadges() {
 
   const run = useCallback(async () => {
     if (address) {
-      console.log('address o wa!')
       return setEventBadges([])
     }
     let badges = await getAllRewards(contractRef.address, providerRef)
@@ -234,32 +234,7 @@ export default function BrowseBadges() {
               'linear-gradient(90deg, #f6e8fc, #f1e6fb, #ede5fb, #e8e4fa, #e3e2f9, #dee1f7, #d9dff6, #d4def4)',
           }}
         >
-          {eventBadges && eventBadges.length > 0
-            ? eventBadges.map(event => {
-                let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
-                return (
-                  <Grid
-                    item
-                    mt={-12}
-                    mb={15}
-                    ml={'auto'}
-                    mr={'auto'}
-                    key={`${event.to}-${event.id}`}
-                    alignItems={'center'}
-                    justifyContent={'center'}
-                  >
-                    <NftCard
-                      etherscan={etherscanRef}
-                      to={event.to}
-                      id={event.id}
-                      transactionHash={event.transactionHash}
-                      contract={contract}
-                      mainnet={mainnet}
-                    />
-                  </Grid>
-                )
-              })
-            : null}
+          <BadgesPaginatedSection eventBadges={eventBadges} />
         </Grid>
       </Box>
     </>
