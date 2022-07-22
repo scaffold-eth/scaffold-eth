@@ -1,34 +1,41 @@
 pragma solidity >=0.8.0 <0.9.0;
 //SPDX-License-Identifier: MIT
 
-import "hardhat/console.sol";
 import "@openzeppelin/contracts/access/Ownable.sol"; 
 // https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol
 
-import {ISplitMain} from "./ISplitMain.sol";
+import {ISplitMain} from './interfaces/ISplitMain.sol';
 
 contract YourContract is Ownable {
-  ISplitMain constant splitMain =
-    ISplitMain(0x2ed6c4B5dA6378c7897AC67Ba9e43102Feb694EE);
-
-
   /**
-    Project state 
+   * CONTRACT STATE
    */
   struct Project {
     string githubURL;
     address payable receiveMoneyAddress;
     address payable splitProxyAddress;
-    bool init;
+    bool splitAdded;
   }
-
   mapping(string => Project) public githubURLToProject;
   uint32 percentKeep;
+  uint32 percentDistributorFee;
 
-  constructor(uint32 _percentKeep) {
+  ISplitMain splitMain;
+
+  // @notice constant to scale uints into percentages (1e6 == 100%)
+  // from 0xSplit contract
+  uint32 public constant PERCENTAGE_SCALE = 1e6;
+
+  // inputted percents must use PERCENTAGE_SCALE
+  constructor(uint32 _percentKeep, uint32 _percentDistributorFee, address _splitMainAddress) {
     percentKeep = _percentKeep;
+    percentDistributorFee = _percentDistributorFee;
+    splitMain = ISplitMain(_splitMainAddress);
   }
 
+  /**
+   * CONTRACT METHODS
+   */
   function addProjectToSystem(
     string memory githubURL, 
     address payable receiveMoneyAddress,
@@ -37,39 +44,50 @@ contract YourContract is Ownable {
     uint32 communityPoolPercentage,
     address payable communityPoolAddress
   ) public onlyOwner {
-    // intialize the project
+
+    // intialize the project object
     Project storage project = githubURLToProject[githubURL];
     project.githubURL = githubURL;
     project.receiveMoneyAddress = receiveMoneyAddress;
-    project.init = true;
 
-    // convert githubURLs to addresses + fix percentages
-    address[] memory splitAddresses = new address[](splitGithubURLs.length+2);
-    uint32[] memory newPercentAllocations = new uint32[](splitGithubURLs.length+2);
+    // stores addresses of GitHub repos, address of team, and address of community pool
+    address[] memory splitAddresses;
+    uint32[] memory newPercentAllocations;
+    if (communityPoolPercentage > 0) {
+      // need an extra entry for community pool
+      splitAddresses = new address[](splitGithubURLs.length+2);
+      newPercentAllocations = new uint32[](splitGithubURLs.length+2);
+
+      splitAddresses[splitGithubURLs.length+1] = communityPoolAddress;
+      newPercentAllocations[splitGithubURLs.length+1] = communityPoolPercentage;
+    } else {
+      splitAddresses = new address[](splitGithubURLs.length+1);
+      newPercentAllocations = new uint32[](splitGithubURLs.length+1);
+    }
+
+    // convert GitHub URLs to addresses
     for (uint i = 0; i < splitGithubURLs.length; i++) {
       string memory splitGithubURL = splitGithubURLs[i];
       Project storage splitProject = githubURLToProject[splitGithubURL];
-      if (!splitProject.init) {
-        initializeGithubURL(splitGithubURL);
+      if (!splitProject.splitAdded) {
+        initializePlaceholderSplit(splitGithubURL);
       }
+      require(splitProject.splitAdded, "split not added");
       splitAddresses[i] = splitProject.splitProxyAddress;
-      newPercentAllocations[i] = percentAllocations[i] * 1e4;
+      newPercentAllocations[i] = percentAllocations[i];
     }
-
-    // add community pool
-    splitAddresses[splitGithubURLs.length] = (communityPoolAddress);
-    newPercentAllocations[splitGithubURLs.length] = (communityPoolPercentage * 1e4);
 
     // add self + kept percentage
-    splitAddresses[splitGithubURLs.length+1] = (project.receiveMoneyAddress);
-    newPercentAllocations[splitGithubURLs.length+1] = (percentKeep * 1e4);
+    splitAddresses[splitGithubURLs.length] = project.receiveMoneyAddress;
+    newPercentAllocations[splitGithubURLs.length] = percentKeep;
 
-    // assert sum of percentAllocations is 1e6
-    uint sum = 0;
+    // assert sum of percentAllocations is PERCENTAGE_SCALE
+    uint32 sum = 0;
     for (uint i = 0; i < newPercentAllocations.length; i++) {
+      require(newPercentAllocations[i] > 0, "percentAllocations must be greater than 0");
       sum += newPercentAllocations[i];
     }
-    require(sum == 1e6, "sum of percentAllocations is not 1e6");
+    require(sum == PERCENTAGE_SCALE, "sum of percentAllocations is not 1e6");
 
     // sort addresses and percent allocations
     for (uint i = 0; i < splitAddresses.length; i++) {
@@ -81,47 +99,85 @@ contract YourContract is Ownable {
       }
     }
 
-    project.splitProxyAddress = payable(splitMain.createSplit(splitAddresses, newPercentAllocations, 0, msg.sender));
+    // create or update split proxy for this GitHub
+    if (!project.splitAdded) {
+      project.splitProxyAddress = payable(splitMain.createSplit(
+        splitAddresses, 
+        newPercentAllocations, 
+        percentDistributorFee, 
+        address(this)
+      ));
+      project.splitAdded = true;
+    } else {
+      splitMain.updateSplit(
+        project.splitProxyAddress, 
+        splitAddresses, 
+        newPercentAllocations, 
+        percentDistributorFee
+      );
+    }
   }
 
-  function initializeGithubURL(string memory githubURL) internal {    
+  function initializePlaceholderSplit(string memory githubURL) internal {   
     Project storage project = githubURLToProject[githubURL];
-    project.init = true;
     project.githubURL = githubURL;
+
+    require(!project.splitAdded, "placeholder split already added");
     
-    uint32[] memory initialPercentage = new uint32[](2);
-    initialPercentage[0] = uint32(1e6-1);
-    initialPercentage[1] = uint32(1);
+    // set up a dummy split to start out so we can get the address of the split
+    // 0xSplits requires splits are between 2 or more addresses
+    uint32[] memory placeholderPercentage = new uint32[](2);
+    placeholderPercentage[0] = PERCENTAGE_SCALE-1;
+    placeholderPercentage[1] = uint32(1);
     
-    address[] memory initialAddresses = new address[](2);
-    if (address(0xEf4D00efF106727524453A48680EA968498AFF4c) > address(this)) {
-      initialAddresses[0] = address(this);
-      initialAddresses[1] = 0xEf4D00efF106727524453A48680EA968498AFF4c;
+    address[] memory placeholderAddresses = new address[](2);
+    if (owner() > address(this)) {
+      placeholderAddresses[0] = address(this);
+      placeholderAddresses[1] = owner();
     } else {
-      initialAddresses[1] = address(this);
-      initialAddresses[0] = 0xEf4D00efF106727524453A48680EA968498AFF4c;
+      placeholderAddresses[1] = address(this);
+      placeholderAddresses[0] = owner();
     }
     
-    // create split with distributor fee of 0.5%
-    project.splitProxyAddress = payable(splitMain.createSplit(initialAddresses, initialPercentage, 500, address(this)));
+    // create initial split
+    project.splitProxyAddress = payable(splitMain.createSplit(
+      placeholderAddresses, 
+      placeholderPercentage, 
+      percentDistributorFee, 
+      address(this)
+    ));
 
-    // reroute the payments back to the split
-    if (project.splitProxyAddress > address(this)) {
-      initialAddresses[0] = address(this);
-      initialPercentage[0] = uint32(1);
-      initialAddresses[1] = project.splitProxyAddress;
-      initialPercentage[1] = uint32(1e6-1);
+    // reroute all payments back to the split
+    if (project.splitProxyAddress > owner()) {
+      placeholderAddresses[0] = owner();
+      placeholderPercentage[0] = uint32(1);
+      placeholderAddresses[1] = project.splitProxyAddress;
+      placeholderPercentage[1] = PERCENTAGE_SCALE-1;
     } else {
-      initialAddresses[1] = address(this);
-      initialPercentage[1] = uint32(1);
-      initialAddresses[0] = project.splitProxyAddress;
-      initialPercentage[0] = uint32(1e6-1);
+      placeholderAddresses[1] = owner();
+      placeholderPercentage[1] = uint32(1);
+      placeholderAddresses[0] = project.splitProxyAddress;
+      placeholderPercentage[0] = PERCENTAGE_SCALE-1;
     }
 
-    splitMain.updateSplit(project.splitProxyAddress, initialAddresses, initialPercentage, 0);
+    splitMain.updateSplit(
+      project.splitProxyAddress, 
+      placeholderAddresses, 
+      placeholderPercentage, 
+      percentDistributorFee
+    );
+    project.splitAdded = true;
   }
 
-  function getDonationAddress(string memory githubURL) external view returns (address payable) {
+  // if 0.5% is too little or too much for the system to work, owner can change it
+  function changePercentageDistributorFee(uint32 _newPercentDistributorFee) public onlyOwner {
+    percentDistributorFee = _newPercentDistributorFee;
+  }
+
+  /**
+   * CONTRACT GETTERS
+   */
+  function getSplitAddress(string memory githubURL) external view returns (address payable) {
     Project storage project = githubURLToProject[githubURL];
     return project.splitProxyAddress;
   }
