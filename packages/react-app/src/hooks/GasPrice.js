@@ -13,7 +13,7 @@ export default function useGasPrice(targetNetwork, speed) {
       axios
         .get("https://api.etherscan.io/api?module=gastracker&action=gasoracle&apikey=" + ETHERSCAN_KEY)
         .then(response => {
-          const newGasPrice = ethers.utils.parseUnits(response.data.result["SafeGasPrice"], "gwei")
+          const newGasPrice = ethers.utils.parseUnits(response.data.result["ProposeGasPrice"], "gwei")
           if (newGasPrice !== gasPrice) {
             setGasPrice(newGasPrice);
           }
