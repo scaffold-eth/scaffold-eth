@@ -16,6 +16,9 @@ used to host metadata
 ### svg
 - [w3schools SVG Intro](https://www.w3schools.com/graphics/svg_intro.asp)
 
+##types
+- [string concat](https://dev.to/hannudaniel/concatenate-two-strings-on-the-blockchain-using-solidity-smart-contracts-new-feature-in-v0812-549g)
+
 # 🏗 Scaffold-ETH
 
 > everything you need to build on Ethereum! 🚀
