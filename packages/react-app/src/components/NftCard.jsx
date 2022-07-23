@@ -25,7 +25,7 @@ export default function NftCard(props) {
       const name = await mainnet.lookupAddress(toFormatted)
       let title = name ? name : toFormatted
 
-      const src = 'https://ipfs2.ethdevops.io/ipfs/?' + toBase58(data.hash)
+      const src = 'https://ipfs2.ethdevops.io/ipfs/' + toBase58(data.hash)
       const txLink = etherscan + transactionHash
 
       setState({ data, title, src, txLink })

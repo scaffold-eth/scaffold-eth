@@ -13,9 +13,6 @@ import { BadgeContext } from 'contexts/BadgeContext'
 export default function BadgesPaginatedSection({ eventBadges, etherscanRef }) {
   const { contractRef, localProvider, mainnet } = useContext(BadgeContext)
   const [pageNumber, setPageNumber] = useState(1)
-  const [totalItemNumber] = useState(Math.ceil(eventBadges.length / 10))
-  const [previousFlag, flipPreviousFlag] = useState(true)
-  const [nextFlag, flipNextFlag] = useState(false)
 
   function getPaginationData(pageSize) {
     const startIndex = pageNumber * pageSize - pageSize
@@ -25,37 +22,20 @@ export default function BadgesPaginatedSection({ eventBadges, etherscanRef }) {
   }
 
   function goToNextPage() {
-    if (pageNumber !== totalItemNumber) setPageNumber(previous => previous + 1)
-    // pageNumber <= eventBadges.length && pageNumber > 1 ? flipNextFlag(false) : flipNextFlag(true)
-    console.log({ pageNumber })
+    setPageNumber(previous => previous + 1)
   }
 
   function goToPreviousPage() {
-    // setPageNumber(previousPageNumber => {
-    //   console.log('go to previous')
-    //   console.log({ previousPageNumber })
-    //   return previousPageNumber - 1
-    // })
-    // console.log({ pageNumber })
-    // pageNumber === 1 ? flipPreviousFlag(false) : flipPreviousFlag(true)
-    if (pageNumber !== 1) setPageNumber(pageNumber - 1)
-    console.log({ pageNumber })
-    flipPreviousFlag(true)
-  }
-
-  function goToClickedPageNumber(evt) {
-    // @ts-ignore
-    const currentPageNumber = Number(evt.target.textContent)
-    setPageNumber(currentPageNumber)
+    setPageNumber(previous => previous - 1)
   }
   return (
     <>
       <Box mb={15} mt={10} display={'flex'} justifyContent={'space-between'}>
-        <Button variant={'contained'} disabled={previousFlag} onClick={goToPreviousPage}>
+        <Button variant={'contained'} disabled={pageNumber === 1} onClick={goToPreviousPage}>
           <ArrowBackIosNewRoundedIcon />
           <Typography variant={'button'}>Previous</Typography>
         </Button>
-        <Button variant={'contained'} onClick={goToNextPage}>
+        <Button variant={'contained'} onClick={goToNextPage} disabled={!eventBadges.length}>
           <Typography variant={'button'}>Next</Typography>
           <ArrowForwardIosRoundedIcon />
         </Button>
