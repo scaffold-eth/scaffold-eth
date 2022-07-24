@@ -8,7 +8,7 @@ import Box from '@mui/material/Box'
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip'
 import { styled } from '@mui/material/styles'
 import { BadgeContext } from 'contexts/BadgeContext'
-import { getCurrentChainId } from 'helpers/SwitchToOptimism'
+import { getCurrentChainId, switchToGoerli } from 'helpers/SwitchToOptimism'
 
 /** 
   ~ What it does? ~
@@ -60,9 +60,10 @@ const MetaMaskTooltip = styled(({ className, ...props }) => <Tooltip {...props} 
 
 // @ts-ignore
 export default function Account({ minimized, disableOptimismButton, doOptimismSwitch, disableButton, enableButton }) {
-  const { localProvider, mainnet, loadWeb3Modal, price, targetNetwork, connectedAddress } = useContext(BadgeContext)
+  const { localProvider, mainnet, loadWeb3Modal, loadWeb3ModalGoerli, price, targetNetwork, connectedAddress } =
+    useContext(BadgeContext)
   let accountButtonInfo
-  accountButtonInfo = { name: 'Connect to Mint', action: loadWeb3Modal }
+  accountButtonInfo = { name: 'Connect to Mint', action: loadWeb3Modal, goreliAction: loadWeb3ModalGoerli }
   const accountButtonConnected = 'Connected'
   const [netInfo, setNetInfo] = useState([])
   console.log({ connectedAddress })
@@ -107,7 +108,9 @@ export default function Account({ minimized, disableOptimismButton, doOptimismSw
             onClick={async () => {
               accountButtonInfo.action()
               await doOptimismSwitch()
-              setNetInfo(await getCurrentChainId())
+              const chainInfo = await getCurrentChainId()
+              console.log({ chainInfo })
+              setNetInfo(chainInfo)
             }}
             size={'large'}
           >
@@ -123,17 +126,32 @@ export default function Account({ minimized, disableOptimismButton, doOptimismSw
 
       {netInfo && netInfo.length > 0 && connectedAddress && connectedAddress.length > 1
         ? netInfo.map(n => (
-            <Box
-              key={n.chainId}
-              component={'span'}
-              fontSize={16}
-              pt={10}
-              ml={5}
-              fontWeight={600}
-              color={'#ff0420'}
-              alignItems={'center'}
-              justifyContent={'center'}
-            >{`You are currently connected to ${n.name}`}</Box>
+            <>
+              <Box
+                key={n.chainId}
+                component={'span'}
+                fontSize={16}
+                pt={10}
+                ml={5}
+                fontWeight={600}
+                color={'#ff0420'}
+                alignItems={'center'}
+                justifyContent={'center'}
+              >{`You are currently connected to ${n.name}`}</Box>{' '}
+              or
+              <Button
+                variant={'text'}
+                onClick={async () => {
+                  accountButtonInfo.goreliAction()
+                  await switchToGoerli()
+                  const chainInfo = await getCurrentChainId()
+                  console.log({ chainInfo })
+                  setNetInfo(chainInfo)
+                }}
+              >
+                Switch to Goerli
+              </Button>
+            </>
           ))
         : null}
     </Box>

@@ -1,3 +1,5 @@
+import external_contracts from 'contracts/external_contracts'
+
 const { ethers } = require('ethers')
 
 export async function switchToOptimism() {
@@ -8,9 +10,11 @@ export async function switchToOptimism() {
       method: 'wallet_switchEthereumChain',
       params: [{ chainId: correctHexChainId }],
     })
+    console.log(`Switch Network successful to chainId ${correctHexChainId}`)
   } catch (switchError) {
     if (switchError.code === 4902) {
       try {
+        console.log(`Retrying because of error ${switchError.code}`)
         await window.ethereum.request({
           method: 'wallet_addEthereumChain',
           params: [
@@ -18,6 +22,42 @@ export async function switchToOptimism() {
               chainId: correctHexChainId,
               chainName: 'Optimism',
               rpcUrls: ['https://mainnet.optimism.io', 'https://optimism-mainnet.public.blastapi.io'],
+            },
+          ],
+        })
+        await window.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: correctHexChainId }],
+        })
+      } catch (addError) {}
+    }
+  }
+}
+
+async function switchEthereumChain(correctHexChainId) {
+  await window.ethereum.request({
+    method: 'wallet_switchEthereumChain',
+    params: [{ chainId: correctHexChainId }],
+  })
+}
+
+export async function switchToGoerli() {
+  const chainId = 0x5
+  const correctHexChainId = ethers.utils.hexValue(chainId)
+  try {
+    await switchEthereumChain(correctHexChainId)
+    console.log(`Switch Network successful to chainId ${correctHexChainId}`)
+  } catch (switchError) {
+    if (switchError.code === 4902) {
+      console.log(`Retrying because of error ${switchError.code}`)
+      try {
+        await window.ethereum.request({
+          method: 'wallet_addEthereumChain',
+          params: [
+            {
+              chainId: correctHexChainId,
+              chainName: 'Görli',
+              rpcUrls: ['https://rpc.goerli.mudit.blog', 'https://rpc.ankr.com/eth_goerli'],
             },
           ],
         })

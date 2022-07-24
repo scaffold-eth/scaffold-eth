@@ -22,7 +22,7 @@ function App({ mainnet, localProvider, appChainId }) {
   const [address, setAddress] = useState('')
   const [tabValue, setTabValue] = useState(0)
   const [showToast, setShowToast] = useState(false)
-  const [selectedChainId] = useState(appChainId)
+  const [selectedChainId, setSelectedChainId] = useState(appChainId)
   const contractConfig = { deployedContracts: {}, externalContracts: externalContracts || {} }
 
   const targetNetwork = NETWORKS['optimism']
@@ -114,13 +114,60 @@ function App({ mainnet, localProvider, appChainId }) {
     })
 
     console.log({ injectedProvider })
-    setTabValue(1)
+    setTabValue(prev => prev)
+    // eslint-disable-next-line
+  }, [setInjectedProvider])
+
+  const loadWeb3ModalGoerli = useCallback(async () => {
+    if (typeof window.ethereum === 'undefined') {
+      // console.log('MetaMask is not installed!')
+      displayToast()
+      // metamask not installed
+      return
+    }
+    const provider = window.ethereum
+    // @ts-ignore
+    setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
+
+    provider.on('chainChanged', chainId => {
+      console.log(`chain changed to ${chainId}! updating providers`)
+      // @ts-ignore
+      setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
+    })
+
+    provider.on('accountsChanged', () => {
+      console.log(`account changed!`)
+      // @ts-ignore
+      setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
+    })
+
+    // Subscribe to session disconnection
+    provider.on('disconnect', (code, reason) => {
+      console.log(code, reason)
+      logoutOfWeb3Modal()
+    })
+
+    console.log({ injectedProvider })
+    setTabValue(prev => prev)
     // eslint-disable-next-line
   }, [setInjectedProvider])
 
   /* END - SETUP METAMASK */
 
   /* SETUP MAINNET & OPTIMISM provider */
+
+  // @ts-ignore
+  // useEffect(() => {
+  //   window.ethereum.on('chainChanged', async chainId => {
+  //     if (chainId === 5 || chainId === '5') {
+  //       await loadWeb3ModalGoerli()
+  //     }
+  //   })
+
+  //   return () => {
+  //     window.ethereum.removeListener('chainChanged', () => {})
+  //   }
+  // }, [loadWeb3ModalGoerli])
 
   useEffect(() => {
     const run = async () => {
@@ -153,6 +200,7 @@ function App({ mainnet, localProvider, appChainId }) {
     price,
     targetNetwork,
     loadWeb3Modal,
+    loadWeb3ModalGoerli,
     logoutOfWeb3Modal,
     userSigner,
   }

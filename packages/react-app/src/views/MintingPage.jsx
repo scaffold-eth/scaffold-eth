@@ -1,27 +1,28 @@
-// @ts-nocheck
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import MintingPageCard from '../components/MintingPageCard'
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import MintingActions from 'components/MintingActions'
 import Account from 'components/Account'
 import { BadgeContext } from 'contexts/BadgeContext'
 import { switchToOptimism } from 'helpers/SwitchToOptimism'
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
+import { ethers } from 'ethers'
+import external_contracts from 'contracts/external_contracts'
 
 export default function MintingPage() {
+  // @ts-ignore
   const { contractRef, userSigner } = useContext(BadgeContext)
-
   const [enableButton, disableButton] = useState(false)
+  const [goerliProvider] = useState(new ethers.providers.JsonRpcProvider(external_contracts['5'].provider))
+
   const theme = useTheme()
   const mobile400 = useMediaQuery(theme.breakpoints.between('sm', 'md'))
   const mobile240 = useMediaQuery(theme.breakpoints.between('xs', 'sm'))
   const mobile900 = useMediaQuery('(min-width:900px)')
   const mobileResponsiveMatch = useMediaQuery('(min-width:600px)')
 
-  // console.log({ mobileResponsiveMatch, now: new Date() })
-  // console.log({ mobile400, mobile240, mobile900 })
   async function doOptimismSwitch() {
     try {
       disableButton(true)
@@ -30,6 +31,21 @@ export default function MintingPage() {
       console.log({ error })
     }
   }
+
+  // const switchNet = chainId => {
+  //   if (chainId === '5') {
+  //     console.log('goerli test net set, provider set')
+  //     // @ts-ignore
+  //     console.log('injected provider set with goerli')
+  //   }
+  // }
+
+  // useEffect(() => {
+  //   window.ethereum.on('chainChanged', switchNet)
+  //   return () => {
+  //     window.ethereum.removeListener('chainChanged', switchNet)
+  //   }
+  // }, [])
 
   return (
     <>
