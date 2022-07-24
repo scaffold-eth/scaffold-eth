@@ -4,15 +4,29 @@ import { Link } from "react-router-dom";
 import { useAccount, useConnect, useEnsName } from "wagmi";
 import { InjectedConnector } from "wagmi/connectors/injected";
 
+// Testing WAGMI hooks
 const Profile = () => {
   const { address, isConnected } = useAccount();
   const { data: ensName } = useEnsName({ address });
-  const { connect } = useConnect({
+  const { connect, connectors, error, isLoading, pendingConnector } = useConnect({
     connector: new InjectedConnector(),
   });
 
-  if (isConnected) return <div>Connected to {ensName ?? address}</div>;
-  return <button onClick={() => connect()}>Connect Wallet</button>;
+  if (!isConnected) <button onClick={() => connect()}>Connect Wallet</button>;
+
+  return (
+    <div>
+      {connectors.map(connector => (
+        <button disabled={!connector.ready} key={connector.id} onClick={() => connect({ connector })}>
+          {connector.name}
+          {!connector.ready && " (unsupported)"}
+          {isLoading && connector.id === pendingConnector?.id && " (connecting)"}
+        </button>
+      ))}
+      <div>Connected to {ensName ?? address}</div>
+      {error && <div>{error.message}</div>}
+    </div>
+  );
 };
 
 /**
