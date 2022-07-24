@@ -36,14 +36,14 @@ const blockExplorerLink = (address, blockExplorer) => `${blockExplorer || "https
 const Address = props => {
   const { currentTheme } = useThemeSwitcher();
   const address = props.address;
-  const { data } = useEnsName({ address: address });
-  console.log("ENS", data);
+  const { data: ensName, isError, isLoading } = useEnsName({ address: address, chainId: 1 });
+  console.log("ENS", ensName ? `${ensName} (${address})` : address);
   const etherscanLink = blockExplorerLink(address, props.blockExplorer);
   let displayAddress = address?.substr(0, 5) + "..." + address?.substr(-4);
   console.log("Display Address:", displayAddress);
 
-  if (data) {
-    displayAddress = data;
+  if (ensName) {
+    displayAddress = ensName;
   } else if (props.size === "short") {
     displayAddress += "..." + address.substr(-4);
   } else if (props.size === "long") {
