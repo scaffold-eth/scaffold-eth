@@ -29,24 +29,25 @@ const { utils } = require("ethers");
   - Provide price={price} of ether and get your balance converted to dollars
 **/
 
-export default function Balance(props) {
+export default function Balance({ address, chainId, watch, size, price }) {
   const [dollarMode, setDollarMode] = useState(true);
 
-  const { data, isError, isLoading } = useBalance(props.address, props.chainId, props.watch);
+  const { data, isError, error, isLoading } = useBalance({ address, chainId, watch });
   let displayBalance = data?.formatted;
+  console.log("Display Balance:", data);
 
   if (dollarMode) {
-    displayBalance = "$" + data?.formatted * props.price;
+    displayBalance = "$" + data?.formatted * price;
   }
 
-  if (isError) return <div>Error</div>;
+  if (isError) return { error: error };
   if (isLoading) return <div>Loading...</div>;
 
   return (
     <span
       style={{
         verticalAlign: "middle",
-        fontSize: props.size ? props.size : 24,
+        fontSize: size ? size : 24,
         padding: 8,
         cursor: "pointer",
       }}
