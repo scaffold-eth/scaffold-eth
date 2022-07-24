@@ -1,13 +1,12 @@
 import { Select } from "antd";
 import React, { useState } from "react";
-import { utils } from "ethers";
 
 import { useTokenList } from "eth-hooks/dapps/dex";
 import { Address, AddressInput } from "../components";
 
 const { Option } = Select;
 
-export default function Hints({ yourLocalBalance, mainnetProvider, price, address }) {
+export default function Hints({ balance, mainnetProvider, price, address }) {
   // Get a list of tokens from a tokenlist -> see tokenlists.org!
   const [selectedToken, setSelectedToken] = useState("Pick a token!");
   const listOfTokens = useTokenList(
@@ -93,7 +92,7 @@ export default function Hints({ yourLocalBalance, mainnetProvider, price, addres
         >
           useBalance()
         </span>{" "}
-        hook keeps track of your balance: <b>{utils.formatEther(yourLocalBalance || 0)}</b>
+        hook keeps track of your balance: <b>{balance || 0}</b>
       </div>
 
       <div style={{ margin: 8 }}>

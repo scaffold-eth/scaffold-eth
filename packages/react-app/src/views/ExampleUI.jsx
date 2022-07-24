@@ -1,7 +1,7 @@
-import { Button, Card, DatePicker, Divider, Input, Progress, Slider, Spin, Switch } from "antd";
-import React, { useState } from "react";
-import { utils } from "ethers";
 import { SyncOutlined } from "@ant-design/icons";
+import { Button, Card, DatePicker, Divider, Input, Progress, Slider, Spin, Switch } from "antd";
+import { utils } from "ethers";
+import React, { useState } from "react";
 
 import { Address, Balance, Events } from "../components";
 
@@ -10,7 +10,7 @@ export default function ExampleUI({
   address,
   mainnetProvider,
   localProvider,
-  yourLocalBalance,
+  balance,
   price,
   tx,
   readContracts,
@@ -72,7 +72,7 @@ export default function ExampleUI({
         />
         <Divider />
         {/* use utils.formatEther to display a BigNumber: */}
-        <h2>Your Balance: {yourLocalBalance ? utils.formatEther(yourLocalBalance) : "..."}</h2>
+        <h2>Your Balance: {balance ? balance : "..."}</h2>
         <div>OR</div>
         <Balance address={address} provider={localProvider} price={price} />
         <Divider />
@@ -80,7 +80,7 @@ export default function ExampleUI({
         <Balance balance={utils.parseEther("1000")} provider={localProvider} price={price} />
         <Divider />
         {/* use utils.formatEther to display a BigNumber: */}
-        <h2>Your Balance: {yourLocalBalance ? utils.formatEther(yourLocalBalance) : "..."}</h2>
+        <h2>Your Balance: {balance ? balance : "..."}</h2>
         <Divider />
         Your Contract Address:
         <Address

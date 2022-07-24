@@ -41,7 +41,7 @@ import Wallet from "./Wallet";
               (ex. by default "https://etherscan.io/" or for xdai "https://blockscout.com/poa/xdai/")
 **/
 
-export default function Account({
+const Account = ({
   address,
   userSigner,
   localProvider,
@@ -53,7 +53,7 @@ export default function Account({
   logoutOfWeb3Modal,
   blockExplorer,
   isContract,
-}) {
+}) => {
   const { currentTheme } = useThemeSwitcher();
 
   let accountButtonInfo;
@@ -94,4 +94,6 @@ export default function Account({
       )}
     </div>
   );
-}
+};
+
+export default Account;
