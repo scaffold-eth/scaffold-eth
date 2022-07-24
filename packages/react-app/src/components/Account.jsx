@@ -68,7 +68,7 @@ const Account = ({
       {address && (
         <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} fontSize={20} />
       )}
-      <Balance address={address} provider={localProvider} price={price} size={20} />
+      <Balance address={address} chainId={1} price={price} watch={true} size={20} />
       {!isContract && (
         <Wallet
           address={address}

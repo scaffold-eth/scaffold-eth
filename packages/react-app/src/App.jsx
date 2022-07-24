@@ -23,7 +23,6 @@ import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor, Web3ModalSetup } from "./helpers";
 import { useStaticJsonRPC } from "./hooks";
 import useOnBlockNumber from "./hooks/useOnBlockNumber";
-import useUserBalance from "./hooks/useUserBalance";
 import { ExampleUI, Hints, Home, Subgraph } from "./views";
 
 const { ethers } = require("ethers");
@@ -142,8 +141,6 @@ function App(props) {
   console.log("Block =>", blockNumber);
 
   // todo: Balance of User for current chain id
-  const balance = useUserBalance("0xA4ca1b15fE81F57cb2d3f686c7B13309906cd37B", initialNetwork.chainId, true);
-  console.log("Balance => ", balance);
 
   // const contractConfig = useContractConfig();
   const contractConfig = { deployedContracts: deployedContracts || {}, externalContracts: externalContracts || {} };
@@ -289,7 +286,7 @@ function App(props) {
       <Switch>
         <Route exact path="/">
           {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
-          <Home balance={balance} readContracts={readContracts} />
+          <Home balance={0} readContracts={readContracts} address={address} />
         </Route>
         <Route exact path="/debug">
           {/*
@@ -309,7 +306,7 @@ function App(props) {
           />
         </Route>
         <Route path="/hints">
-          <Hints address={address} balance={balance} mainnetProvider={mainnetProvider} price={price} />
+          <Hints address={address} balance={0} mainnetProvider={mainnetProvider} price={price} />
         </Route>
         <Route path="/exampleui">
           <ExampleUI
@@ -317,7 +314,7 @@ function App(props) {
             userSigner={userSigner}
             mainnetProvider={mainnetProvider}
             localProvider={localProvider}
-            balance={balance?.formatted}
+            balance={0}
             price={price}
             tx={tx}
             writeContracts={writeContracts}

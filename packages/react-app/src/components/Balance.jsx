@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useBalance } from "eth-hooks";
+import { useBalance } from "wagmi";
 
 const { utils } = require("ethers");
 
@@ -32,26 +32,15 @@ const { utils } = require("ethers");
 export default function Balance(props) {
   const [dollarMode, setDollarMode] = useState(true);
 
-  const balance = useBalance(props.provider, props.address);
-  let floatBalance = parseFloat("0.00");
-  let usingBalance = balance;
-
-  if (typeof props.balance !== "undefined") usingBalance = props.balance;
-  if (typeof props.value !== "undefined") usingBalance = props.value;
-
-  if (usingBalance) {
-    const etherBalance = utils.formatEther(usingBalance);
-    parseFloat(etherBalance).toFixed(2);
-    floatBalance = parseFloat(etherBalance);
-  }
-
-  let displayBalance = floatBalance.toFixed(4);
-
-  const price = props.price || props.dollarMultiplier || 1;
+  const { data, isError, isLoading } = useBalance(props.address, props.chainId, props.watch);
+  let displayBalance = data?.formatted;
 
   if (dollarMode) {
-    displayBalance = "$" + (floatBalance * price).toFixed(2);
+    displayBalance = "$" + data?.formatted * props.price;
   }
+
+  if (isError) return <div>Error</div>;
+  if (isLoading) return <div>Loading...</div>;
 
   return (
     <span
