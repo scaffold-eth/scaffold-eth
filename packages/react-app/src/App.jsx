@@ -23,6 +23,7 @@ import { useBalance } from "wagmi";
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor, Web3ModalSetup } from "./helpers";
 import { useStaticJsonRPC } from "./hooks";
+import useOnBlockNumber from "./hooks/useOnBlockNumber";
 import { ExampleUI, Hints, Home, Subgraph } from "./views";
 
 const { ethers } = require("ethers");
@@ -108,7 +109,7 @@ function App(props) {
   const userProviderAndSigner = useUserProviderAndSigner(injectedProvider, localProvider, USE_BURNER_WALLET);
   const userSigner = userProviderAndSigner.signer;
 
-  // todo: 
+  // todo:
   useEffect(() => {
     async function getAddress() {
       if (userSigner) {
@@ -129,19 +130,23 @@ function App(props) {
   // The transactor wraps transactions and provides notificiations
   const tx = Transactor(userSigner, gasPrice);
 
-  // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
+  // 🏗 scaffold-eth is full of handy hooks (WAGMI) like this one to get your balance:
   const { data, isError, isLoading } = useBalance({
     addressOrName: "jaxcoder.eth",
     chainId: initialNetwork.chainId,
+    watch: true,
   });
 
-  // const yourLocalBalance = useBalance(localProvider, address);
-
-  // Just plug in different 🛰 providers to get your balance on different chains:
-  // const yourMainnetBalance = useBalance(mainnetProvider, address);
+  // get the latest block number and do something for each new block 🤔
+  const blockNumber = useOnBlockNumber({
+    chainId: 1,
+    watch: true,
+    onSuccess(data) {
+      console.log("Block Number", data);
+    },
+  });
 
   // const contractConfig = useContractConfig();
-
   const contractConfig = { deployedContracts: deployedContracts || {}, externalContracts: externalContracts || {} };
 
   // Load in your local 📝 contract and read a value from it:
@@ -155,11 +160,6 @@ function App(props) {
   // If you want to bring in the mainnet DAI contract it would look like:
   const mainnetContracts = useContractLoader(mainnetProvider, contractConfig);
 
-  // If you want to call a function on a new block
-  useOnBlock(mainnetProvider, () => {
-    console.log(`⛓ A new mainnet block is here: ${mainnetProvider._lastBlockNumber}`);
-  });
-
   // Then read your DAI balance like:
   const myMainnetDAIBalance = useContractReader(mainnetContracts, "DAI", "balanceOf", [
     "0x34aA3F359A9D614239015126635CE7732c18fDF3",
@@ -167,11 +167,6 @@ function App(props) {
 
   // keep track of a variable from the contract in the local React state:
   const purpose = useContractReader(readContracts, "YourContract", "purpose");
-
-  /*
-  const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
-  console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
-  */
 
   //
   // 🧫 DEBUG 👨🏻‍🔬
@@ -315,7 +310,7 @@ function App(props) {
           />
         </Route>
         <Route path="/hints">
-          <Hints address={address} yourLocalBalance={data?.formatted} mainnetProvider={mainnetProvider} price={price} />
+          <Hints address={address} balance={data?.formatted} mainnetProvider={mainnetProvider} price={price} />
         </Route>
         <Route path="/exampleui">
           <ExampleUI
@@ -323,7 +318,7 @@ function App(props) {
             userSigner={userSigner}
             mainnetProvider={mainnetProvider}
             localProvider={localProvider}
-            yourLocalBalance={data?.formatted}
+            balance={data?.formatted}
             price={price}
             tx={tx}
             writeContracts={writeContracts}
