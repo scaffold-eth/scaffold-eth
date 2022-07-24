@@ -1,8 +1,8 @@
 import { Skeleton, Typography } from "antd";
-import { useLookupAddress } from "eth-hooks/dapps/ens";
 import React from "react";
 import Blockies from "react-blockies";
 import { useThemeSwitcher } from "react-css-theme-switcher";
+import { useEnsName } from "wagmi";
 
 // changed value={address} to address={address}
 
@@ -35,15 +35,15 @@ const blockExplorerLink = (address, blockExplorer) => `${blockExplorer || "https
 
 const Address = props => {
   const { currentTheme } = useThemeSwitcher();
-  const address = props.value || props.address;
-  const ens = useLookupAddress(props.ensProvider, address);
-  const ensSplit = ens && ens.split(".");
-  const validEnsCheck = ensSplit && ensSplit[ensSplit.length - 1] === "eth";
+  const address = props.address;
+  const { data } = useEnsName({ address: address });
+  console.log("ENS", data);
   const etherscanLink = blockExplorerLink(address, props.blockExplorer);
   let displayAddress = address?.substr(0, 5) + "..." + address?.substr(-4);
+  console.log("Display Address:", displayAddress);
 
-  if (validEnsCheck) {
-    displayAddress = ens;
+  if (data) {
+    displayAddress = data;
   } else if (props.size === "short") {
     displayAddress += "..." + address.substr(-4);
   } else if (props.size === "long") {

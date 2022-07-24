@@ -16,29 +16,8 @@ import Wallet from "./Wallet";
 
   <Account
     address={address}
-    localProvider={localProvider}
-    userProvider={userProvider}
-    mainnetProvider={mainnetProvider}
-    price={price}
-    web3Modal={web3Modal}
-    loadWeb3Modal={loadWeb3Modal}
-    logoutOfWeb3Modal={logoutOfWeb3Modal}
-    blockExplorer={blockExplorer}
-    isContract={boolean}
   />
 
-  ~ Features ~
-
-  - Provide address={address} and get balance corresponding to the given address
-  - Provide localProvider={localProvider} to access balance on local network
-  - Provide userProvider={userProvider} to display a wallet
-  - Provide mainnetProvider={mainnetProvider} and your address will be replaced by ENS name
-              (ex. "0xa870" => "user.eth")
-  - Provide price={price} of ether and get your balance converted to dollars
-  - Provide web3Modal={web3Modal}, loadWeb3Modal={loadWeb3Modal}, logoutOfWeb3Modal={logoutOfWeb3Modal}
-              to be able to log in/log out to/from existing accounts
-  - Provide blockExplorer={blockExplorer}, click on address and get the link
-              (ex. by default "https://etherscan.io/" or for xdai "https://blockscout.com/poa/xdai/")
 **/
 
 const Account = ({
