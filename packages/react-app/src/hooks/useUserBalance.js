@@ -1,22 +1,23 @@
-import { useBlockNumber } from "wagmi";
+import { useBalance } from "wagmi";
 
-function useOnBlockNumber({
+function useUserBalance({
+  address,
   chainId,
   watch,
+  formatUnits,
+  token,
   cacheTime,
   enabled,
   staleTime,
   suspense,
-  onBlock,
-  onSuccess,
   onError,
   onSettled,
+  onSuccess,
 }) {
-  const { data, error, isLoading, isError, status } = useBlockNumber({
+  const { data, isError, error, isLoading } = useBalance({
+    addressOrName: address,
     chainId: chainId,
     watch: watch,
-    cacheTime: cacheTime,
-    onSuccess: onSuccess,
   });
 
   if (isLoading) return { loading: true };
@@ -25,4 +26,4 @@ function useOnBlockNumber({
   return data;
 }
 
-export default useOnBlockNumber;
+export default useUserBalance;

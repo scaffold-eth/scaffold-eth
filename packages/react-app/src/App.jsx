@@ -1,6 +1,6 @@
 import { Button, Col, Menu, Row } from "antd";
 import "antd/dist/antd.css";
-import { useContractLoader, useContractReader, useGasPrice, useOnBlock, useUserProviderAndSigner } from "eth-hooks";
+import { useContractLoader, useContractReader, useGasPrice, useUserProviderAndSigner } from "eth-hooks";
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
 import React, { useCallback, useEffect, useState } from "react";
 import { Link, Route, Switch, useLocation } from "react-router-dom";
@@ -19,11 +19,11 @@ import {
 import { ALCHEMY_KEY, NETWORKS } from "./constants";
 import externalContracts from "./contracts/external_contracts";
 // contracts
-import { useBalance } from "wagmi";
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor, Web3ModalSetup } from "./helpers";
 import { useStaticJsonRPC } from "./hooks";
 import useOnBlockNumber from "./hooks/useOnBlockNumber";
+import useUserBalance from "./hooks/useUserBalance";
 import { ExampleUI, Hints, Home, Subgraph } from "./views";
 
 const { ethers } = require("ethers");
@@ -130,13 +130,7 @@ function App(props) {
   // The transactor wraps transactions and provides notificiations
   const tx = Transactor(userSigner, gasPrice);
 
-  // 🏗 scaffold-eth is full of handy hooks (WAGMI) like this one to get your balance:
-  const { data, isError, isLoading } = useBalance({
-    addressOrName: "jaxcoder.eth",
-    chainId: initialNetwork.chainId,
-    watch: true,
-  });
-
+  // 🏗 scaffold-eth is full of handy hooks (WAGMI)
   // get the latest block number and do something for each new block 🤔
   const blockNumber = useOnBlockNumber({
     chainId: 1,
@@ -145,6 +139,11 @@ function App(props) {
       console.log("Block Number", data);
     },
   });
+  console.log("Block =>", blockNumber);
+
+  // todo: Balance of User for current chain id
+  const balance = useUserBalance("jaxcoder.eth", initialNetwork.chainId, true);
+  console.log("Balance => ", balance);
 
   // const contractConfig = useContractConfig();
   const contractConfig = { deployedContracts: deployedContracts || {}, externalContracts: externalContracts || {} };
@@ -290,7 +289,7 @@ function App(props) {
       <Switch>
         <Route exact path="/">
           {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
-          <Home balance={data?.formatted} readContracts={readContracts} />
+          <Home balance={balance} readContracts={readContracts} />
         </Route>
         <Route exact path="/debug">
           {/*
@@ -310,7 +309,7 @@ function App(props) {
           />
         </Route>
         <Route path="/hints">
-          <Hints address={address} balance={data?.formatted} mainnetProvider={mainnetProvider} price={price} />
+          <Hints address={address} balance={balance} mainnetProvider={mainnetProvider} price={price} />
         </Route>
         <Route path="/exampleui">
           <ExampleUI
@@ -318,7 +317,7 @@ function App(props) {
             userSigner={userSigner}
             mainnetProvider={mainnetProvider}
             localProvider={localProvider}
-            balance={data?.formatted}
+            balance={balance?.formatted}
             price={price}
             tx={tx}
             writeContracts={writeContracts}
