@@ -1,18 +1,26 @@
 import { useContractReader } from "eth-hooks";
 import React from "react";
 import { Link } from "react-router-dom";
-import { useAccount, useConnect, useEnsName } from "wagmi";
-import { InjectedConnector } from "wagmi/connectors/injected";
+import { useAccount, useConnect, useEnsName, useEnsAvatar, useDisconnect } from "wagmi";
 
 // Testing WAGMI hooks
 const Profile = () => {
-  const { address, isConnected } = useAccount();
+  const { address, connector, isConnected } = useAccount();
+  const { data: ensAvatar } = useEnsAvatar({ addressOrName: address });
   const { data: ensName } = useEnsName({ address });
-  const { connect, connectors, error, isLoading, pendingConnector } = useConnect({
-    connector: new InjectedConnector(),
-  });
+  const { connect, connectors, error, isLoading, pendingConnector } = useConnect();
+  const { disconnect } = useDisconnect();
 
-  if (!isConnected) <button onClick={() => connect()}>Connect Wallet</button>;
+  if (isConnected) {
+    return (
+      <div>
+        <img src={ensAvatar} alt="ENS Avatar" />
+        <div>{ensName ? `${ensName} (${address})` : address}</div>
+        <div>Connected to {connector.name}</div>
+        <button onClick={disconnect}>Disconnect</button>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -23,7 +31,7 @@ const Profile = () => {
           {isLoading && connector.id === pendingConnector?.id && " (connecting)"}
         </button>
       ))}
-      <div>Connected to {ensName ?? address}</div>
+
       {error && <div>{error.message}</div>}
     </div>
   );

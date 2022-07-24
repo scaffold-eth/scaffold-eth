@@ -108,6 +108,7 @@ function App(props) {
   const userProviderAndSigner = useUserProviderAndSigner(injectedProvider, localProvider, USE_BURNER_WALLET);
   const userSigner = userProviderAndSigner.signer;
 
+  // todo: 
   useEffect(() => {
     async function getAddress() {
       if (userSigner) {
@@ -130,7 +131,8 @@ function App(props) {
 
   // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
   const { data, isError, isLoading } = useBalance({
-    addressOrName: address,
+    addressOrName: "jaxcoder.eth",
+    chainId: initialNetwork.chainId,
   });
 
   // const yourLocalBalance = useBalance(localProvider, address);
