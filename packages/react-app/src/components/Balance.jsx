@@ -21,7 +21,7 @@ import { useBalance } from "wagmi";
 export default function Balance({ address, chainId, watch, size, price }) {
   const [dollarMode, setDollarMode] = useState(true);
 
-  const { data, isError, error, isLoading } = useBalance({ addressOrName: "jaxcoder.eth", chainId, watch });
+  const { data, isError, error, isLoading } = useBalance({ addressOrName: address, chainId, watch });
   let displayBalance = data?.formatted;
   console.log("Display Balance:", data);
 
