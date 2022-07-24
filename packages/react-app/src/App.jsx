@@ -1,13 +1,6 @@
 import { Button, Col, Menu, Row } from "antd";
 import "antd/dist/antd.css";
-import {
-  useBalance,
-  useContractLoader,
-  useContractReader,
-  useGasPrice,
-  useOnBlock,
-  useUserProviderAndSigner,
-} from "eth-hooks";
+import { useContractLoader, useContractReader, useGasPrice, useOnBlock, useUserProviderAndSigner } from "eth-hooks";
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
 import React, { useCallback, useEffect, useState } from "react";
 import { Link, Route, Switch, useLocation } from "react-router-dom";
@@ -18,19 +11,19 @@ import {
   Faucet,
   GasGauge,
   Header,
+  NetworkDisplay,
+  NetworkSwitch,
   Ramp,
   ThemeSwitch,
-  NetworkDisplay,
-  FaucetHint,
-  NetworkSwitch,
 } from "./components";
-import { NETWORKS, ALCHEMY_KEY } from "./constants";
+import { ALCHEMY_KEY, NETWORKS } from "./constants";
 import externalContracts from "./contracts/external_contracts";
 // contracts
+import { useBalance } from "wagmi";
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor, Web3ModalSetup } from "./helpers";
-import { Home, ExampleUI, Hints, Subgraph } from "./views";
 import { useStaticJsonRPC } from "./hooks";
+import { ExampleUI, Hints, Home, Subgraph } from "./views";
 
 const { ethers } = require("ethers");
 /*
@@ -136,10 +129,14 @@ function App(props) {
   const tx = Transactor(userSigner, gasPrice);
 
   // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
-  const yourLocalBalance = useBalance(localProvider, address);
+  const { data, isError, isLoading } = useBalance({
+    addressOrName: address,
+  });
+
+  // const yourLocalBalance = useBalance(localProvider, address);
 
   // Just plug in different 🛰 providers to get your balance on different chains:
-  const yourMainnetBalance = useBalance(mainnetProvider, address);
+  // const yourMainnetBalance = useBalance(mainnetProvider, address);
 
   // const contractConfig = useContractConfig();
 
@@ -178,24 +175,12 @@ function App(props) {
   // 🧫 DEBUG 👨🏻‍🔬
   //
   useEffect(() => {
-    if (
-      DEBUG &&
-      mainnetProvider &&
-      address &&
-      selectedChainId &&
-      yourLocalBalance &&
-      yourMainnetBalance &&
-      readContracts &&
-      writeContracts &&
-      mainnetContracts
-    ) {
+    if (DEBUG && mainnetProvider && address && selectedChainId && readContracts && writeContracts && mainnetContracts) {
       console.log("_____________________________________ 🏗 scaffold-eth _____________________________________");
       console.log("🌎 mainnetProvider", mainnetProvider);
       console.log("🏠 localChainId", localChainId);
       console.log("👩‍💼 selected address:", address);
       console.log("🕵🏻‍♂️ selectedChainId:", selectedChainId);
-      console.log("💵 yourLocalBalance", yourLocalBalance ? ethers.utils.formatEther(yourLocalBalance) : "...");
-      console.log("💵 yourMainnetBalance", yourMainnetBalance ? ethers.utils.formatEther(yourMainnetBalance) : "...");
       console.log("📝 readContracts", readContracts);
       console.log("🌍 DAI contract on mainnet:", mainnetContracts);
       console.log("💵 yourMainnetDAIBalance", myMainnetDAIBalance);
@@ -205,8 +190,6 @@ function App(props) {
     mainnetProvider,
     address,
     selectedChainId,
-    yourLocalBalance,
-    yourMainnetBalance,
     readContracts,
     writeContracts,
     mainnetContracts,
@@ -275,9 +258,9 @@ function App(props) {
           </div>
         </div>
       </Header>
-      {yourLocalBalance.lte(ethers.BigNumber.from("0")) && (
+      {/* {yourLocalBalance.lte(ethers.BigNumber.from("0")) && (
         <FaucetHint localProvider={localProvider} targetNetwork={targetNetwork} address={address} />
-      )}
+      )} */}
       <NetworkDisplay
         NETWORKCHECK={NETWORKCHECK}
         localChainId={localChainId}
@@ -310,7 +293,7 @@ function App(props) {
       <Switch>
         <Route exact path="/">
           {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
-          <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} />
+          <Home balance={data?.formatted} readContracts={readContracts} />
         </Route>
         <Route exact path="/debug">
           {/*
@@ -330,12 +313,7 @@ function App(props) {
           />
         </Route>
         <Route path="/hints">
-          <Hints
-            address={address}
-            yourLocalBalance={yourLocalBalance}
-            mainnetProvider={mainnetProvider}
-            price={price}
-          />
+          <Hints address={address} yourLocalBalance={data?.formatted} mainnetProvider={mainnetProvider} price={price} />
         </Route>
         <Route path="/exampleui">
           <ExampleUI
@@ -343,7 +321,7 @@ function App(props) {
             userSigner={userSigner}
             mainnetProvider={mainnetProvider}
             localProvider={localProvider}
-            yourLocalBalance={yourLocalBalance}
+            yourLocalBalance={data?.formatted}
             price={price}
             tx={tx}
             writeContracts={writeContracts}

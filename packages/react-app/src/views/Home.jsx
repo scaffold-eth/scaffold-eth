@@ -1,21 +1,34 @@
 import { useContractReader } from "eth-hooks";
-import { ethers } from "ethers";
 import React from "react";
 import { Link } from "react-router-dom";
+import { useAccount, useConnect, useEnsName } from "wagmi";
+import { InjectedConnector } from "wagmi/connectors/injected";
+
+const Profile = () => {
+  const { address, isConnected } = useAccount();
+  const { data: ensName } = useEnsName({ address });
+  const { connect } = useConnect({
+    connector: new InjectedConnector(),
+  });
+
+  if (isConnected) return <div>Connected to {ensName ?? address}</div>;
+  return <button onClick={() => connect()}>Connect Wallet</button>;
+};
 
 /**
  * web3 props can be passed from '../App.jsx' into your local view component for use
- * @param {*} yourLocalBalance balance on current network
+ * @param {*} balance balance on current network
  * @param {*} readContracts contracts from current chain already pre-loaded using ethers contract module. More here https://docs.ethers.io/v5/api/contract/contract/
  * @returns react component
  **/
-function Home({ yourLocalBalance, readContracts }) {
+function Home({ balance, readContracts }) {
   // you can also use hooks locally in your component of choice
   // in this case, let's keep track of 'purpose' variable from our contract
   const purpose = useContractReader(readContracts, "YourContract", "purpose");
 
   return (
     <div>
+      <Profile />
       <div style={{ margin: 32 }}>
         <span style={{ marginRight: 8 }}>📝</span>
         This Is Your App Home. You can start editing it in{" "}
@@ -93,8 +106,7 @@ function Home({ yourLocalBalance, readContracts }) {
       <div style={{ margin: 32 }}>
         <span style={{ marginRight: 8 }}>🤖</span>
         An example prop of your balance{" "}
-        <span style={{ fontWeight: "bold", color: "green" }}>({ethers.utils.formatEther(yourLocalBalance)})</span> was
-        passed into the
+        <span style={{ fontWeight: "bold", color: "green" }}>({balance ? balance : 0})</span> was passed into the
         <span
           className="highlight"
           style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}

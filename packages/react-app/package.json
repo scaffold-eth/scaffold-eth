@@ -38,7 +38,7 @@
     "bnc-notify": "^1.5.0",
     "dotenv": "^8.2.0",
     "eth-hooks": "2.3.16",
-    "ethers": "^5.4.1",
+    "ethers": "^5.6.9",
     "fortmatic": "^2.2.1",
     "graphiql": "^1.4.7",
     "graphql": "^15.3.0",
@@ -55,6 +55,7 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.1",
     "searchico": "^1.2.1",
+    "wagmi": "^0.5.11",
     "walletlink": "^2.1.5",
     "web3modal": "^1.9.1"
   },
