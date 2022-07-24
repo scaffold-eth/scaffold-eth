@@ -142,7 +142,7 @@ function App(props) {
   console.log("Block =>", blockNumber);
 
   // todo: Balance of User for current chain id
-  const balance = useUserBalance("jaxcoder.eth", initialNetwork.chainId, true);
+  const balance = useUserBalance("0xA4ca1b15fE81F57cb2d3f686c7B13309906cd37B", initialNetwork.chainId, true);
   console.log("Balance => ", balance);
 
   // const contractConfig = useContractConfig();

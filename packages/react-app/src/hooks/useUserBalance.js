@@ -23,7 +23,7 @@ function useUserBalance({
   if (isLoading) return { loading: true };
   if (isError) return { error: error };
 
-  return data;
+  if (!isError && !isLoading) return data ? data : 0;
 }
 
 export default useUserBalance;
