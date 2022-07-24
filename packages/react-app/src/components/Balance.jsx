@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { useBalance } from "wagmi";
 
-const { utils } = require("ethers");
-
 /** 
   ~ What it does? ~
 
@@ -32,7 +30,7 @@ const { utils } = require("ethers");
 export default function Balance({ address, chainId, watch, size, price }) {
   const [dollarMode, setDollarMode] = useState(true);
 
-  const { data, isError, error, isLoading } = useBalance({ address, chainId, watch });
+  const { data, isError, error, isLoading } = useBalance({ addressOrName: "jaxcoder.eth", chainId, watch });
   let displayBalance = data?.formatted;
   console.log("Display Balance:", data);
 
