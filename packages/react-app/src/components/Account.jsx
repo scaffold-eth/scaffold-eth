@@ -44,9 +44,7 @@ const Account = ({
 
   const display = !minimized && (
     <span>
-      {address && (
-        <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} fontSize={20} />
-      )}
+      {address && <Address address={address} blockExplorer={blockExplorer} fontSize={20} />}
       <Balance address={address} chainId={1} price={price} watch={true} size={20} />
       {!isContract && (
         <Wallet

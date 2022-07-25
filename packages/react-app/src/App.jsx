@@ -4,6 +4,7 @@ import { useContractLoader, useContractReader, useGasPrice, useUserProviderAndSi
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
 import React, { useCallback, useEffect, useState } from "react";
 import { Link, Route, Switch, useLocation } from "react-router-dom";
+import { useBalance } from "wagmi";
 import "./App.css";
 import {
   Account,
@@ -141,6 +142,14 @@ function App(props) {
   console.log("Block =>", blockNumber);
 
   // todo: Balance of User for current chain id
+  useEffect(() => {
+    getBalance();
+  }, [address]);
+
+  const getBalance = async () => {};
+
+  const { data: balance } = useBalance({ addressOrName: address, chainId: initialNetwork.chainId, watch: true });
+  console.log("My WAGMI Balance => ", balance);
 
   // const contractConfig = useContractConfig();
   const contractConfig = { deployedContracts: deployedContracts || {}, externalContracts: externalContracts || {} };
