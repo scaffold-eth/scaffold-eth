@@ -4,7 +4,7 @@ import { useContractLoader, useContractReader, useGasPrice, useUserProviderAndSi
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
 import React, { useCallback, useEffect, useState } from "react";
 import { Link, Route, Switch, useLocation } from "react-router-dom";
-import { useBalance } from "wagmi";
+import { useBalance, useContractRead } from "wagmi";
 import "./App.css";
 import {
   Account,
@@ -156,6 +156,19 @@ function App(props) {
 
   // Load in your local 📝 contract and read a value from it:
   const readContracts = useContractLoader(localProvider, contractConfig);
+
+  //! WAGMI Contract Reader
+  // ToDo: figure out...
+  const {
+    data: readContractsWagmi,
+    isError,
+    isLoading,
+  } = useContractRead({
+    addressOrName: "",
+    contractInterface: [],
+    functionName: "",
+  });
+  console.log("WAGMI Read Contracts => ", readContractsWagmi);
 
   // If you want to make 🔐 write transactions to your contracts, use the userSigner:
   const writeContracts = useContractLoader(userSigner, contractConfig, localChainId);
