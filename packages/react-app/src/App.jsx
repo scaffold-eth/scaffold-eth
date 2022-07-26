@@ -879,7 +879,9 @@ function App(props) {
 
       {/* ✏️ Edit the header and change the title to your project name */}
 
-      <TransactionHistory/>
+      <TransactionHistory
+        address={address}
+      />
 
       <div style={{ padding: 16, backgroundColor: "#FFFFFF", width: 420, margin: "auto" }}>
         <SpeedUpTransactions
