@@ -4,34 +4,21 @@ import { Avatar, Button, List } from 'antd';
 
 const { ethers } = require("ethers");
 
-export default function TransactionHistory({ address }) {
-  let provider = new ethers.providers.EtherscanProvider(null, ETHERSCAN_KEY);
+export default function TransactionHistory({ transactionResponsesArray }) {
+  console.log("transactionResponsesArray", transactionResponsesArray);
 
   const [history, setHistory] = useState();
-  const [count, setCount] = useState(5);
+  const [count, setCount] = useState(1);
 
   useEffect(() => {
-    async function getHistory() {
-      let history = await provider.getHistory(address);
+      transactionResponsesArray.sort((a, b) => b.nonce - a.nonce);
 
-      history.sort((a, b) => b.nonce - a.nonce);
-
-      console.log("history", history);
-
-      console.log("sliced history", history.slice(0, count));
-
-      setHistory(history.slice(0, count));
+      setHistory(transactionResponsesArray.slice(0, count));
       
-    }
-
-    if (address) {
-      getHistory();  
-    }
-    
-  }, [address, count]);
+  }, [count, transactionResponsesArray]);
 
   const onLoadMore = () => {
-    setCount(count + 5);
+    setCount(count + 1);
   }
 
   const loadMore =
@@ -48,6 +35,8 @@ export default function TransactionHistory({ address }) {
       </div>
     ) : null;
 
+// ToDo: proper block explorer links according to the chainId
+
   return  (
     <div>  
        TransactionHistory
@@ -61,7 +50,7 @@ export default function TransactionHistory({ address }) {
               <List.Item>
                 <List.Item.Meta
                   avatar={<Avatar src="https://joeschmoe.io/api/v1/random" />}
-                  title={<a href={"https://etherscan.io/tx/" + item.hash}>{item.nonce}</a>}
+                  title={<a href={item.chainId == 1 ? "https://etherscan.io/tx/" + item.hash : "https://polygonscan.com/tx/" + item.hash}>{item.nonce}</a>}
                   description="Ant Design, a design language for background applications, is refined by Ant UED Team"
                 />
               </List.Item>

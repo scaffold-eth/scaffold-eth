@@ -19,7 +19,6 @@ import {
   Header,
   QRPunkBlockie,
   Ramp,
-  TransactionHistory,
   SpeedUpTransactions,
   Wallet,
   WalletConnectTransactionDisplay,
@@ -880,9 +879,11 @@ function App(props) {
       {/* ✏️ Edit the header and change the title to your project name */}
 
       <div style={{ padding: 16, backgroundColor: "#FFFFFF", width: 420, margin: "auto" }}>
-        <TransactionHistory
-          address={address}
-        />
+        <SpeedUpTransactions
+           checkPendingTransactions={false}
+           address={address} 
+           chainId={targetNetwork.chainId}
+         />
       </div>
 
       <div style={{ padding: 16, backgroundColor: "#FFFFFF", width: 420, margin: "auto" }}>
