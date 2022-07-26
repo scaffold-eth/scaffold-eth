@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback, useReducer } from 'react'
 import { useUserProviderAndSigner } from 'eth-hooks'
 import { useExchangeEthPrice } from 'eth-hooks/dapps/dex'
 import { NETWORKS } from './constants'
@@ -13,7 +13,32 @@ import externalContracts from 'contracts/external_contracts'
 import { switchToOptimism } from 'helpers/SwitchToOptimism'
 const { ethers } = require('ethers')
 
+const APPSTATEACTION = {
+  GOERLICHAINID: '5',
+  OPTIMISMCHAINID: '10',
+}
+
+const defaultState = {
+  provider: new ethers.providers.Web3Provider(window.ethereum),
+  chainId: '10',
+  contractRef: externalContracts['10'].contracts.REMIX_REWARD,
+}
+
+function appStateReducer(state, actionType) {
+  if (actionType.GOERLICHAINID) {
+    const newState = {
+      provider: new ethers.providers.Web3Provider(window.ethereum),
+      chainid: '5',
+      contractRef: externalContracts['5'].contracts.REMIX_REWARD,
+    }
+    return newState
+  }
+
+  return state
+}
+
 function App({ mainnet, localProvider, appChainId }) {
+  const [appState, appDispatch] = useReducer(appStateReducer, defaultState)
   const [loaded, setLoaded] = useState(false)
   // const [localProvider, setLocalProvider] = useState(null)
   const [connectedAddress, setConnectedAddress] = useState()
@@ -22,7 +47,7 @@ function App({ mainnet, localProvider, appChainId }) {
   const [address, setAddress] = useState('')
   const [tabValue, setTabValue] = useState(0)
   const [showToast, setShowToast] = useState(false)
-  const [selectedChainId, setSelectedChainId] = useState(appChainId)
+  // const [selectedChainId, setSelectedChainId] = useState(appChainId)
   const contractConfig = { deployedContracts: {}, externalContracts: externalContracts || {} }
 
   const targetNetwork = NETWORKS['optimism']
@@ -34,7 +59,7 @@ function App({ mainnet, localProvider, appChainId }) {
   /* SETUP METAMASK */
 
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
-  const userProviderAndSigner = useUserProviderAndSigner(injectedProvider, localProvider, USE_BURNER_WALLET)
+  const userProviderAndSigner = useUserProviderAndSigner(appState.provider, localProvider, USE_BURNER_WALLET)
   const userSigner = userProviderAndSigner.signer
 
   const closeToast = () => {
@@ -44,13 +69,17 @@ function App({ mainnet, localProvider, appChainId }) {
   const displayToast = () => {
     setShowToast(true)
   }
+  console.log({ appState })
   let contractRef
+  const chainId = appState.chainId
   if (
-    externalContracts[selectedChainId] &&
-    externalContracts[selectedChainId].contracts &&
-    externalContracts[selectedChainId].contracts.REMIX_REWARD
+    externalContracts[chainId] &&
+    externalContracts[chainId].contracts &&
+    externalContracts[chainId].contracts.REMIX_REWARD
   ) {
-    contractRef = externalContracts[selectedChainId].contracts.REMIX_REWARD
+    contractRef = externalContracts[chainId].contracts.REMIX_REWARD
+  } else {
+    console.log('kosi externalContract')
   }
 
   useEffect(() => {
@@ -64,6 +93,13 @@ function App({ mainnet, localProvider, appChainId }) {
     }
     getAddress()
   }, [userSigner])
+
+  useEffect(() => {
+    appState.provider.on('chainChanged', chainId => {
+      // @ts-ignore
+      appDispatch({ actionType: APPSTATEACTION.GOERLICHAINID })
+    })
+  }, [appState.provider, appState])
 
   const logoutOfWeb3Modal = async () => {
     // @ts-ignore
@@ -93,18 +129,21 @@ function App({ mainnet, localProvider, appChainId }) {
     }
     const provider = window.ethereum
     // @ts-ignore
-    setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
+    // setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
+    appDispatch({ actionType: APPSTATEACTION.OPTIMISMCHAINID })
 
     provider.on('chainChanged', chainId => {
       console.log(`chain changed to ${chainId}! updating providers`)
       // @ts-ignore
-      setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
+      // setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
+      appDispatch({ actionType: APPSTATEACTION.OPTIMISMCHAINID })
     })
 
     provider.on('accountsChanged', () => {
       console.log(`account changed!`)
       // @ts-ignore
-      setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
+      // setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
+      appDispatch({ actionType: APPSTATEACTION.OPTIMISMCHAINID })
     })
 
     // Subscribe to session disconnection
@@ -116,7 +155,7 @@ function App({ mainnet, localProvider, appChainId }) {
     console.log({ injectedProvider })
     setTabValue(prev => prev)
     // eslint-disable-next-line
-  }, [setInjectedProvider])
+  }, [appDispatch])
 
   const loadWeb3ModalGoerli = useCallback(async () => {
     if (typeof window.ethereum === 'undefined') {
@@ -127,18 +166,19 @@ function App({ mainnet, localProvider, appChainId }) {
     }
     const provider = window.ethereum
     // @ts-ignore
-    setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
+    // setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
+    appDispatch({ actionType: APPSTATEACTION.GOERLICHAINID })
 
     provider.on('chainChanged', chainId => {
       console.log(`chain changed to ${chainId}! updating providers`)
       // @ts-ignore
-      setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
+      appDispatch({ actionType: APPSTATEACTION.GOERLICHAINID })
     })
 
     provider.on('accountsChanged', () => {
       console.log(`account changed!`)
       // @ts-ignore
-      setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
+      appDispatch({ actionType: APPSTATEACTION.GOERLICHAINID })
     })
 
     // Subscribe to session disconnection
@@ -150,7 +190,7 @@ function App({ mainnet, localProvider, appChainId }) {
     console.log({ injectedProvider })
     setTabValue(prev => prev)
     // eslint-disable-next-line
-  }, [setInjectedProvider])
+  }, [appDispatch])
 
   /* END - SETUP METAMASK */
 
@@ -183,12 +223,13 @@ function App({ mainnet, localProvider, appChainId }) {
     }
     run()
   }, [localProvider.ready])
-
+  const targetProvider = appState.provider
+  const selectedChainId = appState.chainId
   /* END - SETUP MAINNET & OPTIMISM provider */
   const contextPayload = {
     localProvider,
     mainnet,
-    injectedProvider,
+    targetProvider,
     selectedChainId,
     address,
     setAddress,

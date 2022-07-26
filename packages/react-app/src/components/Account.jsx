@@ -60,8 +60,16 @@ const MetaMaskTooltip = styled(({ className, ...props }) => <Tooltip {...props} 
 
 // @ts-ignore
 export default function Account({ minimized, disableOptimismButton, doOptimismSwitch, disableButton, enableButton }) {
-  const { localProvider, mainnet, loadWeb3Modal, loadWeb3ModalGoerli, price, targetNetwork, connectedAddress } =
-    useContext(BadgeContext)
+  const {
+    targetProvider,
+    localProvider,
+    mainnet,
+    loadWeb3Modal,
+    loadWeb3ModalGoerli,
+    price,
+    targetNetwork,
+    connectedAddress,
+  } = useContext(BadgeContext)
   let accountButtonInfo
   accountButtonInfo = { name: 'Connect to Mint', action: loadWeb3Modal, goreliAction: loadWeb3ModalGoerli }
   const accountButtonConnected = 'Connected'

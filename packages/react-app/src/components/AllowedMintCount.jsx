@@ -4,10 +4,11 @@ import { ethers } from 'ethers'
 import { BadgeContext } from 'contexts/BadgeContext'
 import externalContracts from 'contracts/external_contracts'
 import { getCurrentChainId } from 'helpers/SwitchToOptimism'
+import { BigNumber } from '@ethersproject/bignumber'
 
 export default function AllowedMintCount() {
   // @ts-ignore
-  const { contractRef, injectedProvider, connectedAddress } = useContext(BadgeContext)
+  const { contractRef, localProvider, connectedAddress } = useContext(BadgeContext)
   /*
    * this returns the number of user badge that the selected account is allowed to mint.
    * this function throws an error if the current network selected in the injected provider (metamask) is not optimism (chain id of optimism is 10)
@@ -23,7 +24,7 @@ export default function AllowedMintCount() {
   const [mintCount, setMintCount] = useState('0')
 
   useEffect(() => {
-    if (injectedProvider === undefined || connectedAddress === undefined) {
+    if (localProvider === undefined || connectedAddress === undefined) {
       console.log('Not connected to metamask or the blockchain!')
       return
     }
@@ -37,11 +38,17 @@ export default function AllowedMintCount() {
           const result = await allowedMinting(contractReference, provider, contractReference.address)
           setMintCount(result)
         }
-        const result = await allowedMinting(contractRef, injectedProvider, connectedAddress)
+        const result = await allowedMinting(contractRef, localProvider, connectedAddress)
+        if (ethers.BigNumber.isBigNumber(result)) {
+          const final = ethers.BigNumber.from(result).toNumber().toString()
+          console.log({ final })
+          setMintCount(final)
+          return
+        }
         console.log({ result })
         setMintCount(result)
       } catch (error) {
-        console.log(`There was an error caught in AllowedMintCount. See the details below`)
+        console.log(`An error was caught in AllowedMintCount. See the details below`)
         console.log({ error })
       }
     }
@@ -49,7 +56,7 @@ export default function AllowedMintCount() {
     return () => {
       console.log('cleaned up!')
     }
-  }, [allowedMinting, connectedAddress, contractRef, injectedProvider])
+  }, [allowedMinting, connectedAddress, contractRef, localProvider])
 
   useEffect(() => {
     window.ethereum.on('chainChanged', async chainId => {

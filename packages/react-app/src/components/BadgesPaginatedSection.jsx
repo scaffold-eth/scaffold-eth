@@ -13,7 +13,7 @@ import { useContext, useState } from 'react'
 import { BadgeContext } from 'contexts/BadgeContext'
 
 export default function BadgesPaginatedSection({ eventBadges, etherscanRef }) {
-  const { contractRef, localProvider, mainnet } = useContext(BadgeContext)
+  const { contractRef, localProvider, targetProvider, mainnet } = useContext(BadgeContext)
   const [pageNumber, setPageNumber] = useState(1)
   const [viewAllBadges, flipViewAllBadges] = useState(false)
 
@@ -104,7 +104,7 @@ export default function BadgesPaginatedSection({ eventBadges, etherscanRef }) {
         >
           {eventBadges && eventBadges.length > 0 && !viewAllBadges
             ? getPaginationData(10).map(event => {
-                let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
+                let contract = new ethers.Contract(contractRef.address, contractRef.abi, targetProvider)
                 return (
                   <Grid
                     item
