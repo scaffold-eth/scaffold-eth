@@ -21,7 +21,7 @@ export default function SpeedUpTransactions({provider, signer, injectedProvider,
   const filterResponsesAddressAndChainId = (transactionResponsesArray) => {
     return transactionResponsesArray.filter(
       transactionResponse => {
-        return (transactionResponse.from == address) && (transactionResponse.chainId == chainId);
+        return (transactionResponse.from == address) && (transactionResponse.chainId == chainId) && (transactionResponse.confirmations == 0);
       })
   }
 
