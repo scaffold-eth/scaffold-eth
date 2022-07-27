@@ -2,6 +2,8 @@ import { ETHERSCAN_KEY } from "../constants";
 import React, { useEffect, useState } from "react";
 import { Avatar, Button, List } from 'antd';
 
+import { QRPunkBlockie } from "./";
+
 const { ethers } = require("ethers");
 
 export default function TransactionHistory({ transactionResponsesArray }) {
@@ -49,9 +51,12 @@ export default function TransactionHistory({ transactionResponsesArray }) {
             renderItem={(item) => (
               <List.Item>
                 <List.Item.Meta
-                  avatar={<Avatar src="https://joeschmoe.io/api/v1/random" />}
                   title={<a href={item.chainId == 1 ? "https://etherscan.io/tx/" + item.hash : "https://polygonscan.com/tx/" + item.hash}>{item.nonce}</a>}
-                  description="Ant Design, a design language for background applications, is refined by Ant UED Team"
+                  description={
+                    <div style={{ position:"relative",left:-220,top:-90 }}>
+                      <QRPunkBlockie scale={0.4} address={item.to} />
+                    </div>
+                  }
                 />
               </List.Item>
             )}
