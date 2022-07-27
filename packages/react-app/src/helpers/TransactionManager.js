@@ -48,6 +48,8 @@ export class TransactionManager {
 		return transactionResponses[nonce];
 	}
 	setTransactionResponse(transactionResponse) {
+		transactionResponse.date = new Date();
+
 		let transactionResponses = this.getTransactionResponses();
 
 		transactionResponses[transactionResponse.nonce] = transactionResponse;
@@ -64,7 +66,7 @@ export class TransactionManager {
 	async updateTransactionResponse(transactionResponse) {
 		let newTransactionResponse = await this.provider.getTransaction(transactionResponse.hash);
 
-		this.setTransactionResponse(newTransactionResponse);
+		this.setTransactionResponse(newTransactionResponse ? newTransactionResponse : transactionResponse);
 	}
 
 
@@ -101,6 +103,7 @@ export class TransactionManager {
 			if (transactionResponse.nonce <= (nonce - 1)) {
 				console.log("getConfirmations nonce is already used", transactionResponse);
 				// Transaction with the same nonce was already confirmed
+				transactionResponse.confirmations = 100;
 				this.updateTransactionResponse(transactionResponse);
 
 				return -1;

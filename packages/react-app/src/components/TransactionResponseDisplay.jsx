@@ -14,6 +14,7 @@ export default function TransactionResponseDisplay({transactionResponse, transac
     let confirmations = await transactionManager.getConfirmations(transactionResponse);
 
     if (confirmations >= 1) {
+      transactionResponse.confirmations = confirmations;
       transactionManager.updateTransactionResponse(transactionResponse);
     }
 

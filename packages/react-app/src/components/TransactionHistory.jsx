@@ -1,6 +1,7 @@
 import { ETHERSCAN_KEY } from "../constants";
 import React, { useEffect, useState } from "react";
 import { Avatar, Button, List } from 'antd';
+import moment from 'moment';
 
 import { QRPunkBlockie, TransactionResponseDisplay } from "./";
 
@@ -57,7 +58,8 @@ export default function TransactionHistory({ transactionResponsesArray, transact
                       <div style={{ position:"relative",left:-220, top:-90 }}>
                         <QRPunkBlockie scale={0.4} address={transactionResponse.to} />
                       </div>
-                      <p><b>Value:</b> {ethers.utils.formatEther(BigNumber.from(transactionResponse.value).toString())} Ξ</p>
+                      {(transactionResponse.value) && <p><b>Value:</b> {ethers.utils.formatEther(BigNumber.from(transactionResponse.value).toString())} Ξ</p>}
+                      {transactionResponse.date && <p> {moment(transactionResponse.date).fromNow()}</p>}
                       {(transactionResponse.confirmations == 0) && <TransactionResponseDisplay transactionResponse={transactionResponse} transactionManager={transactionManager}/>}
                     </>
                   }
