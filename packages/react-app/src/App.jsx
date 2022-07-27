@@ -885,6 +885,7 @@ function App(props) {
            injectedProvider={injectedProvider}
            address={address} 
            chainId={targetNetwork.chainId}
+           blockExplorer={blockExplorer}
          />
       </div>
 

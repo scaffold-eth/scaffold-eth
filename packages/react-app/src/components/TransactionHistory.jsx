@@ -1,13 +1,12 @@
 import { ETHERSCAN_KEY } from "../constants";
 import React, { useEffect, useState } from "react";
 import { Avatar, Button, List } from 'antd';
-import moment from 'moment';
 
-import { QRPunkBlockie, TransactionResponseDisplay } from "./";
+import { TransactionResponseDisplay } from "./";
 
 const { BigNumber, ethers } = require("ethers");
 
-export default function TransactionHistory({ transactionResponsesArray, transactionManager }) {
+export default function TransactionHistory({ transactionResponsesArray, transactionManager, blockExplorer }) {
   console.log("transactionResponsesArray", transactionResponsesArray);
 
   const [history, setHistory] = useState();
@@ -38,12 +37,8 @@ export default function TransactionHistory({ transactionResponsesArray, transact
       </div>
     ) : null;
 
-// ToDo: proper block explorer links according to the chainId
-
   return  (
     <div>  
-       TransactionHistory
-
        {history && 
          <List
             itemLayout="vertical"
@@ -52,17 +47,8 @@ export default function TransactionHistory({ transactionResponsesArray, transact
             renderItem={(transactionResponse) => (
               <List.Item>
                 <List.Item.Meta
-                  title={<a href={transactionResponse.chainId == 1 ? "https://etherscan.io/tx/" + transactionResponse.hash : "https://polygonscan.com/tx/" + transactionResponse.hash}>{transactionResponse.nonce}</a>}
-                  description={
-                    <>
-                      <div style={{ position:"relative",left:-220, top:-90 }}>
-                        <QRPunkBlockie scale={0.4} address={transactionResponse.to} />
-                      </div>
-                      {(transactionResponse.value) && <p><b>Value:</b> {ethers.utils.formatEther(BigNumber.from(transactionResponse.value).toString())} Ξ</p>}
-                      {transactionResponse.date && <p> {moment(transactionResponse.date).fromNow()}</p>}
-                      {(transactionResponse.confirmations == 0) && <TransactionResponseDisplay transactionResponse={transactionResponse} transactionManager={transactionManager}/>}
-                    </>
-                  }
+                  description=
+                    {<TransactionResponseDisplay transactionResponse={transactionResponse} transactionManager={transactionManager} blockExplorer={blockExplorer}/>}
                 />
               </List.Item>
             )}

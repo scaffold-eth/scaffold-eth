@@ -2,15 +2,22 @@ import { Button, Popover } from "antd";
 import React, { useEffect, useState } from "react";
 
 import { TransactionManager } from "../helpers/TransactionManager";
+import { QRPunkBlockie } from "./";
+
+import moment from 'moment';
 
 const { BigNumber, ethers } = require("ethers");
 
-export default function TransactionResponseDisplay({transactionResponse, transactionManager}) {
+export default function TransactionResponseDisplay({transactionResponse, transactionManager, blockExplorer}) {
   const [confirmations, setConfirmations] = useState();
   const [loadingSpeedUp, setLoadingSpeedUp] = useState(false);
   const [loadingCancel, setLoadingCancel] = useState(false);
 
   const updateConfirmations = async () => {
+    if (transactionResponse.confirmations > 0) {
+      return;
+    }
+
     let confirmations = await transactionManager.getConfirmations(transactionResponse);
 
     if (confirmations >= 1) {
@@ -21,13 +28,20 @@ export default function TransactionResponseDisplay({transactionResponse, transac
     setConfirmations(confirmations);
   }
 
-  transactionManager.log("Pending tx:", transactionResponse.nonce, transactionResponse.hash, confirmations);
+  if (transactionResponse.confirmations == 0) {
+    transactionManager.log("Pending tx:", transactionResponse.nonce, transactionResponse.hash, confirmations);
+  }
+  
 
   useEffect(() => {
     updateConfirmations();
   },[transactionResponse, transactionManager]);
 
   useEffect(() => {
+    if (transactionResponse.confirmations > 0) {
+      return;
+    }
+
     const interval = setInterval(() => {
       updateConfirmations();
     }, 1000);
@@ -105,7 +119,28 @@ export default function TransactionResponseDisplay({transactionResponse, transac
 
   return  (
     <div style={{ padding: 16 }}>
-      {(confirmations == 0) &&     
+      {(transactionResponse.hash && transactionResponse.nonce) && <a style={{ color:'rgb(24, 144, 255)' }} href={blockExplorer + "tx/" + transactionResponse.hash}>{transactionResponse.nonce}</a>}
+      {!isCancelTransaction(transactionResponse) ?
+        <>
+          <div style={{ position:"relative",left:-100, top:-40 }}>
+            <QRPunkBlockie scale={0.4} address={transactionResponse.to} />
+         </div>
+
+        
+
+        
+        {(transactionResponse.value) && <p><b>Value:</b> {ethers.utils.formatEther(BigNumber.from(transactionResponse.value).toString())} Ξ</p>}
+        {transactionResponse.date && <p> {moment(transactionResponse.date).fromNow()}</p>}
+        </>
+
+        :
+        <p>
+          Transaction cancelled
+        </p>
+      }
+       
+
+      {(confirmations == 0) &&    
         <div>
         
           <div style={{ textAlign: "center"}}>
@@ -143,11 +178,10 @@ export default function TransactionResponseDisplay({transactionResponse, transac
              >
               Speed Up 10%
              </Button>
-
-
           </div>
-
         </div>
+        
+        
      }
     </div>
   );
