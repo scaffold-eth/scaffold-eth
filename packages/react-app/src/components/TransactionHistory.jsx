@@ -20,7 +20,9 @@ export default function TransactionHistory({ transactionResponsesArray, transact
   }, [count, transactionResponsesArray]);
 
   const onLoadMore = () => {
-    setCount(count + 1);
+    let newCount = Math.min(count + 3, transactionResponsesArray.length)
+
+    setCount(newCount);
   }
 
   const loadMore =
@@ -33,7 +35,7 @@ export default function TransactionHistory({ transactionResponsesArray, transact
           lineHeight: '32px',
         }}
       >
-        <Button onClick={onLoadMore}>loading more</Button>
+        <Button onClick={onLoadMore}>More transactions</Button>
       </div>
     ) : null;
 
@@ -43,7 +45,7 @@ export default function TransactionHistory({ transactionResponsesArray, transact
          <List
             itemLayout="vertical"
             dataSource={history}
-            loadMore={loadMore}
+            loadMore={(count < transactionResponsesArray.length) ? loadMore : undefined}
             renderItem={(transactionResponse) => (
               <List.Item>
                 <List.Item.Meta
