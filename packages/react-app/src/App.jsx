@@ -19,7 +19,7 @@ import {
   Header,
   QRPunkBlockie,
   Ramp,
-  SpeedUpTransactions,
+  TransactionResponses,
   Wallet,
   WalletConnectTransactionDisplay,
 } from "./components";
@@ -879,7 +879,7 @@ function App(props) {
       {/* ✏️ Edit the header and change the title to your project name */}
 
       <div style={{ padding: 16, backgroundColor: "#FFFFFF", width: 420, margin: "auto" }}>
-        <SpeedUpTransactions
+        <TransactionResponses
            provider={userProvider}
            signer={userProvider.getSigner()}
            injectedProvider={injectedProvider}

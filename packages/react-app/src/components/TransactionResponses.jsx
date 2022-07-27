@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { TransactionManager } from "../helpers/TransactionManager";
 import { TransactionHistory } from "./";
 
-export default function SpeedUpTransactions({provider, signer, injectedProvider, address, chainId, blockExplorer}) {
+export default function TransactionResponses({provider, signer, injectedProvider, address, chainId, blockExplorer}) {
   const transactionManager = new TransactionManager(provider, signer, true);
 
   const [transactionResponsesArray, setTransactionResponsesArray] = useState([]);
@@ -39,6 +39,8 @@ export default function SpeedUpTransactions({provider, signer, injectedProvider,
   }, [injectedProvider, address, chainId]);
   
     return (
-      <TransactionHistory transactionResponsesArray={transactionResponsesArray} transactionManager={transactionManager} blockExplorer={blockExplorer}/>
+      <>
+      {(transactionResponsesArray.length > 0) && <TransactionHistory transactionResponsesArray={transactionResponsesArray} transactionManager={transactionManager} blockExplorer={blockExplorer}/>}
+      </>
     );  
   }
