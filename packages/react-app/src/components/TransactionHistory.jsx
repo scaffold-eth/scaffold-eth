@@ -2,11 +2,11 @@ import { ETHERSCAN_KEY } from "../constants";
 import React, { useEffect, useState } from "react";
 import { Avatar, Button, List } from 'antd';
 
-import { QRPunkBlockie } from "./";
+import { QRPunkBlockie, TransactionResponseDisplay } from "./";
 
-const { ethers } = require("ethers");
+const { BigNumber, ethers } = require("ethers");
 
-export default function TransactionHistory({ transactionResponsesArray }) {
+export default function TransactionHistory({ transactionResponsesArray, transactionManager }) {
   console.log("transactionResponsesArray", transactionResponsesArray);
 
   const [history, setHistory] = useState();
@@ -48,14 +48,18 @@ export default function TransactionHistory({ transactionResponsesArray }) {
             itemLayout="vertical"
             dataSource={history}
             loadMore={loadMore}
-            renderItem={(item) => (
+            renderItem={(transactionResponse) => (
               <List.Item>
                 <List.Item.Meta
-                  title={<a href={item.chainId == 1 ? "https://etherscan.io/tx/" + item.hash : "https://polygonscan.com/tx/" + item.hash}>{item.nonce}</a>}
+                  title={<a href={transactionResponse.chainId == 1 ? "https://etherscan.io/tx/" + transactionResponse.hash : "https://polygonscan.com/tx/" + transactionResponse.hash}>{transactionResponse.nonce}</a>}
                   description={
-                    <div style={{ position:"relative",left:-220,top:-90 }}>
-                      <QRPunkBlockie scale={0.4} address={item.to} />
-                    </div>
+                    <>
+                      <div style={{ position:"relative",left:-220, top:-90 }}>
+                        <QRPunkBlockie scale={0.4} address={transactionResponse.to} />
+                      </div>
+                      <p><b>Value:</b> {ethers.utils.formatEther(BigNumber.from(transactionResponse.value).toString())} Ξ</p>
+                      {(transactionResponse.confirmations == 0) && <TransactionResponseDisplay transactionResponse={transactionResponse} transactionManager={transactionManager}/>}
+                    </>
                   }
                 />
               </List.Item>

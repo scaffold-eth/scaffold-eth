@@ -880,14 +880,6 @@ function App(props) {
 
       <div style={{ padding: 16, backgroundColor: "#FFFFFF", width: 420, margin: "auto" }}>
         <SpeedUpTransactions
-           checkPendingTransactions={false}
-           address={address} 
-           chainId={targetNetwork.chainId}
-         />
-      </div>
-
-      <div style={{ padding: 16, backgroundColor: "#FFFFFF", width: 420, margin: "auto" }}>
-        <SpeedUpTransactions
            provider={userProvider}
            signer={userProvider.getSigner()}
            injectedProvider={injectedProvider}

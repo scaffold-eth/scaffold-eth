@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { TransactionManager } from "../helpers/TransactionManager";
-import { TransactionHistory, TransactionResponseDisplay } from "./";
+import { TransactionHistory } from "./";
 
-export default function SpeedUpTransactions({provider, signer, injectedProvider, address, chainId, checkPendingTransactions = true}) {
+export default function SpeedUpTransactions({provider, signer, injectedProvider, address, chainId}) {
   const transactionManager = new TransactionManager(provider, signer, true);
 
   const [transactionResponsesArray, setTransactionResponsesArray] = useState([]);
@@ -21,8 +21,7 @@ export default function SpeedUpTransactions({provider, signer, injectedProvider,
   const filterResponsesAddressAndChainId = (transactionResponsesArray) => {
     return transactionResponsesArray.filter(
       transactionResponse => {
-        return (transactionResponse.from == address) && (transactionResponse.chainId == chainId) && 
-          ((checkPendingTransactions && (transactionResponse.confirmations == 0)) || (!checkPendingTransactions && (transactionResponse.confirmations != 0)));
+        return (transactionResponse.from == address) && (transactionResponse.chainId == chainId);
       })
   }
 
@@ -40,17 +39,6 @@ export default function SpeedUpTransactions({provider, signer, injectedProvider,
   }, [injectedProvider, address, chainId]);
   
     return (
-      <div>  
-         {checkPendingTransactions ? transactionResponsesArray.map(
-          transactionResponse => {
-            return (
-              <TransactionResponseDisplay key={transactionResponse.nonce} transactionResponse={transactionResponse} transactionManager={transactionManager}/>
-            )
-          })
-          :
-          <TransactionHistory transactionResponsesArray={transactionResponsesArray}/>
-         }
-      </div>
-      
+      <TransactionHistory transactionResponsesArray={transactionResponsesArray} transactionManager={transactionManager}/>
     );  
   }
