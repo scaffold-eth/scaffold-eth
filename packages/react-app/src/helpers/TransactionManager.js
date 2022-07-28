@@ -22,6 +22,10 @@ export class TransactionManager {
 		return STORAGE_KEY;
 	}
 
+	getTransactionResponseKey(transactionResponse) {
+		return transactionResponse?.nonce + transactionResponse?.chainId;
+	}
+
 	getLocalStorageChangedEventName() {
 		return LOCAL_STORAGE_CHANGED_EVENT_NAME;
 	}
@@ -42,24 +46,24 @@ export class TransactionManager {
 		window.dispatchEvent(new CustomEvent(LOCAL_STORAGE_CHANGED_EVENT_NAME));
 	}
 
-	getTransactionResponse(nonce) {
+	getTransactionResponse(key) {
 		let transactionResponses = this.getTransactionResponses();
 
-		return transactionResponses[nonce];
+		return transactionResponses[key];
 	}
 	setTransactionResponse(transactionResponse) {
 		transactionResponse.date = new Date();
 
 		let transactionResponses = this.getTransactionResponses();
 
-		transactionResponses[transactionResponse.nonce] = transactionResponse;
+		transactionResponses[this.getTransactionResponseKey(transactionResponse)] = transactionResponse;
 
 		this.setTransactionResponses(transactionResponses);
 	}
 	removeTransactionResponse(transactionResponse) {
 		let transactionResponses = this.getTransactionResponses();
 
-		delete transactionResponses[transactionResponse.nonce];
+		delete transactionResponses[this.getTransactionResponseKey(transactionResponse)];
 
 		this.setTransactionResponses(transactionResponses);
 	}
@@ -68,7 +72,6 @@ export class TransactionManager {
 
 		this.setTransactionResponse(newTransactionResponse ? newTransactionResponse : transactionResponse);
 	}
-
 
 	getTransactionResponsesArray() {
 		let transactionResponses = this.getTransactionResponses();
@@ -121,8 +124,8 @@ export class TransactionManager {
 		return !(confirmations > 0);
 	}
 
-	cancelTransaction(nonce) {
-		let transactionParams = this.getSpeedUpTransactionParams(nonce, 10);
+	cancelTransaction(key) {
+		let transactionParams = this.getSpeedUpTransactionParams(key, 10);
 
 		transactionParams.to = transactionParams.from;
 		transactionParams.data = "0x";
@@ -132,12 +135,12 @@ export class TransactionManager {
 		return this.signer.sendTransaction(transactionParams);
 	}
 	
-	speedUpTransaction(nonce, speedUpPercentage) {
+	speedUpTransaction(key, speedUpPercentage) {
 		if (!speedUpPercentage) {
 			speedUpPercentage = 10;
 		}
 
-		let transactionParams = this.getSpeedUpTransactionParams(nonce, speedUpPercentage);
+		let transactionParams = this.getSpeedUpTransactionParams(key, speedUpPercentage);
 		this.log("transactionParams", transactionParams);
 
 		if (!transactionParams) {
@@ -147,8 +150,8 @@ export class TransactionManager {
 		return this.signer.sendTransaction(transactionParams);
 	}
 
-	getSpeedUpTransactionParams(nonce, speedUpPercentage) {
-		let transactionResponse = this.getTransactionResponse(nonce);
+	getSpeedUpTransactionParams(key, speedUpPercentage) {
+		let transactionResponse = this.getTransactionResponse(key);
 
 		if (!transactionResponse) {
 			return undefined;

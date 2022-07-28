@@ -88,10 +88,10 @@ export default function TransactionResponseDisplay({transactionResponse, transac
     let newTransactionResponse;
     try {
       if (cancelTransaction) {
-        newTransactionResponse = await transactionManager.cancelTransaction(transactionResponse.nonce);
+        newTransactionResponse = await transactionManager.cancelTransaction(transactionManager.getTransactionResponseKey(transactionResponse));
       }
       else {
-        newTransactionResponse = await transactionManager.speedUpTransaction(transactionResponse.nonce, 10);
+        newTransactionResponse = await transactionManager.speedUpTransaction(transactionManager.getTransactionResponseKey(transactionResponse), 10);
       }
 
       transactionManager.log("handleSpeedUp", newTransactionResponse, transactionResponse.hash);  
