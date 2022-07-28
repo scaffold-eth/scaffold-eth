@@ -878,17 +878,6 @@ function App(props) {
 
       {/* ✏️ Edit the header and change the title to your project name */}
 
-      <div style={{ padding: 16, backgroundColor: "#FFFFFF", width: 420, margin: "auto" }}>
-        <TransactionResponses
-           provider={userProvider}
-           signer={userProvider.getSigner()}
-           injectedProvider={injectedProvider}
-           address={address} 
-           chainId={targetNetwork.chainId}
-           blockExplorer={blockExplorer}
-         />
-      </div>
-
       <div style={{ clear: "both", opacity: yourLocalBalance ? 1 : 0.2, width: 500, margin: "auto",position:"relative" }}>
         <Balance value={yourLocalBalance} size={12+window.innerWidth/16} price={price} />
         <span style={{ verticalAlign: "middle" }}>
@@ -1144,7 +1133,18 @@ function App(props) {
       </BrowserRouter>
 */}
 
-      <div style={{ zIndex: -1, paddingTop: 128, opacity: 0.5, fontSize: 12 }}>
+      <div style={{ padding: 16, backgroundColor: "#FFFFFF", width: 420, margin: "auto" }}>
+          <TransactionResponses
+             provider={userProvider}
+             signer={userProvider.getSigner()}
+             injectedProvider={injectedProvider}
+             address={address} 
+             chainId={targetNetwork.chainId}
+             blockExplorer={blockExplorer}
+           />
+      </div>
+
+      <div style={{ zIndex: -1, paddingTop: 20, opacity: 0.5, fontSize: 12 }}>
         <Button
           style={{ margin:8, marginTop: 16 }}
           onClick={() => {

@@ -48,6 +48,7 @@ export default function TransactionHistory({ transactionResponsesArray, transact
 
   return  (
     <div>  
+       Transaction History
        {history && 
          <List
             itemLayout="vertical"

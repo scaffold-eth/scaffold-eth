@@ -39,8 +39,7 @@ export default function TransactionResponseDisplay({transactionResponse, transac
   useEffect(() => {
     updateConfirmations();
 
-    //if ((transactionResponse.confirmations > 0) || (transactionResponse?.chainId != NETWORKS.ethereum.chainId))  {
-    if ((transactionResponse?.chainId != NETWORKS.ethereum.chainId))  {
+    if ((transactionResponse.confirmations > 0) || (transactionResponse?.chainId != NETWORKS.ethereum.chainId)) {
       return;
     }
 
