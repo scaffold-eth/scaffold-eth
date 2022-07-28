@@ -37,10 +37,12 @@ export default function TransactionHistory({ transactionResponsesArray, transact
           marginTop: 12,
           height: 32,
           lineHeight: '32px',
+          display: 'flex',
+          justifyContent:'space-between'
         }}
       >
-        <Button onClick={onLoadMore}>More</Button>
         <Button onClick={onClearTransactions}>Clear All 🗑</Button>
+        <Button onClick={onLoadMore}>More Transactions</Button>
       </div>
     ) : null;
 

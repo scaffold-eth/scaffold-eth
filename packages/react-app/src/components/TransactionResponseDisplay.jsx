@@ -130,15 +130,16 @@ export default function TransactionResponseDisplay({transactionResponse, transac
 
         
         {(transactionResponse.value) && <p><b>Value:</b> {ethers.utils.formatEther(BigNumber.from(transactionResponse.value).toString())} Ξ</p>}
-        {transactionResponse.date && <p> {moment(transactionResponse.date).fromNow()}</p>}
+        
         </>
 
         :
         <p>
           Transaction cancelled
+
         </p>
       }
-       
+      {transactionResponse.date && <p> {moment(transactionResponse.date).fromNow()}</p>}
 
       {(confirmations == 0) &&    
         <div>
