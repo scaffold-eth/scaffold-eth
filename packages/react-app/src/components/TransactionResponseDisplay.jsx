@@ -1,8 +1,11 @@
+import { ETHERSCAN_KEY, NETWORKS } from "../constants";
 import { Button, Popover } from "antd";
 import React, { useEffect, useState } from "react";
 
 import { TransactionManager } from "../helpers/TransactionManager";
 import { QRPunkBlockie } from "./";
+
+import axios from "axios";
 
 import moment from 'moment';
 
@@ -12,6 +15,7 @@ export default function TransactionResponseDisplay({transactionResponse, transac
   const [confirmations, setConfirmations] = useState();
   const [loadingSpeedUp, setLoadingSpeedUp] = useState(false);
   const [loadingCancel, setLoadingCancel] = useState(false);
+  const [estimatedConfirmationSeconds, setEstimatedConfirmationSeconds] = useState(0);
 
   const updateConfirmations = async () => {
     if (transactionResponse.confirmations > 0) {
@@ -31,10 +35,16 @@ export default function TransactionResponseDisplay({transactionResponse, transac
   if (transactionResponse.confirmations == 0) {
     transactionManager.log("Pending tx:", transactionResponse.nonce, transactionResponse.hash, confirmations);
   }
-  
 
   useEffect(() => {
     updateConfirmations();
+
+    //if ((transactionResponse.confirmations > 0) || (transactionResponse?.chainId != NETWORKS.ethereum.chainId))  {
+    if ((transactionResponse?.chainId != NETWORKS.ethereum.chainId))  {
+      return;
+    }
+
+    getConfirmationEstimation(transactionResponse.gasPrice);
   },[transactionResponse, transactionManager]);
 
   useEffect(() => {
@@ -117,6 +127,42 @@ export default function TransactionResponseDisplay({transactionResponse, transac
     }
   }
 
+
+  // https://api.etherscan.io/api?module=gastracker&action=gasestimate&gasprice=8000000000&apikey=
+  const getConfirmationEstimation = (gasPrice) => {
+    let apiURL = "https://api.etherscan.io/api?module=gastracker&action=gasestimate&apikey=" + ETHERSCAN_KEY;
+
+    apiURL += "&gasprice=" + BigNumber.from(gasPrice).toString();
+
+    console.log("getConfirmationEstimation");
+
+    axios
+      .get(apiURL)
+      .then(response => {
+        console.log("response", apiURL,  response);
+        let estimatedConfirmationSeconds = response.data.result;
+        console.log("estimatedConfirmationSeconds", estimatedConfirmationSeconds);
+        setEstimatedConfirmationSeconds(estimatedConfirmationSeconds);
+      })
+      .catch(error => console.log(error));
+  }
+
+  const getEstimatedConfirmationDuration = () => {
+    if (estimatedConfirmationSeconds < 60) {
+      return estimatedConfirmationSeconds + " sec"
+    }
+    else if (estimatedConfirmationSeconds >= 3600) {
+      let hours = parseInt(parseInt(estimatedConfirmationSeconds) / 3600);
+
+      return "> " + hours + ((hours > 1) ? " hours" : " hour");
+    }
+    else {
+      let minutes = parseInt(parseInt(estimatedConfirmationSeconds) / 60);
+
+      return minutes + ((minutes > 1) ? " minutes" : " minute");
+    }
+  }
+
   return  (
     <div style={{ padding: 16 }}>
       {(transactionResponse.hash && (transactionResponse.nonce || transactionResponse?.nonce == 0)) && <a style={{ color:'rgb(24, 144, 255)' }} href={blockExplorer + "tx/" + transactionResponse.hash}>{transactionResponse.nonce}</a>}
@@ -136,20 +182,21 @@ export default function TransactionResponseDisplay({transactionResponse, transac
         :
         <p>
           Transaction cancelled
-
         </p>
       }
       {transactionResponse.date && <p> {moment(transactionResponse.date).fromNow()}</p>}
 
       {(confirmations == 0) &&    
-        <div>
-        
+        <div>        
           <div style={{ textAlign: "center"}}>
             <Popover placement="right" content={getTransactionPopoverContent()} trigger="click">
               <Button style={{ padding: 0 }}type="link" >{!isCancelTransaction(transactionResponse) ? <> Transaction </> : <> Cancelling </>}</Button>
             </Popover>
-            <b> {transactionResponse.nonce} </b> is pending, <b> gasPrice: {getGasPriceGwei()} </b>
-            
+            <b> {transactionResponse.nonce} </b> is pending, <b> gasPrice: {getGasPriceGwei()} </b>            
+          </div>
+
+          <div>
+          {estimatedConfirmationSeconds ? "Estimated Confirmation Duration " + getEstimatedConfirmationDuration() : ""}
           </div>
 
           <div style={ !isCancelTransaction(transactionResponse) ? { display: "flex", justifyContent: "space-between"} : {}}>
