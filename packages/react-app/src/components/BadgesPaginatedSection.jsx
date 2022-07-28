@@ -1,4 +1,3 @@
-// @ts-nocheck
 import Grid from '@mui/material/Grid'
 import NftCard from './NftCard'
 import Button from '@mui/material/Button'
@@ -8,11 +7,15 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 import Switch from '@mui/material/Switch'
 import ArrowBackIosNewRoundedIcon from '@mui/icons-material/ArrowBackIosNewRounded'
 import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded'
+import DownloadingRoundedIcon from '@mui/icons-material/DownloadingRounded'
 import { ethers } from 'ethers'
 import { useContext, useState } from 'react'
 import { BadgeContext } from 'contexts/BadgeContext'
+import Fab from '@mui/material/Fab'
+import blue from '@mui/material/colors/blue'
 
 export default function BadgesPaginatedSection({ eventBadges, etherscanRef }) {
+  // @ts-ignore
   const { contractRef, localProvider, targetProvider, mainnet } = useContext(BadgeContext)
   const [pageNumber, setPageNumber] = useState(1)
   const [viewAllBadges, flipViewAllBadges] = useState(false)
@@ -37,7 +40,7 @@ export default function BadgesPaginatedSection({ eventBadges, etherscanRef }) {
   }
   return (
     <>
-      <Box
+      {/* <Box
         mb={15}
         mt={10}
         p={1}
@@ -61,6 +64,7 @@ export default function BadgesPaginatedSection({ eventBadges, etherscanRef }) {
           <Typography variant={'button'}>Previous</Typography>
         </Button>
         <FormControlLabel
+          // @ts-ignore
           control={<Switch checked={viewAllBadges} onChange={handleCheck} size="large" />}
           label="View all Badges"
           labelPlacement="start"
@@ -79,7 +83,7 @@ export default function BadgesPaginatedSection({ eventBadges, etherscanRef }) {
           <Typography variant={'button'}>Next</Typography>
           <ArrowForwardIosRoundedIcon />
         </Button>
-      </Box>
+      </Box> */}
       <Box
         sx={{
           background: 'linear-gradient(90deg, #f6e8fc, #f1e6fb, #ede5fb, #e8e4fa, #e3e2f9, #dee1f7, #d9dff6, #d4def4)',
@@ -153,6 +157,26 @@ export default function BadgesPaginatedSection({ eventBadges, etherscanRef }) {
                 )
               })
             : null}
+          <Grid item justifySelf={'flex-end'}>
+            <Fab
+              variant={'extended'}
+              size="large"
+              sx={{
+                color: 'whitesmoke',
+                ':hover': {
+                  backgroundColor: '#1565c0',
+                },
+                padding: 3,
+                backgroundColor: '#81a6f7',
+              }}
+              onClick={() => {}}
+            >
+              <DownloadingRoundedIcon sx={{ marginRight: 2, fontSize: 48 }} />
+              <Typography variant="button" fontWeight={'700'}>
+                Load More
+              </Typography>
+            </Fab>
+          </Grid>
         </Grid>
       </Box>
     </>
