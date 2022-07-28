@@ -6,7 +6,7 @@ import { TransactionResponseDisplay } from "./";
 
 const { BigNumber, ethers } = require("ethers");
 
-export default function TransactionHistory({ transactionResponsesArray, transactionManager, blockExplorer }) {
+export default function TransactionHistory({ transactionResponsesArray, transactionManager, blockExplorer}) {
   console.log("transactionResponsesArray", transactionResponsesArray);
 
   const [history, setHistory] = useState();
@@ -25,6 +25,10 @@ export default function TransactionHistory({ transactionResponsesArray, transact
     setCount(newCount);
   }
 
+  const onClearTransactions = () => {
+    transactionResponsesArray.forEach(transactionResponse => transactionManager.removeTransactionResponse(transactionResponse))
+  }
+
   const loadMore =
     true ? (
       <div
@@ -35,7 +39,8 @@ export default function TransactionHistory({ transactionResponsesArray, transact
           lineHeight: '32px',
         }}
       >
-        <Button onClick={onLoadMore}>More transactions</Button>
+        <Button onClick={onLoadMore}>More</Button>
+        <Button onClick={onClearTransactions}>Clear All 🗑</Button>
       </div>
     ) : null;
 

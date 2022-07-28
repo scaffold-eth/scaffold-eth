@@ -183,6 +183,17 @@ export default function TransactionResponseDisplay({transactionResponse, transac
         
         
      }
+
+     {
+      (transactionResponse.confirmations != 0) && <Button
+       onClick={
+        () => {
+          transactionManager.removeTransactionResponse(transactionResponse);
+        }}
+       >
+       Clear  🗑
+       </Button>
+     }
     </div>
   );
 }
