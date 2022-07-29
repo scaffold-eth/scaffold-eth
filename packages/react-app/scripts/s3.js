@@ -68,26 +68,8 @@ const staticHostParams = {
   },
 };
 
-// Call S3 to create the bucket
-s3.createBucket(bucketParams, function (err, data) {
-  if (err) {
-    console.log("Error", err);
-  } else {
-    console.log("Bucket URL is ", data.Location);
-    // Set the new policy on the newly created bucket
-    s3.putBucketWebsite(staticHostParams, function (err, data) {
-      if (err) {
-        // Display error message
-        console.log("Error", err);
-      } else {
-        // Update the displayed policy for the selected bucket
-        console.log("Success... UPLOADING!", data);
 
-        ///
-        /// After the bucket is created, we upload to it:
-        ///
-        s3FolderUpload(directoryName, credentials, options , invalidation );
-      }
-    });
-  }
-});
+///
+/// After the bucket is created, we upload to it:
+///
+s3FolderUpload(directoryName, credentials, options , invalidation );
