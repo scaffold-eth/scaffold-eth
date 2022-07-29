@@ -21,12 +21,12 @@ import { useBalance } from "wagmi";
 export default function Balance({ address, chainId, watch, size, price }) {
   const [dollarMode, setDollarMode] = useState(true);
 
-  const { data, isError, error, isLoading } = useBalance({ addressOrName: address, chainId, watch });
-  let displayBalance = data?.formatted;
-  console.log("Display Balance:", data);
+  const { data: balance, isError, error, isLoading } = useBalance({ addressOrName: address, chainId, watch });
+  let displayBalance = balance?.formatted;
+  console.log("Display Balance:", balance);
 
   if (dollarMode) {
-    displayBalance = "$" + data?.formatted * price;
+    displayBalance = "$" + balance?.formatted * price;
   }
 
   if (isError) return { error: error };

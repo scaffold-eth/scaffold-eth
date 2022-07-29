@@ -31,12 +31,12 @@ const Address = props => {
   const { currentTheme } = useThemeSwitcher();
   const address = props.address;
   const { data: ensName, isError, isLoading } = useEnsName({ address: address, chainId: 1 });
-  console.log("ENS", ensName ? `${ensName} (${address})` : address);
+  console.log("ENS or Address: ", ensName ? `${ensName} (${address})` : address);
   const etherscanLink = blockExplorerLink(address, props.blockExplorer);
   let displayAddress = address?.substr(0, 5) + "..." + address?.substr(-4);
   console.log("Display Address:", displayAddress);
 
-  if (ensName) {
+  if (ensName && !isError && !isLoading) {
     displayAddress = ensName;
   } else if (props.size === "short") {
     displayAddress += "..." + address.substr(-4);

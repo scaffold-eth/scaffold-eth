@@ -5,6 +5,7 @@ import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 import { chain, configureChains, createClient, WagmiConfig } from "wagmi";
 import { alchemyProvider } from "wagmi/providers/alchemy";
+import { infuraProvider } from "wagmi/providers/infura";
 import { publicProvider } from "wagmi/providers/public";
 import App from "./App";
 import "./index.css";
@@ -15,10 +16,15 @@ import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
 
 const alchemyId = process.env.ALCHEMY_ID;
+const infuraId = process.env.INFURA_ID;
 
 const { chains, provider, webSocketProvider } = configureChains(
   [chain.mainnet, chain.polygon],
-  [alchemyProvider({ alchemyId }), publicProvider()],
+  [
+    alchemyProvider({ apiKey: alchemyId, priority: 1 }),
+    infuraProvider({ apiKey: infuraId, priority: 2 }),
+    publicProvider({ priority: 0 }),
+  ],
 );
 
 const client = createClient({
@@ -56,6 +62,7 @@ const themes = {
 
 const prevTheme = window.localStorage.getItem("theme");
 
+// Update subgraph URL after you deploy your project
 const subgraphUri = "http://localhost:8000/subgraphs/name/scaffold-eth/your-contract";
 
 const apolloClient = new ApolloClient({
