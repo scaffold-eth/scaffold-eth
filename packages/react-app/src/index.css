@@ -1,7 +1,315 @@
 body {
   margin: 0;
+  background-color: #8a0107;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+
+#root {
+  margin: 0 auto;
+  background-size:cover;
+  background-position:top;
+  background-repeat:no-repeat;
+  background-image: url(images/Background.png);
+  font-family: "Minecraft";
+}
+
+#content {
+  display: flex;
+  justify-content: space-around;
+}
+
+#connect-box .ant-btn {
+  background: none;
+  color: white;
+}
+
+#winner-roll-events-box {
+  margin: 0;
+}
+
+.ant-page-header {
+  background-image: url(images/PixelRoll.png);
+  background-position:top;
+  background-repeat:no-repeat;
+}
+
+#bet-events {
+  width: 400px;
+  height: 770px;
+  margin-top: 32px;
+  background-size:400px;
+  background-position: top;
+  background-repeat:no-repeat;
+  background-image: url(images/bet_events_new.png);
+  padding: 10px 18px;
+}
+
+#winner-events {
+  width: 400px;
+  height: 400px;
+  margin: 0 auto;
+  margin-top: 15px;
+  background-size:400px;
+  background-position:top;
+  background-repeat:no-repeat;
+  background-image: url(images/winning_events_new.png);
+  padding: 32px 20px 10px 32px;
+}
+
+#roll-events {
+  width: 400px;
+  height: 370px;
+  margin: 0 auto;
+  margin-top: 15px;
+  margin-bottom: 20px;
+  background-size:400px;
+  background-position:top;
+  background-repeat:no-repeat;
+  background-image: url(images/roll_events_new.png);
+  padding: 12px 20px 10px 20px;
+}
+
+#bet-events h2, #winner-events h2, #roll-events h2 {
+  color: #4bc5cc;
+}
+
+#bet-events .ant-table-cell, #bet-events .ant-table,
+#winner-events .ant-table-cell, #winner-events .ant-table,
+#roll-events .ant-table-cell, #roll-events .ant-table {
+  background: none;
+  color: #4bc5cc;
+  border-bottom: none;
+}
+
+#bet-events .ant-table-row td:last-child,
+#roll-events .ant-table-row td:last-child {
+  text-align: right;
+}
+
+#bet-events .ant-pagination, #winner-events .ant-pagination, #roll-events .ant-pagination {
+  margin: 16px;
+}
+
+#bet-events .ant-pagination button,
+#bet-events .ant-pagination li,
+#bet-events .ant-pagination li a,
+#winner-events .ant-pagination button,
+#winner-events .ant-pagination li,
+#winner-events .ant-pagination li a,
+#roll-events .ant-pagination button,
+#roll-events .ant-pagination li,
+#roll-events .ant-pagination li a {
+  background: none;
+  border: none;
+  color: #4bc5cc;
+}
+
+#bet-events .ant-pagination li.ant-pagination-item-active a,
+#winner-events .ant-pagination li.ant-pagination-item-active a,
+#roll-events .ant-pagination li.ant-pagination-item-active a {
+  color: white;
+}
+
+#bet-events table .ant-table-tbody > tr > td,
+#winner-events table .ant-table-tbody > tr > td,
+#roll-events table .ant-table-tbody > tr > td {
+  padding: 2px;
+}
+
+#bet-events table .ant-table-thead > tr > th,
+#winner-events table .ant-table-thead > tr > th,
+#roll-events table .ant-table-thead > tr > th {
+  padding: 10px;
+}
+
+#prize {
+  background-position:top;
+  background-repeat:no-repeat;
+  background-image: url(images/prize.png);
+  height: 108px;
+  padding-top: 52px;
+  color: #4bc5cc;
+  margin-top: 10px;
+}
+
+#bet-box {
+  padding: 16px;
+  display: flex;
+  justify-content: center;
+  margin-top: 70px;
+}
+
+#bet-input {
+  background-position:top;
+  background-repeat:no-repeat;
+  background-image: url(images/Bet_typing_box.png);
+  height: 64px;
+  width: 208px;
+  padding-top: 14px;
+  color: #4bc5cc;
+}
+
+#bet-input .ant-input-number {
+  border: none;
+  width: 100px;
+  font-size: 20px;
+  color: #4bc5cc;
+  background: none;
+}
+
+#bet-button {
+  background-position:top;
+  background-repeat:no-repeat;
+  background-image: url(images/Bet_button.png);
+  width: 60px;
+  height: 64px;
+  margin-left: 10px;
+}
+
+#bet-button span, #number-box .roll-button span {
+  display: none;
+}
+
+#number-box {
+  margin-top: 70px;
+}
+
+#status-box {
+  clear: both;
+  padding-top: 100px;
+}
+
+#roll-number {
+  background-position:top;
+  background-repeat:no-repeat;
+  background-image: url(images/Roll_display.png);
+  width: 256px;
+  height: 256px;
+  margin: 0 auto;
+  font-size: 90px;
+  padding-top: 50px;
+  color: #4bc5cc;
+  margin-left: 110px;
+  float: left;
+}
+
+#number-box .roll-button {
+  background: none;
+  background-position:top;
+  background-repeat:no-repeat;
+  background-image: url(images/Roll_button_unclicked.png);
+  width: 128px;
+  height: 32px;
+  margin-top: 50px;
+  border: none;
+  margin-left: -18px;
+  float: left;
+}
+
+#number-box .active {
+  background-image: url(images/Roll_button_clicked.png);
+  width: 32px;
+  height: 96px;
+}
+
+
+@media screen and (max-width: 1400px) {
+  #winner-roll-events-box {
+    margin-top: 20px;
+  }
+
+  #bet-events {
+    width: 270px;
+    margin-top: 15px;
+    background-size: 270px;
+    padding: 5px 17px;
+    font-size: 10px;
+  }
+
+  #winner-events {
+    width: 270px;
+    height: 270px;
+    margin: 0 auto;
+    margin-top: -15px;
+    background-size: 270px;
+    padding: 22px;
+    font-size: 10px;
+  }
+
+  #roll-events {
+    width: 270px;
+    height: 270px;
+    margin: 0 auto;
+    margin-top: 10px;
+    background-size: 270px;
+    padding: 9px 20px 10px 20px;
+    font-size: 10px;
+  }
+
+  #bet-events table, #winner-events table, #roll-events table {
+    font-size: 12px;
+  }
+
+  #bet-events table .ant-table-tbody > tr > td,
+  #winner-events table .ant-table-tbody > tr > td,
+  #roll-events table .ant-table-tbody > tr > td {
+    padding: 0;
+  }
+
+  #bet-events table .ant-table-thead > tr > th,
+  #winner-events table .ant-table-thead > tr > th,
+  #roll-events table .ant-table-thead > tr > th {
+    padding: 5px;
+  }
+
+  #bet-events table .ant-typography,
+  #winner-events table .ant-typography,
+  #roll-events table .ant-typography {
+    font-size: 12px;
+  }
+
+  #bet-events table .identicon,
+  #winner-events table .identicon,
+  #roll-events table .identicon {
+    width: 12px !important;
+    height: 12px !important;
+  }
+
+  #bet-events .ant-pagination, #winner-events .ant-pagination, #roll-events .ant-pagination {
+    font-size: 12px;
+    margin-top: 2px;
+  }
+
+  #bet-events .ant-pagination-jump-next,
+  #bet-events .ant-pagination-jump-prev,
+  #bet-events .ant-pagination-next,
+  #bet-events .ant-pagination-prev,
+  #bet-events .ant-pagination-item,
+  #winner-events .ant-pagination-jump-next,
+  #winner-events .ant-pagination-jump-prev,
+  #winner-events .ant-pagination-next,
+  #winner-events .ant-pagination-prev,
+  #winner-events .ant-pagination-item,
+  #roll-events .ant-pagination-jump-next,
+  #roll-events .ant-pagination-jump-prev,
+  #roll-events .ant-pagination-next,
+  #roll-events .ant-pagination-prev,
+  #roll-events .ant-pagination-item {
+    min-width: 12px;
+  }
+
+  #bet-box {
+    margin-top: 10px;
+  }
+
+  #number-box {
+    margin-top: 0;
+  }
+
+  #status-box {
+    padding-top: 10px;
+  }
 }

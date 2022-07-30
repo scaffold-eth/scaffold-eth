@@ -92,11 +92,24 @@ export default function Address(props) {
         </a>
       </Text>
     );
+  } else if (props.noCopy) {
+    text = (
+      <Text>
+        <a
+          style={{ color: currentTheme === "light" ? "#4bc5cc" : "#ddd" }}
+          target="_blank"
+          href={etherscanLink}
+          rel="noopener noreferrer"
+        >
+          {displayAddress}
+        </a>
+      </Text>
+    );
   } else {
     text = (
       <Text copyable={{ text: address }}>
         <a
-          style={{ color: currentTheme === "light" ? "#222222" : "#ddd" }}
+          style={{ color: currentTheme === "light" ? "#4bc5cc" : "#ddd" }}
           target="_blank"
           href={etherscanLink}
           rel="noopener noreferrer"

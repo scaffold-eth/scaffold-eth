@@ -1,6 +1,6 @@
 import Portis from "@portis/web3";
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import { Alert, Button, Col, List, Menu, Row, Input } from "antd";
+import { Alert, Button, Col, List, Menu, Row, Input, Table, Image, InputNumber } from "antd";
 import "antd/dist/antd.css";
 import Authereum from "authereum";
 import {
@@ -228,9 +228,6 @@ function App(props) {
   // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
   const yourLocalBalance = useBalance(localProvider, address);
 
-  // Just plug in different 🛰 providers to get your balance on different chains:
-  const yourMainnetBalance = useBalance(mainnetProvider, address);
-
   // const contractConfig = useContractConfig();
 
   const contractConfig = { deployedContracts: deployedContracts || {}, externalContracts: externalContracts || {} };
@@ -246,24 +243,6 @@ function App(props) {
   // If you want to bring in the mainnet DAI contract it would look like:
   const mainnetContracts = useContractLoader(mainnetProvider, contractConfig);
 
-  // If you want to call a function on a new block
-  useOnBlock(mainnetProvider, () => {
-    console.log(`⛓ A new mainnet block is here: ${mainnetProvider._lastBlockNumber}`);
-  });
-
-  // Then read your DAI balance like:
-  const myMainnetDAIBalance = useContractReader(mainnetContracts, "DAI", "balanceOf", [
-    "0x34aA3F359A9D614239015126635CE7732c18fDF3",
-  ]);
-
-  // keep track of a variable from the contract in the local React state:
-  const purpose = useContractReader(readContracts, "DiceGame", "purpose");
-
-  /*
-  const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
-  console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
-  */
-
   //
   // 🧫 DEBUG 👨🏻‍🔬
   //
@@ -274,7 +253,6 @@ function App(props) {
       address &&
       selectedChainId &&
       yourLocalBalance &&
-      yourMainnetBalance &&
       readContracts &&
       writeContracts &&
       mainnetContracts
@@ -285,10 +263,8 @@ function App(props) {
       console.log("👩‍💼 selected address:", address);
       console.log("🕵🏻‍♂️ selectedChainId:", selectedChainId);
       //console.log("💵 yourLocalBalance", yourLocalBalance ? ethers.utils.formatEther(yourLocalBalance) : "...");
-      //console.log("💵 yourMainnetBalance", yourMainnetBalance ? ethers.utils.formatEther(yourMainnetBalance) : "...");
       console.log("📝 readContracts", readContracts);
       //console.log("🌍 DAI contract on mainnet:", mainnetContracts);
-      //console.log("💵 yourMainnetDAIBalance", myMainnetDAIBalance);
       console.log("🔐 writeContracts", writeContracts);
     }
   }, [
@@ -296,7 +272,6 @@ function App(props) {
     address,
     selectedChainId,
     yourLocalBalance,
-    yourMainnetBalance,
     readContracts,
     writeContracts,
     mainnetContracts,
@@ -458,85 +433,130 @@ function App(props) {
   const canBet = useContractReader(readContracts, "DiceGame", "canBet");
   const canRoll = useContractReader(readContracts, "DiceGame", "canRoll");
 
-  const rollRiggedEvents = useEventListener(readContracts, "RiggedRoll", "Roll");
-  const difficultyRiggedEvents = useEventListener(readContracts, "RiggedRoll", "Difficulty");
-
   const [diceRolled, setDiceRolled] = useState(false);
-  const [diceRollImage, setDiceRollImage] = useState(null);
+  const [diceRollNumber, setDiceRollNumber] = useState(null);
   const [claiming, setClaiming] = useState(false);
   const [number, setNumber] = useState();
+  const [gameNumber, setGameNumber] = useState(0);
 
-  let diceRollImg = "";
-  if (diceRollImage) {
-    // diceRollImg = <img style={{ width: "300px", heigth: "300px" }} src={diceImages[`${diceRollImage}.png`].default} />;
-  }
+  useOnBlock(localProvider, () => {
+    if (DEBUG) console.log(`⛓ A new localProvider block is here: ${localProvider._lastBlockNumber}`);
+    const currentBlockNumber = localProvider._lastBlockNumber;
+    let game;
+    if (Math.floor(currentBlockNumber / 10) % 2 === 0) {
+      game = Math.floor(currentBlockNumber / 10) * 10;
+    } else {
+      game = Math.floor(currentBlockNumber / 10) * 10 - 10;
+    }
+    if (DEBUG) console.log("currentBlockNumber: ", currentBlockNumber, " - gameNumber: ", game);
+    setGameNumber(game);
+  });
 
   const bet = async () => {
-    tx(writeContracts.DiceGame.bet(number, { value: ethers.utils.parseEther("0.002"), gasLimit: 500000 }), update => {
-      if (update?.status === "failed") {
-        setDiceRolled(false);
-        //setDiceRollImage(null);
-      }
-    });
+    tx(writeContracts.DiceGame.bet(number, { value: ethers.utils.parseEther("0.002"), gasLimit: 500000 }));
   };
 
   const rollTheDice = async () => {
     setDiceRolled(true);
-    setDiceRollImage("ROLL");
+    setDiceRollNumber("...");
 
     tx(writeContracts.DiceGame.rollTheDice({ gasLimit: 500000 }), update => {
       if (update?.status === "failed" || !update.status) {
         setDiceRolled(false);
-        //setDiceRollImage(null);
+        setDiceRollNumber("");
       }
     });
   };
 
   const handleChangeNumber = value => {
-    console.log(value.target.value);
-    setNumber(value.target.value);
+    if (DEBUG) console.log("Bet: ", value);
+    setNumber(value);
   };
-
-  const riggedRoll = async () => {
-    tx(writeContracts.RiggedRoll.riggedRoll({ gasLimit: 500000 }), update => {
-      console.log("TX UPDATE", update);
-      if (update?.status === "sent" || update?.status === 1) {
-        setDiceRolled(true);
-        setDiceRollImage("ROLL");
-      }
-      if (update?.status === "failed") {
-        setDiceRolled(false);
-        //setDiceRollImage(null);
-      }
-      if (update?.status == 1 || update?.status == "confirmed") {
-        setTimeout(() => {
-          setDiceRolled(false);
-        }, 1500);
-      }
-    });
-  };
-
-  const riggedFilter = readContracts.DiceGame?.filters.Roll(riggedRoll.address, null);
-
-  readContracts.DiceGame?.on(riggedFilter, (_, value) => {
-    if (value) {
-      const numberRolled = value.toNumber().toString(16).toUpperCase();
-      setDiceRollImage(numberRolled);
-      setDiceRolled(false);
-    }
-  });
 
   const filter = readContracts.DiceGame?.filters.Roll(address, null);
 
-  readContracts.DiceGame?.on(filter, (_, value) => {
-    if (value) {
-      const numberRolled = value.toNumber().toString(16).toUpperCase();
-      setDiceRollImage(numberRolled);
+  readContracts.DiceGame?.on(filter, (_a, blockNumberRolled, numberRolled) => {
+    if (DEBUG) console.log("blockNumberRolled: ", blockNumberRolled.toNumber());
+    if (blockNumberRolled.toNumber() == gameNumber || blockNumberRolled.toNumber() == gameNumber - 20) {
+      if (DEBUG) console.log("numberRolled: ", numberRolled);
+      setDiceRollNumber(numberRolled);
       setDiceRolled(false);
     }
   });
 
   const date = new Date();
+
+  const betColumns = [
+    {
+      title: "Game #",
+      dataIndex: "game",
+      render: (text, record, index) => {
+        return record.args.blockNumber.toNumber();
+      },
+    },
+    {
+      title: "Player",
+      dataIndex: "player",
+      render: (text, record, index) => {
+        return <Address noCopy={true} value={record.args.player} ensProvider={mainnetProvider} fontSize={16} />;
+      },
+    },
+    {
+      title: "Bet",
+      dataIndex: "bet",
+      render: (text, record, index) => {
+        return record.args.number;
+      },
+    },
+  ];
+
+  const winnerColumns = [
+    {
+      title: "Game #",
+      dataIndex: "game",
+      render: (text, record, index) => {
+        return record.args.blockNumber.toNumber();
+      },
+    },
+    {
+      title: "Winner",
+      dataIndex: "winner",
+      render: (text, record, index) => {
+        return <Address noCopy={true} value={record.args[0]} ensProvider={mainnetProvider} fontSize={16} />;
+      },
+    },
+    {
+      title: "Prize",
+      dataIndex: "prize",
+      render: (text, record, index) => {
+        return "Ξ" + Math.round(ethers.utils.formatEther(record.args.amount.toString()) * 1e4) / 1e4;
+      },
+    },
+  ];
+
+  const rollColumns = [
+    {
+      title: "Game #",
+      dataIndex: "game",
+      render: (text, record, index) => {
+        return record.args.blockNumber.toNumber();
+      },
+    },
+    {
+      title: "Roller",
+      dataIndex: "roller",
+      render: (text, record, index) => {
+        return <Address noCopy={true} value={record.args.player} ensProvider={mainnetProvider} fontSize={16} />;
+      },
+    },
+    {
+      title: "Dice",
+      dataIndex: "dice",
+      render: (text, record, index) => {
+        return record.args.roll;
+      },
+    },
+  ];
 
   return (
     <div className="App">
@@ -544,168 +564,63 @@ function App(props) {
       <Header />
       {networkDisplay}
       <BrowserRouter>
-        <Menu style={{ textAlign: "center" }} selectedKeys={[route]} mode="horizontal">
-          <Menu.Item key="/">
-            <Link
-              onClick={() => {
-                setRoute("/");
-              }}
-              to="/"
-            >
-              Dice!
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/debug">
-            <Link
-              onClick={() => {
-                setRoute("/debug");
-              }}
-              to="/debug"
-            >
-              Debug
-            </Link>
-          </Menu.Item>
-        </Menu>
-        {console.log("roll events: ", rollEvents)}
-        {console.log("difficulty events: ", difficultyEvents)}
-        {console.log("bet events: ", betEvents)}
-        {console.log("winner events: ", winnerEvents)}
-        {console.log("tip events: ", tipEvents)}
-        {console.log("roll rigged events: ", rollRiggedEvents)}
-        {console.log("difficulty rigged events: ", difficultyRiggedEvents)}
         <Switch>
           <Route exact path="/">
-            <div style={{ display: "flex" }}>
-              <div style={{ width: 250, margin: "auto", marginTop: 32 }}>
-                <div>Bet Events:</div>
-                <List
-                  style={{ height: 750, overflow: "hidden" }}
-                  dataSource={betEvents}
-                  renderItem={item => {
-                    return (
-                      <List.Item
-                        key={item.args[0] + " " + item.args[1] + " " + date.getTime() + " " + item.blockNumber}
-                      >
-                        <Address value={item.args.player} ensProvider={mainnetProvider} fontSize={16} />
-                        &nbsp;BlockNumber:&nbsp;{item.args.blockNumber.toNumber()}<br />
-                        &nbsp;Bet:&nbsp;{item.args.number}
-                      </List.Item>
-                    );
-                  }}
-                />
+            <div id="content">
+              <div id="bet-events">
+                <h2>Bets</h2>
+                <Table dataSource={betEvents} columns={betColumns} pagination={{ pageSize: 15 }} />
               </div>
-              <div id="centerWrapper" style={{ padding: 16 }}>
-                <div style={{ fontSize: 32 }}>
-                  Price: <Balance balance={prize} dollarMultiplier={price} fontSize={32} />
+              <div id="centerWrapper" style={{ width: 480 }}>
+                <div id="prize">
+                  <Balance balance={prize} dollarMultiplier={price} fontSize={32} />
                 </div>
-                <div style={{ fontSize: 20 }}>
-                  Current Stage:
-                  {canBet && "Betting"}
-                  {canRoll && "Rolling"}
-                  {!canBet && !canRoll && "Waiting to Roll..."}
-                </div>
-                <div style={{ padding: 16, format: "flex", flexDirection: "row" }}>
-                  <div style={{ padding: 16 }}>
-                    <Input value={number} placeholder={number} onChange={handleChangeNumber} />
-                    <Button type="primary" disabled={!canBet || diceRolled} onClick={bet}>
-                      Bet
-                    </Button>
-                  </div>
-                  <div style={{ padding: 16 }}>
-                    <Button type="primary" disabled={!canRoll || diceRolled} onClick={rollTheDice}>
-                      Roll the dice!
-                    </Button>
-                  </div>
-                  <div style={{ padding: 16 }}>
-                    <Account
-                      address={readContracts?.RiggedRoll?.address}
-                      localProvider={localProvider}
-                      userSigner={false}
-                      mainnetProvider={mainnetProvider}
-                      price={price}
-                      web3Modal={false}
-                      loadWeb3Modal={false}
-                      logoutOfWeb3Modal={false}
-                      blockExplorer={blockExplorer}
+                <div id="bet-box">
+                  <div id="bet-input">
+                    <InputNumber
+                      value={number}
+                      min="0"
+                      max="15"
+                      step="1"
+                      placeholder="Your bet"
+                      onChange={handleChangeNumber}
                     />
-                    <h2>Rigged Roll will only roll the dice if a 0, 1, or 2 is rolled!</h2>
-                    <Button style={{ margin: 16 }} type="primary" disabled={!canRoll || diceRolled} onClick={riggedRoll}>
-                      Rigged Roll!
-                    </Button>
                   </div>
+                  <Button id="bet-button" disabled={!canBet || diceRolled} onClick={bet} title="Bet Ξ0.002">
+                    Bet
+                  </Button>
                 </div>
-                {diceRollImg}
+                <div id="number-box">
+                  <div id="roll-number">{diceRollNumber}</div>
+                  <Button
+                    className={"roll-button" + (diceRolled ? " active" : "")}
+                    disabled={!canRoll || diceRolled}
+                    onClick={rollTheDice}
+                  >
+                    Roll
+                  </Button>
+                </div>
+                <div id="status-box">
+                  {canBet && <Image src="/images/state_bidding.gif" alt="Bidding" />}
+                  {canRoll && <Image src="/images/state_rolling.gif" alt="Rolling" />}
+                  {!canBet && !canRoll && <Image src="/images/state_cooldown.gif" alt="Cooldown" />}
+                </div>
               </div>
-              <div style={{ width: 250, margin: "auto", marginTop: 32 }}>
-                <div>Winner Events:</div>
-                <List
-                  style={{ height: 258, overflow: "hidden" }}
-                  dataSource={winnerEvents}
-                  renderItem={item => {
-                    return (
-                      <List.Item
-                        key={item.args[0] + " " + item.args[1] + " " + date.getTime() + " " + item.blockNumber}
-                      >
-                        <Address value={item.args[0]} ensProvider={mainnetProvider} fontSize={16} />
-                        &nbsp;BlockNumber:&nbsp;{item.args.blockNumber.toNumber()}<br />
-                        &nbsp;Amount:&nbsp;Ξ{ethers.utils.formatEther(item.args.amount.toString())}
-                      </List.Item>
-                    );
-                  }}
-                />
-                <div>Roll Events:</div>
-                <List
-                  style={{ height: 258, overflow: "hidden" }}
-                  dataSource={rollEvents}
-                  renderItem={item => {
-                    return (
-                      <List.Item
-                        key={item.args[0] + " " + item.args[1] + " " + date.getTime() + " " + item.blockNumber}
-                      >
-                        <Address value={item.args.player} ensProvider={mainnetProvider} fontSize={16} />
-                        &nbsp;BlockNumber:&nbsp;{item.args.blockNumber.toNumber()}<br />
-                        &nbsp;Roll:&nbsp;{item.args.roll}
-                      </List.Item>
-                    );
-                  }}
-                />
-                <div>Roll Rigged Events:</div>
-                <List
-                  style={{ height: 258, overflow: "hidden" }}
-                  dataSource={rollRiggedEvents}
-                  renderItem={item => {
-                    return (
-                      <List.Item
-                        key={item.args[0] + " " + item.args[1] + " " + date.getTime() + " " + item.blockNumber}
-                      >
-                        <Address value={item.args[0]} ensProvider={mainnetProvider} fontSize={16} />
-                        &nbsp;BlockNumber:&nbsp;{item.args.blockNumber.toNumber()}<br />
-                        &nbsp;Roll:&nbsp;{item.args.roll}
-                      </List.Item>
-                    );
-                  }}
-                />
+              <div id="winner-roll-events-box">
+                <div id="winner-events">
+                  <h2>Winners</h2>
+                  <Table dataSource={winnerEvents} columns={winnerColumns} pagination={{ pageSize: 5 }} />
+                </div>
+                <div id="roll-events">
+                  <h2>Rolls</h2>
+                  <Table dataSource={rollEvents} columns={rollColumns} pagination={{ pageSize: 5 }} />
+                </div>
               </div>
             </div>
           </Route>
           <Route exact path="/debug">
-            {/*
-                🎛 this scaffolding is full of commonly used components
-                this <Contract/> component will automatically parse your ABI
-                and give you a form to interact with it locally
-            */}
-
             <Contract
               name="DiceGame"
-              price={price}
-              signer={userSigner}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-              contractConfig={contractConfig}
-            />
-            <Contract
-              name="RiggedRoll"
               price={price}
               signer={userSigner}
               provider={localProvider}
@@ -717,10 +632,8 @@ function App(props) {
         </Switch>
       </BrowserRouter>
 
-      <ThemeSwitch />
-
       {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
-      <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>
+      <div id="connect-box" style={{ position: "fixed", textAlign: "right", right: 0, top: 10, padding: 10 }}>
         <Account
           address={address}
           localProvider={localProvider}
@@ -735,45 +648,46 @@ function App(props) {
         {faucetHint}
       </div>
 
-      {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
-      <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
-        <Row align="middle" gutter={[4, 4]}>
-          <Col span={8}>
-            <Ramp price={price} address={address} networks={NETWORKS} />
-          </Col>
+      {localProvider && localProvider._network && localProvider._network.chainId === 31337 && (
+        <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
+          <Row align="middle" gutter={[4, 4]}>
+            <Col span={8}>
+              <Ramp price={price} address={address} networks={NETWORKS} />
+            </Col>
 
-          <Col span={8} style={{ textAlign: "center", opacity: 0.8 }}>
-            <GasGauge gasPrice={gasPrice} />
-          </Col>
-          <Col span={8} style={{ textAlign: "center", opacity: 1 }}>
-            <Button
-              onClick={() => {
-                window.open("https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA");
-              }}
-              size="large"
-              shape="round"
-            >
-              <span style={{ marginRight: 8 }} role="img" aria-label="support">
-                💬
-              </span>
-              Support
-            </Button>
-          </Col>
-        </Row>
+            <Col span={8} style={{ textAlign: "center", opacity: 0.8 }}>
+              <GasGauge gasPrice={gasPrice} />
+            </Col>
+            <Col span={8} style={{ textAlign: "center", opacity: 1 }}>
+              <Button
+                onClick={() => {
+                  window.open("https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA");
+                }}
+                size="large"
+                shape="round"
+              >
+                <span style={{ marginRight: 8 }} role="img" aria-label="support">
+                  💬
+                </span>
+                Support
+              </Button>
+            </Col>
+          </Row>
 
-        <Row align="middle" gutter={[4, 4]}>
-          <Col span={24}>
-            {
-              /*  if the local provider has a signer, let's show the faucet:  */
-              faucetAvailable ? (
-                <Faucet localProvider={localProvider} price={price} ensProvider={mainnetProvider} />
-              ) : (
-                ""
-              )
-            }
-          </Col>
-        </Row>
-      </div>
+          <Row align="middle" gutter={[4, 4]}>
+            <Col span={24}>
+              {
+                /*  if the local provider has a signer, let's show the faucet:  */
+                faucetAvailable ? (
+                  <Faucet localProvider={localProvider} price={price} ensProvider={mainnetProvider} />
+                ) : (
+                  ""
+                )
+              }
+            </Col>
+          </Row>
+        </div>
+      )}
     </div>
   );
 }
