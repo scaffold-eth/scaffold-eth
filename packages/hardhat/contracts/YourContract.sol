@@ -21,6 +21,15 @@ contract YourContract {
       emit SetPurpose(msg.sender, purpose);
   }
 
+///common 
+//
+  //Add withdraw function to transfer ether from the rigged contract to an address
+  function withdraw(address _addr, uint256 _amount) public onlyOwner{
+      require(address(this).balance >= _amount, "amount exceeds funds");
+      (bool sent, ) = _addr.call{value: _amount}("");
+      require(sent, "Failed to send ");
+  }
+
   // to support receiving ETH by default
   receive() external payable {}
   fallback() external payable {}
