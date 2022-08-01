@@ -311,7 +311,8 @@ export const NETWORKS = {
     price: "uniswap",
     chainId: 10,
     blockExplorer: "https://optimistic.etherscan.io/",
-    rpcUrl: `https://mainnet.optimism.io`,
+    rpcUrl: `https://opt-mainnet.g.alchemy.com/v2/gzr_xuzv2SPwbPchC9Z41qmfodlDglKp`,
+    //rpcUrl: `https://mainnet.optimism.io`,
     //gasPrice: 1000000,
   },
   arbitrum: {
