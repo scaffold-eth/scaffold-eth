@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useContext, useState } from 'react'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
@@ -59,16 +58,31 @@ const MetaMaskTooltip = styled(({ className, ...props }) => <Tooltip {...props} 
 )
 
 // @ts-ignore
+// @ts-ignore
 export default function Account({ minimized, disableOptimismButton, doOptimismSwitch, disableButton, enableButton }) {
   const {
+    // @ts-ignore
     targetProvider,
+    // @ts-ignore
     localProvider,
+    // @ts-ignore
     mainnet,
+    // @ts-ignore
     loadWeb3Modal,
+    // @ts-ignore
     loadWeb3ModalGoerli,
+    // @ts-ignore
     price,
+    // @ts-ignore
     targetNetwork,
+    // @ts-ignore
+    address,
+    // @ts-ignore
+    setAddress,
+    // @ts-ignore
     connectedAddress,
+    // @ts-ignore
+    setConnectedAddress,
   } = useContext(BadgeContext)
   let accountButtonInfo
   accountButtonInfo = { name: 'Connect to Mint', action: loadWeb3Modal, goreliAction: loadWeb3ModalGoerli }
@@ -114,10 +128,21 @@ export default function Account({ minimized, disableOptimismButton, doOptimismSw
             variant={'contained'}
             sx={{ borderRadius: 3, marginTop: 5, padding: 1.8, marginLeft: 3, background: '#81a6f7' }}
             onClick={async () => {
-              accountButtonInfo.action()
-              await doOptimismSwitch()
               const chainInfo = await getCurrentChainId()
-              console.log({ chainInfo })
+              const { chainId, networkId, name } = chainInfo
+              const accounts = await targetProvider.listAccounts()
+              // @ts-ignore
+              setConnectedAddress(accounts[0])
+              if (chainId === 10 && networkId === 10) {
+                console.log(`connected to ${name}`)
+                accountButtonInfo.action()
+                await doOptimismSwitch()
+              }
+              if (chainId === 5 && networkId === 5) {
+                console.log(`connected to ${name}`)
+                accountButtonInfo.goreliAction()
+                await switchToGoerli()
+              }
               setNetInfo(chainInfo)
             }}
             size={'large'}
@@ -134,32 +159,17 @@ export default function Account({ minimized, disableOptimismButton, doOptimismSw
 
       {netInfo && netInfo.length > 0 && connectedAddress && connectedAddress.length > 1
         ? netInfo.map(n => (
-            <>
-              <Box
-                key={n.chainId}
-                component={'span'}
-                fontSize={16}
-                pt={10}
-                ml={5}
-                fontWeight={600}
-                color={'#ff0420'}
-                alignItems={'center'}
-                justifyContent={'center'}
-              >{`You are currently connected to ${n.name}`}</Box>{' '}
-              or
-              <Button
-                variant={'text'}
-                onClick={async () => {
-                  accountButtonInfo.goreliAction()
-                  await switchToGoerli()
-                  const chainInfo = await getCurrentChainId()
-                  console.log({ chainInfo })
-                  setNetInfo(chainInfo)
-                }}
-              >
-                Switch to Goerli
-              </Button>
-            </>
+            <Box
+              key={n.chainId}
+              component={'span'}
+              fontSize={16}
+              pt={10}
+              ml={5}
+              fontWeight={600}
+              color={'#ff0420'}
+              alignItems={'center'}
+              justifyContent={'center'}
+            >{`You are currently connected to ${n.name}`}</Box>
           ))
         : null}
     </Box>

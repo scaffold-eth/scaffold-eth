@@ -1,5 +1,3 @@
-import external_contracts from 'contracts/external_contracts'
-
 const { ethers } = require('ethers')
 
 export async function switchToOptimism() {

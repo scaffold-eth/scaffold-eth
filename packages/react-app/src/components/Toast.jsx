@@ -7,12 +7,12 @@ const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
 })
 
-export default function Toast({ showToast, closeToast, snackBarAction }) {
+export default function Toast({ showToast, closeToast, snackBarAction, message }) {
   return (
     <>
       <Snackbar open={showToast} autoHideDuration={5000} onClose={closeToast} action={snackBarAction}>
         <Alert severity="error" onClose={closeToast}>
-          MetaMask is not installed!
+          {message}
         </Alert>
       </Snackbar>
     </>

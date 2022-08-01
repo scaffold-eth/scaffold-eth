@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useReducer } from 'react'
-import { useUserProviderAndSigner } from 'eth-hooks'
+// import { useUserProviderAndSigner } from 'eth-hooks'
 import { useExchangeEthPrice } from 'eth-hooks/dapps/dex'
 import { NETWORKS } from './constants'
 import { Layout } from './components'
@@ -20,8 +20,8 @@ const APPSTATEACTION = {
 
 const defaultState = {
   provider: new ethers.providers.Web3Provider(window.ethereum),
-  chainId: '10',
-  contractRef: externalContracts['10'].contracts.REMIX_REWARD,
+  chainId: '5',
+  contractRef: externalContracts['5'].contracts.REMIX_REWARD,
 }
 
 function appStateReducer(state, actionType) {
@@ -40,10 +40,8 @@ function appStateReducer(state, actionType) {
 function App({ mainnet, localProvider, appChainId }) {
   const [appState, appDispatch] = useReducer(appStateReducer, defaultState)
   const [loaded, setLoaded] = useState(false)
-  // const [localProvider, setLocalProvider] = useState(null)
   const [connectedAddress, setConnectedAddress] = useState()
-  const [injectedProvider, setInjectedProvider] = useState()
-  // const [mainnet, setMainnet] = useState(null)
+  // const [injectedProvider, setInjectedProvider] = useState()
   const [address, setAddress] = useState('')
   const [tabValue, setTabValue] = useState(0)
   const [showToast, setShowToast] = useState(false)
@@ -54,13 +52,16 @@ function App({ mainnet, localProvider, appChainId }) {
   /* 💵 This hook will get the price of ETH from 🦄 Uniswap: */
   const price = useExchangeEthPrice(targetNetwork, mainnet)
 
-  const USE_BURNER_WALLET = false
+  // const USE_BURNER_WALLET = false
 
   /* SETUP METAMASK */
 
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
-  const userProviderAndSigner = useUserProviderAndSigner(appState.provider, localProvider, USE_BURNER_WALLET)
-  const userSigner = userProviderAndSigner.signer
+  // const userProviderAndSigner = useUserProviderAndSigner(appState.provider, localProvider, USE_BURNER_WALLET)
+
+  // console.log({ userProviderAndSigner })
+  const defaultProvider = defaultState.provider
+  console.log({ defaultProvider })
 
   const closeToast = () => {
     setShowToast(false)
@@ -84,28 +85,27 @@ function App({ mainnet, localProvider, appChainId }) {
 
   useEffect(() => {
     async function getAddress() {
-      if (userSigner) {
-        const newAddress = await userSigner.getAddress()
-        // @ts-ignore
-        setConnectedAddress(newAddress)
-        console.log({ newAddress, userSigner })
+      const holderForConnectedAddress = await appState.provider.listAccounts()
+      console.log({ holderForConnectedAddress })
+      if (holderForConnectedAddress.length > 1 && connectedAddress) {
+        setConnectedAddress(holderForConnectedAddress[0])
       }
     }
     getAddress()
-  }, [userSigner])
+  }, [appState.provider, connectedAddress])
 
-  // useEffect(() => {
-  //   appState.provider.on('chainChanged', chainId => {
-  //     // @ts-ignore
-  //     appDispatch({ actionType: APPSTATEACTION.GOERLICHAINID })
-  //   })
-  // }, [appState.provider, appState])
+  useEffect(() => {
+    appState.provider.on('chainChanged', chainId => {
+      // @ts-ignore
+      appDispatch({ actionType: APPSTATEACTION.GOERLICHAINID })
+    })
+  }, [appState.provider, appState])
 
   const logoutOfWeb3Modal = async () => {
     // @ts-ignore
-    if (injectedProvider && injectedProvider.provider && typeof injectedProvider.provider.disconnect == 'function') {
+    if (appState.provider && appState.provider.provider && typeof appState.provider.provider.disconnect == 'function') {
       // @ts-ignore
-      await injectedProvider.provider.disconnect()
+      await appState.provider.provider.disconnect()
     }
     setTimeout(() => {
       window.location.reload()
@@ -152,7 +152,7 @@ function App({ mainnet, localProvider, appChainId }) {
       logoutOfWeb3Modal()
     })
 
-    console.log({ injectedProvider })
+    // console.log({ injectedProvider })
     setTabValue(prev => prev)
     // eslint-disable-next-line
   }, [appDispatch])
@@ -187,7 +187,7 @@ function App({ mainnet, localProvider, appChainId }) {
       logoutOfWeb3Modal()
     })
 
-    console.log({ injectedProvider })
+    // console.log({ injectedProvider })
     setTabValue(prev => prev)
     // eslint-disable-next-line
   }, [appDispatch])
@@ -212,6 +212,7 @@ function App({ mainnet, localProvider, appChainId }) {
   }, [localProvider.ready])
   const targetProvider = appState.provider
   const selectedChainId = appState.chainId
+  const userSigner = targetProvider.getSigner()
   /* END - SETUP MAINNET & OPTIMISM provider */
   const contextPayload = {
     localProvider,
@@ -221,6 +222,7 @@ function App({ mainnet, localProvider, appChainId }) {
     address,
     setAddress,
     connectedAddress,
+    setConnectedAddress,
     contractConfig,
     externalContracts,
     contractRef,
@@ -233,7 +235,7 @@ function App({ mainnet, localProvider, appChainId }) {
     userSigner,
   }
 
-  console.log({ injectedProvider, contractRef, connectedAddress, userSigner })
+  // console.log({ injectedProvider, contractRef, connectedAddress, userSigner })
   return (
     <div className="App">
       <BadgeContext.Provider value={contextPayload}>
@@ -245,10 +247,15 @@ function App({ mainnet, localProvider, appChainId }) {
               // @ts-ignore
               tabValue={tabValue}
               setTabValue={setTabValue}
-              injectedProvider={injectedProvider}
+              // injectedProvider={injectedProvider}
             />
           )}
-          <Toast showToast={showToast} closeToast={closeToast} snackBarAction={snackBarAction} />
+          <Toast
+            showToast={showToast}
+            closeToast={closeToast}
+            snackBarAction={snackBarAction}
+            message={'MetaMask   is not installed!'}
+          />
         </Layout>
       </BadgeContext.Provider>
     </div>

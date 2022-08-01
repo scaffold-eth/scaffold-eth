@@ -7,7 +7,12 @@ import { ethers } from 'ethers'
 import { useContext, useEffect, useState } from 'react'
 import { BadgeContext } from 'contexts/BadgeContext'
 import TextField from '@mui/material/TextField'
+import CloseIcon from '@mui/icons-material/Close'
+import IconButton from '@mui/material/IconButton'
+import MuiAlert from '@mui/material/Alert'
 import { styled } from '@mui/material'
+import Toast from './Toast'
+import React from 'react'
 
 const WalletAddressTextField = styled(TextField)(({ theme }) => ({
   '& .MuiInputBase-input': {
@@ -15,32 +20,51 @@ const WalletAddressTextField = styled(TextField)(({ theme }) => ({
   },
 }))
 
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
+})
+
 export default function MintingActions({ contractRef }) {
   const [message, setMessage] = useState('')
   /*
-   * this mint a user badge from the current selected account
+   * this mints a user badge from the current selected account
    * this function throws an error
    *  - if the current network selected in the injected provider (metamask) is not optimism (chain id of optimism is 10)
    *  - if the current user doesn't have anymore a slot for minting a badge
    */
   // @ts-ignore
-  const { injectedProvider, userSigner } = useContext(BadgeContext)
+  const { targetProvider, userSigner } = useContext(BadgeContext)
+  const [walletAddress, setWalletAddress] = useState('')
+  const [showToast, setShowToast] = useState(false)
+
+  function handleChange(e) {
+    setWalletAddress(e.target.value)
+  }
+
+  const closeToast = () => {
+    setShowToast(false)
+  }
+
+  const displayToast = () => {
+    setShowToast(true)
+  }
 
   const mintBadge = async receiverAddress => {
-    if (injectedProvider === undefined) {
+    if (targetProvider === undefined) {
       // console.log('Provider is in an invalid state please connect to metamask first!')
+      displayToast()
       return
     }
     if (receiverAddress === '' || receiverAddress === undefined || receiverAddress === null) {
-      // console.log('the form must have an input with a valid account hash!')
+      console.log('the form must have an input with a valid account hash!')
       return
     }
     let contract = new ethers.Contract(contractRef.address, contractRef.abi, userSigner)
-    // console.log({ contract })
+    console.log({ contract })
     try {
       setMessage('Please approve the transaction and wait for the validation')
       let mintTx = await contract.publicMint(receiverAddress)
-      // console.log({ mintTx })
+      console.log({ mintTx })
       await mintTx.wait()
       setMessage('Transaction validated')
     } catch (e) {
@@ -48,11 +72,14 @@ export default function MintingActions({ contractRef }) {
     }
     setTimeout(() => setMessage(''), 10000)
   }
-  const [walletAddress, setWalletAddress] = useState('')
 
-  function handleChange(e) {
-    setWalletAddress(e.target.value)
-  }
+  const snackBarAction = (
+    <>
+      <IconButton size="small" aria-label="close" color="inherit" onClick={closeToast}>
+        <CloseIcon fontSize="small" />
+      </IconButton>
+    </>
+  )
 
   const doMinting = async () => {
     await mintBadge(walletAddress)
@@ -63,6 +90,12 @@ export default function MintingActions({ contractRef }) {
   }, [])
   return (
     <>
+      <Toast
+        showToast={showToast}
+        closeToast={closeToast}
+        snackBarAction={snackBarAction}
+        message={'please connect to metamask first!'}
+      />
       <Box display={'flex'} flexDirection={'column'} justifyContent={'center'} alignItems={'center'} mt={5}>
         <Box display={'flex'} flexDirection={'column'} sx={{ background: 'white' }} width={280} height={180}>
           <AllowedMintCount />
@@ -94,6 +127,7 @@ export default function MintingActions({ contractRef }) {
           </Typography>
         </Button>
         <span>{message}</span>
+        {message && <Alert severity="info">{message}</Alert>}
       </Box>
     </>
   )
