@@ -1,32 +1,56 @@
+import { ETHERSCAN_KEY, NETWORKS } from "../constants";
 import { Button, Popover } from "antd";
 import React, { useEffect, useState } from "react";
 
 import { TransactionManager } from "../helpers/TransactionManager";
+import { QRPunkBlockie } from "./";
+
+import axios from "axios";
+
+import moment from 'moment';
 
 const { BigNumber, ethers } = require("ethers");
 
-export default function TransactionResponseDisplay({transactionResponse, transactionManager}) {
+export default function TransactionResponseDisplay({transactionResponse, transactionManager, blockExplorer}) {
   const [confirmations, setConfirmations] = useState();
   const [loadingSpeedUp, setLoadingSpeedUp] = useState(false);
   const [loadingCancel, setLoadingCancel] = useState(false);
+  const [estimatedConfirmationSeconds, setEstimatedConfirmationSeconds] = useState(0);
 
   const updateConfirmations = async () => {
+    if (transactionResponse.confirmations > 0) {
+      return;
+    }
+
     let confirmations = await transactionManager.getConfirmations(transactionResponse);
 
     if (confirmations >= 1) {
-      transactionManager.removeTransactionResponse(transactionResponse);
+      transactionResponse.confirmations = confirmations;
+      transactionManager.updateTransactionResponse(transactionResponse);
     }
 
     setConfirmations(confirmations);
   }
 
-  transactionManager.log("Pending tx:", transactionResponse.nonce, transactionResponse.hash, confirmations);
+  if (transactionResponse.confirmations == 0) {
+    transactionManager.log("Pending tx:", transactionResponse.nonce, transactionResponse.hash, confirmations);
+  }
 
   useEffect(() => {
     updateConfirmations();
+
+    if ((transactionResponse.confirmations > 0) || (transactionResponse?.chainId != NETWORKS.ethereum.chainId)) {
+      return;
+    }
+
+    getConfirmationEstimation(transactionResponse.gasPrice);
   },[transactionResponse, transactionManager]);
 
   useEffect(() => {
+    if (transactionResponse.confirmations > 0) {
+      return;
+    }
+
     const interval = setInterval(() => {
       updateConfirmations();
     }, 1000);
@@ -64,10 +88,10 @@ export default function TransactionResponseDisplay({transactionResponse, transac
     let newTransactionResponse;
     try {
       if (cancelTransaction) {
-        newTransactionResponse = await transactionManager.cancelTransaction(transactionResponse.nonce);
+        newTransactionResponse = await transactionManager.cancelTransaction(transactionManager.getTransactionResponseKey(transactionResponse));
       }
       else {
-        newTransactionResponse = await transactionManager.speedUpTransaction(transactionResponse.nonce, 10);
+        newTransactionResponse = await transactionManager.speedUpTransaction(transactionManager.getTransactionResponseKey(transactionResponse), 10);
       }
 
       transactionManager.log("handleSpeedUp", newTransactionResponse, transactionResponse.hash);  
@@ -102,17 +126,76 @@ export default function TransactionResponseDisplay({transactionResponse, transac
     }
   }
 
+
+  // https://api.etherscan.io/api?module=gastracker&action=gasestimate&gasprice=8000000000&apikey=
+  const getConfirmationEstimation = (gasPrice) => {
+    let apiURL = "https://api.etherscan.io/api?module=gastracker&action=gasestimate&apikey=" + ETHERSCAN_KEY;
+
+    apiURL += "&gasprice=" + BigNumber.from(gasPrice).toString();
+
+    console.log("getConfirmationEstimation");
+
+    axios
+      .get(apiURL)
+      .then(response => {
+        console.log("response", apiURL,  response);
+        let estimatedConfirmationSeconds = response.data.result;
+        console.log("estimatedConfirmationSeconds", estimatedConfirmationSeconds);
+        setEstimatedConfirmationSeconds(estimatedConfirmationSeconds);
+      })
+      .catch(error => console.log(error));
+  }
+
+  const getEstimatedConfirmationDuration = () => {
+    if (estimatedConfirmationSeconds < 60) {
+      return estimatedConfirmationSeconds + " sec"
+    }
+    else if (estimatedConfirmationSeconds >= 3600) {
+      let hours = parseInt(parseInt(estimatedConfirmationSeconds) / 3600);
+
+      return "> " + hours + ((hours > 1) ? " hours" : " hour");
+    }
+    else {
+      let minutes = parseInt(parseInt(estimatedConfirmationSeconds) / 60);
+
+      return minutes + ((minutes > 1) ? " minutes" : " minute");
+    }
+  }
+
   return  (
     <div style={{ padding: 16 }}>
-      {(confirmations == 0) &&     
-        <div>
+      {(transactionResponse.hash && (transactionResponse.nonce || transactionResponse?.nonce == 0)) && <a style={{ color:'rgb(24, 144, 255)' }} href={blockExplorer + "tx/" + transactionResponse.hash}>{transactionResponse.nonce}</a>}
+      {!isCancelTransaction(transactionResponse) ?
+        <>
+          <div style={{ position:"relative",left:-100, top:-40 }}>
+            <QRPunkBlockie scale={0.4} address={transactionResponse.to} />
+         </div>
+
         
+
+        
+        {(transactionResponse.value) && <p><b>Value:</b> {ethers.utils.formatEther(BigNumber.from(transactionResponse.value).toString())} Ξ</p>}
+        
+        </>
+
+        :
+        <p>
+          Transaction cancelled
+        </p>
+      }
+      {transactionResponse.date && <p> {moment(transactionResponse.date).fromNow()}</p>}
+
+      {(confirmations == 0) &&    
+        <div>        
           <div style={{ textAlign: "center"}}>
             <Popover placement="right" content={getTransactionPopoverContent()} trigger="click">
-              <Button style={{ padding: 0 }}type="link" >{!isCancelTransaction(transactionResponse) ? <> Transaction </> : <> Cancelling </>}</Button>
+              <Button style={{ padding: 0 }}type="link" >Transaction</Button>
             </Popover>
-            <b> {transactionResponse.nonce} </b> is pending, <b> gasPrice: {getGasPriceGwei()} </b>
-            
+            <b> {transactionResponse.nonce} </b> is pending, <b> gasPrice: {getGasPriceGwei()} </b>            
+          </div>
+
+          <div>
+          {estimatedConfirmationSeconds ? "Estimated Confirmation Duration " + getEstimatedConfirmationDuration() : ""}
           </div>
 
           <div style={ !isCancelTransaction(transactionResponse) ? { display: "flex", justifyContent: "space-between"} : {}}>
@@ -140,13 +223,23 @@ export default function TransactionResponseDisplay({transactionResponse, transac
               loading={loadingSpeedUp}
               disabled={loadingSpeedUp || loadingCancel}
              >
-              Speed Up 10%
+              {!isCancelTransaction(transactionResponse) ? <> Speed Up 10% </> : <> Speed Up This Cancellation 10% </>}
              </Button>
-
-
           </div>
-
         </div>
+        
+        
+     }
+
+     {
+      (transactionResponse.confirmations != 0) && <Button
+       onClick={
+        () => {
+          transactionManager.removeTransactionResponse(transactionResponse);
+        }}
+       >
+       Clear  🗑
+       </Button>
      }
     </div>
   );

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { TransactionManager } from "../helpers/TransactionManager";
-import { TransactionResponseDisplay } from "./";
+import { TransactionHistory } from "./";
 
-export default function SpeedUpTransactions({provider, signer, injectedProvider, address, chainId}) {
+export default function TransactionResponses({provider, signer, injectedProvider, address, chainId, blockExplorer}) {
   const transactionManager = new TransactionManager(provider, signer, true);
 
   const [transactionResponsesArray, setTransactionResponsesArray] = useState([]);
@@ -37,16 +37,10 @@ export default function SpeedUpTransactions({provider, signer, injectedProvider,
       window.removeEventListener(transactionManager.getLocalStorageChangedEventName(), initTransactionResponsesArray);
     }
   }, [injectedProvider, address, chainId]);
-
-  return  (
-    <div>  
-       {transactionResponsesArray.map(
-        transactionResponse => {
-          return (
-            <TransactionResponseDisplay key={transactionResponse.nonce} transactionResponse={transactionResponse} transactionManager={transactionManager}/>
-          )
-        })
-       }
-    </div>
-  );
-}
+  
+    return (
+      <>
+      {(transactionResponsesArray.length > 0) && <TransactionHistory transactionResponsesArray={transactionResponsesArray} transactionManager={transactionManager} blockExplorer={blockExplorer}/>}
+      </>
+    );  
+  }
