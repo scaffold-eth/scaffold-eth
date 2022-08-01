@@ -17,7 +17,7 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 })
 
-const appChainId = 10
+const appChainId = 5
 let contractRef
 let providerRef
 if (

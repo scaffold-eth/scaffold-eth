@@ -65,7 +65,6 @@ export default function BrowseBadges() {
       return setEventBadges([])
     }
     let badges = await getAllRewards(contractRef.address, providerRef)
-    console.log({ badges })
     badges = badges.map(badge => {
       return {
         id: ethers.utils.hexStripZeros(badge.topics[3]),
@@ -106,6 +105,7 @@ export default function BrowseBadges() {
   }
 
   async function submitHandler(e) {
+    console.log('submitHandler for address search reached successfully@@!!')
     try {
       if (address) {
         if (address.includes('.eth')) {

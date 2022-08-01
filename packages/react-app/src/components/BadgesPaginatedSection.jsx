@@ -1,35 +1,35 @@
 import Grid from '@mui/material/Grid'
 import NftCard from './NftCard'
-import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import Switch from '@mui/material/Switch'
-import ArrowBackIosNewRoundedIcon from '@mui/icons-material/ArrowBackIosNewRounded'
-import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded'
 import DownloadingRoundedIcon from '@mui/icons-material/DownloadingRounded'
 import { ethers } from 'ethers'
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { BadgeContext } from 'contexts/BadgeContext'
 import Fab from '@mui/material/Fab'
-import blue from '@mui/material/colors/blue'
+import { useCallback } from 'react'
 
 export default function BadgesPaginatedSection({ eventBadges, etherscanRef }) {
   // @ts-ignore
   const { contractRef, localProvider, targetProvider, mainnet } = useContext(BadgeContext)
   const [pageNumber, setPageNumber] = useState(1)
+  const [pageSize, setPageSize] = useState(10)
   const [viewAllBadges, flipViewAllBadges] = useState(false)
+  const [badges, setBadges] = useState([])
 
   const handleCheck = evt => {
     flipViewAllBadges(evt.target.checked)
   }
 
-  function getPaginationData(pageSize) {
-    const startIndex = pageNumber * pageSize - pageSize
-    const endIndex = startIndex + pageSize
-    const result = eventBadges.slice(startIndex, endIndex)
-    return result
-  }
+  const getPaginationData = useCallback(
+    (pgSize, pgNumber) => {
+      const startIndex = pgNumber * pgSize - pgSize
+      const endIndex = startIndex + pgSize
+      const result = eventBadges.slice(startIndex, endIndex)
+      return result
+    },
+    [eventBadges],
+  )
 
   function goToNextPage() {
     setPageNumber(previous => previous + 1)
@@ -38,6 +38,13 @@ export default function BadgesPaginatedSection({ eventBadges, etherscanRef }) {
   function goToPreviousPage() {
     setPageNumber(previous => previous - 1)
   }
+
+  useEffect(() => {
+    if (badges.length === 0) {
+      setBadges(getPaginationData(pageSize, pageNumber))
+    }
+  }, [badges.length, getPaginationData, pageNumber, pageSize])
+
   return (
     <>
       {/* <Box
@@ -106,8 +113,8 @@ export default function BadgesPaginatedSection({ eventBadges, etherscanRef }) {
               'linear-gradient(90deg, #f6e8fc, #f1e6fb, #ede5fb, #e8e4fa, #e3e2f9, #dee1f7, #d9dff6, #d4def4)',
           }}
         >
-          {eventBadges && eventBadges.length > 0 && !viewAllBadges
-            ? getPaginationData(10).map(event => {
+          {badges && badges.length > 0 && !viewAllBadges
+            ? badges.map(event => {
                 let contract = new ethers.Contract(contractRef.address, contractRef.abi, targetProvider)
                 return (
                   <Grid
@@ -169,7 +176,15 @@ export default function BadgesPaginatedSection({ eventBadges, etherscanRef }) {
                 padding: 3,
                 backgroundColor: '#81a6f7',
               }}
-              onClick={() => {}}
+              disabled={!badges.length}
+              onClick={() => {
+                setBadges(prevArray => {
+                  const pgNum = pageNumber + 1
+                  const newFetch = getPaginationData(pageSize, pgNum)
+                  const result = [...prevArray, ...newFetch]
+                  return result
+                })
+              }}
             >
               <DownloadingRoundedIcon sx={{ marginRight: 2, fontSize: 48 }} />
               <Typography variant="button" fontWeight={'700'}>

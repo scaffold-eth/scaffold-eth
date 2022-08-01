@@ -94,12 +94,12 @@ function App({ mainnet, localProvider, appChainId }) {
     getAddress()
   }, [userSigner])
 
-  useEffect(() => {
-    appState.provider.on('chainChanged', chainId => {
-      // @ts-ignore
-      appDispatch({ actionType: APPSTATEACTION.GOERLICHAINID })
-    })
-  }, [appState.provider, appState])
+  // useEffect(() => {
+  //   appState.provider.on('chainChanged', chainId => {
+  //     // @ts-ignore
+  //     appDispatch({ actionType: APPSTATEACTION.GOERLICHAINID })
+  //   })
+  // }, [appState.provider, appState])
 
   const logoutOfWeb3Modal = async () => {
     // @ts-ignore
@@ -195,19 +195,6 @@ function App({ mainnet, localProvider, appChainId }) {
   /* END - SETUP METAMASK */
 
   /* SETUP MAINNET & OPTIMISM provider */
-
-  // @ts-ignore
-  // useEffect(() => {
-  //   window.ethereum.on('chainChanged', async chainId => {
-  //     if (chainId === 5 || chainId === '5') {
-  //       await loadWeb3ModalGoerli()
-  //     }
-  //   })
-
-  //   return () => {
-  //     window.ethereum.removeListener('chainChanged', () => {})
-  //   }
-  // }, [loadWeb3ModalGoerli])
 
   useEffect(() => {
     const run = async () => {
