@@ -189,7 +189,7 @@ export default function TransactionResponseDisplay({transactionResponse, transac
         <div>        
           <div style={{ textAlign: "center"}}>
             <Popover placement="right" content={getTransactionPopoverContent()} trigger="click">
-              <Button style={{ padding: 0 }}type="link" >{!isCancelTransaction(transactionResponse) ? <> Transaction </> : <> Cancelling </>}</Button>
+              <Button style={{ padding: 0 }}type="link" >Transaction</Button>
             </Popover>
             <b> {transactionResponse.nonce} </b> is pending, <b> gasPrice: {getGasPriceGwei()} </b>            
           </div>
@@ -223,7 +223,7 @@ export default function TransactionResponseDisplay({transactionResponse, transac
               loading={loadingSpeedUp}
               disabled={loadingSpeedUp || loadingCancel}
              >
-              Speed Up 10%
+              {!isCancelTransaction(transactionResponse) ? <> Speed Up 10% </> : <> Speed Up This Cancellation 10% </>}
              </Button>
           </div>
         </div>
