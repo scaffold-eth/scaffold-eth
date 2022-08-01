@@ -345,7 +345,7 @@ export const NETWORKS = {
     chainId: 137,
     rpcUrl: "https://polygon-rpc.com",
     faucet: "https://faucet.matic.network/",
-    blockExplorer: "https://explorer-mainnet.maticvigil.com//",
+    blockExplorer: "https://polygonscan.com/",
   },
   kovan: {
     name: "kovan",
