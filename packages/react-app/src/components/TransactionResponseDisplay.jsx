@@ -117,7 +117,7 @@ export default function TransactionResponseDisplay({transactionResponse, transac
 
   const isCancelTransaction = (transactionResponse) => {
     if ((transactionResponse?.from == transactionResponse?.to) &&
-        (transactionResponse?.value == "0x") || BigNumber.from("0x0").eq(transactionResponse?.value)) {
+        ((transactionResponse?.value == "0x") || BigNumber.from("0x0").eq(transactionResponse?.value))) {
 
       return true;
     }
