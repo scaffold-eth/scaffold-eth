@@ -128,19 +128,21 @@ export default function Account({ minimized, disableOptimismButton, doOptimismSw
             variant={'contained'}
             sx={{ borderRadius: 3, marginTop: 5, padding: 1.8, marginLeft: 3, background: '#81a6f7' }}
             onClick={async () => {
+              console.log(`trying to connect to the net!`)
               const chainInfo = await getCurrentChainId()
               const { chainId, networkId, name } = chainInfo
+              console.log({ chainInfo })
+              accountButtonInfo.action()
               const accounts = await targetProvider.listAccounts()
+              console.log({ accounts })
               // @ts-ignore
               setConnectedAddress(accounts[0])
               if (chainId === 10 && networkId === 10) {
                 console.log(`connected to ${name}`)
-                accountButtonInfo.action()
                 await doOptimismSwitch()
               }
               if (chainId === 5 && networkId === 5) {
                 console.log(`connected to ${name}`)
-                accountButtonInfo.goreliAction()
                 await switchToGoerli()
               }
               setNetInfo(chainInfo)

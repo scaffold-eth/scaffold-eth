@@ -10,7 +10,8 @@ import IconButton from '@mui/material/IconButton'
 import Toast from 'components/Toast'
 import { BadgeContext } from 'contexts/BadgeContext'
 import externalContracts from 'contracts/external_contracts'
-import { switchToOptimism } from 'helpers/SwitchToOptimism'
+import { getCurrentChainId, switchToOptimism } from 'helpers/SwitchToOptimism'
+import { useUserProviderAndSigner } from 'eth-hooks'
 const { ethers } = require('ethers')
 
 const APPSTATEACTION = {
@@ -37,6 +38,7 @@ function appStateReducer(state, actionType) {
   return state
 }
 
+// @ts-ignore
 function App({ mainnet, localProvider, appChainId }) {
   const [appState, appDispatch] = useReducer(appStateReducer, defaultState)
   const [loaded, setLoaded] = useState(false)
@@ -52,12 +54,11 @@ function App({ mainnet, localProvider, appChainId }) {
   /* 💵 This hook will get the price of ETH from 🦄 Uniswap: */
   const price = useExchangeEthPrice(targetNetwork, mainnet)
 
-  // const USE_BURNER_WALLET = false
-
   /* SETUP METAMASK */
 
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
-  // const userProviderAndSigner = useUserProviderAndSigner(appState.provider, localProvider, USE_BURNER_WALLET)
+  const USE_BURNER_WALLET = false
+  const userProviderAndSigner = useUserProviderAndSigner(appState.provider, localProvider, USE_BURNER_WALLET)
 
   // console.log({ userProviderAndSigner })
   const defaultProvider = defaultState.provider
@@ -90,14 +91,23 @@ function App({ mainnet, localProvider, appChainId }) {
       if (holderForConnectedAddress.length > 1 && connectedAddress) {
         setConnectedAddress(holderForConnectedAddress[0])
       }
+      console.log('connectedAddress could not be set!')
     }
     getAddress()
   }, [appState.provider, connectedAddress])
 
   useEffect(() => {
     appState.provider.on('chainChanged', chainId => {
-      // @ts-ignore
-      appDispatch({ actionType: APPSTATEACTION.GOERLICHAINID })
+      if (chainId === 5 || chainId === '5') {
+        // @ts-ignore
+        appDispatch({ actionType: APPSTATEACTION.GOERLICHAINID })
+        window.location.reload()
+      }
+      if (chainId === 10 || chainId === '10') {
+        // @ts-ignore
+        appDispatch({ actionType: APPSTATEACTION.OPTIMISMCHAINID })
+        window.location.reload()
+      }
     })
   }, [appState.provider, appState])
 
@@ -127,23 +137,41 @@ function App({ mainnet, localProvider, appChainId }) {
       // metamask not installed
       return
     }
-    const provider = window.ethereum
-    // @ts-ignore
-    // setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
-    appDispatch({ actionType: APPSTATEACTION.OPTIMISMCHAINID })
+    const provider = appState.provider // window.ethereum
+    await provider.send('eth_requestAccounts', [])
 
     provider.on('chainChanged', chainId => {
       console.log(`chain changed to ${chainId}! updating providers`)
-      // @ts-ignore
-      // setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
-      appDispatch({ actionType: APPSTATEACTION.OPTIMISMCHAINID })
+      if (chainId === 5 || chainId === '5') {
+        // @ts-ignore
+        appDispatch({ actionType: APPSTATEACTION.GOERLICHAINID })
+        window.location.reload()
+      }
+      if (chainId === 10 || chainId === '10') {
+        // @ts-ignore
+        appDispatch({ actionType: APPSTATEACTION.OPTIMISMCHAINID })
+        window.location.reload()
+      }
     })
 
-    provider.on('accountsChanged', () => {
+    /**
+     * @param accountPayload string[]
+     */
+    provider.on('accountsChanged', async accountPayload => {
+      // accountPayload Array<string>
       console.log(`account changed!`)
-      // @ts-ignore
-      // setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
-      appDispatch({ actionType: APPSTATEACTION.OPTIMISMCHAINID })
+      const chainInfo = await getCurrentChainId()
+      const { chainId } = chainInfo
+      if (chainId === 5 || chainId === '5') {
+        // @ts-ignore
+        appDispatch({ actionType: APPSTATEACTION.OPTIMISMCHAINID })
+        window.location.reload()
+      }
+      if (chainId === 10 || chainId === '10') {
+        // @ts-ignore
+        appDispatch({ actionType: APPSTATEACTION.OPTIMISMCHAINID })
+        window.location.reload()
+      }
     })
 
     // Subscribe to session disconnection
@@ -157,40 +185,40 @@ function App({ mainnet, localProvider, appChainId }) {
     // eslint-disable-next-line
   }, [appDispatch])
 
-  const loadWeb3ModalGoerli = useCallback(async () => {
-    if (typeof window.ethereum === 'undefined') {
-      // console.log('MetaMask is not installed!')
-      displayToast()
-      // metamask not installed
-      return
-    }
-    const provider = window.ethereum
-    // @ts-ignore
-    // setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
-    appDispatch({ actionType: APPSTATEACTION.GOERLICHAINID })
+  // const loadWeb3ModalGoerli = useCallback(async () => {
+  //   if (typeof window.ethereum === 'undefined') {
+  //     // console.log('MetaMask is not installed!')
+  //     displayToast()
+  //     // metamask not installed
+  //     return
+  //   }
+  //   const provider = window.ethereum
+  //   // @ts-ignore
+  //   // setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
+  //   appDispatch({ actionType: APPSTATEACTION.GOERLICHAINID })
 
-    provider.on('chainChanged', chainId => {
-      console.log(`chain changed to ${chainId}! updating providers`)
-      // @ts-ignore
-      appDispatch({ actionType: APPSTATEACTION.GOERLICHAINID })
-    })
+  //   provider.on('chainChanged', chainId => {
+  //     console.log(`chain changed to ${chainId}! updating providers`)
+  //     // @ts-ignore
+  //     appDispatch({ actionType: APPSTATEACTION.GOERLICHAINID })
+  //   })
 
-    provider.on('accountsChanged', () => {
-      console.log(`account changed!`)
-      // @ts-ignore
-      appDispatch({ actionType: APPSTATEACTION.GOERLICHAINID })
-    })
+  //   provider.on('accountsChanged', () => {
+  //     console.log(`account changed!`)
+  //     // @ts-ignore
+  //     appDispatch({ actionType: APPSTATEACTION.GOERLICHAINID })
+  //   })
 
-    // Subscribe to session disconnection
-    provider.on('disconnect', (code, reason) => {
-      console.log(code, reason)
-      logoutOfWeb3Modal()
-    })
+  //   // Subscribe to session disconnection
+  //   provider.on('disconnect', (code, reason) => {
+  //     console.log(code, reason)
+  //     logoutOfWeb3Modal()
+  //   })
 
-    // console.log({ injectedProvider })
-    setTabValue(prev => prev)
-    // eslint-disable-next-line
-  }, [appDispatch])
+  //   // console.log({ injectedProvider })
+  //   setTabValue(prev => prev)
+  //   // eslint-disable-next-line
+  // }, [appDispatch])
 
   /* END - SETUP METAMASK */
 
@@ -230,7 +258,7 @@ function App({ mainnet, localProvider, appChainId }) {
     price,
     targetNetwork,
     loadWeb3Modal,
-    loadWeb3ModalGoerli,
+    // loadWeb3ModalGoerli,
     logoutOfWeb3Modal,
     userSigner,
   }
