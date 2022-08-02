@@ -44,6 +44,7 @@ function Ranking({
   const [rewardId, setRewardId] = useState(0);
   const [rewardImage, setRewardImage] = useState();
   const [fishingByWeek, setFishingByWeek] = useState();
+  const [loadingRanking, setLoadingRanking] = useState(true);
 
   const handleOk = () => {
     setIsModalVisible(false);
@@ -53,20 +54,22 @@ function Ranking({
     const updateFishingByWeek = async () => {
       if (data && data.rankings.length > 0) {
         let byWeek = {};
+        last3weeks.forEach(function (week) {
+          byWeek[week] = [];
+        });
         data.rankings.forEach(function (ranking) {
-          if (!(ranking.week in byWeek)) {
-            byWeek[ranking.week] = {};
-          }
-          byWeek[ranking.week][ranking.shipId] = {
-            rewards: ranking.reward,
+          byWeek[ranking.week].push({
+            shipId: ranking.shipId,
+            reward: ranking.reward,
             owner: ranking.owner,
-          };
+          });
         });
         setFishingByWeek(byWeek);
+        setLoadingRanking(false);
       }
     };
     updateFishingByWeek();
-  }, [DEBUG, data]);
+  }, [DEBUG, data, last3weeks]);
 
   useEffect(() => {
     const updateRewardImage = async () => {
@@ -120,34 +123,18 @@ function Ranking({
             xxl: 3,
           }}
           dataSource={last3weeks}
-          loading={loading}
+          loading={loadingRanking}
           renderItem={week => {
-            let rewardsByShipSorted = [];
-            if (fishingByWeek && fishingByWeek[week]) {
-              rewardsByShipSorted = Object.entries(fishingByWeek[week])
-                .sort((a, b) => b[1].rewards - a[1].rewards)
-                .map(item => {
-                  return {
-                    shipId: item[0],
-                    owner: item[1].owner,
-                    reward: item[1].rewards,
-                  };
-                });
-            }
-
-            return (
-              <List.Item key={"ranking_" + week}>
-                <Card
-                  style={{ backgroundColor: "#b3e2f4", border: "1px solid #0071bb", borderRadius: 10 }}
-                  bodyStyle={{ padding: 10 }}
-                  headStyle={{ height: 65, fontWeight: "bold" }}
-                  title={
-                    <div>
-                      Ranking Week {week}
-                      {week < currentWeek &&
-                        rewardsByShipSorted &&
-                        rewardsByShipSorted.length > 0 &&
-                        rewardsByShipSorted[0].owner === address && (
+            return fishingByWeek && fishingByWeek[week] && (
+                <List.Item key={"ranking_" + week}>
+                  <Card
+                    style={{ backgroundColor: "#b3e2f4", border: "1px solid #0071bb", borderRadius: 10 }}
+                    bodyStyle={{ padding: 10 }}
+                    headStyle={{ height: 65, fontWeight: "bold" }}
+                    title={
+                      <div>
+                        Ranking Week {week}
+                        {week < currentWeek && fishingByWeek[week][0].owner.toLowerCase() === address.toLowerCase() && (
                           <Button
                             type="primary"
                             style={{ marginLeft: 10 }}
@@ -178,12 +165,12 @@ function Ranking({
                             Claim Prize
                           </Button>
                         )}
-                    </div>
-                  }
-                >
-                  <Table dataSource={rewardsByShipSorted} columns={columns} pagination={false} />
-                </Card>
-              </List.Item>
+                      </div>
+                    }
+                  >
+                    <Table dataSource={fishingByWeek[week]} columns={columns} pagination={false} />
+                  </Card>
+                </List.Item>
             );
           }}
         />
