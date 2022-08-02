@@ -16,6 +16,28 @@ code {
   font-family: "Minecraft";
 }
 
+.ant-modal-content {
+  background-size:cover;
+  background-position:top;
+  background-repeat:no-repeat;
+  background-image: url(images/Background.png);
+  color: white;
+}
+
+.ant-modal-content .ant-modal-header {
+  background: none;
+  border-bottom: none;
+}
+
+.ant-modal-content .ant-modal-header .ant-modal-title {
+  color: white;
+  font-weight: bold;
+}
+
+.ant-modal-content .ant-modal-footer {
+  border-top: none;
+}
+
 #content {
   display: flex;
   justify-content: space-around;
@@ -135,6 +157,16 @@ code {
   margin-top: 10px;
 }
 
+#help-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 72px;
+  font-Weight: bold;
+  line-height: 1;
+  margin-top: -8px;
+}
+
 #bet-box {
   padding: 16px;
   display: flex;
@@ -150,6 +182,7 @@ code {
   width: 208px;
   padding-top: 14px;
   color: #4bc5cc;
+  margin-left: 70px;
 }
 
 #bet-input .ant-input-number {

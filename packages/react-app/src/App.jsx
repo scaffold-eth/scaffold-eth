@@ -1,6 +1,6 @@
 import Portis from "@portis/web3";
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import { Alert, Button, Col, List, Menu, Row, Input, Table, Image, InputNumber } from "antd";
+import { Alert, Button, Col, List, Menu, Row, Input, Table, Image, InputNumber, Modal } from "antd";
 import "antd/dist/antd.css";
 import Authereum from "authereum";
 import {
@@ -439,6 +439,16 @@ function App(props) {
   const [number, setNumber] = useState();
   const [gameNumber, setGameNumber] = useState(0);
 
+  const [isHelpModalVisible, setIsHelpModalVisible] = useState(false);
+
+  const showHelpModal = () => {
+    setIsHelpModalVisible(true);
+  };
+
+  const handleHelpModalCancel = () => {
+    setIsHelpModalVisible(false);
+  };
+
   useOnBlock(localProvider, () => {
     if (DEBUG) console.log(`⛓ A new localProvider block is here: ${localProvider._lastBlockNumber}`);
     const currentBlockNumber = localProvider._lastBlockNumber;
@@ -589,6 +599,9 @@ function App(props) {
                   <Button id="bet-button" disabled={!canBet || diceRolled} onClick={bet} title="Bet Ξ0.002">
                     Bet
                   </Button>
+                  <Button id="help-button" onClick={showHelpModal}>
+                    ?
+                  </Button>
                 </div>
                 <div id="number-box">
                   <div id="roll-number">{diceRollNumber}</div>
@@ -688,6 +701,23 @@ function App(props) {
           </Row>
         </div>
       )}
+
+      <Modal title="GAME RULES" visible={isHelpModalVisible} onCancel={handleHelpModalCancel} footer={null}>
+        <ul>
+          <li>You can bet on any number between <strong>0 and 15</strong>.</li>
+          <li>Each bet costs <strong>Ξ0.002</strong>.</li>
+          <li>90% of the bet value goes to the <strong>Prize</strong>.</li>
+          <li>You can bet <strong>many times</strong> in a round.</li>
+          <li>You can only bet during the <strong>Betting</strong> stage.</li>
+          <li>After the Betting stage there is a <strong>Cooldown</strong> stage: no bets here.</li>
+          <li>Anyone can roll the dice and only on the <strong>Rolling</strong> stage.</li>
+          <li>The user that rolls the dice gets a <strong>10% Prize reward</strong>.</li>
+          <li>If you guest the number rolled you get the <strong>Prize!</strong></li>
+          <li>If more than one winner, the Prize is <strong>splitted to all the winners</strong>.</li>
+          <li>If no one wins, the Prize is <strong>kept to the next round</strong>.</li>
+        </ul>
+      </Modal>
+
     </div>
   );
 }
