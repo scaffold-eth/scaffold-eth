@@ -1,21 +1,18 @@
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import MintingPageCard from '../components/MintingPageCard'
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useState } from 'react'
 import MintingActions from 'components/MintingActions'
 import Account from 'components/Account'
 import { BadgeContext } from 'contexts/BadgeContext'
 import { switchToOptimism } from 'helpers/SwitchToOptimism'
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
-import { ethers } from 'ethers'
-import external_contracts from 'contracts/external_contracts'
 
 export default function MintingPage() {
   // @ts-ignore
-  const { contractRef, userSigner } = useContext(BadgeContext)
+  const { contractRef } = useContext(BadgeContext)
   const [enableButton, disableButton] = useState(false)
-  const [goerliProvider] = useState(new ethers.providers.JsonRpcProvider(external_contracts['5'].provider))
 
   const theme = useTheme()
   const mobile400 = useMediaQuery(theme.breakpoints.between('sm', 'md'))
@@ -32,31 +29,10 @@ export default function MintingPage() {
     }
   }
 
-  // const switchNet = chainId => {
-  //   if (chainId === '5') {
-  //     console.log('goerli test net set, provider set')
-  //     // @ts-ignore
-  //     console.log('injected provider set with goerli')
-  //   }
-  // }
-
-  // useEffect(() => {
-  //   window.ethereum.on('chainChanged', switchNet)
-  //   return () => {
-  //     window.ethereum.removeListener('chainChanged', switchNet)
-  //   }
-  // }, [])
-
   return (
     <>
       <Box pt="76px" mb={20}>
-        <Account
-          // @ts-ignore
-          userSigner={userSigner}
-          doOptimismSwitch={doOptimismSwitch}
-          enableButton={enableButton}
-          disableButton={disableButton}
-        />
+        <Account doOptimismSwitch={doOptimismSwitch} minimized={enableButton} />
         <Box mb={10} sx={{ textAlign: 'left', padding: '10px', color: '#007aa6', marginLeft: 5, marginBottom: 5 }}>
           <Typography
             textAlign={'left'}

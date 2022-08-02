@@ -84,10 +84,6 @@ export default function MintingActions({ contractRef }) {
   const doMinting = async () => {
     await mintBadge(walletAddress)
   }
-
-  useEffect(() => {
-    // console.log({ injectedProvider, mintingActions: mintBadge })
-  }, [])
   return (
     <>
       <Toast

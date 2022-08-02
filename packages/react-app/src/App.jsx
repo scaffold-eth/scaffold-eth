@@ -26,11 +26,11 @@ const defaultState = {
 }
 
 function appStateReducer(state, actionType) {
-  if (actionType.GOERLICHAINID) {
+  if (actionType.OPTIMISMCHAINID) {
     const newState = {
       provider: new ethers.providers.Web3Provider(window.ethereum),
-      chainid: '5',
-      contractRef: externalContracts['5'].contracts.REMIX_REWARD,
+      chainid: '10',
+      contractRef: externalContracts['10'].contracts.REMIX_REWARD,
     }
     return newState
   }
@@ -39,8 +39,9 @@ function appStateReducer(state, actionType) {
 }
 
 // @ts-ignore
-function App({ mainnet, localProvider, appChainId }) {
+function App({ mainnet }) {
   const [appState, appDispatch] = useReducer(appStateReducer, defaultState)
+  const [localProvider, setLocalProvider] = useState()
   const [loaded, setLoaded] = useState(false)
   const [connectedAddress, setConnectedAddress] = useState()
   // const [injectedProvider, setInjectedProvider] = useState()
@@ -54,15 +55,24 @@ function App({ mainnet, localProvider, appChainId }) {
   /* 💵 This hook will get the price of ETH from 🦄 Uniswap: */
   const price = useExchangeEthPrice(targetNetwork, mainnet)
 
+  let contractRef
+  let providerRef
+  const chainId = appState.chainId
+  if (
+    externalContracts[chainId] &&
+    externalContracts[chainId].contracts &&
+    externalContracts[chainId].contracts.REMIX_REWARD
+  ) {
+    contractRef = externalContracts[chainId].contracts.REMIX_REWARD
+    providerRef = externalContracts[chainId].provider
+  } else {
+    console.log('kosi externalContract')
+  }
   /* SETUP METAMASK */
 
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
   const USE_BURNER_WALLET = false
   const userProviderAndSigner = useUserProviderAndSigner(appState.provider, localProvider, USE_BURNER_WALLET)
-
-  // console.log({ userProviderAndSigner })
-  const defaultProvider = defaultState.provider
-  console.log({ defaultProvider })
 
   const closeToast = () => {
     setShowToast(false)
@@ -71,23 +81,42 @@ function App({ mainnet, localProvider, appChainId }) {
   const displayToast = () => {
     setShowToast(true)
   }
-  console.log({ appState })
-  let contractRef
-  const chainId = appState.chainId
-  if (
-    externalContracts[chainId] &&
-    externalContracts[chainId].contracts &&
-    externalContracts[chainId].contracts.REMIX_REWARD
-  ) {
-    contractRef = externalContracts[chainId].contracts.REMIX_REWARD
-  } else {
-    console.log('kosi externalContract')
-  }
+
+  useEffect(() => {
+    window.ethereum.on('chainChanged', chainId => {
+      window.location.reload()
+    })
+  }, [])
+
+  useEffect(() => {
+    const run = async () => {
+      const local = new ethers.providers.StaticJsonRpcProvider(providerRef)
+      await local.ready
+      // const mainnet = new ethers.providers.StaticJsonRpcProvider(
+      //   'https://mainnet.infura.io/v3/1b3241e53c8d422aab3c7c0e4101de9c',
+      // )
+      // @ts-ignore
+      setLocalProvider(local)
+      // setMainnet(mainnet)
+      setLoaded(true)
+      const provider = appState.provider
+      const net = await provider.getNetwork()
+      console.log({ provider, net })
+      if (net.chainId === APPSTATEACTION.OPTIMISMCHAINID) {
+        console.log('switching to optimism now...')
+        await switchToOptimism()
+        console.log('switched to optimism')
+        // @ts-ignore
+        appDispatch({ actionType: APPSTATEACTION.OPTIMISMCHAINID })
+        console.log('updated state to carry optimism')
+      }
+    }
+    run()
+  }, [appState.provider, providerRef])
 
   useEffect(() => {
     async function getAddress() {
       const holderForConnectedAddress = await appState.provider.listAccounts()
-      console.log({ holderForConnectedAddress })
       if (holderForConnectedAddress.length > 1 && connectedAddress) {
         setConnectedAddress(holderForConnectedAddress[0])
       }
@@ -97,7 +126,7 @@ function App({ mainnet, localProvider, appChainId }) {
   }, [appState.provider, connectedAddress])
 
   useEffect(() => {
-    appState.provider.on('chainChanged', chainId => {
+    window.ethereum.on('chainChanged', chainId => {
       if (chainId === 5 || chainId === '5') {
         // @ts-ignore
         appDispatch({ actionType: APPSTATEACTION.GOERLICHAINID })
@@ -109,6 +138,12 @@ function App({ mainnet, localProvider, appChainId }) {
         window.location.reload()
       }
     })
+
+    return () => {
+      window.ethereum.removeListener('chainChanged', chainId => {
+        console.log('removed')
+      })
+    }
   }, [appState.provider, appState])
 
   const logoutOfWeb3Modal = async () => {
@@ -223,21 +258,6 @@ function App({ mainnet, localProvider, appChainId }) {
   /* END - SETUP METAMASK */
 
   /* SETUP MAINNET & OPTIMISM provider */
-
-  useEffect(() => {
-    const run = async () => {
-      await localProvider.ready
-
-      // const mainnet = new ethers.providers.StaticJsonRpcProvider(
-      //   'https://mainnet.infura.io/v3/1b3241e53c8d422aab3c7c0e4101de9c',
-      // )
-
-      // setLocalProvider(localProvider)
-      // setMainnet(mainnet)
-      setLoaded(true)
-    }
-    run()
-  }, [localProvider.ready])
   const targetProvider = appState.provider
   const selectedChainId = appState.chainId
   const userSigner = targetProvider.getSigner()
@@ -258,12 +278,10 @@ function App({ mainnet, localProvider, appChainId }) {
     price,
     targetNetwork,
     loadWeb3Modal,
-    // loadWeb3ModalGoerli,
     logoutOfWeb3Modal,
     userSigner,
   }
 
-  // console.log({ injectedProvider, contractRef, connectedAddress, userSigner })
   return (
     <div className="App">
       <BadgeContext.Provider value={contextPayload}>

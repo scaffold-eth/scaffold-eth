@@ -17,19 +17,6 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 })
 
-const appChainId = 5
-let contractRef
-let providerRef
-if (
-  externalContracts[appChainId] &&
-  externalContracts[appChainId].contracts &&
-  externalContracts[appChainId].contracts.REMIX_REWARD
-) {
-  contractRef = externalContracts[appChainId].contracts.REMIX_REWARD
-  providerRef = externalContracts[appChainId].provider
-}
-
-const localProvider = new ethers.providers.StaticJsonRpcProvider(providerRef)
 const mainnet = new ethers.providers.StaticJsonRpcProvider(
   'https://mainnet.infura.io/v3/1b3241e53c8d422aab3c7c0e4101de9c',
 )
@@ -40,7 +27,7 @@ ReactDOM.render(
       <CssBaseline />
       <BrowserRouter>
         <Route path="/">
-          <App mainnet={mainnet} localProvider={localProvider} appChainId={appChainId} />
+          <App mainnet={mainnet} />
         </Route>
       </BrowserRouter>
     </ThemeProvider>

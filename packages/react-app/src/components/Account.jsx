@@ -59,7 +59,7 @@ const MetaMaskTooltip = styled(({ className, ...props }) => <Tooltip {...props} 
 
 // @ts-ignore
 // @ts-ignore
-export default function Account({ minimized, disableOptimismButton, doOptimismSwitch, disableButton, enableButton }) {
+export default function Account({ minimized, doOptimismSwitch }) {
   const {
     // @ts-ignore
     targetProvider,
@@ -76,10 +76,6 @@ export default function Account({ minimized, disableOptimismButton, doOptimismSw
     // @ts-ignore
     targetNetwork,
     // @ts-ignore
-    address,
-    // @ts-ignore
-    setAddress,
-    // @ts-ignore
     connectedAddress,
     // @ts-ignore
     setConnectedAddress,
@@ -88,7 +84,6 @@ export default function Account({ minimized, disableOptimismButton, doOptimismSw
   accountButtonInfo = { name: 'Connect to Mint', action: loadWeb3Modal, goreliAction: loadWeb3ModalGoerli }
   const accountButtonConnected = 'Connected'
   const [netInfo, setNetInfo] = useState([])
-  console.log({ connectedAddress })
 
   const display = !minimized && (
     <Box>
@@ -128,7 +123,6 @@ export default function Account({ minimized, disableOptimismButton, doOptimismSw
             variant={'contained'}
             sx={{ borderRadius: 3, marginTop: 5, padding: 1.8, marginLeft: 3, background: '#81a6f7' }}
             onClick={async () => {
-              console.log(`trying to connect to the net!`)
               const chainInfo = await getCurrentChainId()
               const { chainId, networkId, name } = chainInfo
               console.log({ chainInfo })
