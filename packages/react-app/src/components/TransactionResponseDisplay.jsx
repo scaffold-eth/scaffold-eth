@@ -117,7 +117,7 @@ export default function TransactionResponseDisplay({transactionResponse, transac
 
   const isCancelTransaction = (transactionResponse) => {
     if ((transactionResponse?.from == transactionResponse?.to) &&
-        (transactionResponse?.value == "0x") || BigNumber.from("0x0").eq(transactionResponse?.value)) {
+        ((transactionResponse?.value == "0x") || BigNumber.from("0x0").eq(transactionResponse?.value))) {
 
       return true;
     }
@@ -167,7 +167,7 @@ export default function TransactionResponseDisplay({transactionResponse, transac
       {(transactionResponse.hash && (transactionResponse.nonce || transactionResponse?.nonce == 0)) && <a style={{ color:'rgb(24, 144, 255)' }} href={blockExplorer + "tx/" + transactionResponse.hash}>{transactionResponse.nonce}</a>}
       {!isCancelTransaction(transactionResponse) ?
         <>
-          <div style={{ position:"relative",left:-100, top:-40 }}>
+          <div style={{ position:"relative",left:-140, top:-30 }}>
             <QRPunkBlockie scale={0.4} address={transactionResponse.to} />
          </div>
 

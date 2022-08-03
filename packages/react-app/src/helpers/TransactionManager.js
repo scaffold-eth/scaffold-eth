@@ -23,7 +23,7 @@ export class TransactionManager {
 	}
 
 	getTransactionResponseKey(transactionResponse) {
-		return transactionResponse?.nonce + transactionResponse?.chainId;
+		return transactionResponse?.nonce + "_" + transactionResponse?.chainId;
 	}
 
 	getLocalStorageChangedEventName() {
@@ -80,6 +80,8 @@ export class TransactionManager {
 			return [];
 		}
 
+		this.fixTransactionResponsesKey(transactionResponses);
+
 		let transactionResponsesArray = [];
 
 		let keysArray = Object.keys(transactionResponses);
@@ -89,6 +91,28 @@ export class TransactionManager {
 		})
 
 		return transactionResponsesArray;
+	}
+
+
+	// Using transactionResponse?.nonce + transactionResponse?.chainId as a key was not a good idea
+	fixTransactionResponsesKey(transactionResponses) {
+		let newTransactionResponses = {};
+
+		let keysArray = Object.keys(transactionResponses);
+
+		keysArray.forEach(key => {
+			if (key == (transactionResponses[key].nonce + transactionResponses[key].chainId)) {
+				newTransactionResponses[this.getTransactionResponseKey(transactionResponses[key])] = transactionResponses[key];
+			}
+			else {
+				return;
+			}
+		})
+
+		if (Object.keys(newTransactionResponses).length > 0) {
+			console.log("newTransactionResponses", newTransactionResponses);
+			this.setTransactionResponses(newTransactionResponses);
+		}
 	}
 
 	async getConfirmations(transactionResponse) {
