@@ -321,7 +321,7 @@ export const NETWORKS = {
     price: "uniswap",
     chainId: 42161,
     blockExplorer: "https://arbiscan.io/",
-    rpcUrl: `https://arb1.arbitrum.io/rpc`,
+    rpcUrl: `https://arb-mainnet.g.alchemy.com/v2/tYM-Tr8c9dHV5a8AgvXnVmS9e-xvoxeM`,
     //gasPrice: 1000000000,// TODO ASK RPC
   },
   gnosis: {
