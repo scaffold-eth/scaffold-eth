@@ -1,17 +1,16 @@
+import React, { useState } from 'react'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import MintingPageCard from '../components/MintingPageCard'
-import { useContext, useState } from 'react'
 import MintingActions from 'components/MintingActions'
 import Account from 'components/Account'
-import { BadgeContext } from 'contexts/BadgeContext'
-import { switchToOptimism } from 'helpers/SwitchToOptimism'
+import { switchChain } from 'helpers/SwitchToOptimism'
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
 
-export default function MintingPage() {
+export default function MintingPage({ appDispatcher, appState }) {
   // @ts-ignore
-  const { contractRef } = useContext(BadgeContext)
+  // const { contractRef } = useContext(BadgeContext)
   const [enableButton, disableButton] = useState(false)
 
   const theme = useTheme()
@@ -20,19 +19,10 @@ export default function MintingPage() {
   const mobile900 = useMediaQuery('(min-width:900px)')
   const mobileResponsiveMatch = useMediaQuery('(min-width:600px)')
 
-  async function doOptimismSwitch() {
-    try {
-      disableButton(true)
-      await switchToOptimism()
-    } catch (error) {
-      console.log({ error })
-    }
-  }
-
   return (
     <>
       <Box pt="76px" mb={20}>
-        <Account doOptimismSwitch={doOptimismSwitch} minimized={enableButton} />
+        <Account minimized={enableButton} disableButton={disableButton}/>
         <Box mb={10} sx={{ textAlign: 'left', padding: '10px', color: '#007aa6', marginLeft: 5, marginBottom: 5 }}>
           <Typography
             textAlign={'left'}
@@ -81,7 +71,7 @@ export default function MintingPage() {
           <MintingPageCard
             top={mobile900 ? -15 : mobileResponsiveMatch ? -16 : mobile400 ? -25 : mobile240 ? -14 : -15}
           />
-          <MintingActions contractRef={contractRef} />
+          <MintingActions contractRef={appState.contractRef} />
         </Box>
       </Box>
     </>

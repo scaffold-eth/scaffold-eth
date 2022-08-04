@@ -29,27 +29,27 @@ export const isHexadecimal = value => {
 
 // const styles
 
-export default function BrowseBadges() {
+export default function BrowseBadges({ appDispatcher, appState }) {
   const [eventBadges, setEventBadges] = useState([])
   const [error, setErrorMessage] = useState('')
-  const { localProvider, mainnet, selectedChainId, address, setAddress } = useContext(BadgeContext)
+  const { localProvider, mainnet, address, setAddress } = useContext(BadgeContext)
 
   let contractRef
   let providerRef
   let etherscanRef
   if (
-    externalContracts[selectedChainId] &&
-    externalContracts[selectedChainId].contracts &&
-    externalContracts[selectedChainId].contracts.REMIX_REWARD
+    externalContracts[appState.chainId] &&
+    externalContracts[appState.chainId].contracts &&
+    externalContracts[appState.chainId].contracts.REMIX_REWARD
   ) {
-    contractRef = externalContracts[selectedChainId].contracts.REMIX_REWARD
-    providerRef = externalContracts[selectedChainId].provider
-    etherscanRef = externalContracts[selectedChainId].etherscan
+    contractRef = externalContracts[appState.chainId].contracts.REMIX_REWARD
+    providerRef = externalContracts[appState.chainId].provider
+    etherscanRef = externalContracts[appState.chainId].etherscan
   }
 
   useEffect(() => {
     const run = async () => {
-      if (!contractRef) return setErrorMessage('chain not supported. ' + selectedChainId)
+      if (!contractRef) return setErrorMessage('chain not supported. ' + appState.chainId)
       if (!address) {
         setEventBadges([])
         setErrorMessage('')
@@ -58,7 +58,7 @@ export default function BrowseBadges() {
       setErrorMessage('')
     }
     run()
-  }, [address, contractRef, localProvider, selectedChainId])
+  }, [address, appState.chainId, contractRef])
 
   const run = useCallback(async () => {
     if (address) {
@@ -211,7 +211,7 @@ export default function BrowseBadges() {
           ) : null}
         </Box>
       </Box>
-      <BadgesPaginatedSection eventBadges={eventBadges} etherscanRef={etherscanRef} />
+      <BadgesPaginatedSection eventBadges={eventBadges} etherscanRef={etherscanRef} appState={appState} />
     </>
   )
 }

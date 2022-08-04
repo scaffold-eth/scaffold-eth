@@ -7,7 +7,7 @@ import Box from '@mui/material/Box'
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip'
 import { styled } from '@mui/material/styles'
 import { BadgeContext } from 'contexts/BadgeContext'
-import { getCurrentChainId, switchToGoerli } from 'helpers/SwitchToOptimism'
+import { getCurrentChainId, switchChain, externalParams } from 'helpers/SwitchToOptimism'
 
 /** 
   ~ What it does? ~
@@ -59,7 +59,7 @@ const MetaMaskTooltip = styled(({ className, ...props }) => <Tooltip {...props} 
 
 // @ts-ignore
 // @ts-ignore
-export default function Account({ minimized, doOptimismSwitch }) {
+export default function Account({ minimized, disableButton }) {
   const {
     // @ts-ignore
     targetProvider,
@@ -70,8 +70,6 @@ export default function Account({ minimized, doOptimismSwitch }) {
     // @ts-ignore
     loadWeb3Modal,
     // @ts-ignore
-    loadWeb3ModalGoerli,
-    // @ts-ignore
     price,
     // @ts-ignore
     targetNetwork,
@@ -81,9 +79,18 @@ export default function Account({ minimized, doOptimismSwitch }) {
     setConnectedAddress,
   } = useContext(BadgeContext)
   let accountButtonInfo
-  accountButtonInfo = { name: 'Connect to Mint', action: loadWeb3Modal, goreliAction: loadWeb3ModalGoerli }
+  accountButtonInfo = { name: 'Connect to Mint', action: loadWeb3Modal }
   const accountButtonConnected = 'Connected'
   const [netInfo, setNetInfo] = useState([])
+
+  async function doOptimismSwitch(switchPayload) {
+    try {
+      disableButton(true)
+      await switchChain(switchPayload)
+    } catch (error) {
+      console.log({ error })
+    }
+  }
 
   const display = !minimized && (
     <Box>
@@ -131,13 +138,28 @@ export default function Account({ minimized, doOptimismSwitch }) {
               console.log({ accounts })
               // @ts-ignore
               setConnectedAddress(accounts[0])
+              if (
+                chainId !== 10 ||
+                chainId !== '10' ||
+                chainId !== 5 ||
+                chainId !== '5' ||
+                chainId !== 1 ||
+                chainId !== '1'
+              ) {
+                console.log('Network not supported!!!')
+                return
+              }
+              if (chainId === 1 && networkId === 1) {
+                console.log(`connected to ${name}`)
+                await switchChain(externalParams[2])
+              }
               if (chainId === 10 && networkId === 10) {
                 console.log(`connected to ${name}`)
-                await doOptimismSwitch()
+                await switchChain(externalParams[0])
               }
               if (chainId === 5 && networkId === 5) {
                 console.log(`connected to ${name}`)
-                await switchToGoerli()
+                await switchChain(externalParams[1])
               }
               setNetInfo(chainInfo)
             }}

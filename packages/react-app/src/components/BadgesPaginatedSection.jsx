@@ -9,17 +9,13 @@ import { BadgeContext } from 'contexts/BadgeContext'
 import Fab from '@mui/material/Fab'
 import { useCallback } from 'react'
 
-export default function BadgesPaginatedSection({ eventBadges, etherscanRef }) {
+export default function BadgesPaginatedSection({ eventBadges, etherscanRef, appState }) {
   // @ts-ignore
-  const { contractRef, localProvider, targetProvider, mainnet } = useContext(BadgeContext)
+  const { contractRef, localProvider, mainnet } = useContext(BadgeContext)
   const [pageNumber, setPageNumber] = useState(1)
   const [pageSize, setPageSize] = useState(10)
   const [viewAllBadges, flipViewAllBadges] = useState(false)
   const [badges, setBadges] = useState([])
-
-  const handleCheck = evt => {
-    flipViewAllBadges(evt.target.checked)
-  }
 
   const getPaginationData = useCallback(
     (pgSize, pgNumber) => {
@@ -30,14 +26,6 @@ export default function BadgesPaginatedSection({ eventBadges, etherscanRef }) {
     },
     [eventBadges],
   )
-
-  function goToNextPage() {
-    setPageNumber(previous => previous + 1)
-  }
-
-  function goToPreviousPage() {
-    setPageNumber(previous => previous - 1)
-  }
 
   useEffect(() => {
     if (badges.length === 0) {
@@ -115,7 +103,7 @@ export default function BadgesPaginatedSection({ eventBadges, etherscanRef }) {
         >
           {badges && badges.length > 0 && !viewAllBadges
             ? badges.map(event => {
-                let contract = new ethers.Contract(contractRef.address, contractRef.abi, targetProvider)
+                let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
                 return (
                   <Grid
                     item
@@ -176,7 +164,7 @@ export default function BadgesPaginatedSection({ eventBadges, etherscanRef }) {
                 padding: 3,
                 backgroundColor: '#81a6f7',
               }}
-              disabled={!badges.length}
+              disabled={!badges.length || !eventBadges.length}
               onClick={() => {
                 setBadges(prevArray => {
                   const pgNum = pageNumber + 1

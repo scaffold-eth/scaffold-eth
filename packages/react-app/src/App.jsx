@@ -10,13 +10,13 @@ import IconButton from '@mui/material/IconButton'
 import Toast from 'components/Toast'
 import { BadgeContext } from 'contexts/BadgeContext'
 import externalContracts from 'contracts/external_contracts'
-import { getCurrentChainId, switchToOptimism } from 'helpers/SwitchToOptimism'
 import { useUserProviderAndSigner } from 'eth-hooks'
 const { ethers } = require('ethers')
 
 const APPSTATEACTION = {
   GOERLICHAINID: '5',
   OPTIMISMCHAINID: '10',
+  MAINNETCHAINID: '1',
 }
 
 const defaultState = {
@@ -26,7 +26,7 @@ const defaultState = {
 }
 
 function appStateReducer(state, actionType) {
-  if (actionType.OPTIMISMCHAINID) {
+  if (actionType === APPSTATEACTION.OPTIMISMCHAINID) {
     const newState = {
       provider: new ethers.providers.Web3Provider(window.ethereum),
       chainid: '10',
@@ -34,7 +34,14 @@ function appStateReducer(state, actionType) {
     }
     return newState
   }
-
+  if (actionType === APPSTATEACTION.MAINNETCHAINID) {
+    const newState = {
+      provider: new ethers.providers.Web3Provider(window.ethereum),
+      chainid: '1',
+      contractRef: externalContracts['1'].contracts.REMIX_REWARD,
+    }
+    return newState
+  }
   return state
 }
 
@@ -44,11 +51,9 @@ function App({ mainnet }) {
   const [localProvider, setLocalProvider] = useState()
   const [loaded, setLoaded] = useState(false)
   const [connectedAddress, setConnectedAddress] = useState()
-  // const [injectedProvider, setInjectedProvider] = useState()
   const [address, setAddress] = useState('')
   const [tabValue, setTabValue] = useState(0)
   const [showToast, setShowToast] = useState(false)
-  // const [selectedChainId, setSelectedChainId] = useState(appChainId)
   const contractConfig = { deployedContracts: {}, externalContracts: externalContracts || {} }
 
   const targetNetwork = NETWORKS['optimism']
@@ -99,17 +104,6 @@ function App({ mainnet }) {
       setLocalProvider(local)
       // setMainnet(mainnet)
       setLoaded(true)
-      const provider = appState.provider
-      const net = await provider.getNetwork()
-      console.log({ provider, net })
-      if (net.chainId === APPSTATEACTION.OPTIMISMCHAINID) {
-        console.log('switching to optimism now...')
-        await switchToOptimism()
-        console.log('switched to optimism')
-        // @ts-ignore
-        appDispatch({ actionType: APPSTATEACTION.OPTIMISMCHAINID })
-        console.log('updated state to carry optimism')
-      }
     }
     run()
   }, [appState.provider, providerRef])
@@ -137,6 +131,11 @@ function App({ mainnet }) {
         appDispatch({ actionType: APPSTATEACTION.OPTIMISMCHAINID })
         window.location.reload()
       }
+      if (chainId === 1 || chainId === '1') {
+        // @ts-ignore
+        appDispatch({ actionType: APPSTATEACTION.MAINNETCHAINID })
+      }
+      window.location.reload()
     })
 
     return () => {
@@ -144,7 +143,7 @@ function App({ mainnet }) {
         console.log('removed')
       })
     }
-  }, [appState.provider, appState])
+  }, [])
 
   const logoutOfWeb3Modal = async () => {
     // @ts-ignore
@@ -175,6 +174,20 @@ function App({ mainnet }) {
     const provider = appState.provider // window.ethereum
     await provider.send('eth_requestAccounts', [])
 
+    /**
+     * @param accountPayload string[]
+     */
+    provider.on('accountsChanged', async accountPayload => {
+      // accountPayload Array<string>
+      console.log(`account changed!`)
+      if (accountPayload.length === 0) {
+        console.log('Metamask requires login or no accounts added')
+        // show toast if need be
+      } else if (accountPayload[0] !== connectedAddress) {
+        setConnectedAddress(accountPayload[0])
+      }
+    })
+
     provider.on('chainChanged', chainId => {
       console.log(`chain changed to ${chainId}! updating providers`)
       if (chainId === 5 || chainId === '5') {
@@ -187,25 +200,13 @@ function App({ mainnet }) {
         appDispatch({ actionType: APPSTATEACTION.OPTIMISMCHAINID })
         window.location.reload()
       }
-    })
-
-    /**
-     * @param accountPayload string[]
-     */
-    provider.on('accountsChanged', async accountPayload => {
-      // accountPayload Array<string>
-      console.log(`account changed!`)
-      const chainInfo = await getCurrentChainId()
-      const { chainId } = chainInfo
-      if (chainId === 5 || chainId === '5') {
+      if (chainId === 1 || chainId === '1') {
         // @ts-ignore
-        appDispatch({ actionType: APPSTATEACTION.OPTIMISMCHAINID })
+        appDispatch({ actionType: APPSTATEACTION.MAINNETCHAINID })
         window.location.reload()
       }
-      if (chainId === 10 || chainId === '10') {
-        // @ts-ignore
-        appDispatch({ actionType: APPSTATEACTION.OPTIMISMCHAINID })
-        window.location.reload()
+      if (chainId !== 10 || chainId !== '10' || chainId !== 5 || chainId !== '5' || chainId !== 1 || chainId !== '1') {
+        throw new Error('Network not supported!!!')
       }
     })
 
@@ -219,41 +220,6 @@ function App({ mainnet }) {
     setTabValue(prev => prev)
     // eslint-disable-next-line
   }, [appDispatch])
-
-  // const loadWeb3ModalGoerli = useCallback(async () => {
-  //   if (typeof window.ethereum === 'undefined') {
-  //     // console.log('MetaMask is not installed!')
-  //     displayToast()
-  //     // metamask not installed
-  //     return
-  //   }
-  //   const provider = window.ethereum
-  //   // @ts-ignore
-  //   // setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
-  //   appDispatch({ actionType: APPSTATEACTION.GOERLICHAINID })
-
-  //   provider.on('chainChanged', chainId => {
-  //     console.log(`chain changed to ${chainId}! updating providers`)
-  //     // @ts-ignore
-  //     appDispatch({ actionType: APPSTATEACTION.GOERLICHAINID })
-  //   })
-
-  //   provider.on('accountsChanged', () => {
-  //     console.log(`account changed!`)
-  //     // @ts-ignore
-  //     appDispatch({ actionType: APPSTATEACTION.GOERLICHAINID })
-  //   })
-
-  //   // Subscribe to session disconnection
-  //   provider.on('disconnect', (code, reason) => {
-  //     console.log(code, reason)
-  //     logoutOfWeb3Modal()
-  //   })
-
-  //   // console.log({ injectedProvider })
-  //   setTabValue(prev => prev)
-  //   // eslint-disable-next-line
-  // }, [appDispatch])
 
   /* END - SETUP METAMASK */
 
@@ -274,7 +240,6 @@ function App({ mainnet }) {
     contractConfig,
     externalContracts,
     contractRef,
-    switchToOptimism,
     price,
     targetNetwork,
     loadWeb3Modal,
@@ -286,14 +251,15 @@ function App({ mainnet }) {
     <div className="App">
       <BadgeContext.Provider value={contextPayload}>
         <Layout tabValue={tabValue} setTabValue={setTabValue}>
-          {loaded && tabValue === 0 && <BrowseBadges />}
+          {loaded && tabValue === 0 && <BrowseBadges appDispatcher={appDispatch} appState={appState} />}
 
           {tabValue === 1 && (
             <MintingPage
               // @ts-ignore
               tabValue={tabValue}
               setTabValue={setTabValue}
-              // injectedProvider={injectedProvider}
+              appDispatcher={appDispatch}
+              appState={appState}
             />
           )}
           <Toast
