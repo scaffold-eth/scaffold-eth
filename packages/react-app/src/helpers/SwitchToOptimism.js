@@ -61,42 +61,6 @@ export async function switchChain(switchPayload) {
   }
 }
 
-async function switchEthereumChain(correctHexChainId) {
-  await window.ethereum.request({
-    method: 'wallet_switchEthereumChain',
-    params: [{ chainId: correctHexChainId }],
-  })
-}
-
-export async function switchToGoerli() {
-  const chainId = 0x5
-  const correctHexChainId = ethers.utils.hexValue(chainId)
-  try {
-    await switchEthereumChain(correctHexChainId)
-    console.log(`Switch Network successful to chainId ${correctHexChainId}`)
-  } catch (switchError) {
-    if (switchError.code === 4902) {
-      console.log(`Retrying because of error ${switchError.code}`)
-      try {
-        await window.ethereum.request({
-          method: 'wallet_addEthereumChain',
-          params: [
-            {
-              chainId: correctHexChainId,
-              chainName: 'Görli',
-              rpcUrls: ['https://rpc.goerli.mudit.blog', 'https://rpc.ankr.com/eth_goerli'],
-            },
-          ],
-        })
-        await window.ethereum.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: correctHexChainId }],
-        })
-      } catch (addError) {}
-    }
-  }
-}
-
 export async function getNetworkChainList() {
   try {
     const data = await (await fetch('https://chainid.network/chains.json')).json()

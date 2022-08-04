@@ -4,7 +4,6 @@ import { ethers } from 'ethers'
 import { BadgeContext } from 'contexts/BadgeContext'
 import externalContracts from 'contracts/external_contracts'
 import { getCurrentChainId } from 'helpers/SwitchToOptimism'
-import { BigNumber } from '@ethersproject/bignumber'
 
 export default function AllowedMintCount() {
   // @ts-ignore

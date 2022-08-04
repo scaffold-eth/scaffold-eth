@@ -24,16 +24,9 @@ const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
 })
 
-export default function MintingActions({ contractRef }) {
+export default function MintingActions({ contractRef, provider }) {
   const [message, setMessage] = useState('')
-  /*
-   * this mints a user badge from the current selected account
-   * this function throws an error
-   *  - if the current network selected in the injected provider (metamask) is not optimism (chain id of optimism is 10)
-   *  - if the current user doesn't have anymore a slot for minting a badge
-   */
-  // @ts-ignore
-  const { targetProvider, userSigner } = useContext(BadgeContext)
+
   const [walletAddress, setWalletAddress] = useState('')
   const [showToast, setShowToast] = useState(false)
 
@@ -49,8 +42,14 @@ export default function MintingActions({ contractRef }) {
     setShowToast(true)
   }
 
+  /*
+   * this mints a user badge from the current selected account
+   * this function throws an error
+   *  - if the current network selected in the injected provider (metamask) is not optimism (chain id of optimism is 10)
+   *  - if the current user doesn't have anymore a slot for minting a badge
+   */
   const mintBadge = async receiverAddress => {
-    if (targetProvider === undefined) {
+    if (provider === undefined) {
       // console.log('Provider is in an invalid state please connect to metamask first!')
       displayToast()
       return
@@ -59,7 +58,7 @@ export default function MintingActions({ contractRef }) {
       console.log('the form must have an input with a valid account hash!')
       return
     }
-    let contract = new ethers.Contract(contractRef.address, contractRef.abi, userSigner)
+    let contract = new ethers.Contract(contractRef.address, contractRef.abi, provider.getSigner())
     console.log({ contract })
     try {
       setMessage('Please approve the transaction and wait for the validation')

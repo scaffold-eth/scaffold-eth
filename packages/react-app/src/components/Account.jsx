@@ -138,28 +138,18 @@ export default function Account({ minimized, disableButton }) {
               console.log({ accounts })
               // @ts-ignore
               setConnectedAddress(accounts[0])
-              if (
-                chainId !== 10 ||
-                chainId !== '10' ||
-                chainId !== 5 ||
-                chainId !== '5' ||
-                chainId !== 1 ||
-                chainId !== '1'
-              ) {
-                console.log('Network not supported!!!')
-                return
-              }
+
               if (chainId === 1 && networkId === 1) {
                 console.log(`connected to ${name}`)
-                await switchChain(externalParams[2])
+                await doOptimismSwitch(externalParams[2])
               }
               if (chainId === 10 && networkId === 10) {
                 console.log(`connected to ${name}`)
-                await switchChain(externalParams[0])
+                await doOptimismSwitch(externalParams[0])
               }
               if (chainId === 5 && networkId === 5) {
                 console.log(`connected to ${name}`)
-                await switchChain(externalParams[1])
+                await doOptimismSwitch(externalParams[1])
               }
               setNetInfo(chainInfo)
             }}

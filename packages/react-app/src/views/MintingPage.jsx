@@ -4,7 +4,6 @@ import Typography from '@mui/material/Typography'
 import MintingPageCard from '../components/MintingPageCard'
 import MintingActions from 'components/MintingActions'
 import Account from 'components/Account'
-import { switchChain } from 'helpers/SwitchToOptimism'
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
 
@@ -22,7 +21,7 @@ export default function MintingPage({ appDispatcher, appState }) {
   return (
     <>
       <Box pt="76px" mb={20}>
-        <Account minimized={enableButton} disableButton={disableButton}/>
+        <Account minimized={enableButton} disableButton={disableButton} />
         <Box mb={10} sx={{ textAlign: 'left', padding: '10px', color: '#007aa6', marginLeft: 5, marginBottom: 5 }}>
           <Typography
             textAlign={'left'}
@@ -71,7 +70,7 @@ export default function MintingPage({ appDispatcher, appState }) {
           <MintingPageCard
             top={mobile900 ? -15 : mobileResponsiveMatch ? -16 : mobile400 ? -25 : mobile240 ? -14 : -15}
           />
-          <MintingActions contractRef={appState.contractRef} />
+          <MintingActions contractRef={appState.contractRef} provider={appState.provider} />
         </Box>
       </Box>
     </>
