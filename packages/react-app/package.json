@@ -90,7 +90,7 @@
     "eject": "react-scripts eject",
     "prestart": "node ./scripts/create_contracts.js",
     "start": "react-scripts start",
-    "test": "react-scripts test",
+    "test": "NODE_OPTIONS=--experimental-vm-modules react-scripts test  --transformIgnorePatterns \"node_modules/(?!ui-core)/\" --env=./test/custom-test-env.js",
     "lint": "eslint --config ./.eslintrc.js --ignore-path ./.eslintignore ./src/**/*",
     "ipfs": "node ./scripts/ipfs.js",
     "surge": "cp build/index.html build/200.html && surge ./build",
