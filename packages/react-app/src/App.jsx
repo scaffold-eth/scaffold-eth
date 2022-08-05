@@ -290,8 +290,14 @@ function App(props) {
         <Menu.Item key="/">
           <Link to="/">App Home</Link>
         </Menu.Item>
-        <Menu.Item key="/debug">
-          <Link to="/debug">Debug Contracts</Link>
+        <Menu.Item key="/debugCircle">
+          <Link to="/debugCircle">Circle</Link>
+        </Menu.Item>
+        <Menu.Item key="/debugSquare">
+          <Link to="/debugSquare">Square</Link>
+        </Menu.Item>
+        <Menu.Item key="/debugText">
+          <Link to="/debugText">Text</Link>
         </Menu.Item>
         <Menu.Item key="/hints">
           <Link to="/hints">Hints</Link>
@@ -312,15 +318,31 @@ function App(props) {
           {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
           <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} />
         </Route>
-        <Route exact path="/debug">
-          {/*
-                🎛 this scaffolding is full of commonly used components
-                this <Contract/> component will automatically parse your ABI
-                and give you a form to interact with it locally
-            */}
-
+        <Route exact path="/debugCircle">
           <Contract
-            name="YourContract"
+            name="Emoticon"
+            price={price}
+            signer={userSigner}
+            provider={localProvider}
+            address={address}
+            blockExplorer={blockExplorer}
+            contractConfig={contractConfig}
+          />
+        </Route>
+        <Route exact path="/debugSquare">
+          <Contract
+            name="Square"
+            price={price}
+            signer={userSigner}
+            provider={localProvider}
+            address={address}
+            blockExplorer={blockExplorer}
+            contractConfig={contractConfig}
+          />
+        </Route>
+        <Route exact path="/debugText">
+          <Contract
+            name="Text"
             price={price}
             signer={userSigner}
             provider={localProvider}
