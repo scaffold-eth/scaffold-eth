@@ -19,6 +19,13 @@ Prerequisites: [Node (v16 LTS)](https://nodejs.org/en/download/) plus [Yarn](htt
 git clone https://github.com/scaffold-eth/scaffold-eth.git
 ```
 
+> make sure you are on the zora speed run branch:
+
+```bash
+cd scaffold-eth
+gitcheckout zora-speed-run
+```
+
 > install and start your 👷‍ Hardhat chain:
 
 ```bash
