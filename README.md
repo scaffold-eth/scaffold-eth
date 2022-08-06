@@ -1,6 +1,6 @@
 # 🏗 Scaffold-ETH
 
-> everything you need to build on Ethereum! 🚀
+> 🎥 [Zora + ETHGlobal Metabolism hackathon speed run](https://youtu.be/ej0_ZZV0Neo?t=18)
 
 🧪 Quickly experiment with Solidity using a frontend that adapts to your smart contract:
 
