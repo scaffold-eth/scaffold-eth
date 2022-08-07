@@ -1,21 +1,38 @@
 import React, { useState } from "react";
-import { Button, List } from 'antd';
+import { Button, Divider, List } from 'antd';
 
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 import { TransactionResponseDisplay } from "./";
 
-export default function TransactionHistory({ transactionResponsesArray, transactionManager, blockExplorer}) {
-  const [loading, setLoading] = useState(false);
+export default function TransactionHistory({ transactionResponsesArray, transactionManager, blockExplorer, useInfiniteScroll = false }) {
+
+  const transactionList = (
+    <List
+      itemLayout="vertical"
+      dataSource={transactionResponsesArray.sort((a, b) => b.nonce - a.nonce)}
+      renderItem={(transactionResponse) => (
+        <List.Item>
+          <List.Item.Meta
+            description=
+              {<TransactionResponseDisplay transactionResponse={transactionResponse} transactionManager={transactionManager} blockExplorer={blockExplorer}/>}
+          />
+        </List.Item>
+      )}
+    />
+  );
 
   const onClearAllTransactions = () => {
     transactionResponsesArray.forEach(transactionResponse => transactionManager.removeTransactionResponse(transactionResponse))
   }
 
-  return  (
-    <div>  
-       Transaction History
-       {(transactionResponsesArray.length > 0) &&
+  const clearAllButton = (
+    <Button style={{ marginBottom: 10 }} onClick={onClearAllTransactions}>Clear All 🗑</Button>
+  );
+
+  return (
+    <div>
+       {useInfiniteScroll ?
           <div
             id="scrollableDiv"
             style={{
@@ -30,22 +47,17 @@ export default function TransactionHistory({ transactionResponsesArray, transact
               hasMore={true}
               scrollableTarget="scrollableDiv"
             >
-             <List
-                itemLayout="vertical"
-                dataSource={transactionResponsesArray.sort((a, b) => b.nonce - a.nonce)}
-                renderItem={(transactionResponse) => (
-                  <List.Item>
-                    <List.Item.Meta
-                      description=
-                        {<TransactionResponseDisplay transactionResponse={transactionResponse} transactionManager={transactionManager} blockExplorer={blockExplorer}/>}
-                    />
-                  </List.Item>
-                )}
-              />
+              {transactionList}
            </InfiniteScroll>
          
-            {(transactionResponsesArray.length > 3) && <Button onClick={onClearAllTransactions}>Clear All 🗑</Button>}
+            {(transactionResponsesArray.length > 2) && clearAllButton}
           </div>
+          :
+          <>
+            {transactionList}
+            {(transactionResponsesArray.length > 4) && clearAllButton }
+            <Divider style={{ backgroundColor:"black", margin:0 }} />
+          </>
         }
     </div>
   );
