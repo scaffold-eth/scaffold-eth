@@ -30,6 +30,7 @@ export const isHexadecimal = value => {
 // const styles
 
 export default function BrowseBadges({ appDispatcher, appState }) {
+  const [badges, setBadges] = useState([])
   const [eventBadges, setEventBadges] = useState([])
   const [error, setErrorMessage] = useState('')
   const { localProvider, mainnet, address, setAddress } = useContext(BadgeContext)
@@ -78,6 +79,10 @@ export default function BrowseBadges({ appDispatcher, appState }) {
     if (address.length > 0) return
     run()
   }, [address, run])
+
+  function checkeventBagesAndBadges(badges) {
+    return badges && badges.length > 0
+  }
 
   async function processAddress(address) {
     setEventBadges([])
@@ -211,7 +216,14 @@ export default function BrowseBadges({ appDispatcher, appState }) {
           ) : null}
         </Box>
       </Box>
-      <BadgesPaginatedSection eventBadges={eventBadges} etherscanRef={etherscanRef} appState={appState} />
+      <BadgesPaginatedSection
+        appState={appState}
+        badges={badges}
+        checkeventBagesAndBadges={checkeventBagesAndBadges}
+        etherscanRef={etherscanRef}
+        eventBadges={eventBadges}
+        setBadges={setBadges}
+      />
     </>
   )
 }

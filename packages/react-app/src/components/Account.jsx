@@ -106,15 +106,7 @@ export default function Account({ minimized, disableButton }) {
           There is no address connected to this wallet! Click the button to connect and view your wallet!
         </Typography>
       )}
-      <Balance
-        address={
-          // @ts-ignore
-          connectedAddress
-        }
-        provider={localProvider}
-        price={price}
-        size={20}
-      />
+      <Balance address={connectedAddress} provider={localProvider} price={price} size={20} />
     </Box>
   )
 

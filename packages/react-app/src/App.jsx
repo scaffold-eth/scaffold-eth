@@ -16,7 +16,6 @@ const { ethers } = require('ethers')
 const APPSTATEACTION = {
   GOERLICHAINID: '5',
   OPTIMISMCHAINID: '10',
-  MAINNETCHAINID: '1',
 }
 
 const defaultState = {
@@ -26,27 +25,29 @@ const defaultState = {
 }
 
 function appStateReducer(state, actionType) {
-  if (actionType === APPSTATEACTION.OPTIMISMCHAINID) {
-    const newState = {
-      provider: new ethers.providers.Web3Provider(window.ethereum),
-      chainid: '10',
-      contractRef: externalContracts['10'].contracts.REMIX_REWARD,
-    }
-    return newState
+  switch (actionType.type) {
+    case '10':
+      const optimism = {
+        provider: new ethers.providers.Web3Provider(window.ethereum),
+        chainid: '10',
+        contractRef: externalContracts['10'].contracts.REMIX_REWARD,
+      }
+      return optimism
+    case '5':
+      const goerli = {
+        provider: new ethers.providers.Web3Provider(window.ethereum),
+        chainid: '1',
+        contractRef: externalContracts['1'].contracts.REMIX_REWARD,
+      }
+      return goerli
+    default:
+      throw new Error('The network selected is not supported!')
   }
-  if (actionType === APPSTATEACTION.MAINNETCHAINID) {
-    const newState = {
-      provider: new ethers.providers.Web3Provider(window.ethereum),
-      chainid: '1',
-      contractRef: externalContracts['1'].contracts.REMIX_REWARD,
-    }
-    return newState
-  }
-  return state
 }
 
 // @ts-ignore
 function App({ mainnet }) {
+  // @ts-ignore
   const [appState, appDispatch] = useReducer(appStateReducer, defaultState)
   const [localProvider, setLocalProvider] = useState()
   const [loaded, setLoaded] = useState(false)
@@ -112,6 +113,7 @@ function App({ mainnet }) {
     async function getAddress() {
       const holderForConnectedAddress = await appState.provider.listAccounts()
       if (holderForConnectedAddress.length > 1 && connectedAddress) {
+        // @ts-ignore
         setConnectedAddress(holderForConnectedAddress[0])
       }
       console.log('connectedAddress could not be set!')
@@ -121,21 +123,18 @@ function App({ mainnet }) {
 
   useEffect(() => {
     window.ethereum.on('chainChanged', chainId => {
-      if (chainId === 5 || chainId === '5') {
+      // @ts-ignore
+      const id = parseInt(Number(chainId))
+      if (id === 5) {
         // @ts-ignore
-        appDispatch({ actionType: APPSTATEACTION.GOERLICHAINID })
+        appDispatch({ type: APPSTATEACTION.GOERLICHAINID })
         window.location.reload()
       }
-      if (chainId === 10 || chainId === '10') {
+      if (id === 10) {
         // @ts-ignore
-        appDispatch({ actionType: APPSTATEACTION.OPTIMISMCHAINID })
+        appDispatch({ type: APPSTATEACTION.OPTIMISMCHAINID })
         window.location.reload()
       }
-      if (chainId === 1 || chainId === '1') {
-        // @ts-ignore
-        appDispatch({ actionType: APPSTATEACTION.MAINNETCHAINID })
-      }
-      window.location.reload()
     })
 
     return () => {
@@ -200,12 +199,7 @@ function App({ mainnet }) {
         appDispatch({ actionType: APPSTATEACTION.OPTIMISMCHAINID })
         window.location.reload()
       }
-      if (chainId === 1 || chainId === '1') {
-        // @ts-ignore
-        appDispatch({ actionType: APPSTATEACTION.MAINNETCHAINID })
-        window.location.reload()
-      }
-      if (chainId !== 10 || chainId !== '10' || chainId !== 5 || chainId !== '5' || chainId !== 1 || chainId !== '1') {
+      if (chainId !== 10 || chainId !== '10' || chainId !== 5 || chainId !== '5') {
         throw new Error('Network not supported!!!')
       }
     })

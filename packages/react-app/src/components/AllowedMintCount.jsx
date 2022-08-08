@@ -29,23 +29,30 @@ export default function AllowedMintCount() {
     }
     const run = async () => {
       try {
-        const chainId = await getCurrentChainId()
-        if (chainId === 5) {
+        const chainInfo = await getCurrentChainId()
+        console.log({ chainInfo })
+        if (chainInfo[0].chainId === 5) {
           // create contractRef for goerli
-          const provider = new ethers.providers.Web3Provider(window.ethereum)
           const contractReference = externalContracts['5'].contracts.REMIX_REWARD
-          const result = await allowedMinting(contractReference, provider, contractReference.address)
-          setMintCount(result)
+          const result = await allowedMinting(contractReference, localProvider, connectedAddress)
+          if (ethers.BigNumber.isBigNumber(result)) {
+            const final = ethers.BigNumber.from(result).toNumber().toString()
+            console.log({ final })
+            setMintCount(final)
+            return
+          }
         }
-        const result = await allowedMinting(contractRef, localProvider, connectedAddress)
-        if (ethers.BigNumber.isBigNumber(result)) {
-          const final = ethers.BigNumber.from(result).toNumber().toString()
-          console.log({ final })
-          setMintCount(final)
-          return
+        if (chainInfo[0].chainId === 10) {
+          // create contractRef for goerli
+          const contractReference = externalContracts['10'].contracts.REMIX_REWARD
+          const result = await allowedMinting(contractReference, localProvider, connectedAddress)
+          if (ethers.BigNumber.isBigNumber(result)) {
+            const final = ethers.BigNumber.from(result).toNumber().toString()
+            console.log({ final })
+            setMintCount(final)
+            return
+          }
         }
-        console.log({ result })
-        setMintCount(result)
       } catch (error) {
         console.log(`An error was caught in AllowedMintCount. See the details below`)
         console.log({ error })
@@ -56,20 +63,6 @@ export default function AllowedMintCount() {
       console.log('cleaned up!')
     }
   }, [allowedMinting, connectedAddress, contractRef, localProvider])
-
-  useEffect(() => {
-    window.ethereum.on('chainChanged', async chainId => {
-      if (chainId !== 5) return
-      // create contractRef for goerli
-      const provider = new ethers.providers.Web3Provider(window.ethereum)
-      const contractReference = externalContracts['5'].contracts.REMIX_REWARD
-      const result = await allowedMinting(contractReference, provider, contractReference.address)
-      setMintCount(result)
-    })
-    return () => {
-      window.ethereum.removeListener('chainChanged', () => {})
-    }
-  }, [allowedMinting])
 
   return (
     <>

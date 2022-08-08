@@ -8,15 +8,21 @@ import { useContext, useEffect, useState } from 'react'
 import { BadgeContext } from 'contexts/BadgeContext'
 import Fab from '@mui/material/Fab'
 import { useCallback } from 'react'
+import AddressedCard from './AddressedCard'
 
-export default function BadgesPaginatedSection({ eventBadges, etherscanRef, appState }) {
+export default function BadgesPaginatedSection({
+  appState,
+  badges,
+  checkeventBagesAndBadges,
+  etherscanRef,
+  eventBadges,
+  setBadges,
+}) {
   // @ts-ignore
   const { contractRef, localProvider, mainnet } = useContext(BadgeContext)
   const [pageNumber, setPageNumber] = useState(1)
   const [pageSize, setPageSize] = useState(10)
-  const [viewAllBadges, flipViewAllBadges] = useState(false)
-  const [badges, setBadges] = useState([])
-
+  const [pagedBadges, setPagedBadges] = useState([])
   const getPaginationData = useCallback(
     (pgSize, pgNumber) => {
       const startIndex = pgNumber * pgSize - pgSize
@@ -28,57 +34,13 @@ export default function BadgesPaginatedSection({ eventBadges, etherscanRef, appS
   )
 
   useEffect(() => {
-    if (badges.length === 0) {
-      setBadges(getPaginationData(pageSize, pageNumber))
+    if (pagedBadges.length === 0) {
+      setPagedBadges(getPaginationData(pageSize, pageNumber))
     }
-  }, [badges.length, getPaginationData, pageNumber, pageSize])
+  }, [pagedBadges.length, getPaginationData, pageNumber, pageSize])
 
   return (
     <>
-      {/* <Box
-        mb={15}
-        mt={10}
-        p={1}
-        display={'flex'}
-        justifyContent={'space-between'}
-        borderRadius={3}
-        border={'1px solid #ccc'}
-      >
-        <Button
-          size="large"
-          variant={'contained'}
-          disabled={pageNumber === 1}
-          onClick={goToPreviousPage}
-          sx={{
-            borderRadius: 3,
-            backgroundColor: '#81a6f7',
-            ':disabled': { backgroundColor: '#81a6f7', color: 'whitesmoke' },
-          }}
-        >
-          <ArrowBackIosNewRoundedIcon />
-          <Typography variant={'button'}>Previous</Typography>
-        </Button>
-        <FormControlLabel
-          // @ts-ignore
-          control={<Switch checked={viewAllBadges} onChange={handleCheck} size="large" />}
-          label="View all Badges"
-          labelPlacement="start"
-        />
-        <Button
-          size="large"
-          variant={'contained'}
-          onClick={goToNextPage}
-          disabled={!eventBadges.length || viewAllBadges === true}
-          sx={{
-            borderRadius: 3,
-            backgroundColor: '#81a6f7',
-            ':disabled': { backgroundColor: '#81a6f7', color: 'whitesmoke' },
-          }}
-        >
-          <Typography variant={'button'}>Next</Typography>
-          <ArrowForwardIosRoundedIcon />
-        </Button>
-      </Box> */}
       <Box
         sx={{
           background: 'linear-gradient(90deg, #f6e8fc, #f1e6fb, #ede5fb, #e8e4fa, #e3e2f9, #dee1f7, #d9dff6, #d4def4)',
@@ -101,57 +63,61 @@ export default function BadgesPaginatedSection({ eventBadges, etherscanRef, appS
               'linear-gradient(90deg, #f6e8fc, #f1e6fb, #ede5fb, #e8e4fa, #e3e2f9, #dee1f7, #d9dff6, #d4def4)',
           }}
         >
-          {badges && badges.length > 0 && !viewAllBadges
-            ? badges.map(event => {
-                let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
-                return (
-                  <Grid
-                    item
-                    mt={-12}
-                    mb={15}
-                    ml={'auto'}
-                    mr={'auto'}
-                    key={`${event.to}-${event.id}`}
-                    alignItems={'center'}
-                    justifyContent={'center'}
-                  >
-                    <NftCard
-                      etherscan={etherscanRef}
-                      to={event.to}
-                      id={event.id}
-                      transactionHash={event.transactionHash}
-                      contract={contract}
-                      mainnet={mainnet}
-                    />
-                  </Grid>
-                )
-              })
-            : eventBadges && eventBadges.length > 0 && viewAllBadges
-            ? eventBadges.map(event => {
-                let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
-                return (
-                  <Grid
-                    item
-                    mt={-12}
-                    mb={15}
-                    ml={'auto'}
-                    mr={'auto'}
-                    key={`${event.to}-${event.id}`}
-                    alignItems={'center'}
-                    justifyContent={'center'}
-                  >
-                    <NftCard
-                      etherscan={etherscanRef}
-                      to={event.to}
-                      id={event.id}
-                      transactionHash={event.transactionHash}
-                      contract={contract}
-                      mainnet={mainnet}
-                    />
-                  </Grid>
-                )
-              })
-            : null}
+          {checkeventBagesAndBadges(badges) ? (
+            <Grid item md={'auto'} lg={'auto'} mt={-12} ml={'auto'} mr={'auto'}>
+              <AddressedCard badges={badges} />
+            </Grid>
+          ) : badges && badges.length > 0 ? (
+            badges.map(event => {
+              let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
+              return (
+                <Grid
+                  item
+                  mt={-12}
+                  mb={15}
+                  ml={'auto'}
+                  mr={'auto'}
+                  key={`${event.to}-${event.id}`}
+                  alignItems={'center'}
+                  justifyContent={'center'}
+                >
+                  <NftCard
+                    etherscan={etherscanRef}
+                    to={event.to}
+                    id={event.id}
+                    transactionHash={event.transactionHash}
+                    contract={contract}
+                    mainnet={mainnet}
+                  />
+                </Grid>
+              )
+            })
+          ) : eventBadges && eventBadges.length > 0 ? (
+            eventBadges.map(event => {
+              let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
+              return (
+                <Grid
+                  item
+                  mt={-12}
+                  mb={15}
+                  ml={'auto'}
+                  mr={'auto'}
+                  key={`${event.to}-${event.id}`}
+                  alignItems={'center'}
+                  justifyContent={'center'}
+                >
+                  <NftCard
+                    etherscan={etherscanRef}
+                    to={event.to}
+                    id={event.id}
+                    transactionHash={event.transactionHash}
+                    contract={contract}
+                    mainnet={mainnet}
+                  />
+                </Grid>
+              )
+            })
+          ) : null}
           <Grid item justifySelf={'flex-end'}>
             <Fab
               variant={'extended'}
@@ -164,7 +130,7 @@ export default function BadgesPaginatedSection({ eventBadges, etherscanRef, appS
                 padding: 3,
                 backgroundColor: '#81a6f7',
               }}
-              disabled={!badges.length || !eventBadges.length}
+              disabled={!eventBadges.length}
               onClick={() => {
                 setBadges(prevArray => {
                   const pgNum = pageNumber + 1
