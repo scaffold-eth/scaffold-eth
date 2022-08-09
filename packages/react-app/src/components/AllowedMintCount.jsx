@@ -7,7 +7,7 @@ import { getCurrentChainId } from 'helpers/SwitchToOptimism'
 
 export default function AllowedMintCount() {
   // @ts-ignore
-  const { contractRef, localProvider, connectedAddress } = useContext(BadgeContext)
+  const { localProvider, connectedAddress } = useContext(BadgeContext)
   /*
    * this returns the number of user badge that the selected account is allowed to mint.
    * this function throws an error if the current network selected in the injected provider (metamask) is not optimism (chain id of optimism is 10)
@@ -60,9 +60,9 @@ export default function AllowedMintCount() {
     }
     run()
     return () => {
-      console.log('cleaned up!')
+      run()
     }
-  }, [allowedMinting, connectedAddress, contractRef, localProvider])
+  }, [allowedMinting, connectedAddress, localProvider])
 
   return (
     <>

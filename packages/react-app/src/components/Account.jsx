@@ -1,13 +1,13 @@
-import React, { useContext, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import Address from './Address'
-import Balance from './Balance'
 import Box from '@mui/material/Box'
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip'
 import { styled } from '@mui/material/styles'
 import { BadgeContext } from 'contexts/BadgeContext'
 import { getCurrentChainId, switchChain, externalParams } from 'helpers/SwitchToOptimism'
+import { ethers } from 'ethers'
 
 /** 
   ~ What it does? ~
@@ -59,10 +59,10 @@ const MetaMaskTooltip = styled(({ className, ...props }) => <Tooltip {...props} 
 
 // @ts-ignore
 // @ts-ignore
-export default function Account({ minimized, disableButton }) {
+export default function Account({ minimized }) {
   const {
     // @ts-ignore
-    targetProvider,
+    injectedProvider,
     // @ts-ignore
     localProvider,
     // @ts-ignore
@@ -74,6 +74,8 @@ export default function Account({ minimized, disableButton }) {
     // @ts-ignore
     targetNetwork,
     // @ts-ignore
+    setShowToast,
+    // @ts-ignore
     connectedAddress,
     // @ts-ignore
     setConnectedAddress,
@@ -83,35 +85,97 @@ export default function Account({ minimized, disableButton }) {
   const accountButtonConnected = 'Connected'
   const [netInfo, setNetInfo] = useState([])
 
-  async function doOptimismSwitch(switchPayload) {
-    try {
-      disableButton(true)
-      await switchChain(switchPayload)
-    } catch (error) {
-      console.log({ error })
-    }
-  }
-
   const display = !minimized && (
     <Box>
-      {connectedAddress && connectedAddress.length > 1 ? (
-        <Address
-          address={connectedAddress}
-          ensProvider={mainnet}
-          blockExplorer={targetNetwork.blockExplorer}
-          fontSize={20}
-        />
-      ) : (
-        <Typography variant="subtitle1" fontWeight={500} mb={3} sx={{ color: '#333333' }} component={'span'}>
-          There is no address connected to this wallet! Click the button to connect and view your wallet!
-        </Typography>
-      )}
-      <Balance address={connectedAddress} provider={localProvider} price={price} size={20} />
+      {
+        connectedAddress && connectedAddress.length > 1 ? (
+          <Address
+            address={connectedAddress}
+            ensProvider={mainnet}
+            blockExplorer={targetNetwork.blockExplorer}
+            fontSize={20}
+          />
+        ) : null
+        // (
+        //   <Typography variant="subtitle1" fontWeight={500} mb={3} sx={{ color: '#333333' }} component={'span'}>
+        //     There is no address connected to this wallet! Click the button to connect and view your wallet!
+        //   </Typography>
+        // )
+      }
+      {/* <Balance address={connectedAddress} provider={localProvider} price={price} size={20} /> */}
     </Box>
   )
 
+  const handleConnection = useCallback(async () => {
+    const chainInfo = await getCurrentChainId()
+    let provider
+    let accounts
+    if (!chainInfo && chainInfo === undefined) {
+      setShowToast(true)
+      return
+    }
+    const { chainId, networkId } = chainInfo
+    accountButtonInfo.action()
+    if (injectedProvider === undefined) {
+      provider = new ethers.providers.Web3Provider(window.ethereum)
+      accounts = await provider.listAccounts()
+      setConnectedAddress(accounts[0])
+    } else {
+      accounts = await injectedProvider.listAccounts()
+      setConnectedAddress(accounts[0])
+    }
+    // @ts-ignore
+    if (chainId === 10 && networkId === 10) {
+      await switchChain(externalParams[0])
+    }
+    if (chainId === 5 && networkId === 5) {
+      await switchChain(externalParams[1])
+    }
+    setNetInfo(chainInfo)
+  }, [accountButtonInfo, injectedProvider, setConnectedAddress, setShowToast])
+
+  useEffect(() => {
+    window.ethereum.on('connect', async connectInfo => {
+      if (window.ethereum.isConnected()) {
+        await handleConnection()
+      } else {
+        await handleConnection()
+      }
+    })
+
+    return () => {
+      window.ethereum.removeListener('connect', async connectInfo => {
+        if (window.ethereum.isConnected()) {
+          await handleConnection()
+        } else {
+          await handleConnection()
+        }
+      })
+    }
+  }, [handleConnection])
+
+  useEffect(() => {
+    window.ethereum.on('accountsChanged', async accounts => {
+      if (accounts.length > 0) {
+        await handleConnection()
+      } else {
+        setShowToast(true)
+      }
+    })
+
+    return () => {
+      window.ethereum.removeListener('accountsChanged', async accounts => {
+        if (accounts.length > 0) {
+          await handleConnection()
+        } else {
+          setShowToast(true)
+        }
+      })
+    }
+  }, [handleConnection, setShowToast])
+
   return (
-    <Box sx={{ display: 'flex' }} alignItems={'center'} justifyContent={'center'} pb={5}>
+    <Box sx={{ display: 'flex' }} alignItems={'center'} justifyContent={'center'} pb={1}>
       {display}
       {
         <MetaMaskTooltip
@@ -120,32 +184,9 @@ export default function Account({ minimized, disableButton }) {
         >
           <Button
             variant={'contained'}
-            sx={{ borderRadius: 3, marginTop: 5, padding: 1.8, marginLeft: 3, background: '#81a6f7' }}
-            onClick={async () => {
-              const chainInfo = await getCurrentChainId()
-              const { chainId, networkId, name } = chainInfo
-              console.log({ chainInfo })
-              accountButtonInfo.action()
-              const accounts = await targetProvider.listAccounts()
-              console.log({ accounts })
-              // @ts-ignore
-              setConnectedAddress(accounts[0])
-
-              if (chainId === 1 && networkId === 1) {
-                console.log(`connected to ${name}`)
-                await doOptimismSwitch(externalParams[2])
-              }
-              if (chainId === 10 && networkId === 10) {
-                console.log(`connected to ${name}`)
-                await doOptimismSwitch(externalParams[0])
-              }
-              if (chainId === 5 && networkId === 5) {
-                console.log(`connected to ${name}`)
-                await doOptimismSwitch(externalParams[1])
-              }
-              setNetInfo(chainInfo)
-            }}
-            size={'large'}
+            sx={{ borderRadius: 3, padding: 1.2, marginLeft: 3, background: '#81a6f7' }}
+            onClick={handleConnection}
+            size={'small'}
           >
             <Typography variant={'button'} fontWeight={'bolder'}>
               {
@@ -157,7 +198,7 @@ export default function Account({ minimized, disableButton }) {
         </MetaMaskTooltip>
       }
 
-      {netInfo && netInfo.length > 0 && connectedAddress && connectedAddress.length > 1
+      {/* {netInfo && netInfo.length > 0 && connectedAddress && connectedAddress.length > 1
         ? netInfo.map(n => (
             <Box
               key={n.chainId}
@@ -171,7 +212,7 @@ export default function Account({ minimized, disableButton }) {
               justifyContent={'center'}
             >{`You are currently connected to ${n.name}`}</Box>
           ))
-        : null}
+        : null} */}
     </Box>
   )
 }

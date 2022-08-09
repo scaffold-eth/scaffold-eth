@@ -30,6 +30,20 @@ export default function NftCard(props) {
 
       setState({ data, title, src, txLink })
     })()
+
+    return () => {
+      ;(async () => {
+        let data = await contract.tokensData(ethers.BigNumber.from(id === '0x' ? '0x0' : id))
+        let toFormatted = ethers.utils.hexStripZeros(to)
+        const name = await mainnet.lookupAddress(toFormatted)
+        let title = name ? name : toFormatted
+
+        const src = 'https://remix-project.mypinata.cloud/ipfs/' + toBase58(data.hash)
+        const txLink = etherscan + transactionHash
+
+        setState({ data, title, src, txLink })
+      })()
+    }
   }, [contract, etherscan, id, mainnet, to, transactionHash])
   return (
     <>

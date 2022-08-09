@@ -1,16 +1,49 @@
-import React, { useState } from 'react'
+import React, { useReducer, useState, useContext, useEffect } from 'react'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import MintingPageCard from '../components/MintingPageCard'
 import MintingActions from 'components/MintingActions'
 import Account from 'components/Account'
+import { BadgeContext } from 'contexts/BadgeContext'
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
+import externalContracts from 'contracts/external_contracts'
+const { ethers } = require('ethers')
 
-export default function MintingPage({ appDispatcher, appState }) {
+const APPSTATEACTION = {
+  GOERLICHAINID: '5',
+  OPTIMISMCHAINID: '10',
+}
+
+const defaultState = {
+  chainId: '5',
+  contractRef: externalContracts['5'].contracts.REMIX_REWARD,
+}
+
+function appStateReducer(state, actionType) {
+  switch (actionType.type) {
+    case '10':
+      const optimism = {
+        chainid: '10',
+        contractRef: externalContracts['10'].contracts.REMIX_REWARD,
+      }
+      return optimism
+    case '5':
+      const goerli = {
+        chainid: '1',
+        contractRef: externalContracts['1'].contracts.REMIX_REWARD,
+      }
+      return goerli
+    default:
+      throw new Error('The network selected is not supported!')
+  }
+}
+
+export default function MintingPage() {
   // @ts-ignore
-  // const { contractRef } = useContext(BadgeContext)
-  const [enableButton, disableButton] = useState(false)
+  const { injectedProvider, setConnectedAddress } = useContext(BadgeContext)
+  // @ts-ignore
+  const [appState, appDispatch] = useReducer(appStateReducer, defaultState)
 
   const theme = useTheme()
   const mobile400 = useMediaQuery(theme.breakpoints.between('sm', 'md'))
@@ -18,10 +51,21 @@ export default function MintingPage({ appDispatcher, appState }) {
   const mobile900 = useMediaQuery('(min-width:900px)')
   const mobileResponsiveMatch = useMediaQuery('(min-width:600px)')
 
+  useEffect(() => {
+    window.ethereum.on('chainChanged', chainid => {
+      window.location.reload()
+    })
+  }, [])
+
+  useEffect(() => {
+    window.ethereum.on('accountsChanged', accounts => {
+      setConnectedAddress(accounts[0])
+    })
+  }, [setConnectedAddress])
+
   return (
     <>
       <Box pt="76px" mb={20}>
-        <Account minimized={enableButton} disableButton={disableButton} />
         <Box mb={10} sx={{ textAlign: 'left', padding: '10px', color: '#007aa6', marginLeft: 5, marginBottom: 5 }}>
           <Typography
             textAlign={'left'}
@@ -70,7 +114,7 @@ export default function MintingPage({ appDispatcher, appState }) {
           <MintingPageCard
             top={mobile900 ? -15 : mobileResponsiveMatch ? -16 : mobile400 ? -25 : mobile240 ? -14 : -15}
           />
-          <MintingActions contractRef={appState.contractRef} provider={appState.provider} />
+          <MintingActions contractRef={appState.contractRef} provider={injectedProvider} />
         </Box>
       </Box>
     </>

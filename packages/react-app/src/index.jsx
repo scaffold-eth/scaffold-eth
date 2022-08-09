@@ -7,8 +7,6 @@ import './index.css'
 import { ThemeProvider } from '@mui/material/styles'
 import { theme } from './themes/createTheme'
 import { CssBaseline } from '@mui/material'
-import { ethers } from 'ethers'
-import externalContracts from 'contracts/external_contracts'
 
 const subgraphUri = 'http://localhost:8000/subgraphs/name/scaffold-eth/your-contract'
 
@@ -17,17 +15,13 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 })
 
-const mainnet = new ethers.providers.StaticJsonRpcProvider(
-  'https://mainnet.infura.io/v3/1b3241e53c8d422aab3c7c0e4101de9c',
-)
-
 ReactDOM.render(
   <ApolloProvider client={client}>
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <BrowserRouter>
         <Route path="/">
-          <App mainnet={mainnet} />
+          <App />
         </Route>
       </BrowserRouter>
     </ThemeProvider>

@@ -29,28 +29,28 @@ export const isHexadecimal = value => {
 
 // const styles
 
-export default function BrowseBadges({ appDispatcher, appState }) {
+export default function BrowseBadges() {
   const [badges, setBadges] = useState([])
   const [eventBadges, setEventBadges] = useState([])
   const [error, setErrorMessage] = useState('')
-  const { localProvider, mainnet, address, setAddress } = useContext(BadgeContext)
+  const { localProvider, mainnet, address, setAddress, injectedProvider, selectedChainId } = useContext(BadgeContext)
 
   let contractRef
   let providerRef
   let etherscanRef
   if (
-    externalContracts[appState.chainId] &&
-    externalContracts[appState.chainId].contracts &&
-    externalContracts[appState.chainId].contracts.REMIX_REWARD
+    externalContracts[selectedChainId] &&
+    externalContracts[selectedChainId].contracts &&
+    externalContracts[selectedChainId].contracts.REMIX_REWARD
   ) {
-    contractRef = externalContracts[appState.chainId].contracts.REMIX_REWARD
-    providerRef = externalContracts[appState.chainId].provider
-    etherscanRef = externalContracts[appState.chainId].etherscan
+    contractRef = externalContracts[selectedChainId].contracts.REMIX_REWARD
+    providerRef = externalContracts[selectedChainId].provider
+    etherscanRef = externalContracts[selectedChainId].etherscan
   }
 
   useEffect(() => {
     const run = async () => {
-      if (!contractRef) return setErrorMessage('chain not supported. ' + appState.chainId)
+      if (!contractRef) return setErrorMessage('chain not supported. ' + selectedChainId)
       if (!address) {
         setEventBadges([])
         setErrorMessage('')
@@ -59,7 +59,11 @@ export default function BrowseBadges({ appDispatcher, appState }) {
       setErrorMessage('')
     }
     run()
-  }, [address, appState.chainId, contractRef])
+
+    return () => {
+      run()
+    }
+  }, [address, selectedChainId, contractRef])
 
   const run = useCallback(async () => {
     if (address) {
@@ -75,9 +79,13 @@ export default function BrowseBadges({ appDispatcher, appState }) {
     })
     setEventBadges(badges)
   }, [address, contractRef.address, providerRef])
+
   useEffect(() => {
     if (address.length > 0) return
     run()
+    return () => {
+      run()
+    }
   }, [address, run])
 
   function checkeventBagesAndBadges(badges) {
@@ -217,11 +225,11 @@ export default function BrowseBadges({ appDispatcher, appState }) {
         </Box>
       </Box>
       <BadgesPaginatedSection
-        appState={appState}
         badges={badges}
         checkeventBagesAndBadges={checkeventBagesAndBadges}
         etherscanRef={etherscanRef}
         eventBadges={eventBadges}
+        injectedProvider={injectedProvider}
         setBadges={setBadges}
       />
     </>

@@ -37,6 +37,11 @@ export default function BadgesPaginatedSection({
     if (pagedBadges.length === 0) {
       setPagedBadges(getPaginationData(pageSize, pageNumber))
     }
+    return () => {
+      if (pagedBadges.length === 0) {
+        setPagedBadges(getPaginationData(pageSize, pageNumber))
+      }
+    }
   }, [pagedBadges.length, getPaginationData, pageNumber, pageSize])
 
   return (
