@@ -8,6 +8,7 @@ import { styled } from '@mui/material/styles'
 import { BadgeContext } from 'contexts/BadgeContext'
 import { getCurrentChainId, switchChain, externalParams } from 'helpers/SwitchToOptimism'
 import { ethers } from 'ethers'
+import { green, lightGreen } from '@mui/material/colors'
 
 /** 
   ~ What it does? ~
@@ -56,6 +57,37 @@ const MetaMaskTooltip = styled(({ className, ...props }) => <Tooltip {...props} 
     },
   }),
 )
+
+const ConnectedButton = ({ handleConnection, connectedAddress, accountButtonConnected, accountButtonInfo }) => {
+  const greenConnected = lightGreen['900']
+  const hoveredGreen = lightGreen['800']
+  return (
+    <MetaMaskTooltip
+      title="This connection requires MetaMask. By clicking here, you accept a connection to Metamask"
+      placement="bottom"
+    >
+      <Button
+        variant={'contained'}
+        sx={{
+          borderRadius: 3,
+          padding: 1.2,
+          marginLeft: 3,
+          background: greenConnected,
+          ':hover': hoveredGreen,
+        }}
+        onClick={handleConnection}
+        size={'small'}
+      >
+        <Typography variant={'button'} fontWeight={'bolder'}>
+          {
+            // @ts-ignore
+            connectedAddress && connectedAddress.length > 1 ? accountButtonConnected : accountButtonInfo.name
+          }
+        </Typography>
+      </Button>
+    </MetaMaskTooltip>
+  )
+}
 
 // @ts-ignore
 // @ts-ignore
@@ -135,16 +167,8 @@ export default function Account({ minimized }) {
   }, [accountButtonInfo, injectedProvider, setConnectedAddress, setShowToast])
 
   useEffect(() => {
-    window.ethereum.on('connect', async connectInfo => {
-      if (window.ethereum.isConnected()) {
-        await handleConnection()
-      } else {
-        await handleConnection()
-      }
-    })
-
-    return () => {
-      window.ethereum.removeListener('connect', async connectInfo => {
+    if (window.ethereum !== undefined) {
+      window.ethereum.on('connect', async connectInfo => {
         if (window.ethereum.isConnected()) {
           await handleConnection()
         } else {
@@ -152,32 +176,51 @@ export default function Account({ minimized }) {
         }
       })
     }
-  }, [handleConnection])
-
-  useEffect(() => {
-    window.ethereum.on('accountsChanged', async accounts => {
-      if (accounts.length > 0) {
-        await handleConnection()
-      } else {
-        setShowToast(true)
-      }
-    })
 
     return () => {
-      window.ethereum.removeListener('accountsChanged', async accounts => {
+      if (window.ethereum !== undefined) {
+        window.ethereum.removeListener('connect', async connectInfo => {
+          if (window.ethereum.isConnected()) {
+            await handleConnection()
+          } else {
+            await handleConnection()
+          }
+        })
+      }
+    }
+  }, [handleConnection, setShowToast])
+
+  useEffect(() => {
+    if (window.ethereum !== undefined) {
+      window.ethereum.on('accountsChanged', async accounts => {
         if (accounts.length > 0) {
           await handleConnection()
-        } else {
-          setShowToast(true)
         }
       })
+    }
+
+    return () => {
+      if (window.ethereum !== undefined) {
+        window.ethereum.on('accountsChanged', async accounts => {
+          if (accounts.length > 0) {
+            await handleConnection()
+          }
+        })
+      }
     }
   }, [handleConnection, setShowToast])
 
   return (
     <Box sx={{ display: 'flex' }} alignItems={'center'} justifyContent={'center'} pb={1}>
       {display}
-      {
+      {window.ethereum && window.ethereum.isConnected() && connectedAddress && connectedAddress.length ? (
+        <ConnectedButton
+          accountButtonConnected={accountButtonConnected}
+          accountButtonInfo={accountButtonInfo}
+          connectedAddress={connectedAddress}
+          handleConnection={handleConnection}
+        />
+      ) : (
         <MetaMaskTooltip
           title="This connection requires MetaMask. By clicking here, you accept a connection to Metamask"
           placement="bottom"
@@ -196,7 +239,7 @@ export default function Account({ minimized }) {
             </Typography>
           </Button>
         </MetaMaskTooltip>
-      }
+      )}
 
       {/* {netInfo && netInfo.length > 0 && connectedAddress && connectedAddress.length > 1
         ? netInfo.map(n => (
