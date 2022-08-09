@@ -1,12 +1,12 @@
-import { Skeleton, Typography } from 'antd'
+import { Skeleton, Typography as aTypography } from 'antd'
 import React from 'react'
-import { useThemeSwitcher } from 'react-css-theme-switcher'
 import Blockies from 'react-blockies'
 import { useLookupAddress } from 'eth-hooks/dapps/ens'
 
 // changed value={address} to address={address}
-
-const { Text } = Typography
+import Typography from '@mui/material/Typography'
+import Button from '@mui/material/Button'
+const { Text } = aTypography
 
 /** 
   ~ What it does? ~
@@ -75,34 +75,39 @@ export default function Address(props) {
 
   return (
     <span>
-      <span style={{ verticalAlign: 'middle' }}>
+      <Typography
+        sx={{
+          verticalAlign: 'middle',
+          paddingLeft: 5,
+          fontSize: props.fontSize ? props.fontSize : 16,
+          fontFamily: 'Roboto',
+        }}
+      >
         <Blockies seed={address.toLowerCase()} size={8} scale={props.fontSize ? props.fontSize / 7 : 4} />
-      </span>
-      <span style={{ verticalAlign: 'middle', paddingLeft: 5, fontSize: props.fontSize ? props.fontSize : 28 }}>
         {props.onChange ? (
-          <Text editable={{ onChange: props.onChange }} copyable={{ text: address }}>
-            <a
-              style={{ color: currentTheme === 'light' ? '#222222' : '#ddd' }}
+          <Text editable={{ onChange: props.onChange }} copyable={{ text: address }} style={{ marginLeft: 3 }}>
+            <Button
+              sx={{ color: currentTheme === 'light' ? '#222222' : '#ddd' }}
               target="_blank"
               href={etherscanLink}
               rel="noopener noreferrer"
             >
               {displayAddress}
-            </a>
+            </Button>
           </Text>
         ) : (
           <Text copyable={{ text: address }}>
-            <a
-              style={{ color: currentTheme === 'light' ? '#222222' : '#ddd' }}
+            <Button
+              sx={{ color: currentTheme === 'light' ? '#222222' : '#ddd' }}
               target="_blank"
               href={etherscanLink}
               rel="noopener noreferrer"
             >
               {displayAddress}
-            </a>
+            </Button>
           </Text>
         )}
-      </span>
+      </Typography>
     </span>
   )
 }

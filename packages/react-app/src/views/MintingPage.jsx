@@ -51,18 +51,6 @@ export default function MintingPage() {
   const mobile900 = useMediaQuery('(min-width:900px)')
   const mobileResponsiveMatch = useMediaQuery('(min-width:600px)')
 
-  useEffect(() => {
-    window.ethereum.on('chainChanged', chainid => {
-      window.location.reload()
-    })
-  }, [])
-
-  useEffect(() => {
-    window.ethereum.on('accountsChanged', accounts => {
-      setConnectedAddress(accounts[0])
-    })
-  }, [setConnectedAddress])
-
   return (
     <>
       <Box pt="76px" mb={20}>

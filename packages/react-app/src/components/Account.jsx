@@ -8,7 +8,7 @@ import { styled } from '@mui/material/styles'
 import { BadgeContext } from 'contexts/BadgeContext'
 import { getCurrentChainId, switchChain, externalParams } from 'helpers/SwitchToOptimism'
 import { ethers } from 'ethers'
-import { green, lightGreen } from '@mui/material/colors'
+import { lightGreen } from '@mui/material/colors'
 
 /** 
   ~ What it does? ~
@@ -96,13 +96,9 @@ export default function Account({ minimized }) {
     // @ts-ignore
     injectedProvider,
     // @ts-ignore
-    localProvider,
-    // @ts-ignore
     mainnet,
     // @ts-ignore
     loadWeb3Modal,
-    // @ts-ignore
-    price,
     // @ts-ignore
     targetNetwork,
     // @ts-ignore
@@ -115,7 +111,8 @@ export default function Account({ minimized }) {
   let accountButtonInfo
   accountButtonInfo = { name: 'Connect to Mint', action: loadWeb3Modal }
   const accountButtonConnected = 'Connected'
-  const [netInfo, setNetInfo] = useState([])
+  // eslint-disable-next-line no-unused-vars
+  const [_, setNetInfo] = useState([])
 
   const display = !minimized && (
     <Box>
@@ -125,7 +122,7 @@ export default function Account({ minimized }) {
             address={connectedAddress}
             ensProvider={mainnet}
             blockExplorer={targetNetwork.blockExplorer}
-            fontSize={20}
+            fontSize={16}
           />
         ) : null
         // (
@@ -209,6 +206,20 @@ export default function Account({ minimized }) {
       }
     }
   }, [handleConnection, setShowToast])
+
+  useEffect(() => {
+    if (window.ethereum !== undefined) {
+      window.ethereum.on('chainChanged', chainid => {
+        window.location.reload()
+      })
+    }
+
+    return () => {
+      if (window.ethereum !== undefined) {
+        window.ethereum.removeAllListeners('chainChanged')
+      }
+    }
+  }, [])
 
   return (
     <Box sx={{ display: 'flex' }} alignItems={'center'} justifyContent={'center'} pb={1}>
