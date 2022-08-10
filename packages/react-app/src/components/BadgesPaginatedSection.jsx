@@ -80,7 +80,7 @@ export default function BadgesPaginatedSection({
               <AddressedCard badges={badges} />
             </Grid>
           ) : pagedBadges && pagedBadges.length > 0 ? (
-            pagedBadges.map(event => {
+            [...new Set(pagedBadges)].map(event => {
               let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
               return (
                 <Grid
