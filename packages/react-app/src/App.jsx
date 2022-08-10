@@ -24,6 +24,7 @@ function App() {
   const [address, setAddress] = useState('')
   const [tabValue, setTabValue] = useState(0)
   const [showToast, setShowToast] = useState(false)
+  const [showWrongNetworkToast, setShowWrongNetworkToast] = useState(false)
   const [selectedChainId] = useState(5)
   const contractConfig = { deployedContracts: {}, externalContracts: externalContracts || {} }
 
@@ -159,11 +160,12 @@ function App() {
     provider.removeAllListeners('chainChanged')
   }
 
+  const closeWrongNetworkToast = () => {
+    setShowWrongNetworkToast(false)
+  }
+
   /* END - SETUP METAMASK */
 
-  /* SETUP MAINNET & OPTIMISM provider */
-
-  /* END - SETUP MAINNET & OPTIMISM provider */
   const contextPayload = {
     localProvider,
     mainnet,
@@ -180,6 +182,9 @@ function App() {
     loadWeb3Modal,
     logoutOfWeb3Modal,
     setShowToast,
+    closeWrongNetworkToast,
+    showWrongNetworkToast,
+    setShowWrongNetworkToast,
     targetNetwork,
     userSigner,
   }

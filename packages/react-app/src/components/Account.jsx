@@ -6,9 +6,12 @@ import Box from '@mui/material/Box'
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip'
 import { styled } from '@mui/material/styles'
 import { BadgeContext } from 'contexts/BadgeContext'
-import { getCurrentChainId, switchChain, externalParams } from 'helpers/SwitchToOptimism'
+import { getCurrentChainId, switchChain, externalParams, getNetworkChainList } from 'helpers/SwitchToOptimism'
 import { ethers } from 'ethers'
 import { lightGreen } from '@mui/material/colors'
+import Toast from './Toast'
+import IconButton from '@mui/material/IconButton'
+import CloseIcon from '@mui/icons-material/Close'
 
 /** 
   ~ What it does? ~
@@ -107,6 +110,14 @@ export default function Account({ minimized }) {
     connectedAddress,
     // @ts-ignore
     setConnectedAddress,
+    // @ts-ignore
+    selectedChainId,
+    // @ts-ignore
+    setShowWrongNetworkToast,
+    // @ts-ignore
+    closeWrongNetworkToast,
+    // @ts-ignore
+    showWrongNetworkToast,
   } = useContext(BadgeContext)
   let accountButtonInfo
   accountButtonInfo = { name: 'Connect to Mint', action: loadWeb3Modal }
@@ -144,6 +155,10 @@ export default function Account({ minimized }) {
       return
     }
     const { chainId, networkId } = chainInfo
+    if (chainId !== selectedChainId) {
+      setShowWrongNetworkToast(true)
+      return
+    }
     accountButtonInfo.action()
     if (injectedProvider === undefined) {
       provider = new ethers.providers.Web3Provider(window.ethereum)
@@ -161,10 +176,19 @@ export default function Account({ minimized }) {
       await switchChain(externalParams[1])
     }
     setNetInfo(chainInfo)
-  }, [accountButtonInfo, injectedProvider, setConnectedAddress, setShowToast])
+  }, [
+    accountButtonInfo,
+    injectedProvider,
+    selectedChainId,
+    setConnectedAddress,
+    setShowToast,
+    setShowWrongNetworkToast,
+  ])
 
   useEffect(() => {
     if (window.ethereum !== undefined) {
+      // @ts-ignore
+      // @ts-ignore
       window.ethereum.on('connect', async connectInfo => {
         if (window.ethereum.isConnected()) {
           await handleConnection()
@@ -176,6 +200,8 @@ export default function Account({ minimized }) {
 
     return () => {
       if (window.ethereum !== undefined) {
+        // @ts-ignore
+        // @ts-ignore
         window.ethereum.removeListener('connect', async connectInfo => {
           if (window.ethereum.isConnected()) {
             await handleConnection()
@@ -209,6 +235,8 @@ export default function Account({ minimized }) {
 
   useEffect(() => {
     if (window.ethereum !== undefined) {
+      // @ts-ignore
+      // @ts-ignore
       window.ethereum.on('chainChanged', chainid => {
         window.location.reload()
       })
@@ -220,6 +248,35 @@ export default function Account({ minimized }) {
       }
     }
   }, [])
+
+  const wrongNetworkSnackBar = (
+    <>
+      <IconButton
+        size="small"
+        aria-label="close"
+        color="inherit"
+        onClick={() => {
+          setShowWrongNetworkToast(!showWrongNetworkToast)
+        }}
+      >
+        <CloseIcon fontSize="small" />
+      </IconButton>
+    </>
+  )
+  const errorMsg = `Network not supported! Currently supported network: ${
+    selectedChainId === 5 ? 'Goerli' : selectedChainId === 10 ? 'Optimism' : ''
+  }`
+  /* SETUP TOAST FOR WRONG NETWORK */
+  const WrongNetworkToast = ({ showWrongNetworkToast, closeWrongNetworkToast, wrongNetworkSnackBar }) => {
+    return (
+      <Toast
+        showToast={showWrongNetworkToast}
+        closeToast={closeWrongNetworkToast}
+        snackBarAction={wrongNetworkSnackBar}
+        message={errorMsg}
+      />
+    )
+  }
 
   return (
     <Box sx={{ display: 'flex' }} alignItems={'center'} justifyContent={'center'} pb={1}>
@@ -251,6 +308,12 @@ export default function Account({ minimized }) {
           </Button>
         </MetaMaskTooltip>
       )}
+      <WrongNetworkToast
+        showWrongNetworkToast={showWrongNetworkToast}
+        closeWrongNetworkToast={closeWrongNetworkToast}
+        // @ts-ignore
+        wrongNetworkSnackBar={wrongNetworkSnackBar}
+      />
 
       {/* {netInfo && netInfo.length > 0 && connectedAddress && connectedAddress.length > 1
         ? netInfo.map(n => (

@@ -64,7 +64,7 @@ export async function switchChain(switchPayload) {
 export async function getNetworkChainList() {
   try {
     const data = await (await fetch('https://chainid.network/chains.json')).json()
-    console.log({ data })
+    // console.log({ data })
     return data
   } catch (error) {}
 }
