@@ -33,6 +33,13 @@ export default function BadgesPaginatedSection({
     [eventBadges],
   )
 
+  const returnPaginatedData = (pgSize, pgNumber) => {
+    const startIndex = pgNumber * pgSize - pgSize
+    const endIndex = startIndex + pgSize
+    const result = eventBadges.slice(startIndex, endIndex)
+    return result
+  }
+
   useEffect(() => {
     if (pagedBadges.length === 0) {
       setPagedBadges(getPaginationData(pageSize, pageNumber))
@@ -72,8 +79,8 @@ export default function BadgesPaginatedSection({
             <Grid item md={'auto'} lg={'auto'} mt={-12} ml={'auto'} mr={'auto'}>
               <AddressedCard badges={badges} />
             </Grid>
-          ) : badges && badges.length > 0 ? (
-            badges.map(event => {
+          ) : pagedBadges && pagedBadges.length > 0 ? (
+            pagedBadges.map(event => {
               let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
               return (
                 <Grid
@@ -137,9 +144,9 @@ export default function BadgesPaginatedSection({
               }}
               disabled={!eventBadges.length}
               onClick={() => {
-                setBadges(prevArray => {
-                  const pgNum = pageNumber + 1
-                  const newFetch = getPaginationData(pageSize, pgNum)
+                setPageNumber(prev => prev + 1)
+                setPagedBadges(prevArray => {
+                  const newFetch = returnPaginatedData(pageSize, pageNumber)
                   const result = [...prevArray, ...newFetch]
                   return result
                 })
