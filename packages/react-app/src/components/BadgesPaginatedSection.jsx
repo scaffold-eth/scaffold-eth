@@ -21,7 +21,7 @@ export default function BadgesPaginatedSection({
   // @ts-ignore
   const { contractRef, localProvider, mainnet } = useContext(BadgeContext)
   const [pageNumber, setPageNumber] = useState(1)
-  const [pageSize, setPageSize] = useState(10)
+  const [pageSize] = useState(10)
   const [pagedBadges, setPagedBadges] = useState([])
   const getPaginationData = useCallback(
     (pgSize, pgNumber) => {

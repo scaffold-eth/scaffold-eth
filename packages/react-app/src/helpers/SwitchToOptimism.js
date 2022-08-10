@@ -1,11 +1,5 @@
 const { ethers } = require('ethers')
 
-const externalPayload = {
-  chainName: 'Optimism',
-  chainId: 'hexval',
-  rpcUrls: ['', ''],
-}
-
 export const externalParams = [
   {
     chainName: 'Optimism',
