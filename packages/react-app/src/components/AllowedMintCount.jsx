@@ -23,16 +23,11 @@ export default function AllowedMintCount() {
   const [mintCount, setMintCount] = useState('0')
 
   useEffect(() => {
-    if (localProvider === undefined || connectedAddress === undefined) {
-      console.log('Not connected to metamask or the blockchain!')
-      return
-    }
+    if (localProvider === undefined || connectedAddress === undefined) return
     const run = async () => {
       try {
         const chainInfo = await getCurrentChainId()
-        console.log({ chainInfo })
         if (chainInfo[0].chainId === 5) {
-          // create contractRef for goerli
           const contractReference = externalContracts['5'].contracts.REMIX_REWARD
           const result = await allowedMinting(contractReference, localProvider, connectedAddress)
           if (ethers.BigNumber.isBigNumber(result)) {
@@ -43,7 +38,6 @@ export default function AllowedMintCount() {
           }
         }
         if (chainInfo[0].chainId === 10) {
-          // create contractRef for goerli
           const contractReference = externalContracts['10'].contracts.REMIX_REWARD
           const result = await allowedMinting(contractReference, localProvider, connectedAddress)
           if (ethers.BigNumber.isBigNumber(result)) {

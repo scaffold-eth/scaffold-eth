@@ -155,9 +155,6 @@ function App() {
     })
 
     setTabValue(prev => prev)
-
-    provider.removeAllListeners('accountsChanged')
-    provider.removeAllListeners('chainChanged')
   }
 
   const closeWrongNetworkToast = () => {

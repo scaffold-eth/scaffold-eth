@@ -102,7 +102,7 @@ export default function MintingPage() {
           <MintingPageCard
             top={mobile900 ? -15 : mobileResponsiveMatch ? -16 : mobile400 ? -25 : mobile240 ? -14 : -15}
           />
-          <MintingActions contractRef={appState.contractRef} provider={injectedProvider} />
+          <MintingActions contractRef={appState.contractRef} />
         </Box>
       </Box>
     </>

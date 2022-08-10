@@ -160,6 +160,9 @@ export default function Account({ minimized }) {
       return
     }
     accountButtonInfo.action()
+    await window.ethereum.request({
+      method: 'eth_requestAccounts',
+    })
     if (injectedProvider === undefined) {
       provider = new ethers.providers.Web3Provider(window.ethereum)
       accounts = await provider.listAccounts()
@@ -201,7 +204,6 @@ export default function Account({ minimized }) {
     return () => {
       if (window.ethereum !== undefined) {
         // @ts-ignore
-        // @ts-ignore
         window.ethereum.removeListener('connect', async connectInfo => {
           if (window.ethereum.isConnected()) {
             await handleConnection()
@@ -224,11 +226,13 @@ export default function Account({ minimized }) {
 
     return () => {
       if (window.ethereum !== undefined) {
+        // @ts-ignore
         window.ethereum.on('accountsChanged', async accounts => {
           if (accounts.length > 0) {
             await handleConnection()
           }
         })
+        window.ethereum.removeAllListeners('accountsChanged')
       }
     }
   }, [handleConnection, setShowToast])

@@ -24,11 +24,12 @@ const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
 })
 
-export default function MintingActions({ contractRef, provider }) {
+export default function MintingActions({ contractRef }) {
   const [message, setMessage] = useState('')
 
   const [walletAddress, setWalletAddress] = useState('')
   const [showToast, setShowToast] = useState(false)
+  const [showFormErrorToast, setShowFormErrorToast] = useState(false)
 
   function handleChange(e) {
     setWalletAddress(e.target.value)
@@ -41,6 +42,31 @@ export default function MintingActions({ contractRef, provider }) {
   const displayToast = () => {
     setShowToast(true)
   }
+  const showFormError = () => setShowFormErrorToast(true)
+  const closeFormError = () => setShowFormErrorToast(false)
+
+  const formErrorSnackBar = (
+    <>
+      <IconButton
+        size="small"
+        aria-label="close"
+        color="inherit"
+        onClick={() => {
+          setShowFormErrorToast(false)
+        }}
+      >
+        <CloseIcon fontSize="small" />
+      </IconButton>
+    </>
+  )
+
+  const snackBarAction = (
+    <>
+      <IconButton size="small" aria-label="close" color="inherit" onClick={closeToast}>
+        <CloseIcon fontSize="small" />
+      </IconButton>
+    </>
+  )
 
   /*
    * this mints a user badge from the current selected account
@@ -49,13 +75,14 @@ export default function MintingActions({ contractRef, provider }) {
    *  - if the current user doesn't have anymore a slot for minting a badge
    */
   const mintBadge = async receiverAddress => {
-    if (provider === undefined) {
-      // console.log('Provider is in an invalid state please connect to metamask first!')
+    if (window.ethereum === undefined) {
       displayToast()
       return
     }
+    const provider = new ethers.providers.Web3Provider(window.ethereum)
     if (receiverAddress === '' || receiverAddress === undefined || receiverAddress === null) {
-      console.log('the form must have an input with a valid account hash!')
+      // console.log('the form must have an input with a valid account hash!')
+      showFormError()
       return
     }
     let contract = new ethers.Contract(contractRef.address, contractRef.abi, provider.getSigner())
@@ -72,17 +99,14 @@ export default function MintingActions({ contractRef, provider }) {
     setTimeout(() => setMessage(''), 10000)
   }
 
-  const snackBarAction = (
-    <>
-      <IconButton size="small" aria-label="close" color="inherit" onClick={closeToast}>
-        <CloseIcon fontSize="small" />
-      </IconButton>
-    </>
-  )
+  const ShowFormError = ({ showToast, closeToast, snackBarAction, message }) => {
+    return <Toast showToast={showToast} closeToast={closeToast} snackBarAction={snackBarAction} message={message} />
+  }
 
   const doMinting = async () => {
     await mintBadge(walletAddress)
   }
+
   return (
     <>
       <Toast
@@ -90,6 +114,12 @@ export default function MintingActions({ contractRef, provider }) {
         closeToast={closeToast}
         snackBarAction={snackBarAction}
         message={'please connect to metamask first!'}
+      />
+      <ShowFormError
+        showToast={showFormErrorToast}
+        closeToast={closeFormError}
+        snackBarAction={formErrorSnackBar}
+        message={'The form must have an input with a valid account hash!'}
       />
       <Box display={'flex'} flexDirection={'column'} justifyContent={'center'} alignItems={'center'} mt={5}>
         <Box display={'flex'} flexDirection={'column'} sx={{ background: 'white' }} width={280} height={180}>
@@ -121,7 +151,6 @@ export default function MintingActions({ contractRef, provider }) {
             Mint Badge
           </Typography>
         </Button>
-        <span>{message}</span>
         {message && <Alert severity="info">{message}</Alert>}
       </Box>
     </>
