@@ -154,7 +154,7 @@ export default function Account({ minimized }) {
       setShowToast(true)
       return
     }
-    const { chainId, networkId } = chainInfo
+    const { chainId, networkId } = chainInfo[0]
     if (chainId !== selectedChainId) {
       setShowWrongNetworkToast(true)
       return
