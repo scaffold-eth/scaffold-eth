@@ -17,7 +17,7 @@ const { ethers } = require('ethers')
 function App() {
   // @ts-ignore
   const [localProvider, setLocalProvider] = useState(null)
-  const [injectedProvider, setInjectedProvider] = useState()
+  const [injectedProvider, setInjectedProvider] = useState(null)
   const [mainnet, setMainnet] = useState(null)
   const [loaded, setLoaded] = useState(false)
   const [connectedAddress, setConnectedAddress] = useState()
@@ -176,6 +176,7 @@ function App() {
     contractRef,
     price,
     injectedProvider,
+    setInjectedProvider,
     loadWeb3Modal,
     logoutOfWeb3Modal,
     setShowToast,

@@ -11,11 +11,6 @@ export const externalParams = [
     chainId: 0x5,
     rpcUrls: ['https://eth-goerli.g.alchemy.com/v2/1fpzjlzdaT-hFeeTXFY-yzM-WujQLfEl', 'https://rpc.goerli.mudit.blog'],
   },
-  {
-    chainName: 'Ethereum Mainnet',
-    chainId: 1,
-    rpcUrls: ['https://rpc.ankr.com/eth', 'https://eth-mainnet.public.blastapi.io'],
-  },
 ]
 
 /**
@@ -43,6 +38,36 @@ export async function switchChain(switchPayload) {
               chainId: correctHexChainId,
               chainName: chainName,
               rpcUrls: [...chainUrls],
+            },
+          ],
+        })
+        await window.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: correctHexChainId }],
+        })
+      } catch (addError) {}
+    }
+  }
+}
+
+export async function switchToGoerli() {
+  const chainId = externalParams[1].chainId
+  const correctHexChainId = ethers.utils.hexValue(chainId)
+  try {
+    await window.ethereum.request({
+      method: 'wallet_switchEthereumChain',
+      params: [{ chainId: correctHexChainId }],
+    })
+  } catch (switchError) {
+    if (switchError.code === 4902) {
+      try {
+        await window.ethereum.request({
+          method: 'wallet_addEthereumChain',
+          params: [
+            {
+              chainId: correctHexChainId,
+              chainName: externalParams[1].chainName,
+              rpcUrls: [...externalParams[1].rpcUrls],
             },
           ],
         })

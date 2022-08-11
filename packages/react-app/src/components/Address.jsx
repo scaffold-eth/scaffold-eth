@@ -1,12 +1,10 @@
-import { Skeleton, Typography as aTypography } from 'antd'
 import React from 'react'
 import Blockies from 'react-blockies'
 import { useLookupAddress } from 'eth-hooks/dapps/ens'
 
-// changed value={address} to address={address}
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
-const { Text } = aTypography
+import Box from '@mui/material/Box'
 
 /** 
   ~ What it does? ~
@@ -50,17 +48,17 @@ export default function Address(props) {
     displayAddress = address
   }
 
-  if (!address) {
-    return (
-      <span>
-        <Skeleton avatar paragraph={{ rows: 1 }} />
-      </span>
-    )
-  }
+  // if (!address) {
+  //   return (
+  //     <span>
+  //       {/* <Skeleton avatar paragraph={{ rows: 1 }} /> */}
+  //     </span>
+  //   )
+  // }
 
   if (props.minimized) {
     return (
-      <span style={{ verticalAlign: 'middle' }}>
+      <Box style={{ verticalAlign: 'middle' }}>
         <a
           style={{ color: currentTheme === 'light' ? '#222222' : '#ddd' }}
           target="_blank"
@@ -69,45 +67,42 @@ export default function Address(props) {
         >
           <Blockies seed={address.toLowerCase()} size={8} scale={2} />
         </a>
-      </span>
+      </Box>
     )
   }
 
   return (
-    <span>
-      <Typography
-        sx={{
-          verticalAlign: 'middle',
-          paddingLeft: 5,
-          fontSize: props.fontSize ? props.fontSize : 16,
-          fontFamily: 'Roboto',
-        }}
-      >
-        <Blockies seed={address.toLowerCase()} size={8} scale={props.fontSize ? props.fontSize / 7 : 4} />
-        {props.onChange ? (
-          <Text editable={{ onChange: props.onChange }} copyable={{ text: address }} style={{ marginLeft: 3 }}>
-            <Button
-              sx={{ color: currentTheme === 'light' ? '#222222' : '#ddd' }}
-              target="_blank"
-              href={etherscanLink}
-              rel="noopener noreferrer"
-            >
-              {displayAddress}
-            </Button>
-          </Text>
-        ) : (
-          <Text copyable={{ text: address }}>
-            <Button
-              sx={{ color: currentTheme === 'light' ? '#222222' : '#ddd' }}
-              target="_blank"
-              href={etherscanLink}
-              rel="noopener noreferrer"
-            >
-              {displayAddress}
-            </Button>
-          </Text>
-        )}
-      </Typography>
-    </span>
+    <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>
+      <Blockies seed={address.toLowerCase()} size={8} scale={props.fontSize ? props.fontSize / 7 : 4} />
+      {props.onChange ? (
+        // <Text editable={{ onChange: props.onChange }} copyable={{ text: address }} style={{ marginLeft: 3 }}>
+        //   <Button
+        //     variant={'text'}
+        //     size={'large'}
+        //     sx={{ fontSize: 24 }}
+        //     target="_blank"
+        //     href={etherscanLink}
+        //     rel="noopener noreferrer"
+        //   >
+        //     {displayAddress}
+        //   </Button>
+        // </Text>
+        <Button target="_blank" href={etherscanLink} rel="noopener noreferrer" variant={'text'} size={'large'}>
+          <Typography variant={'h5'}>{displayAddress}</Typography>
+        </Button>
+      ) : (
+        <a
+          target="_blank"
+          href={etherscanLink}
+          rel="noopener noreferrer"
+          style={{
+            color: 'rgb(108, 108, 108)',
+            textDecoration: 'none',
+          }}
+        >
+          <Typography variant={'body1'} fontWeight={700}>{displayAddress}</Typography>
+        </a>
+      )}
+    </Box>
   )
 }

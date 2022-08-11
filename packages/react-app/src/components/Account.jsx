@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import Address from './Address'
@@ -6,7 +6,8 @@ import Box from '@mui/material/Box'
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip'
 import { styled } from '@mui/material/styles'
 import { BadgeContext } from 'contexts/BadgeContext'
-import { getCurrentChainId, switchChain, externalParams } from 'helpers/SwitchToOptimism'
+import { getCurrentChainId, switchToGoerli } from 'helpers/SwitchToOptimism'
+// @ts-ignore
 import { ethers } from 'ethers'
 import { lightGreen } from '@mui/material/colors'
 import Toast from './Toast'
@@ -62,7 +63,6 @@ const MetaMaskTooltip = styled(({ className, ...props }) => <Tooltip {...props} 
 )
 
 const ConnectedButton = ({ handleConnection, connectedAddress, accountButtonConnected, accountButtonInfo }) => {
-  const greenConnected = lightGreen['900']
   const hoveredGreen = lightGreen['800']
   return (
     <MetaMaskTooltip
@@ -75,8 +75,10 @@ const ConnectedButton = ({ handleConnection, connectedAddress, accountButtonConn
           borderRadius: 3,
           padding: 1.2,
           marginLeft: 3,
-          background: greenConnected,
-          ':hover': hoveredGreen,
+          background: 'rgb(255,165,0)',
+          ':hover': {
+            background: hoveredGreen,
+          },
         }}
         onClick={handleConnection}
         size={'small'}
@@ -98,6 +100,8 @@ export default function Account({ minimized }) {
   const {
     // @ts-ignore
     injectedProvider,
+    // @ts-ignore
+    setInjectedProvider,
     // @ts-ignore
     mainnet,
     // @ts-ignore
@@ -123,7 +127,7 @@ export default function Account({ minimized }) {
   accountButtonInfo = { name: 'Connect to Mint', action: loadWeb3Modal }
   const accountButtonConnected = 'Connected'
   // eslint-disable-next-line no-unused-vars
-  const [_, setNetInfo] = useState([])
+  const [netInfo, setNetInfo] = useState([])
 
   const display = !minimized && (
     <Box>
@@ -146,10 +150,10 @@ export default function Account({ minimized }) {
     </Box>
   )
 
-  const handleConnection = useCallback(async () => {
+  const handleConnection = async () => {
     const chainInfo = await getCurrentChainId()
-    let provider
     let accounts
+    let provider
     if (!chainInfo && chainInfo === undefined) {
       setShowToast(true)
       return
@@ -157,69 +161,46 @@ export default function Account({ minimized }) {
     const { chainId, networkId } = chainInfo[0]
     if (chainId !== selectedChainId) {
       setShowWrongNetworkToast(true)
-      return
+      // return
     }
     accountButtonInfo.action()
     await window.ethereum.request({
       method: 'eth_requestAccounts',
     })
-    if (injectedProvider === undefined) {
+    if (injectedProvider === null || injectedProvider === undefined)
       provider = new ethers.providers.Web3Provider(window.ethereum)
-      accounts = await provider.listAccounts()
-      setConnectedAddress(accounts[0])
-    } else {
-      accounts = await injectedProvider.listAccounts()
-      setConnectedAddress(accounts[0])
-    }
+    accounts = await provider.listAccounts()
+    setConnectedAddress(accounts[0])
     // @ts-ignore
-    if (chainId === 10 && networkId === 10) {
-      await switchChain(externalParams[0])
-    }
-    if (chainId === 5 && networkId === 5) {
-      await switchChain(externalParams[1])
-    }
+    // if (chainId === 10 && networkId === 10) {
+    //   await switchChain(externalParams[0])
+    // }
+    if (chainId !== 5 && networkId !== 5) await switchToGoerli()
     setNetInfo(chainInfo)
-  }, [
-    accountButtonInfo,
-    injectedProvider,
-    selectedChainId,
-    setConnectedAddress,
-    setShowToast,
-    setShowWrongNetworkToast,
-  ])
+  }
 
   useEffect(() => {
     if (window.ethereum !== undefined) {
-      // @ts-ignore
-      // @ts-ignore
       window.ethereum.on('connect', async connectInfo => {
         if (window.ethereum.isConnected()) {
-          await handleConnection()
-        } else {
-          await handleConnection()
+          setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
         }
       })
     }
-
+    console.log({ injectedProvider })
     return () => {
       if (window.ethereum !== undefined) {
         // @ts-ignore
-        window.ethereum.removeListener('connect', async connectInfo => {
-          if (window.ethereum.isConnected()) {
-            await handleConnection()
-          } else {
-            await handleConnection()
-          }
-        })
+        window.ethereum.removeAllListeners('connect')
       }
     }
-  }, [handleConnection, setShowToast])
+  }, [setInjectedProvider])
 
   useEffect(() => {
     if (window.ethereum !== undefined) {
       window.ethereum.on('accountsChanged', async accounts => {
         if (accounts.length > 0) {
-          await handleConnection()
+          setConnectedAddress(accounts[0])
         }
       })
     }
@@ -229,17 +210,16 @@ export default function Account({ minimized }) {
         // @ts-ignore
         window.ethereum.on('accountsChanged', async accounts => {
           if (accounts.length > 0) {
-            await handleConnection()
+            setConnectedAddress(accounts[0])
           }
         })
         window.ethereum.removeAllListeners('accountsChanged')
       }
     }
-  }, [handleConnection, setShowToast])
+  }, [setConnectedAddress, setShowToast])
 
   useEffect(() => {
     if (window.ethereum !== undefined) {
-      // @ts-ignore
       // @ts-ignore
       window.ethereum.on('chainChanged', chainid => {
         window.location.reload()
@@ -319,21 +299,20 @@ export default function Account({ minimized }) {
         wrongNetworkSnackBar={wrongNetworkSnackBar}
       />
 
-      {/* {netInfo && netInfo.length > 0 && connectedAddress && connectedAddress.length > 1
+      {netInfo && netInfo.length > 0 && connectedAddress && connectedAddress.length > 1
         ? netInfo.map(n => (
-            <Box
+            <Typography
               key={n.chainId}
               component={'span'}
-              fontSize={16}
-              pt={10}
-              ml={5}
+              variant={'caption'}
+              ml={2}
               fontWeight={600}
               color={'#ff0420'}
               alignItems={'center'}
               justifyContent={'center'}
-            >{`You are currently connected to ${n.name}`}</Box>
+            >{`You are connected to ${n.name}`}</Typography>
           ))
-        : null} */}
+        : null}
     </Box>
   )
 }
