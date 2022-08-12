@@ -44,7 +44,7 @@ function Home({ yourLocalBalance, readContracts }) {
   };
 
   return (
-    <div>
+    <div style={{ marginTop: "20px" }}>
       <input style={inputStyle} value={message} type="text" onChange={e => setMessage(e.target.value)} />
       <br />
       <span>{message}</span>
@@ -58,6 +58,7 @@ function Home({ yourLocalBalance, readContracts }) {
       <Button style={btnStyle} onClick={() => litProtocolDecrypt()}>
         Decrypt Message
       </Button>
+      <br />
       <span id="decrypted-message"></span>
     </div>
   );
