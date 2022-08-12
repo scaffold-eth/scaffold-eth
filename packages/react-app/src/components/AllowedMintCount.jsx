@@ -58,6 +58,20 @@ export default function AllowedMintCount() {
     }
   }, [allowedMinting, connectedAddress, localProvider])
 
+  useEffect(() => {
+    if (window.ethereum === undefined) return
+    const contractReference = externalContracts['5'].contracts.REMIX_REWARD
+    ;(async () => {
+      try {
+        const result = ethers.BigNumber.from(
+          await allowedMinting(contractReference, localProvider, connectedAddress),
+        ).toNumber()
+        if (parseInt(mintCount) === result) return
+        setMintCount(result.toString())
+      } catch (error) {}
+    })()
+  }, [allowedMinting, connectedAddress, localProvider, mintCount])
+
   return (
     <>
       <Typography variant="h2" fontWeight={900} sx={{ padding: 2, color: '#81a6f7' }}>

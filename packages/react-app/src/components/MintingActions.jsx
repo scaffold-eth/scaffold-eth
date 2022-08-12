@@ -4,8 +4,7 @@ import FormControl from '@mui/material/FormControl'
 import Typography from '@mui/material/Typography'
 import AllowedMintCount from './AllowedMintCount'
 import { ethers } from 'ethers'
-import { useContext, useEffect, useState } from 'react'
-import { BadgeContext } from 'contexts/BadgeContext'
+import { useContext, useState } from 'react'
 import TextField from '@mui/material/TextField'
 import CloseIcon from '@mui/icons-material/Close'
 import IconButton from '@mui/material/IconButton'
@@ -13,6 +12,8 @@ import MuiAlert from '@mui/material/Alert'
 import { styled } from '@mui/material'
 import Toast from './Toast'
 import React from 'react'
+import { BadgeContext } from 'contexts/BadgeContext'
+import { useEffect } from 'react'
 
 const WalletAddressTextField = styled(TextField)(({ theme }) => ({
   '& .MuiInputBase-input': {
@@ -26,7 +27,8 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 
 export default function MintingActions({ contractRef }) {
   const [message, setMessage] = useState('')
-
+  // @ts-ignore
+  const { logoutOfWeb3Modal } = useContext(BadgeContext)
   const [walletAddress, setWalletAddress] = useState('')
   const [showToast, setShowToast] = useState(false)
   const [showFormErrorToast, setShowFormErrorToast] = useState(false)

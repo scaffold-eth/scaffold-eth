@@ -6,13 +6,14 @@ import Box from '@mui/material/Box'
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip'
 import { styled } from '@mui/material/styles'
 import { BadgeContext } from 'contexts/BadgeContext'
-import { getCurrentChainId, switchToGoerli } from 'helpers/SwitchToOptimism'
+import { getCurrentChainId, switchToGoerli, externalParams } from 'helpers/SwitchToOptimism'
 // @ts-ignore
 import { ethers } from 'ethers'
 import { lightGreen } from '@mui/material/colors'
 import Toast from './Toast'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
+import { useQuery } from '@tanstack/react-query'
 
 /** 
   ~ What it does? ~
@@ -128,7 +129,6 @@ export default function Account({ minimized }) {
   const accountButtonConnected = 'Connected'
   // eslint-disable-next-line no-unused-vars
   const [netInfo, setNetInfo] = useState([])
-
   const display = !minimized && (
     <Box>
       {
@@ -161,14 +161,18 @@ export default function Account({ minimized }) {
     const { chainId, networkId } = chainInfo[0]
     if (chainId !== selectedChainId) {
       setShowWrongNetworkToast(true)
+      await window.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: ethers.utils.hexValue(externalParams[1]['chainId']) }],
+      })
       // return
     }
+    if (injectedProvider === null) console.log('injectedProvider is null')
     accountButtonInfo.action()
     await window.ethereum.request({
       method: 'eth_requestAccounts',
     })
-    if (injectedProvider === null || injectedProvider === undefined)
-      provider = new ethers.providers.Web3Provider(window.ethereum)
+    provider = new ethers.providers.Web3Provider(window.ethereum)
     accounts = await provider.listAccounts()
     setConnectedAddress(accounts[0])
     // @ts-ignore
@@ -181,20 +185,19 @@ export default function Account({ minimized }) {
 
   useEffect(() => {
     if (window.ethereum !== undefined) {
-      window.ethereum.on('connect', async connectInfo => {
+      window.ethereum.on('connect', connectInfo => {
         if (window.ethereum.isConnected()) {
-          setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
+          // setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
         }
       })
-    }
-    console.log({ injectedProvider })
-    return () => {
-      if (window.ethereum !== undefined) {
-        // @ts-ignore
-        window.ethereum.removeAllListeners('connect')
+      return () => {
+        if (window.ethereum !== undefined) {
+          // @ts-ignore
+          window.ethereum.removeAllListeners('connect')
+        }
       }
     }
-  }, [setInjectedProvider])
+  }, [])
 
   useEffect(() => {
     if (window.ethereum !== undefined) {
@@ -203,17 +206,10 @@ export default function Account({ minimized }) {
           setConnectedAddress(accounts[0])
         }
       })
-    }
-
-    return () => {
-      if (window.ethereum !== undefined) {
-        // @ts-ignore
-        window.ethereum.on('accountsChanged', async accounts => {
-          if (accounts.length > 0) {
-            setConnectedAddress(accounts[0])
-          }
-        })
-        window.ethereum.removeAllListeners('accountsChanged')
+      return () => {
+        if (window.ethereum !== undefined) {
+          window.ethereum.removeAllListeners('accountsChanged')
+        }
       }
     }
   }, [setConnectedAddress, setShowToast])
