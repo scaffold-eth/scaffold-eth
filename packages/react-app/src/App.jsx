@@ -429,7 +429,7 @@ function App(props) {
               }}
               to="/fight/1"
             >
-              view fight
+              View Fight
             </Link>
           </Menu.Item>
           <Menu.Item key="/debug">
@@ -520,7 +520,6 @@ function App(props) {
                             <Input
                               style={{ textAlign: "center" }}
                               placeholder={"Dodo to challenge"}
-                              //value={tokenBuyAmount.value}
                               onChange={e => {
                                 setDodoToChallenge(e.target.value);
                               }}
@@ -533,7 +532,12 @@ function App(props) {
                               onClick={async () => {
                                 console.log("id: ",id);
                                 console.log("dodoToChallenge: ",dodoToChallenge);
-                                await tx(writeContracts.YourCollectible.challenge(id, dodoToChallenge));
+                                const res = await tx(writeContracts.YourCollectible.challenge(id, dodoToChallenge));
+                                const result = await res.wait();
+                                console.log("result: ", result);
+
+                                const fightId = Number(result.events[0].topics[3]);
+                                window.open("/fight/"+fightId,"_self");
                               }}
                             >
                               Challenge
