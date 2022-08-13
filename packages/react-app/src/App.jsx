@@ -186,6 +186,10 @@ function App(props) {
   const transferEvents = useEventListener(readContracts, "YourCollectible", "Transfer", localProvider, 1);
   console.log("📟 Transfer events:", transferEvents);
 
+  const challengeEvents = useEventListener(readContracts, "YourCollectible", "Challenge", localProvider, 1);
+  console.log("📟 Challenge events:", challengeEvents);
+
+
   //
   // 🧠 This effect will update yourCollectibles by polling when your balance changes
   //
@@ -368,6 +372,7 @@ function App(props) {
   const [transferToAddresses, setTransferToAddresses] = useState({});
 
   const [loadedAssets, setLoadedAssets] = useState();
+
   /*useEffect(() => {
     const updateYourCollectibles = async () => {
       const assetUpdate = [];
@@ -390,6 +395,11 @@ function App(props) {
   }, [assets, readContracts, transferEvents]);*/
 
   const galleryList = [];
+
+  const [dodoToChallenge, setDodoToChallenge] = useState({
+    valid: false,
+    value: ''
+  });
 
   return (
     <div className="App">
@@ -447,7 +457,7 @@ function App(props) {
                 renderItem={item => {
                   const id = item.id.toNumber();
 
-                  console.log("IMAGE",item.image)
+                  console.log("ITEM!!!",item)
 
                   return (
                     <List.Item key={id + "_" + item.uri + "_" + item.owner}>
@@ -488,8 +498,35 @@ function App(props) {
                             tx(writeContracts.YourCollectible.transferFrom(address, transferToAddresses[id], id));
                           }}
                         >
+                          
                           Transfer
                         </Button>
+
+                        <Card title="Challenge">
+                          <div style={{ padding: 8 }}>
+                            <Input
+                              style={{ textAlign: "center" }}
+                              placeholder={"Dodo to challenge"}
+                              //value={tokenBuyAmount.value}
+                              onChange={e => {
+                                setDodoToChallenge(e.target.value);
+                              }}
+                              
+                            />
+                          </div>
+
+                          <div style={{ padding: 8 }}>
+                            <Button
+                              onClick={async () => {
+                                console.log("id: ",id);
+                                console.log("dodoToChallenge: ",dodoToChallenge);
+                                await tx(writeContracts.YourCollectible.challenge(id, dodoToChallenge));
+                              }}
+                            >
+                              Challenge
+                            </Button>
+                          </div>
+                        </Card>
                       </div>
                     </List.Item>
                   );
