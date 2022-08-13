@@ -10,7 +10,7 @@ import Lit from "../helpers/Lit";
  **/
 function Home({ yourLocalBalance, readContracts }) {
   const [message, setMessage] = useState();
-  const [decryptedFile, setDecryptedFile] = useState();
+  const [decryptedMessage, setDecryptedMessage] = useState();
   const [encryptedFile, setEncryptedFile] = useState();
   const [encryptedSymmetricKey, setEncryptedSymmetricKey] = useState();
 
@@ -29,8 +29,8 @@ function Home({ yourLocalBalance, readContracts }) {
   const litProtocolDecrypt = async () => {
     console.log("Decrypting from Lit");
     let decrypted = await Lit.decryptString(encryptedFile, encryptedSymmetricKey);
-    setDecryptedFile(decrypted);
-    // this should be the decrypted key
+    setDecryptedMessage(decrypted);
+    // this should be the decrypted message
     console.log("Decrypted message: ", JSON.parse(decrypted));
     document.getElementById("decrypted-message").innerHTML = "Decrypted message: " + JSON.parse(decrypted);
   };

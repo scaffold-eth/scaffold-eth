@@ -12,25 +12,27 @@ import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
 import React, { useCallback, useEffect, useState } from "react";
 import { Link, Route, Switch, useLocation } from "react-router-dom";
 import "./App.css";
+// components
 import {
   Account,
   Contract,
   Faucet,
+  FaucetHint,
   GasGauge,
   Header,
+  NetworkDisplay,
+  NetworkSwitch,
   Ramp,
   ThemeSwitch,
-  NetworkDisplay,
-  FaucetHint,
-  NetworkSwitch,
 } from "./components";
-import { NETWORKS, ALCHEMY_KEY } from "./constants";
-import externalContracts from "./contracts/external_contracts";
+import { ALCHEMY_KEY, NETWORKS } from "./constants";
 // contracts
+import externalContracts from "./contracts/external_contracts";
 import deployedContracts from "./contracts/hardhat_contracts.json";
+// views, hooks, helpers
 import { Transactor, Web3ModalSetup } from "./helpers";
-import { Home, ExampleUI, Hints, Subgraph } from "./views";
 import { useStaticJsonRPC } from "./hooks";
+import { Home } from "./views";
 
 const { ethers } = require("ethers");
 /*
@@ -59,7 +61,7 @@ const initialNetwork = NETWORKS.localhost; // <------- select your target fronte
 const DEBUG = true;
 const NETWORKCHECK = true;
 const USE_BURNER_WALLET = true; // toggle burner wallet feature
-const USE_NETWORK_SELECTOR = false;
+const USE_NETWORK_SELECTOR = true;
 
 const web3Modal = Web3ModalSetup();
 
@@ -315,58 +317,6 @@ function App(props) {
             address={address}
             blockExplorer={blockExplorer}
             contractConfig={contractConfig}
-          />
-        </Route>
-        <Route path="/hints">
-          <Hints
-            address={address}
-            yourLocalBalance={yourLocalBalance}
-            mainnetProvider={mainnetProvider}
-            price={price}
-          />
-        </Route>
-        <Route path="/exampleui">
-          <ExampleUI
-            address={address}
-            userSigner={userSigner}
-            mainnetProvider={mainnetProvider}
-            localProvider={localProvider}
-            yourLocalBalance={yourLocalBalance}
-            price={price}
-            tx={tx}
-            writeContracts={writeContracts}
-            readContracts={readContracts}
-            purpose={purpose}
-          />
-        </Route>
-        <Route path="/mainnetdai">
-          <Contract
-            name="DAI"
-            customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.DAI}
-            signer={userSigner}
-            provider={mainnetProvider}
-            address={address}
-            blockExplorer="https://etherscan.io/"
-            contractConfig={contractConfig}
-            chainId={1}
-          />
-          {/*
-            <Contract
-              name="UNI"
-              customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.UNI}
-              signer={userSigner}
-              provider={mainnetProvider}
-              address={address}
-              blockExplorer="https://etherscan.io/"
-            />
-            */}
-        </Route>
-        <Route path="/subgraph">
-          <Subgraph
-            subgraphUri={props.subgraphUri}
-            tx={tx}
-            writeContracts={writeContracts}
-            mainnetProvider={mainnetProvider}
           />
         </Route>
       </Switch>
