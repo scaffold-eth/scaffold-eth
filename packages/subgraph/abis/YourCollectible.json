@@ -59,6 +59,37 @@
     "inputs": [
       {
         "indexed": true,
+        "internalType": "uint256",
+        "name": "id1",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "id2",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "blocknumber",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "fightid",
+        "type": "uint256"
+      }
+    ],
+    "name": "Challenge",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
         "internalType": "address",
         "name": "previousOwner",
         "type": "address"
@@ -152,16 +183,50 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "",
+        "name": "id1",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "id2",
         "type": "uint256"
       }
     ],
-    "name": "chubbiness",
+    "name": "challenge",
     "outputs": [
       {
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "dodos",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "wins",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes3",
+        "name": "color",
+        "type": "bytes3"
+      },
+      {
+        "internalType": "bool",
+        "name": "available",
+        "type": "bool"
       }
     ],
     "stateMutability": "view",
@@ -175,12 +240,22 @@
         "type": "uint256"
       }
     ],
-    "name": "color",
+    "name": "fights",
     "outputs": [
       {
-        "internalType": "bytes3",
-        "name": "",
-        "type": "bytes3"
+        "internalType": "uint256",
+        "name": "id1",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "id2",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "block",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -285,6 +360,19 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "fightid",
+        "type": "uint256"
+      }
+    ],
+    "name": "process",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
