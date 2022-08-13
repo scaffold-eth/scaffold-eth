@@ -200,6 +200,10 @@ export default function Account({ minimized }) {
   }, [])
 
   useEffect(() => {
+    console.log({ injectedProvider })
+  }, [injectedProvider])
+
+  useEffect(() => {
     if (window.ethereum !== undefined) {
       window.ethereum.on('accountsChanged', async accounts => {
         if (accounts.length > 0) {

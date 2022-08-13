@@ -13,7 +13,6 @@ import { styled } from '@mui/material'
 import Toast from './Toast'
 import React from 'react'
 import { BadgeContext } from 'contexts/BadgeContext'
-import { useEffect } from 'react'
 
 const WalletAddressTextField = styled(TextField)(({ theme }) => ({
   '& .MuiInputBase-input': {
@@ -81,7 +80,7 @@ export default function MintingActions({ contractRef }) {
       displayToast()
       return
     }
-    const provider = new ethers.providers.Web3Provider(window.ethereum)
+    let provider = new ethers.providers.Web3Provider(window.ethereum)
     if (receiverAddress === '' || receiverAddress === undefined || receiverAddress === null) {
       // console.log('the form must have an input with a valid account hash!')
       showFormError()
@@ -99,6 +98,7 @@ export default function MintingActions({ contractRef }) {
       setMessage('error while sending the transaction. ' + e.message)
     }
     setTimeout(() => setMessage(''), 10000)
+    provider = null
   }
 
   const ShowFormError = ({ showToast, closeToast, snackBarAction, message }) => {
@@ -107,6 +107,7 @@ export default function MintingActions({ contractRef }) {
 
   const doMinting = async () => {
     await mintBadge(walletAddress)
+    await logoutOfWeb3Modal()
   }
 
   return (

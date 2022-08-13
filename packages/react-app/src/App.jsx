@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 // import { useUserProviderAndSigner } from 'eth-hooks'
 import { useExchangeEthPrice } from 'eth-hooks/dapps/dex'
 import { NETWORKS } from './constants'
@@ -20,7 +20,7 @@ function App() {
   const [injectedProvider, setInjectedProvider] = useState(null)
   const [mainnet, setMainnet] = useState(null)
   const [loaded, setLoaded] = useState(false)
-  const [connectedAddress, setConnectedAddress] = useState()
+  const [connectedAddress, setConnectedAddress] = useState('')
   const [address, setAddress] = useState('')
   const [tabValue, setTabValue] = useState(0)
   const [showToast, setShowToast] = useState(false)
@@ -98,6 +98,7 @@ function App() {
     if (injectedProvider && injectedProvider.provider && typeof injectedProvider.provider.disconnect == 'function') {
       // @ts-ignore
       await injectedProvider.provider.disconnect()
+      setConnectedAddress('')
     }
     setTimeout(() => {
       window.location.reload()
@@ -112,7 +113,7 @@ function App() {
     </>
   )
 
-  const loadWeb3Modal = async () => {
+  const loadWeb3Modal = useCallback(async () => {
     if (typeof window.ethereum === 'undefined') {
       // console.log('MetaMask is not installed!')
       displayToast()
@@ -120,20 +121,14 @@ function App() {
       return
     }
     const provider = window.ethereum
-    await provider.request({ method: 'eth_requestAccounts' })
+    setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
 
     /**
      * @param accountPayload string[]
      */
     provider.on('accountsChanged', async accountPayload => {
-      // accountPayload Array<string>
       console.log(`account changed!`)
-      if (accountPayload.length === 0) {
-        console.log('Metamask requires login or no accounts added')
-        // show toast if need be
-      } else if (accountPayload[0] !== connectedAddress) {
-        setConnectedAddress(accountPayload[0])
-      }
+      setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
     })
 
     provider.on('chainChanged', chainId => {
@@ -141,13 +136,13 @@ function App() {
       // @ts-ignore
       setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
     })
-
-    provider.on('accountsChanged', () => {
+    provider.on('accountsChanged', (accounts) => {
       console.log(`account changed!`)
       // @ts-ignore
+      setConnectedAddress([0])
       setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
     })
-
+    console.log({ injectedProvider })
     // Subscribe to session disconnection
     provider.on('disconnect', (code, reason) => {
       console.log(code, reason)
@@ -155,7 +150,11 @@ function App() {
     })
 
     setTabValue(prev => prev)
-  }
+  }, [injectedProvider])
+
+  useEffect(() => {
+    console.log({ injectedProvider })
+  }, [injectedProvider])
 
   const closeWrongNetworkToast = () => {
     setShowWrongNetworkToast(false)
@@ -198,6 +197,11 @@ function App() {
               // @ts-ignore
               tabValue={tabValue}
               setTabValue={setTabValue}
+              loadWeb3Modal={loadWeb3Modal}
+              connectedAddress={connectedAddress}
+              setConnectedAddress={setConnectedAddress}
+              injectedProvider={injectedProvider}
+              logoutOfWeb3Modal={logoutOfWeb3Modal}
             />
           )}
           <Toast
