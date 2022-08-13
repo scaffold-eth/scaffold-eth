@@ -109,68 +109,86 @@ contract YourCollectible is ERC721, Ownable {
   }
 
   function process(uint256 fightid) public {
+
+     bool result = viewProcess(fightid);
+
+     console.log("fightresult",result);
+
      Fight storage fight = fights[fightid];
-     require(fight.id1>0,"unknown fight");
-     require(block.number>fight.block,"not yet");
 
      Dodo storage dodo1 = dodos[fight.id1];
      Dodo storage dodo2 = dodos[fight.id2];
 
-     bytes32 lessPredictableRandom = keccak256(abi.encodePacked( blockhash(fight.block), msg.sender, address(this), fightid ));
-
-
-
-
-     uint8 index = 0;
-
-     bool whosTurn = false;
-
-     uint8 coinflip = uint8(lessPredictableRandom[index++]);
-     if(coinflip>=128){
-       whosTurn=true;
-     }
-
-     uint8 health1 = 100;
-     uint8 health2 = 100;
-     uint8 divider = 10;
-
-     while(health1>0&&health2>0){
-
-       if(index>=32){
-         lessPredictableRandom = keccak256(abi.encodePacked( blockhash(fight.block), msg.sender, address(this), fightid, lessPredictableRandom ));
-         index=0;
-       }
-
-       uint8 thisDamage = uint8(lessPredictableRandom[index++])/divider;
-
-       if(whosTurn){
-         console.log("damaging bird 1",thisDamage);
-         if(health1<thisDamage) {
-           health1=0;
-         }else{
-           health1-=thisDamage;
-         }
-       }else{
-         console.log("damaging bird 2",thisDamage);
-         if(health2<thisDamage) {
-           health2=0;
-         }else{
-           health2-=thisDamage;
-         }
-       }
-
-     }
-
-     if(health1>0){
+     if(result){
        dodo1.wins++;
-       console.log("dodo1 wins!");
-     } else {
+       console.log("(dodo 1 won)");
+     }else{
        dodo2.wins++;
-       console.log("dodo2 wins!");
+       console.log("(dodo 2 won)");
      }
 
      dodo1.available=true;
      dodo2.available=true;
+  }
+
+  function viewProcess(uint256 fightid) public view returns (bool winner) {
+    Fight storage fight = fights[fightid];
+
+    require(fight.id1>0,"unknown fight");
+    require(block.number>fight.block,"not yet");
+
+    bytes32 lessPredictableRandom = keccak256(abi.encodePacked( blockhash(fight.block), msg.sender, address(this), fightid ));
+
+    uint8 index = 0;
+
+    bool whosTurn = false;
+
+    uint8 coinflip = uint8(lessPredictableRandom[index++]);
+    if(coinflip>=128){
+      whosTurn=true;
+    }
+
+    uint8 health1 = 100;
+    uint8 health2 = 100;
+    uint8 divider = 10;
+
+    while(health1>0&&health2>0){
+
+      if(index>=32){
+        lessPredictableRandom = keccak256(abi.encodePacked( blockhash(fight.block), msg.sender, address(this), fightid, lessPredictableRandom ));
+        index=0;
+      }
+
+      uint8 thisDamage = uint8(lessPredictableRandom[index++])/divider;
+
+      if(whosTurn){
+        console.log("damaging bird 1",thisDamage);
+        if(health1<thisDamage) {
+          health1=0;
+        }else{
+          health1-=thisDamage;
+        }
+      }else{
+        console.log("damaging bird 2",thisDamage);
+        if(health2<thisDamage) {
+          health2=0;
+        }else{
+          health2-=thisDamage;
+        }
+      }
+
+      whosTurn=!whosTurn;
+
+    }
+
+    if(health1>0){
+      return true;
+      console.log("dodo1 wins!");
+    } else {
+      return false;
+      console.log("dodo2 wins!");
+    }
+
   }
 
   function tokenURI(uint256 id) public view override returns (string memory) {
