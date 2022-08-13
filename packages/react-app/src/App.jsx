@@ -203,6 +203,8 @@ function App(props) {
         try {
           console.log("GEtting token index", tokenIndex);
           const tokenId = await readContracts.YourCollectible.tokenOfOwnerByIndex(address, tokenIndex);
+          const dodoInfo = await readContracts.YourCollectible.dodos(tokenId)
+          console.log("DODOINFO",dodoInfo)
           console.log("tokenId", tokenId);
           const tokenURI = await readContracts.YourCollectible.tokenURI(tokenId);
           const jsonManifestString = atob(tokenURI.substring(29))
@@ -217,7 +219,7 @@ function App(props) {
           try {
             const jsonManifest = JSON.parse(jsonManifestString);
             console.log("jsonManifest", jsonManifest);
-            collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+            collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest, ...dodoInfo });
           } catch (e) {
             console.log(e);
           }
@@ -229,7 +231,7 @@ function App(props) {
       setYourCollectibles(collectibleUpdate.reverse());
     };
     updateYourCollectibles();
-  }, [address, yourBalance]);
+  }, [address, yourBalance, localProvider]);
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
