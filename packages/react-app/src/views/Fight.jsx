@@ -1,14 +1,14 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
 
 import { formatEther } from "@ethersproject/units";
-import { Select } from "antd";
+import { Select,Button } from "antd";
 import React, { useState, useEffect } from "react";
 import { Address, AddressInput } from "../components";
 import { usePoller } from "../hooks";
 import { useHistory, useParams } from 'react-router-dom'
 import { ethers } from "ethers"
 
-export default function Hints({ yourLocalBalance, localProvider, mainnetProvider, price, address, readContracts }) {
+export default function Hints({ tx, yourLocalBalance, writeContracts, localProvider, mainnetProvider, price, address, readContracts }) {
 
   const { fightid } = useParams()
 
@@ -28,7 +28,7 @@ export default function Hints({ yourLocalBalance, localProvider, mainnetProvider
   usePoller(()=>{
     if(readContracts && readContracts.YourCollectible){
       //console.log
-      if(currentFightStep){
+      if(currentFightStep && fightScript && fightScript.length){
         let nextStep = currentFightStep+1
         if(nextStep>=fightScript.length){
           console.log("DONE!!!")
@@ -39,7 +39,7 @@ export default function Hints({ yourLocalBalance, localProvider, mainnetProvider
         }
       }
     }
-  }, 3000)
+  }, 2000)
 
   const checkFight = async ()=>{
     console.log("CHECKING IN ON FIGHT....",fightid)
@@ -100,6 +100,13 @@ export default function Hints({ yourLocalBalance, localProvider, mainnetProvider
       let health2 = 100;
       let divider = 10;
 
+      newFightScript.push({
+        whosTurn: false,
+        damage: 0,
+        health1: health1,
+        health2: health2
+      })
+
       while(health1>0&&health2>0){
 
         if(index>=32){
@@ -131,7 +138,8 @@ export default function Hints({ yourLocalBalance, localProvider, mainnetProvider
           newFightScript.push({
             whosTurn: whosTurn,
             damage: damageInt,
-            healthLeft: health1
+            health1: health1,
+            health2: health2
           })
         }else{
           console.log("damaging bird 2",damageInt);
@@ -143,7 +151,8 @@ export default function Hints({ yourLocalBalance, localProvider, mainnetProvider
           newFightScript.push({
             whosTurn: whosTurn,
             damage: damageInt,
-            healthLeft: health2
+            health1: health1,
+            health2: health2
           })
         }
 
@@ -179,10 +188,12 @@ export default function Hints({ yourLocalBalance, localProvider, mainnetProvider
   if(fightInfo.targetBlock>fightInfo.currentBlock){
     mode = "waiting for block "+fightInfo.targetBlock+" to get mined...";
   }else{
-    mode = "fight!!"
+    mode = ""
   }
 
   console.log("RENDER fightScript",fightScript)
+
+  let processButton = ""
 
   let thisDisplay = fightScript && fightScript[currentFightStep]
 
@@ -191,15 +202,31 @@ export default function Hints({ yourLocalBalance, localProvider, mainnetProvider
   let leftZ;
   let rightZ;
 
+  let leftHealth=""
+  let rightHealth=""
+
+  let leftDamage=""
+  let rightDamage=""
+
+  let leftDamageClass = ""
+  let rightDamageClass = ""
+
   if(thisDisplay){
+    console.log("thisDisplay",thisDisplay)
+    leftHealth=thisDisplay.health1
+    rightHealth=thisDisplay.health2
     if(thisDisplay.whosTurn){
       leftClass="dodo hit"
       rightClass="dodo kick"
+      leftDamage=thisDisplay.damage
+      leftDamageClass="damage"
       leftZ=1
       rightZ=2
     }else{
       rightClass="dodo hit"
       leftClass="dodo kick"
+      rightDamage=thisDisplay.damage
+      rightDamageClass="damage"
       leftZ=2
       rightZ=1
     }
@@ -207,15 +234,32 @@ export default function Hints({ yourLocalBalance, localProvider, mainnetProvider
     let lastDisplay = fightScript && fightScript[currentFightStep-1]
     console.log("LAST FightStep",currentFightStep,"fightScript.length",fightScript.length)
     if(currentFightStep>=fightScript.length){
-      if(lastDisplay.whosTurn){
-        leftClass="dodo defeat"
-        rightClass="dodo victory"
-      }else{
-        rightClass="dodo defeat"
-        leftClass="dodo victory"
+      if(lastDisplay){
+        if(lastDisplay.whosTurn){
+          leftClass="dodo defeat"
+          rightClass="dodo victory"
+        }else{
+          rightClass="dodo defeat"
+          leftClass="dodo victory"
+        }
       }
     }
   }
+
+  if(fightInfo.targetBlock<=fightInfo.currentBlock && currentFightStep>=fightScript.length){
+    processButton = (
+      <Button
+        onClick={async () => {
+          console.log("writeContracts", writeContracts);
+          await tx(writeContracts.YourCollectible.process(fightid));
+          window.location = "/"
+        }}
+      >
+        💾 Save
+      </Button>
+    )
+  }
+
 
 
   const cls1 = { strokeMiterlimit: 10, stroke: "#0d0d0d" }
@@ -320,15 +364,26 @@ export default function Hints({ yourLocalBalance, localProvider, mainnetProvider
 
   return (
     <div>
-      view a fightT {fightid}!!
+      {/*view a fightT {fightid}!!
 
       <div> flight step: {currentFightStep} </div>
 
-      <div><pre>{JSON.stringify(thisDisplay)}</pre></div>
+      <div><pre>{JSON.stringify(thisDisplay)}</pre></div>*/}
 
-      <div><b>{mode}</b></div>
+      <div style={{padding:32}}><b>{mode}</b></div>
+
+      <div style={{fontSize:48,float:"left",marginLeft:"10%"}}>
+        <div class={leftDamageClass} style={{fontSize:24}}>{leftDamage}</div>
+        {leftHealth}
+      </div>
+      <div style={{fontSize:48,float:"right",marginRight:"10%"}}>
+        <div class={rightDamageClass} style={{fontSize:24}}>{rightDamage}</div>
+        {rightHealth}
+      </div>
+
 
       <div>
+        <div>{processButton}</div>
         {dodo1SVG}
         {dodo2SVG}
         {/*<img id="dodo1" class="dodo kick" src={DodoKick} width={550} height={650}/>

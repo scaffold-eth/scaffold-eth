@@ -197,6 +197,8 @@ function App(props) {
   const yourBalance = balance && balance.toNumber && balance.toNumber();
   const [yourCollectibles, setYourCollectibles] = useState();
 
+  const [challenges, setChallenges] = useState(1); //this is just used to force a rerender after challenging
+
   useEffect(() => {
     const updateYourCollectibles = async () => {
       const collectibleUpdate = [];
@@ -230,7 +232,7 @@ function App(props) {
       setYourCollectibles(collectibleUpdate.reverse());
     };
     updateYourCollectibles();
-  }, [address, yourBalance, localProvider]);
+  }, [address, yourBalance, localProvider, challenges]);
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -470,17 +472,31 @@ function App(props) {
 
                   console.log("ITEM!!!",item)
 
+                  let inMatch = ""
+
+                  let fightId = item && item.fight && item.fight.toNumber()
+
+                  let wins = item && item.wins && item.wins.toNumber()
+
+                  if(fightId){
+                    inMatch = (
+                      <Button onClick={()=>{
+                        window.location = "/fight/"+fightId
+                      }}> Watch Fight #{fightId}</Button>
+                    )
+                  }
+
                   return (
                     <List.Item key={id + "_" + item.uri + "_" + item.owner}>
                       <Card
                         title={
                           <div>
-                            <span style={{ fontSize: 18, marginRight: 8 }}>{item.name}</span>
+                            <span style={{ fontSize: 18, marginRight: 8 }}>{item.name} ({wins} win{wins==1?"":"s"})</span>
                           </div>
                         }
                       >
                         <a href={"https://opensea.io/assets/"+(readContracts && readContracts.YourCollectible && readContracts.YourCollectible.address)+"/"+item.id} target="_blank">
-                        <img src={item.image} />
+                        <img src={item.image} style={{position:"relative",left:150}}/>
                         </a>
                         <div>{item.description}</div>
                       </Card>
@@ -513,7 +529,9 @@ function App(props) {
                           Transfer
                         </Button>
 
-                        <Card title="Challenge">
+                        {inMatch?<div style={{padding:32}}>
+                          {inMatch}
+                        </div>:<Card title="Challenge">
                           <div style={{ padding: 8 }}>
                             <Input
                               style={{ textAlign: "center" }}
@@ -531,13 +549,16 @@ function App(props) {
                               onClick={async () => {
                                 console.log("id: ",id);
                                 console.log("dodoToChallenge: ",dodoToChallenge);
-                                await tx(writeContracts.YourCollectible.challenge(id, dodoToChallenge));
+                                const result = await tx(writeContracts.YourCollectible.challenge(id, dodoToChallenge));
+                                await result.wait()
+                                let nextChallenges = challenges + 1
+                                setChallenges(nextChallenges)
                               }}
                             >
                               Challenge
                             </Button>
                           </div>
-                        </Card>
+                        </Card>}
                       </div>
                     </List.Item>
                   );
@@ -559,8 +580,10 @@ function App(props) {
               userProvider={userProvider}
               mainnetProvider={mainnetProvider}
               readContracts={readContracts}
+              writeContracts={writeContracts}
               price={price}
               blockExplorer={blockExplorer}
+              tx={tx}
             />
           </Route>
           <Route path="/debug">

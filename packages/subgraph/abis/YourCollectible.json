@@ -224,9 +224,9 @@
         "type": "bytes3"
       },
       {
-        "internalType": "bool",
-        "name": "available",
-        "type": "bool"
+        "internalType": "uint256",
+        "name": "fight",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",

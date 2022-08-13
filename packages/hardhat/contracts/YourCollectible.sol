@@ -26,7 +26,7 @@ contract YourCollectible is ERC721, Ownable {
     dodos.push(Dodo({
       wins: 0,
       color: 0,
-      available: false
+      fight: 0
     }));
     // same for fights
     fights.push(Fight({
@@ -49,12 +49,11 @@ contract YourCollectible is ERC721, Ownable {
   struct Dodo {
       uint256 wins;
       bytes3 color;
-      bool available;
+      uint256 fight;
   }
 
   // An array of 'Todo' structs
   Dodo[] public dodos;
-  //mapping (uint256 => bool) public available;
 
   //mapping (uint256 => bytes3) public color;
   //mapping (uint256 => uint256) public chubbiness;
@@ -78,7 +77,7 @@ contract YourCollectible is ERC721, Ownable {
       dodos.push(Dodo({
         wins: 0,
         color: bytes2(predictableRandom[0]) | ( bytes2(predictableRandom[1]) >> 8 ) | ( bytes3(predictableRandom[2]) >> 16 ),
-        available: true
+        fight: 0
       }));
 
       return id;
@@ -88,14 +87,14 @@ contract YourCollectible is ERC721, Ownable {
 
   function challenge(uint256 id1, uint256 id2) public returns (uint256){
     Dodo storage dodo1 = dodos[id1];
-    require(dodo1.available, "first dodo not available");
+    require(dodo1.fight==0, "first dodo not available");
     Dodo storage dodo2 = dodos[id2];
-    require(dodo2.available, "second dodo not available");
+    require(dodo2.fight==0, "second dodo not available");
 
     require(ownerOf(id1) == msg.sender, "not your dodo!");
 
-    dodo1.available=false;
-    dodo2.available=false;
+    dodo1.fight=fights.length;
+    dodo2.fight=fights.length;
 
     fights.push(Fight({
       id1: id1,
@@ -127,8 +126,8 @@ contract YourCollectible is ERC721, Ownable {
        console.log("(dodo 2 won)");
      }
 
-     dodo1.available=true;
-     dodo2.available=true;
+     dodo1.fight=0;
+     dodo2.fight=0;
   }
 
   function viewProcess(uint256 fightid) public view returns (bool winner) {

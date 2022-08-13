@@ -28,7 +28,7 @@
 
     <style>
 
-      
+
       #dodo1 .container{
         transform: scaleX(-1);
         transform-origin: 180px 0px;
@@ -326,6 +326,34 @@
           transform: rotate(0deg);
         }
       }
+
+      .damage {
+          position: absolute;
+          color: red;
+          font-size: 36px;
+          opacity: 0;
+          z-index: 10;
+          animation: damage 5s ease 1;
+        }
+        @keyframes damage {
+          0% {
+            opacity: 0;
+          }
+          5% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 1;
+          }
+          95% {
+            transform: translate(-50px, -515px);
+          }
+          100% {
+            opacity: 0;
+            transform: translate(-50px, -515px);
+            font-size: 80px;
+          }
+        }
     </style>
   </head>
   <body>
