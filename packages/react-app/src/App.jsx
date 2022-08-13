@@ -417,7 +417,7 @@ function App(props) {
               }}
               to="/"
             >
-              Your Loogies
+              Your DoDos
             </Link>
           </Menu.Item>
           <Menu.Item key="/fight/1">
