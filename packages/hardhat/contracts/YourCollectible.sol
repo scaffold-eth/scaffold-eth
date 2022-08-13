@@ -137,13 +137,14 @@ contract YourCollectible is ERC721, Ownable {
     require(fight.id1>0,"unknown fight");
     require(block.number>fight.block,"not yet");
 
-    bytes32 lessPredictableRandom = keccak256(abi.encodePacked( blockhash(fight.block), msg.sender, address(this), fightid ));
+    bytes32 lessPredictableRandom = blockhash(fight.block);
 
     uint8 index = 0;
 
     bool whosTurn = false;
 
     uint8 coinflip = uint8(lessPredictableRandom[index++]);
+    console.log("coinflip",coinflip);
     if(coinflip>=128){
       whosTurn=true;
     }
@@ -155,7 +156,9 @@ contract YourCollectible is ERC721, Ownable {
     while(health1>0&&health2>0){
 
       if(index>=32){
-        lessPredictableRandom = keccak256(abi.encodePacked( blockhash(fight.block), msg.sender, address(this), fightid, lessPredictableRandom ));
+        console.log("hashing");
+        lessPredictableRandom = keccak256(abi.encodePacked(lessPredictableRandom));
+        console.log("new hashing");
         index=0;
       }
 

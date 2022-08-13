@@ -27,8 +27,9 @@ import {
   useOnBlock,
   useUserProvider,
 } from "./hooks";
-import { BlockPicker } from 'react-color'
 
+import { Fight } from "./views";
+import { BlockPicker } from 'react-color'
 
 const { BufferList } = require("bl");
 // https://www.npmjs.com/package/ipfs-http-client
@@ -411,6 +412,16 @@ function App(props) {
               Your Loogies
             </Link>
           </Menu.Item>
+          <Menu.Item key="/fight/1">
+            <Link
+              onClick={() => {
+                setRoute("/fight/1");
+              }}
+              to="/fight/1"
+            >
+              view fight
+            </Link>
+          </Menu.Item>
           <Menu.Item key="/debug">
             <Link
               onClick={() => {
@@ -505,6 +516,17 @@ function App(props) {
               🍴 <a href="https://github.com/austintgriffith/scaffold-eth" target="_blank">Fork this repo</a> and build a cool SVG NFT!
 
             </div>
+          </Route>
+          <Route path="/fight/:fightid">
+            <Fight
+              address={address}
+              localProvider={localProvider}
+              userProvider={userProvider}
+              mainnetProvider={mainnetProvider}
+              readContracts={readContracts}
+              price={price}
+              blockExplorer={blockExplorer}
+            />
           </Route>
           <Route path="/debug">
 
