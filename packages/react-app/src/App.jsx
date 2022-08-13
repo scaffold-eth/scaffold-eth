@@ -419,7 +419,7 @@ function App(props) {
               }}
               to="/"
             >
-              Your Loogies
+              Your DoDos
             </Link>
           </Menu.Item>
           <Menu.Item key="/fight/1">
@@ -429,7 +429,7 @@ function App(props) {
               }}
               to="/fight/1"
             >
-              view fight
+              View Fight
             </Link>
           </Menu.Item>
           <Menu.Item key="/debug">
@@ -536,7 +536,6 @@ function App(props) {
                             <Input
                               style={{ textAlign: "center" }}
                               placeholder={"Dodo to challenge"}
-                              //value={tokenBuyAmount.value}
                               onChange={e => {
                                 setDodoToChallenge(e.target.value);
                               }}
