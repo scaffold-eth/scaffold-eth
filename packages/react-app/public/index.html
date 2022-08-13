@@ -25,6 +25,308 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>Ethereum App</title>
+
+    <style>
+
+      
+      #dodo1 .container{
+        transform: scaleX(-1);
+        transform-origin: 180px 0px;
+      }
+      #leftleg {
+        transform-origin: 222px 363px
+      }
+      #rightleg {
+        transform-origin: 163px 285px;
+      }
+      #tailfeathers {
+        transform-origin: 269px 248px;
+      }
+      .dodo.kick #rightleg {
+        animation: kick 4s ease 1;
+      }
+      @keyframes kick {
+        0% {
+          transform: rotate(0deg);
+        }
+        5% {
+          transform: rotate(45deg);
+        }
+        15% {
+          transform: rotate(0deg);
+        }
+      }
+      .dodo.kick #neck,
+      .dodo.kick #lefteye,
+      .dodo.kick #righteye,
+      .dodo.kick #beak,
+      .dodo.kick #bottomjaw {
+        transform-origin: 160px 228px;
+        animation: neckback 4s ease 1;
+      }
+      @keyframes neckback {
+        0% {
+          transform: rotate(0deg);
+        }
+        5% {
+          transform: rotate(10deg);
+        }
+        15% {
+          transform: rotate(0deg);
+        }
+      }
+      .dodo.hit #lefteye{
+        transform-origin: 77px 19px;
+        animation: hit 4s 1;
+      }
+      .dodo.hit #righteye{
+        transform-origin: 116px 19px;
+        animation: hit 4s 1;
+      }
+      @keyframes hit {
+        0% {
+          transform: scale(1);
+        }
+        5% {
+          transform: scale(1.5);
+        }
+        90% {
+          transform: scale(1.5);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+      .dodo.hit #bottomjaw{
+        transform-origin: 91px 96px;
+        animation: gasp 4s 1;
+      }
+      @keyframes gasp {
+        5% {
+          transform: rotate(0deg);
+        }
+        20% {
+          transform: rotate(-35deg);
+        }
+        90% {
+          transform: rotate(-35deg);
+        }
+      }
+      .dodo.hit #lefteye .cls-1{
+        animation: crossleft 4s ease 1;
+      }
+      @keyframes crossleft {
+        5% {
+          transform: translateY(0px);
+        }
+        10% {
+          transform: translateX(-9px);
+          transform: translateY(-9px);
+        }
+        90% {
+          transform: translateX(-9px);
+          transform: translateY(-9px);
+        }
+        100% {
+          transform: translateY(0px);
+        }
+      }
+      .dodo.hit #righteye .cls-1{
+        animation: crossright 4s ease 1;
+      }
+      @keyframes crossright {
+        5% {
+          transform: translateY(0px);
+        }
+        10% {
+          transform: translateX(9px);
+        }
+        90% {
+          transform: translateX(9px);
+        }
+        100% {
+          transform: translateY(0px);
+        }
+      }
+      .dodo.hit{
+        animation: jump 4s 1;
+      }
+      @keyframes jump {
+        5% {
+          transform: translateY(0px);
+        }
+        20% {
+          transform: translateY(-50px);
+        }
+        30% {
+          transform: translateY(-50px);
+        }
+        45% {
+          transform: translateY(0px);
+        }
+      }
+      .dodo.hit #rightleg {
+        animation: splayright 4s ease 1;
+      }
+      @keyframes splayright {
+        5% {
+          transform: rotate(0deg);
+        }
+        20% {
+          transform: rotate(20deg);
+        }
+        30% {
+          transform: rotate(20deg);
+        }
+        45% {
+          transform: rotate(0deg);
+        }
+      }
+      .dodo.hit #leftleg {
+        animation: splayleft 4s ease 1;
+      }
+      @keyframes splayleft {
+        5% {
+          transform: rotate(0deg);
+        }
+        20% {
+          transform: rotate(-20deg);
+        }
+        30% {
+          transform: rotate(-20deg);
+        }
+        45% {
+          transform: rotate(0deg);
+        }
+      }
+      .dodo.hit #tailfeathers {
+        animation: tailfan 4s ease 1;
+      }
+      @keyframes tailfan {
+        5% {
+          transform: rotate(0deg);
+        }
+        20% {
+          transform: rotate(-40deg);
+        }
+        30% {
+          transform: rotate(-40deg);
+        }
+        45% {
+          transform: rotate(0deg);
+        }
+      }
+      .dodo.defeat #neck,
+      .dodo.defeat #lefteye,
+      .dodo.defeat #righteye,
+      .dodo.defeat #beak,
+      .dodo.defeat #bottomjaw {
+        transform-origin: 160px 228px;
+        animation: neckdroop 4s ease 1;
+      }
+      @keyframes neckdroop {
+        0% {
+          transform: rotate(0deg);
+        }
+        13% {
+          transform: rotate(-60deg);
+        }
+        87% {
+          transform: rotate(-60deg);
+        }
+        100% {
+          transform: rotate(0deg);
+        }
+      }
+      .dodo.defeat #lefteye .cls-1,
+      .dodo.defeat #righteye .cls-1 {
+        transform-origin: 160px 228px;
+        animation: lookdown 4s ease 1;
+      }
+      @keyframes lookdown {
+        0% {
+          transform: translateY(0px);
+        }
+        20% {
+          transform: translateY(10px);
+        }
+        90% {
+          transform: translateY(10px);
+        }
+        100% {
+          transform: translateY(0px);
+        }
+      }
+      .dodo.defeat #tailfeathers {
+        animation: taildroop 4s ease 1;
+      }
+      @keyframes taildroop {
+        0% {
+          transform: rotate(0deg);
+        }
+        13% {
+          transform: rotate(40deg);
+        }
+        87% {
+          transform: rotate(40deg);
+        }
+        100% {
+          transform: rotate(0deg);
+        }
+      }
+      .dodo.victory{
+        animation: victoryHop .4s 6;
+      }
+      @keyframes victoryHop {
+        0% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-30px);
+        }
+        60% {
+          transform: translateY(-30px);
+        }
+        100% {
+          transform: translateY(0px);
+        }
+      }
+      .dodo.victory #tailfeathers {
+        animation: taillift .4s 6;
+      }
+      @keyframes taillift {
+        0% {
+          transform: rotate(0deg);
+        }
+        50% {
+          transform: rotate(-10deg);
+        }
+        60% {
+          transform: rotate(-10deg);
+        }
+        100% {
+          transform: rotate(0deg);
+        }
+      }
+      .dodo.victory #bottomjaw{
+        transform-origin: 91px 96px;
+        animation: smile 3s 1;
+      }
+      @keyframes smile {
+        0% {
+          transform: rotate(0deg);
+        }
+        10% {
+          transform: rotate(-35deg);
+        }
+        90% {
+          transform: rotate(-35deg);
+        }
+        100% {
+          transform: rotate(0deg);
+        }
+      }
+    </style>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

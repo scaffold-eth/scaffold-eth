@@ -210,13 +210,11 @@ function App(props) {
           const tokenURI = await readContracts.YourCollectible.tokenURI(tokenId);
           const jsonManifestString = atob(tokenURI.substring(29))
           console.log("jsonManifestString", jsonManifestString);
-/*
+          /*
           const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
           console.log("ipfsHash", ipfsHash);
-
           const jsonManifestBuffer = await getFromIPFS(ipfsHash);
-
-        */
+          */
           try {
             const jsonManifest = JSON.parse(jsonManifestString);
             console.log("jsonManifest", jsonManifest);
@@ -511,7 +509,7 @@ function App(props) {
                             tx(writeContracts.YourCollectible.transferFrom(address, transferToAddresses[id], id));
                           }}
                         >
-                          
+
                           Transfer
                         </Button>
 
@@ -523,7 +521,7 @@ function App(props) {
                               onChange={e => {
                                 setDodoToChallenge(e.target.value);
                               }}
-                              
+
                             />
                           </div>
 
