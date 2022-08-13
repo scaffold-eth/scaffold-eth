@@ -17,6 +17,28 @@ export default function Hints({ tx, yourLocalBalance, writeContracts, localProvi
   const [fightScript, setFightScript] = useState();
   const [currentFightStep, setCurrentFightStep] = useState();
 
+  function getWindowDimensions() {
+    const { innerWidth: width, innerHeight: height } = window;
+    return {
+      width,
+      height
+    };
+  }
+
+  const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
+
+  console.log("windowDimensions",windowDimensions)
+
+  useEffect(() => {
+    function handleResize() {
+      setWindowDimensions(getWindowDimensions());
+    }
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+
   useEffect(()=>{
     console.log("UPDATING THE FIGHT STEP!?!?!")
     if(setFightScript.length>0 && !currentFightStep){
@@ -268,7 +290,7 @@ export default function Hints({ tx, yourLocalBalance, writeContracts, localProvi
   const cls4 = { strokeMiterlimit: 10, fill: "#fee78a", stroke:"#231f20" }
   const cls5 = { strokeMiterlimit: 10, fill: "#fff", stroke: "#0d0d0d" }
 
-  const dodo1SVG = (<svg style={{zIndex:leftZ, position:'absolute',left:200,overflow:"visible"}} xmlns="http://www.w3.org/2000/svg" width={550} height={650} id="dodo1" class={leftClass}>//"dodo kick"
+  const dodo1SVG = (<svg style={{zIndex:leftZ, position:'absolute',left:windowDimensions.width/2-390, overflow:"visible"}} xmlns="http://www.w3.org/2000/svg" width={550} height={650} id="dodo1" class={leftClass}>//"dodo kick"
     <g class="container">
     <g id="rightleg">
       <path style={cls3}
@@ -315,7 +337,7 @@ export default function Hints({ tx, yourLocalBalance, writeContracts, localProvi
   </svg>)
 
   const dodo2SVG = (
-    <svg style={{zIndex:rightZ, position:'absolute',right:25,overflow:"visible"}} xmlns="http://www.w3.org/2000/svg" width={550} height={650} id="dodo2" class={rightClass}>
+    <svg style={{zIndex:rightZ,position:"absolute",left:windowDimensions.width/2,overflow:"visible"}} xmlns="http://www.w3.org/2000/svg" width={550} height={650} id="dodo2" class={rightClass}>
     <g class="container">
     <g id="rightleg">
       <path style={cls3}

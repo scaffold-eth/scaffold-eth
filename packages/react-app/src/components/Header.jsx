@@ -7,7 +7,7 @@ export default function Header() {
   return (
     <a href="/">
       <PageHeader
-        title="🟢 DoDos"
+        title="🦤 Dodo Fights"
         subTitle=""
         style={{ cursor: "pointer" }}
       />
