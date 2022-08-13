@@ -8,7 +8,7 @@ import { useUserAddress } from "eth-hooks";
 import { utils } from "ethers";
 import React, { useCallback, useEffect, useState } from "react";
 import ReactJson from "react-json-view";
-import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Link, Route, Switch, useHistory } from "react-router-dom";
 import StackGrid from "react-stack-grid";
 import Web3Modal from "web3modal";
 import "./App.css";
@@ -59,7 +59,7 @@ const ipfs = ipfsAPI({ host: "ipfs.infura.io", port: "5001", protocol: "https" }
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.kovan; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -117,6 +117,10 @@ const web3Modal = new Web3Modal({
 });
 
 function App(props) {
+
+
+
+
   const mainnetProvider = scaffoldEthProvider && scaffoldEthProvider._network ? scaffoldEthProvider : mainnetInfura;
 
   const logoutOfWeb3Modal = async () => {
@@ -404,6 +408,10 @@ function App(props) {
     value: ''
   });
 
+  let history = useHistory();
+
+  console.log("history",history)
+
   return (
     <div className="App">
       {/* ✏️ Edit the header and change the title to your project name */}
@@ -460,7 +468,6 @@ function App(props) {
               ):(
                 <Button type={"primary"} onClick={loadWeb3Modal}>CONNECT WALLET</Button>
               )}
-
             </div>
 
             <div style={{ width: 820, margin: "auto", paddingBottom: 256 }}>
@@ -480,9 +487,20 @@ function App(props) {
 
                   if(fightId){
                     inMatch = (
-                      <Button onClick={()=>{
-                        window.location = "/fight/"+fightId
-                      }}> Watch Fight #{fightId}</Button>
+                      <div style={{zIndex:99}}>
+
+                          <div><Link
+                            onClick={() => {
+                              setRoute("/fight/"+fightId);
+                            }}
+                            to={"/fight/"+fightId}
+                          >
+                            View Fight {fightId}
+                          </Link>
+                          </div>
+                      </div>
+
+
                     )
                   }
 
@@ -495,9 +513,9 @@ function App(props) {
                           </div>
                         }
                       >
-                        <a href={"https://opensea.io/assets/"+(readContracts && readContracts.YourCollectible && readContracts.YourCollectible.address)+"/"+item.id} target="_blank">
-                        <img src={item.image} style={{position:"relative",left:150}}/>
-                        </a>
+
+                        <img src={item.image} style={{position:"relative"}}/>
+
                         <div>{item.description}</div>
                       </Card>
 
@@ -544,6 +562,7 @@ function App(props) {
                           </div>
 
                           <div style={{ padding: 8 }}>
+
                             <Button
                               onClick={async () => {
                                 console.log("id: ",id);
