@@ -9,6 +9,7 @@ import Address from "./Address";
 import AddressInput from "./AddressInput";
 import Balance from "./Balance";
 import EtherInput from "./EtherInput";
+import WalletImport from "./WalletImport";
 
 const { Text, Paragraph } = Typography;
 
@@ -60,6 +61,8 @@ export default function Wallet(props) {
   const [toAddress, setToAddress] = useState();
   const [pk, setPK] = useState();
 
+  const [showImport, setShowImport] = useState();
+
   const providerSend = props.provider ? (
     <Tooltip title="Wallet">
       <WalletOutlined
@@ -78,6 +81,17 @@ export default function Wallet(props) {
     </Tooltip>
   ) : (
     ""
+  );
+
+  const showImportButton = (
+    <Button
+      style={{ marginTop: 16 }}
+      onClick={() => {
+        setShowImport(true)
+      }}
+    >
+      <span style={{ marginRight: 8 }}>💾</span>Import
+    </Button>
   );
 
   let display;
@@ -312,7 +326,8 @@ export default function Wallet(props) {
           setPK();
           setOpen(!open);
         }}
-        footer={[
+        footer={showImport ? null :[
+          showImportButton,
           privateKeyButton,
           receiveButton,
           <Button
@@ -343,7 +358,13 @@ export default function Wallet(props) {
           </Button>,
         ]}
       >
-        {display}
+        {
+          showImport ?
+            <WalletImport
+              setShowImport={setShowImport}
+            />
+          : display
+        }
       </Modal>
     </span>
   );
