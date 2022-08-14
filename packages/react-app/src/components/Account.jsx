@@ -1,6 +1,7 @@
 import { Button } from "antd";
 import React from "react";
 import { useThemeSwitcher } from "react-css-theme-switcher";
+import { useAccount, useConnect, useDisconnect, useNetwork, useSigner } from "wagmi";
 
 import Address from "./Address";
 import Balance from "./Balance";
@@ -20,37 +21,34 @@ import Wallet from "./Wallet";
 
 **/
 
-const Account = ({
-  address,
-  userSigner,
-  localProvider,
-  mainnetProvider,
-  price,
-  minimized,
-  web3Modal,
-  loadWeb3Modal,
-  logoutOfWeb3Modal,
-  blockExplorer,
-  isContract,
-}) => {
+const Account = ({ localProvider, mainnetProvider, price, minimized, blockExplorer, isContract }) => {
   const { currentTheme } = useThemeSwitcher();
+  const { chain } = useNetwork();
+  const { address, isConnected } = useAccount({
+    onError(error) {
+      console.error(error);
+    },
+  });
+  const { disconnect } = useDisconnect();
+  const { connect } = useConnect();
+  const { data: signer } = useSigner();
 
   let accountButtonInfo;
-  if (web3Modal?.cachedProvider) {
-    accountButtonInfo = { name: "Logout", action: logoutOfWeb3Modal };
+  if (isConnected) {
+    accountButtonInfo = { name: "Logout", action: disconnect };
   } else {
-    accountButtonInfo = { name: "Connect", action: loadWeb3Modal };
+    accountButtonInfo = { name: "Connect", action: connect };
   }
 
   const display = !minimized && (
     <span>
-      {address && <Address address={address} blockExplorer={blockExplorer} fontSize={20} />}
-      <Balance address={address} chainId={1} price={price} watch={true} size={20} />
+      {address && <Address blockExplorer={blockExplorer} fontSize={20} />}
+      <Balance address={address} chainId={chain?.id} price={price} watch={true} size={20} />
       {!isContract && (
         <Wallet
           address={address}
           provider={localProvider}
-          signer={userSigner}
+          signer={signer}
           ensProvider={mainnetProvider}
           price={price}
           color={currentTheme === "light" ? "#1890ff" : "#2caad9"}
@@ -64,7 +62,7 @@ const Account = ({
   return (
     <div style={{ display: "flex" }}>
       {display}
-      {web3Modal && (
+      {isConnected && (
         <Button style={{ marginLeft: 8 }} shape="round" onClick={accountButtonInfo.action}>
           {accountButtonInfo.name}
         </Button>

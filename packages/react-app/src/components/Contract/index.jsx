@@ -1,6 +1,7 @@
 import { Card } from "antd";
 import { useContractExistsAtAddress, useContractLoader } from "eth-hooks";
 import React, { useMemo, useState } from "react";
+import { useNetwork, useProvider, useSigner } from "wagmi";
 import Address from "../Address";
 import Balance from "../Balance";
 import DisplayVariable from "./DisplayVariable";
@@ -46,24 +47,25 @@ const isQueryable = fn => (fn.stateMutability === "view" || fn.stateMutability =
 
 export default function Contract({
   customContract,
-  account,
   gasPrice,
-  signer,
-  provider,
   name,
   show,
   price,
   blockExplorer,
-  chainId,
   contractConfig,
+  chainId,
 }) {
-  const contracts = useContractLoader(provider, contractConfig, chainId);
+  const { chain } = useNetwork();
+  const provider = useProvider();
+  const { data: signer } = useSigner();
+  const contracts = useContractLoader(provider, contractConfig, chainId ? chainId : chain?.id);
   let contract;
   if (!customContract) {
     contract = contracts ? contracts[name] : "";
   } else {
     contract = customContract;
   }
+  console.log("Contract", contract);
 
   const address = contract ? contract.address : "";
   const contractIsDeployed = useContractExistsAtAddress(provider, address);

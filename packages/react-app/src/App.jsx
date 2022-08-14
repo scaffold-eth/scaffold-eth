@@ -1,10 +1,10 @@
 import { Button, Col, Menu, Row } from "antd";
 import "antd/dist/antd.css";
-import { useContractLoader, useContractReader, useGasPrice, useUserProviderAndSigner } from "eth-hooks";
+import { useContractLoader, useContractReader, useGasPrice } from "eth-hooks";
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, Route, Switch, useLocation } from "react-router-dom";
-import { useBalance, useContractRead } from "wagmi";
+import { useAccount, useBalance, useContractRead, useContractWrite, useNetwork, useProvider, useSigner } from "wagmi";
 import "./App.css";
 import {
   Account,
@@ -19,10 +19,8 @@ import {
 } from "./components";
 import { ALCHEMY_KEY, NETWORKS } from "./constants";
 import externalContracts from "./contracts/external_contracts";
-// contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor, Web3ModalSetup } from "./helpers";
-import { useStaticJsonRPC } from "./hooks";
 import useOnBlockNumber from "./hooks/useOnBlockNumber";
 import { ExampleUI, Hints, Home, Subgraph } from "./views";
 
@@ -53,7 +51,7 @@ const initialNetwork = NETWORKS.localhost; // <------- select your target fronte
 const DEBUG = true;
 const NETWORKCHECK = true;
 const USE_BURNER_WALLET = true; // toggle burner wallet feature
-const USE_NETWORK_SELECTOR = false;
+const USE_NETWORK_SELECTOR = true;
 
 const web3Modal = Web3ModalSetup();
 
@@ -67,64 +65,52 @@ const providers = [
 function App(props) {
   // specify all the chains your app is available on. Eg: ['localhost', 'mainnet', ...otherNetworks ]
   // reference './constants.js' for other networks
-  const networkOptions = [initialNetwork.name, "mainnet", "rinkeby"];
+  const networkOptions = [initialNetwork.name, "mainnet", "goerli", "optimism", "optimismKovan"];
 
   const [injectedProvider, setInjectedProvider] = useState();
-  const [address, setAddress] = useState();
+  // const [address, setAddress] = useState();
+  const { address, isConnected, isConnecting } = useAccount({
+    onError(error) {
+      console.error(error);
+    },
+  });
+  const { chain } = useNetwork();
+  const provider = useProvider({ chainId: chain?.id });
+  const localProvider = useProvider({ chainId: 31337 });
+  const mainnetProvider = useProvider({ chainId: 1 });
+
   const [selectedNetwork, setSelectedNetwork] = useState(networkOptions[0]);
   const location = useLocation();
-
   const targetNetwork = NETWORKS[selectedNetwork];
 
   // 🔭 block explorer URL
   const blockExplorer = targetNetwork.blockExplorer;
 
   // load all your providers
-  const localProvider = useStaticJsonRPC([
-    process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : targetNetwork.rpcUrl,
-  ]);
-  const mainnetProvider = useStaticJsonRPC(providers);
+  // const localProvider = useStaticJsonRPC([
+  //   process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : targetNetwork.rpcUrl,
+  // ]);
 
   if (DEBUG) console.log(`Using ${selectedNetwork} network`);
 
   // 🛰 providers
   if (DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
 
-  const logoutOfWeb3Modal = async () => {
-    await web3Modal.clearCachedProvider();
-    if (injectedProvider && injectedProvider.provider && typeof injectedProvider.provider.disconnect == "function") {
-      await injectedProvider.provider.disconnect();
-    }
-    setTimeout(() => {
-      window.location.reload();
-    }, 1);
-  };
-
   /* 💵 This hook will get the price of ETH from 🦄 Uniswap: */
-  const price = useExchangeEthPrice(targetNetwork, mainnetProvider);
+  const price = useExchangeEthPrice(targetNetwork, provider);
+  console.log("price", price);
 
   /* 🔥 This hook will get the price of Gas from ⛽️ EtherGasStation */
   const gasPrice = useGasPrice(targetNetwork, "fast");
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
-  const userProviderAndSigner = useUserProviderAndSigner(injectedProvider, localProvider, USE_BURNER_WALLET);
-  const userSigner = userProviderAndSigner.signer;
-
-  // todo:
-  useEffect(() => {
-    async function getAddress() {
-      if (userSigner) {
-        const newAddress = await userSigner.getAddress();
-        setAddress(newAddress);
-      }
-    }
-    getAddress();
-  }, [userSigner]);
+  // const userProviderAndSigner = useUserProviderAndSigner(injectedProvider, localProvider, USE_BURNER_WALLET);
+  const { data: userSigner } = useSigner();
+  // userProviderAndSigner.signer;
 
   // You can warn the user if you would like them to be on a specific network
   const localChainId = localProvider && localProvider._network && localProvider._network.chainId;
-  const selectedChainId =
-    userSigner && userSigner.provider && userSigner.provider._network && userSigner.provider._network.chainId;
-
+  const { chain: selectedChainId } = useNetwork({ chainId: chain?.id });
+  console.log("selectedChainId", selectedChainId);
   // For more hooks, check out 🔗eth-hooks at: https://www.npmjs.com/package/eth-hooks
 
   // The transactor wraps transactions and provides notificiations
@@ -133,7 +119,7 @@ function App(props) {
   // 🏗 scaffold-eth is full of handy hooks (WAGMI)
   // get the latest block number and do something for each new block 🤔
   const blockNumber = useOnBlockNumber({
-    chainId: 1,
+    chainId: selectedChainId?.id,
     watch: true,
     onSuccess(data) {
       console.log("Block Number", data);
@@ -148,7 +134,7 @@ function App(props) {
 
   const getBalance = async () => {};
 
-  const { data: balance } = useBalance({ addressOrName: address, chainId: initialNetwork.chainId, watch: true });
+  const { data: balance } = useBalance({ addressOrName: address, chainId: selectedChainId?.id, watch: true });
   console.log("My WAGMI Balance => ", balance);
 
   // const contractConfig = useContractConfig();
@@ -158,7 +144,7 @@ function App(props) {
   const readContracts = useContractLoader(localProvider, contractConfig);
 
   //! WAGMI Contract Reader
-  // ToDo: figure out...
+  // Todo: figure out...
   const {
     data: readContractsWagmi,
     isError,
@@ -171,7 +157,36 @@ function App(props) {
   console.log("WAGMI Read Contracts => ", readContractsWagmi);
 
   // If you want to make 🔐 write transactions to your contracts, use the userSigner:
-  const writeContracts = useContractLoader(userSigner, contractConfig, localChainId);
+  const writeContracts = useContractLoader(userSigner, contractConfig, chain?.id);
+
+  //! WAGMI Contract Writer
+  // Todo: figure out
+  // const { config } = usePrepareContractWrite({
+  //   addressOrName: "",
+  //   chainId: chain?.id,
+  //   contractInterface: [],
+  //   functionName: "",
+  //   args: [],
+  // });
+  const {
+    data: writeContractWagmi,
+    isLoading: writeContractWagmiLoading,
+    isSuccess,
+    write,
+  } = useContractWrite({
+    addressOrName: "",
+    chainId: chain?.id,
+    contractInterface: [],
+    functionName: "",
+    args: [],
+    onError(error) {
+      console.log(error);
+    },
+    onSuccess(data) {
+      console.log(data);
+    },
+  });
+  console.log("write", write);
 
   // EXTERNAL CONTRACT EXAMPLE:
   //
@@ -190,12 +205,20 @@ function App(props) {
   // 🧫 DEBUG 👨🏻‍🔬
   //
   useEffect(() => {
-    if (DEBUG && mainnetProvider && address && selectedChainId && readContracts && writeContracts && mainnetContracts) {
+    if (
+      DEBUG &&
+      mainnetProvider &&
+      address &&
+      selectedChainId?.id &&
+      readContracts &&
+      writeContracts &&
+      mainnetContracts
+    ) {
       console.log("_____________________________________ 🏗 scaffold-eth _____________________________________");
       console.log("🌎 mainnetProvider", mainnetProvider);
       console.log("🏠 localChainId", localChainId);
       console.log("👩‍💼 selected address:", address);
-      console.log("🕵🏻‍♂️ selectedChainId:", selectedChainId);
+      console.log("🕵🏻‍♂️ selectedChainId:", selectedChainId?.id);
       console.log("📝 readContracts", readContracts);
       console.log("🌍 DAI contract on mainnet:", mainnetContracts);
       console.log("💵 yourMainnetDAIBalance", myMainnetDAIBalance);
@@ -211,34 +234,6 @@ function App(props) {
     localChainId,
     myMainnetDAIBalance,
   ]);
-
-  const loadWeb3Modal = useCallback(async () => {
-    const provider = await web3Modal.connect();
-    setInjectedProvider(new ethers.providers.Web3Provider(provider));
-
-    provider.on("chainChanged", chainId => {
-      console.log(`chain changed to ${chainId}! updating providers`);
-      setInjectedProvider(new ethers.providers.Web3Provider(provider));
-    });
-
-    provider.on("accountsChanged", () => {
-      console.log(`account changed!`);
-      setInjectedProvider(new ethers.providers.Web3Provider(provider));
-    });
-
-    // Subscribe to session disconnection
-    provider.on("disconnect", (code, reason) => {
-      console.log(code, reason);
-      logoutOfWeb3Modal();
-    });
-    // eslint-disable-next-line
-  }, [setInjectedProvider]);
-
-  useEffect(() => {
-    if (web3Modal.cachedProvider) {
-      loadWeb3Modal();
-    }
-  }, [loadWeb3Modal]);
 
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
 
@@ -260,15 +255,11 @@ function App(props) {
             )}
             <Account
               useBurner={USE_BURNER_WALLET}
-              address={address}
-              localProvider={localProvider}
-              userSigner={userSigner}
+              localProvider={provider}
               mainnetProvider={mainnetProvider}
               price={price}
-              web3Modal={web3Modal}
-              loadWeb3Modal={loadWeb3Modal}
-              logoutOfWeb3Modal={logoutOfWeb3Modal}
               blockExplorer={blockExplorer}
+              isContract={false}
             />
           </div>
         </div>
@@ -278,10 +269,9 @@ function App(props) {
       )} */}
       <NetworkDisplay
         NETWORKCHECK={NETWORKCHECK}
-        localChainId={localChainId}
-        selectedChainId={selectedChainId}
+        localChainId={chain?.id}
+        selectedChainId={selectedChainId?.id}
         targetNetwork={targetNetwork}
-        logoutOfWeb3Modal={logoutOfWeb3Modal}
         USE_NETWORK_SELECTOR={USE_NETWORK_SELECTOR}
       />
       <Menu style={{ textAlign: "center", marginTop: 20 }} selectedKeys={[location.pathname]} mode="horizontal">
@@ -317,18 +307,10 @@ function App(props) {
                 and give you a form to interact with it locally
             */}
 
-          <Contract
-            name="YourContract"
-            price={price}
-            signer={userSigner}
-            provider={localProvider}
-            address={address}
-            blockExplorer={blockExplorer}
-            contractConfig={contractConfig}
-          />
+          {/* <Contract name="YourContract" price={price} blockExplorer={blockExplorer} contractConfig={contractConfig} /> */}
         </Route>
         <Route path="/hints">
-          <Hints address={address} balance={0} mainnetProvider={mainnetProvider} price={price} />
+          <Hints address={address} balance={0} mainnetProvider={provider} price={price} />
         </Route>
         <Route path="/exampleui">
           <ExampleUI
@@ -347,10 +329,7 @@ function App(props) {
         <Route path="/mainnetdai">
           <Contract
             name="DAI"
-            customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.DAI}
-            signer={userSigner}
-            provider={mainnetProvider}
-            address={address}
+            customContract={mainnetContracts?.contracts?.DAI}
             blockExplorer="https://etherscan.io/"
             contractConfig={contractConfig}
             chainId={1}
@@ -408,7 +387,7 @@ function App(props) {
           <Col span={24}>
             {
               /*  if the local provider has a signer, let's show the faucet:  */
-              faucetAvailable ? (
+              true ? (
                 <Faucet localProvider={localProvider} price={price} ensProvider={mainnetProvider} />
               ) : (
                 ""

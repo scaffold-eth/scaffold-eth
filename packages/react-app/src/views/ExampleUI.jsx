@@ -2,21 +2,16 @@ import { SyncOutlined } from "@ant-design/icons";
 import { Button, Card, DatePicker, Divider, Input, Progress, Slider, Spin, Switch } from "antd";
 import { utils } from "ethers";
 import React, { useState } from "react";
+import { useAccount, useNetwork, useProvider } from "wagmi";
 
 import { Address, Balance, Events } from "../components";
 
-export default function ExampleUI({
-  purpose,
-  address,
-  mainnetProvider,
-  localProvider,
-  balance,
-  price,
-  tx,
-  readContracts,
-  writeContracts,
-}) {
+export default function ExampleUI({ purpose, balance, price, tx, readContracts, writeContracts }) {
   const [newPurpose, setNewPurpose] = useState("loading...");
+  const { address } = useAccount();
+  const { chain } = useNetwork();
+  const provider = useProvider({ chainId: chain?.id });
+  const mainnetProvider = useProvider({ chainId: 1 });
 
   return (
     <div>
@@ -74,10 +69,10 @@ export default function ExampleUI({
         {/* use utils.formatEther to display a BigNumber: */}
         <h2>Your Balance: {balance ? balance : "..."}</h2>
         <div>OR</div>
-        <Balance address={address} provider={localProvider} price={price} />
+        <Balance address={address} provider={provider} price={price} />
         <Divider />
         <div>🐳 Example Whale Balance:</div>
-        <Balance balance={utils.parseEther("1000")} provider={localProvider} price={price} />
+        <Balance balance={utils.parseEther("1000")} provider={provider} price={price} />
         <Divider />
         {/* use utils.formatEther to display a BigNumber: */}
         <h2>Your Balance: {balance ? balance : "..."}</h2>
@@ -158,7 +153,7 @@ export default function ExampleUI({
         contracts={readContracts}
         contractName="YourContract"
         eventName="SetPurpose"
-        localProvider={localProvider}
+        localProvider={provider}
         mainnetProvider={mainnetProvider}
         startBlock={1}
       />

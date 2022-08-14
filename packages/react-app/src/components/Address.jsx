@@ -2,7 +2,7 @@ import { Skeleton, Typography } from "antd";
 import React from "react";
 import Blockies from "react-blockies";
 import { useThemeSwitcher } from "react-css-theme-switcher";
-import { useEnsName } from "wagmi";
+import { useAccount, useEnsName } from "wagmi";
 
 const { Text } = Typography;
 
@@ -29,7 +29,7 @@ const blockExplorerLink = (address, blockExplorer) => `${blockExplorer || "https
 
 const Address = props => {
   const { currentTheme } = useThemeSwitcher();
-  const address = props.address;
+  const { address } = useAccount();
   const { data: ensName, isError, isLoading } = useEnsName({ address: address, chainId: 1 });
   console.log("ENS or Address: ", ensName ? `${ensName} (${address})` : address);
   const etherscanLink = blockExplorerLink(address, props.blockExplorer);

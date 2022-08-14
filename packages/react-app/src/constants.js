@@ -104,7 +104,7 @@ export const NETWORKS = {
     rpcUrl: "http://" + (global.window ? window.location.hostname : "localhost") + ":8545",
     gasPrice: 0,
   },
-  kovanOptimism: {
+  optimismKovan: {
     name: "kovanOptimism",
     color: "#f01a37",
     chainId: 69,
