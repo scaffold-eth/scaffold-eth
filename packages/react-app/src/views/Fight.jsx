@@ -8,7 +8,7 @@ import { usePoller } from "../hooks";
 import { useHistory, useParams } from 'react-router-dom'
 import { ethers } from "ethers"
 
-export default function Hints({ tx, yourLocalBalance, writeContracts, localProvider, mainnetProvider, price, address, readContracts }) {
+export default function Hints({ blockExplorer,tx, yourLocalBalance, writeContracts, localProvider, mainnetProvider, price, address, readContracts }) {
 
   const { fightid } = useParams()
 
@@ -16,6 +16,8 @@ export default function Hints({ tx, yourLocalBalance, writeContracts, localProvi
   const [fightInfo, setFightInfo] = useState();
   const [fightScript, setFightScript] = useState();
   const [currentFightStep, setCurrentFightStep] = useState();
+  const [owners, setOwners] = useState();
+  const [ids, setIds] = useState();
 
   function getWindowDimensions() {
     const { innerWidth: width, innerHeight: height } = window;
@@ -102,6 +104,16 @@ export default function Hints({ tx, yourLocalBalance, writeContracts, localProvi
       blockInfo = await localProvider.getBlock(targetBlock)
       console.log("block info:",blockInfo)
 
+      const owner1 = await readContracts.YourCollectible.ownerOf(fightInfo.id1)
+      const owner2 = await readContracts.YourCollectible.ownerOf(fightInfo.id2)
+      console.log("owner1:",owner1)
+      console.log("owner2:",owner2)
+
+      setOwners([owner1,owner2])
+      setIds([fightInfo&&fightInfo.id1.toNumber(),fightInfo&&fightInfo.id2.toNumber()])
+
+
+
       let blockHash = blockInfo.hash
 
       let index = 2
@@ -184,7 +196,7 @@ export default function Hints({ tx, yourLocalBalance, writeContracts, localProvi
     }
 
     setFightScript(newFightScript)
-    setFightInfo({targetBlock, currentBlock, ...fightInfo,block: blockInfo})
+    targetBlock && currentBlock && fightInfo && blockInfo && setFightInfo({targetBlock, currentBlock, ...fightInfo,block: blockInfo})
   }
 
   usePoller(()=>{
@@ -274,7 +286,10 @@ export default function Hints({ tx, yourLocalBalance, writeContracts, localProvi
         onClick={async () => {
           console.log("writeContracts", writeContracts);
           await tx(writeContracts.YourCollectible.process(fightid));
-          window.location = "/"
+          setTimeout(()=>{
+            window.location = "/";
+          },250)
+
         }}
       >
         💾 Save
@@ -397,10 +412,18 @@ export default function Hints({ tx, yourLocalBalance, writeContracts, localProvi
       <div style={{fontSize:48,float:"left",marginLeft:"10%"}}>
         <div class={leftDamageClass} style={{fontSize:24}}>{leftDamage}</div>
         {leftHealth}
+        <div>
+          <div style={{opacity:0.5}}>#{ids && ids[0]}</div>
+          <Address address={owners[0]} ensProvider={mainnetProvider} blockExplorer={blockExplorer} fontSize={24}/>
+        </div>
       </div>
       <div style={{fontSize:48,float:"right",marginRight:"10%"}}>
         <div class={rightDamageClass} style={{fontSize:24}}>{rightDamage}</div>
         {rightHealth}
+        <div>
+          <div style={{opacity:0.5}}>#{ids && ids[1]}</div>
+          <Address address={owners[1]} ensProvider={mainnetProvider} blockExplorer={blockExplorer} fontSize={22}/>
+        </div>
       </div>
 
 

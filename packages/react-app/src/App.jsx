@@ -419,38 +419,6 @@ function App(props) {
       {networkDisplay}
 
       <BrowserRouter>
-        <Menu style={{ textAlign: "center" }} selectedKeys={[route]} mode="horizontal">
-          <Menu.Item key="/">
-            <Link
-              onClick={() => {
-                setRoute("/");
-              }}
-              to="/"
-            >
-              Your DoDos
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/fight/1">
-            <Link
-              onClick={() => {
-                setRoute("/fight/1");
-              }}
-              to="/fight/1"
-            >
-              View Fight
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/debug">
-            <Link
-              onClick={() => {
-                setRoute("/debug");
-              }}
-              to="/debug"
-            >
-              Smart Contract
-            </Link>
-          </Menu.Item>
-        </Menu>
 
         <Switch>
           <Route exact path="/">
@@ -497,6 +465,18 @@ function App(props) {
                           >
                             View Fight {fightId}
                           </Link>
+                          <Button
+                            onClick={async () => {
+                              console.log("writeContracts", writeContracts);
+                              await tx(writeContracts.YourCollectible.process(fightId));
+                              setTimeout(()=>{
+                                window.location = "/";
+                              },250)
+
+                            }}
+                          >
+                            💾 Save
+                          </Button>
                           </div>
                       </div>
 
@@ -568,9 +548,14 @@ function App(props) {
                                 console.log("id: ",id);
                                 console.log("dodoToChallenge: ",dodoToChallenge);
                                 const result = await tx(writeContracts.YourCollectible.challenge(id, dodoToChallenge));
-                                await result.wait()
+                                const fullResult = result && await result.wait()
                                 let nextChallenges = challenges + 1
                                 setChallenges(nextChallenges)
+
+                                console.log("fullResult",fullResult.events[0].args.fightid.toNumber())
+                                //setRoute("/fight/"+fullResult.events[0].args.fightid.toNumber());
+                                //window.location = "/fight/"+fullResult.events[0].args.fightid.toNumber()
+                                window.open("/fight/"+fullResult.events[0].args.fightid.toNumber(),"_blank")
                               }}
                             >
                               Challenge

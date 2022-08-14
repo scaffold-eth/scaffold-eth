@@ -86,6 +86,7 @@ contract YourCollectible is ERC721, Ownable {
   event Challenge(uint256 indexed id1, uint256 indexed id2, uint256 blocknumber, uint256 fightid);
 
   function challenge(uint256 id1, uint256 id2) public returns (uint256){
+    require(id1!=id2,"cant fight yourself");
     Dodo storage dodo1 = dodos[id1];
     require(dodo1.fight==0, "first dodo not available");
     Dodo storage dodo2 = dodos[id2];
@@ -121,16 +122,22 @@ contract YourCollectible is ERC721, Ownable {
      if(result){
        dodo1.wins++;
        console.log("(dodo 1 won)");
+       _burn(fight.id2);
+       dodo1.fight=0;
      }else{
        dodo2.wins++;
        console.log("(dodo 2 won)");
+       _burn(fight.id1);
+       dodo2.fight=0;
      }
 
-     dodo1.fight=0;
-     dodo2.fight=0;
+
+
+
+
   }
 
-  function viewProcess(uint256 fightid) public view returns (bool winner) {
+  function viewProcess(uint256 fightid) internal returns (bool winner) {
     Fight storage fight = fights[fightid];
 
     require(fight.id1>0,"unknown fight");
@@ -165,14 +172,18 @@ contract YourCollectible is ERC721, Ownable {
 
       if(whosTurn){
         console.log("damaging bird 1",thisDamage);
-        if(health1<thisDamage) {
+        /*if(health1<thisDamage-4) {
+          _burn(fight.id1);
+        }else */if(health1<thisDamage) {
           health1=0;
         }else{
           health1-=thisDamage;
         }
       }else{
         console.log("damaging bird 2",thisDamage);
-        if(health2<thisDamage) {
+        /*if(health2<thisDamage-4) {
+          _burn(fight.id2);
+        }else */if(health2<thisDamage) {
           health2=0;
         }else{
           health2-=thisDamage;

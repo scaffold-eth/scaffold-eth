@@ -4,7 +4,7 @@ const fs = require("fs");
 
 const directoryName = "build";
 
-const BUCKETNAME = "loogies.io"; // <<---- SET YOUR BUCKET NAME AND CREATE aws.json ** see below vvvvvvvvvv
+const BUCKETNAME = "dodofights.com"; // <<---- SET YOUR BUCKET NAME AND CREATE aws.json ** see below vvvvvvvvvv
 
 
  const invalidation = {
