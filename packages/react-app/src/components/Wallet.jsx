@@ -1,4 +1,4 @@
-import { Button, Modal, Spin, Tooltip, Typography } from "antd";
+import { Button, message,  Modal, Spin, Tooltip, Typography } from "antd";
 import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import { KeyOutlined, QrcodeOutlined, SendOutlined, WalletOutlined } from "@ant-design/icons";
@@ -9,6 +9,7 @@ import Address from "./Address";
 import AddressInput from "./AddressInput";
 import Balance from "./Balance";
 import EtherInput from "./EtherInput";
+import QRPunkBlockie from "./QRPunkBlockie";
 import WalletImport from "./WalletImport";
 
 const { Text, Paragraph } = Typography;
@@ -174,35 +175,64 @@ export default function Wallet(props) {
         }
       }
 
+      const fullLink = window.origin + "/pk#" + pk
+
       display = (
         <div>
-          <b>Private Key:</b>
-
           <div>
-            <Text copyable>{pk}</Text>
+            <b>Private Key:</b>
+            <div>
+              <Text style={{ fontSize: 11 }} copyable>
+                {pk}
+              </Text>
+            </div>
+
+            <div style={{marginTop:16}}>
+              <div><b>Punk Wallet:</b></div>
+              <Text style={{ fontSize: 11 }} copyable>
+                {fullLink}
+              </Text>
+            </div>
+
+            <div
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                const el = document.createElement("textarea");
+                el.value = window.origin + "/pk#" + pk;
+                document.body.appendChild(el);
+                el.select();
+                document.execCommand("copy");
+                document.body.removeChild(el);
+                message.success(<span style={{ position: "relative" }}>Copied Private Key Link</span>);
+              }}
+            >
+              <div style={{position:"relative",top:34,left:-11}}>
+                <QRPunkBlockie withQr={false} address={selectedAddress} />
+              </div>
+
+              <QR
+                value={fullLink}
+                size="450"
+                level="H"
+                includeMargin
+                renderAs="svg"
+                imageSettings={{ excavate: true,width:105,height:105 /*, src: "https://punkwallet.io/punk.png",*/}}
+              />
+              <div style={{position:"relative",top:-285,left:172}}>
+                🔑
+              </div>
+              <div style={{position:"relative",top:-305,left:266}}>
+                🔑
+              </div>
+              <div style={{position:"relative",top:-244,left:172}}>
+                🔑
+              </div>
+              <div style={{position:"relative",top:-265,left:262}}>
+                🔑
+              </div>
           </div>
 
-          <hr />
-
-          <i>
-            Point your camera phone at qr code to open in
-            <a target="_blank" href={"https://xdai.io/" + pk} rel="noopener noreferrer">
-              burner wallet
-            </a>
-            :
-          </i>
-          <QR
-            value={"https://xdai.io/" + pk}
-            size="450"
-            level="H"
-            includeMargin
-            renderAs="svg"
-            imageSettings={{ excavate: false }}
-          />
-
-          <Paragraph style={{ fontSize: "16" }} copyable>
-            {"https://xdai.io/" + pk}
-          </Paragraph>
+        </div>
 
           {extraPkDisplay ? (
             <div>
