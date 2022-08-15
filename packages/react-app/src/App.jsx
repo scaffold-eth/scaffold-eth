@@ -11,6 +11,7 @@ import Toast from 'components/Toast'
 import { BadgeContext } from 'contexts/BadgeContext'
 import { useUserProviderAndSigner } from 'eth-hooks'
 import externalContracts from 'contracts/external_contracts'
+import { getCurrentChainId } from 'helpers/SwitchToOptimism'
 const { ethers } = require('ethers')
 
 // @ts-ignore
@@ -25,7 +26,7 @@ function App() {
   const [tabValue, setTabValue] = useState(0)
   const [showToast, setShowToast] = useState(false)
   const [showWrongNetworkToast, setShowWrongNetworkToast] = useState(false)
-  const [selectedChainId] = useState(5)
+  const [selectedChainId, setSelectedChainId] = useState(5)
   const contractConfig = { deployedContracts: {}, externalContracts: externalContracts || {} }
 
   const targetNetwork = NETWORKS['optimism']
@@ -73,6 +74,14 @@ function App() {
       getAddress()
     }
   }, [userSigner])
+
+  useEffect(() => {
+    (async () => {
+      const chainInfo = await getCurrentChainId()
+      if (selectedChainId === chainInfo[0].chainid) return
+      setSelectedChainId(chainInfo[0].chainid)
+    })()
+  }, [selectedChainId])
 
   useEffect(() => {
     const run = async () => {
@@ -136,10 +145,10 @@ function App() {
       // @ts-ignore
       setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
     })
-    provider.on('accountsChanged', (accounts) => {
+    provider.on('accountsChanged', accounts => {
       console.log(`account changed!`)
       // @ts-ignore
-      setConnectedAddress([0])
+      setConnectedAddress(accounts[0])
       setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
     })
     console.log({ injectedProvider })
