@@ -175,7 +175,7 @@ export default function Wallet(props) {
         }
       }
 
-      const fullLink = window.origin + "/pk#" + pk
+      const fullLink = "https://punkwallet.io/pk#" + pk
 
       display = (
         <div>
@@ -198,7 +198,7 @@ export default function Wallet(props) {
               style={{ cursor: "pointer" }}
               onClick={() => {
                 const el = document.createElement("textarea");
-                el.value = window.origin + "/pk#" + pk;
+                el.value = fullLink;
                 document.body.appendChild(el);
                 el.select();
                 document.execCommand("copy");
