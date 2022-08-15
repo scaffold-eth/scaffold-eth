@@ -21,12 +21,12 @@ function App() {
   const [injectedProvider, setInjectedProvider] = useState(null)
   const [mainnet, setMainnet] = useState(null)
   const [loaded, setLoaded] = useState(false)
-  const [connectedAddress, setConnectedAddress] = useState('')
+  const [connectedAddress, setConnectedAddress] = useState()
   const [address, setAddress] = useState('')
   const [tabValue, setTabValue] = useState(0)
   const [showToast, setShowToast] = useState(false)
   const [showWrongNetworkToast, setShowWrongNetworkToast] = useState(false)
-  const [selectedChainId, setSelectedChainId] = useState(5)
+  const [selectedChainId] = useState(5)
   const contractConfig = { deployedContracts: {}, externalContracts: externalContracts || {} }
 
   const targetNetwork = NETWORKS['optimism']
@@ -48,7 +48,6 @@ function App() {
 
   const USE_BURNER_WALLET = false
   /* SETUP METAMASK */
-
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
   const userProviderAndSigner = useUserProviderAndSigner(injectedProvider, localProvider, USE_BURNER_WALLET)
   const userSigner = userProviderAndSigner.signer
@@ -65,7 +64,7 @@ function App() {
       if (userSigner) {
         const holderForConnectedAddress = await userSigner.getAddress()
         // @ts-ignore
-        setConnectedAddress(holderForConnectedAddress[0])
+        setConnectedAddress(holderForConnectedAddress)
       }
     }
     getAddress()
@@ -75,13 +74,13 @@ function App() {
     }
   }, [userSigner])
 
-  useEffect(() => {
-    (async () => {
-      const chainInfo = await getCurrentChainId()
-      if (selectedChainId === chainInfo[0].chainid) return
-      setSelectedChainId(chainInfo[0].chainid)
-    })()
-  }, [selectedChainId])
+  // useEffect(() => {
+  //   (async () => {
+  //     const chainInfo = await getCurrentChainId()
+  //     if (selectedChainId === chainInfo[0].chainid) return
+  //     setSelectedChainId(chainInfo[0].chainid)
+  //   })()
+  // }, [selectedChainId])
 
   useEffect(() => {
     const run = async () => {
@@ -90,7 +89,6 @@ function App() {
         'https://mainnet.infura.io/v3/1b3241e53c8d422aab3c7c0e4101de9c',
       )
       await local.ready
-      // @ts-ignore
       setLocalProvider(local)
       setMainnet(mainnet)
       setLoaded(true)
@@ -102,17 +100,14 @@ function App() {
     }
   }, [providerRef])
 
-  const logoutOfWeb3Modal = async () => {
-    // @ts-ignore
+  const logoutOfWeb3Modal = useCallback(async () => {
     if (injectedProvider && injectedProvider.provider && typeof injectedProvider.provider.disconnect == 'function') {
-      // @ts-ignore
       await injectedProvider.provider.disconnect()
-      setConnectedAddress('')
     }
     setTimeout(() => {
       window.location.reload()
     }, 1)
-  }
+  }, [injectedProvider])
 
   const snackBarAction = (
     <>
@@ -126,32 +121,17 @@ function App() {
     if (typeof window.ethereum === 'undefined') {
       // console.log('MetaMask is not installed!')
       displayToast()
-      // metamask not installed
       return
     }
     const provider = window.ethereum
     setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
 
-    /**
-     * @param accountPayload string[]
-     */
-    provider.on('accountsChanged', async accountPayload => {
-      console.log(`account changed!`)
-      setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
-    })
-
     provider.on('chainChanged', chainId => {
-      console.log(`chain changed to ${chainId}! updating providers`)
-      // @ts-ignore
       setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
     })
     provider.on('accountsChanged', accounts => {
-      console.log(`account changed!`)
-      // @ts-ignore
-      setConnectedAddress(accounts[0])
       setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
     })
-    console.log({ injectedProvider })
     // Subscribe to session disconnection
     provider.on('disconnect', (code, reason) => {
       console.log(code, reason)
@@ -159,11 +139,7 @@ function App() {
     })
 
     setTabValue(prev => prev)
-  }, [injectedProvider])
-
-  useEffect(() => {
-    console.log({ injectedProvider })
-  }, [injectedProvider])
+  }, [logoutOfWeb3Modal])
 
   const closeWrongNetworkToast = () => {
     setShowWrongNetworkToast(false)

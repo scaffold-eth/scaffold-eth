@@ -67,6 +67,7 @@ export default function BrowseBadges() {
 
   const run = useCallback(async () => {
     if (address) {
+      console.log({ address })
       return setEventBadges([])
     }
     let badges = await getAllRewards(contractRef.address, providerRef)

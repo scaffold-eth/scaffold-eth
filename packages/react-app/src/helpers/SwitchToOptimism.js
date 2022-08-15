@@ -80,6 +80,36 @@ export async function switchToGoerli() {
   }
 }
 
+export async function switchToOptimism() {
+  const chainId = externalParams[0].chainId
+  const correctHexChainId = ethers.utils.hexValue(chainId)
+  try {
+    await window.ethereum.request({
+      method: 'wallet_switchEthereumChain',
+      params: [{ chainId: correctHexChainId }],
+    })
+  } catch (switchError) {
+    if (switchError.code === 4902) {
+      try {
+        await window.ethereum.request({
+          method: 'wallet_addEthereumChain',
+          params: [
+            {
+              chainId: correctHexChainId,
+              chainName: externalParams[0].chainName,
+              rpcUrls: [...externalParams[0].rpcUrls],
+            },
+          ],
+        })
+        await window.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: correctHexChainId }],
+        })
+      } catch (addError) {}
+    }
+  }
+}
+
 export async function getNetworkChainList() {
   try {
     const data = await (await fetch('https://chainid.network/chains.json')).json()

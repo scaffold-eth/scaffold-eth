@@ -6,7 +6,13 @@ import Box from '@mui/material/Box'
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip'
 import { styled } from '@mui/material/styles'
 import { BadgeContext } from 'contexts/BadgeContext'
-import { getCurrentChainId, switchToGoerli, externalParams } from 'helpers/SwitchToOptimism'
+import {
+  getCurrentChainId,
+  switchToGoerli,
+  externalParams,
+  switchChain,
+  switchToOptimism,
+} from 'helpers/SwitchToOptimism'
 // @ts-ignore
 import { ethers } from 'ethers'
 import { lightGreen } from '@mui/material/colors'
@@ -153,7 +159,6 @@ export default function Account({ minimized }) {
   const handleConnection = async () => {
     const chainInfo = await getCurrentChainId()
     let accounts
-    let provider
     if (!chainInfo && chainInfo === undefined) {
       setShowToast(true)
       return
@@ -161,61 +166,51 @@ export default function Account({ minimized }) {
     const { chainId, networkId } = chainInfo[0]
     if (chainId !== selectedChainId) {
       setShowWrongNetworkToast(true)
-      await window.ethereum.request({
-        method: 'wallet_switchEthereumChain',
-        params: [{ chainId: ethers.utils.hexValue(externalParams[1]['chainId']) }],
-      })
+      if (chainId === 5) {
+        await window.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: ethers.utils.hexValue(externalParams[1]['chainId']) }],
+        })
+      } else if (chainId === 10) {
+        await window.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: ethers.utils.hexValue(externalParams[0]['chainId']) }],
+        })
+      }
       // return
     }
-    if (injectedProvider === null) console.log('injectedProvider is null')
     accountButtonInfo.action()
-    await window.ethereum.request({
+    if (injectedProvider === null) setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
+    accounts = await window.ethereum.request({
       method: 'eth_requestAccounts',
     })
-    provider = new ethers.providers.Web3Provider(window.ethereum)
-    accounts = await provider.listAccounts()
-    setConnectedAddress(accounts[0])
-    // @ts-ignore
-    // if (chainId === 10 && networkId === 10) {
-    //   await switchChain(externalParams[0])
-    // }
-    if (chainId !== 5 && networkId !== 5) await switchToGoerli()
-    setNetInfo(chainInfo)
+    // provider = new ethers.providers.Web3Provider(window.ethereum)
+    if (chainId === 5 && networkId === 5) {
+      await switchToGoerli()
+      setConnectedAddress(accounts[0])
+      setNetInfo(chainInfo)
+      return
+    }
+    if (chainId === 10 && networkId === 10) {
+      await switchToOptimism()
+      setConnectedAddress(accounts[0])
+      setNetInfo(chainInfo)
+    }
   }
 
-  useEffect(() => {
-    console.log({ injectedProvider })
-  }, [injectedProvider])
+  // useEffect(() => {
+  //   if (window.ethereum !== undefined) {
+  //     window.ethereum.on('chainChanged', chainid => {
+  //       window.location.reload()
+  //     })
+  //   }
 
-  useEffect(() => {
-    if (window.ethereum !== undefined) {
-      window.ethereum.on('accountsChanged', async accounts => {
-        if (accounts.length > 0) {
-          setConnectedAddress(accounts[0])
-        }
-      })
-      return () => {
-        if (window.ethereum !== undefined) {
-          window.ethereum.removeAllListeners('accountsChanged')
-        }
-      }
-    }
-  }, [setConnectedAddress, setShowToast])
-
-  useEffect(() => {
-    if (window.ethereum !== undefined) {
-      // @ts-ignore
-      window.ethereum.on('chainChanged', chainid => {
-        window.location.reload()
-      })
-    }
-
-    return () => {
-      if (window.ethereum !== undefined) {
-        window.ethereum.removeAllListeners('chainChanged')
-      }
-    }
-  }, [])
+  //   return () => {
+  //     if (window.ethereum !== undefined) {
+  //       window.ethereum.removeAllListeners('chainChanged')
+  //     }
+  //   }
+  // }, [])
 
   const wrongNetworkSnackBar = (
     <>
@@ -245,7 +240,6 @@ export default function Account({ minimized }) {
       />
     )
   }
-
   return (
     <Box sx={{ display: 'flex' }} alignItems={'center'} justifyContent={'center'} pb={1}>
       {display}
