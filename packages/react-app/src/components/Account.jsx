@@ -184,22 +184,6 @@ export default function Account({ minimized }) {
   }
 
   useEffect(() => {
-    if (window.ethereum !== undefined) {
-      window.ethereum.on('connect', connectInfo => {
-        if (window.ethereum.isConnected()) {
-          // setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
-        }
-      })
-      return () => {
-        if (window.ethereum !== undefined) {
-          // @ts-ignore
-          window.ethereum.removeAllListeners('connect')
-        }
-      }
-    }
-  }, [])
-
-  useEffect(() => {
     console.log({ injectedProvider })
   }, [injectedProvider])
 
