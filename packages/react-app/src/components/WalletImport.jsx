@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 
 import { Button, Input } from "antd";
 import Address from "./Address";
-import QRPunkBlockie from "./QRPunkBlockie";
 
 export default function WalletImport({setShowImport}) {
 	const [importMnemonic, setImportMnemonic] = useState();
@@ -81,9 +80,6 @@ export default function WalletImport({setShowImport}) {
 		      <div style={{float:"right",marginTop:64}}>
 		        <Address value={importAddress}/>
 		      </div>
-		      <div style={{ position:"relative", top:-100, left:-100}}>
-		      	<QRPunkBlockie withQr={false} address={importAddress} />
-					</div>
 					<hr/>
 				</div>
 				:""

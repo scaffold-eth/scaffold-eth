@@ -9,7 +9,6 @@ import Address from "./Address";
 import AddressInput from "./AddressInput";
 import Balance from "./Balance";
 import EtherInput from "./EtherInput";
-import QRPunkBlockie from "./QRPunkBlockie";
 import WalletImport from "./WalletImport";
 
 const { Text, Paragraph } = Typography;
@@ -194,6 +193,15 @@ export default function Wallet(props) {
               </Text>
             </div>
 
+            <br/>
+            <i>
+              Point your camera phone at qr code to open in &nbsp;
+              <a target="_blank" href={fullLink} rel="noopener noreferrer">
+                 Punk Wallet
+              </a>
+              :
+            </i>
+
             <div
               style={{ cursor: "pointer" }}
               onClick={() => {
@@ -206,30 +214,13 @@ export default function Wallet(props) {
                 message.success(<span style={{ position: "relative" }}>Copied Private Key Link</span>);
               }}
             >
-              <div style={{position:"relative",top:34,left:-11}}>
-                <QRPunkBlockie withQr={false} address={selectedAddress} />
-              </div>
-
               <QR
                 value={fullLink}
                 size="450"
                 level="H"
                 includeMargin
                 renderAs="svg"
-                imageSettings={{ excavate: true,width:105,height:105 /*, src: "https://punkwallet.io/punk.png",*/}}
               />
-              <div style={{position:"relative",top:-285,left:172}}>
-                🔑
-              </div>
-              <div style={{position:"relative",top:-305,left:266}}>
-                🔑
-              </div>
-              <div style={{position:"relative",top:-244,left:172}}>
-                🔑
-              </div>
-              <div style={{position:"relative",top:-265,left:262}}>
-                🔑
-              </div>
           </div>
 
         </div>

@@ -11,7 +11,6 @@ export { default as Faucet } from "./Faucet";
 export { default as GasGauge } from "./GasGauge";
 export { default as Header } from "./Header";
 export { default as Provider } from "./Provider";
-export { default as QRPunkBlockie } from "./QRPunkBlockie";
 export { default as Ramp } from "./Ramp";
 export { default as Swap } from "./Swap";
 export { default as ThemeSwitch } from "./ThemeSwitch";
