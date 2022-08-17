@@ -12,7 +12,7 @@ export default function Navbar(props) {
       <Box sx={{ flexGrow: 1, marginBottom: 3 }}>
         <AppBar color="inherit" elevation={1}>
           <Toolbar>
-            <Logo />
+            <Logo showLogoText={true} />
             <MenuItems tabValue={tabValue} setTabValue={setTabValue} />
             <Account minimized={enableButton} />
           </Toolbar>

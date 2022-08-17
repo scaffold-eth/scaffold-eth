@@ -143,7 +143,7 @@ export default function BrowseBadges() {
 
   return (
     <>
-      <Box sx={{ paddingTop: '76px' }}>
+      <Box sx={{ paddingTop: '76px' }} mb={48}>
         {/*
         ⚙️ Here is an example UI that displays and sets the purpose in your smart contract:
       */}
