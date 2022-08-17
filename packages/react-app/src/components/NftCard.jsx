@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Box, Button, Card, CardActions, CardMedia, CardContent, Typography } from '@mui/material'
 import InfoIcon from '@mui/icons-material/Info'
 import { ethers } from 'ethers'
@@ -12,25 +12,34 @@ export const toBase58 = contentHash => {
 
 export default function NftCard(props) {
   const { contract, mainnet, to, id, transactionHash, etherscan } = props
-  const [ state, setState ] = useState({
+  const [state, setState] = useState({
     data: {},
     title: '',
     src: '',
-    txLink: ''
+    txLink: '',
   })
+  const run = useCallback(async () => {
+    let data = await contract.tokensData(ethers.BigNumber.from(id === '0x' ? '0x0' : id))
+    let toFormatted = ethers.utils.hexStripZeros(to)
+    const name = await mainnet.lookupAddress(toFormatted)
+    let title = name ? name : toFormatted
+
+    const src = 'https://remix-project.mypinata.cloud/ipfs/' + toBase58(data.hash)
+    const txLink = etherscan + transactionHash
+
+    setState({ data, title, src, txLink })
+  }, [contract, etherscan, id, mainnet, to, transactionHash])
+
   useEffect(() => {
-    (async () => {
-      let data = await contract.tokensData(ethers.BigNumber.from(id === '0x' ? '0x0' : id))
-      let toFormatted = ethers.utils.hexStripZeros(to)
-      const name = await mainnet.lookupAddress(toFormatted)
-      let title = name ? name : toFormatted
-
-      const src = 'https://remix-project.mypinata.cloud/ipfs/' + toBase58(data.hash)
-      const txLink = etherscan + transactionHash      
-
-      setState({ data, title, src, txLink })
-    })()
-  }, [])
+    try {
+      run()
+      return () => {
+        run()
+      }
+    } catch (error) {
+      console.log({ error })
+    }
+  }, [run])
   return (
     <>
       <Box

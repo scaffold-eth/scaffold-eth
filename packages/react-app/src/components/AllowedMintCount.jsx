@@ -2,36 +2,86 @@ import Typography from '@mui/material/Typography'
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { ethers } from 'ethers'
 import { BadgeContext } from 'contexts/BadgeContext'
+import externalContracts from 'contracts/external_contracts'
+import { getCurrentChainId } from 'helpers/SwitchToOptimism'
 
 export default function AllowedMintCount() {
   // @ts-ignore
-  const { contractRef, injectedProvider, connectedAddress } = useContext(BadgeContext)
+  const { localProvider, connectedAddress } = useContext(BadgeContext)
   /*
    * this returns the number of user badge that the selected account is allowed to mint.
    * this function throws an error if the current network selected in the injected provider (metamask) is not optimism (chain id of optimism is 10)
    */
-  const allowedMinting = useCallback(async () => {
-    let contract = new ethers.Contract(contractRef.address, contractRef.abi, injectedProvider)
-    return contract.allowedMinting(connectedAddress)
-  }, [connectedAddress, contractRef.abi, contractRef.address, injectedProvider])
+  const allowedMinting = useCallback(async (contractReference, provider, address) => {
+    try {
+      let contract = new ethers.Contract(contractReference.address, contractReference.abi, provider)
+      return await contract.allowedMinting(address)
+    } catch (error) {
+      console.error(error)
+    }
+  }, [])
   const [mintCount, setMintCount] = useState('0')
 
   useEffect(() => {
-    if (injectedProvider === undefined || connectedAddress === undefined) {
-      console.log('Not connected to metamask or the blockchain!')
-      return
-    }
+    if (localProvider === undefined || connectedAddress === undefined) return
     const run = async () => {
-      // @ts-ignore
-      const result = (await allowedMinting()).toString()
-      console.log({ result })
-      setMintCount(result)
+      try {
+        const chainInfo = await getCurrentChainId()
+        if (chainInfo[0].chainId === 5) {
+          const contractReference = externalContracts['5'].contracts.REMIX_REWARD
+          const result = await allowedMinting(contractReference, localProvider, connectedAddress)
+          if (ethers.BigNumber.isBigNumber(result)) {
+            const final = ethers.BigNumber.from(result).toNumber().toString()
+            console.log({ final })
+            setMintCount(final)
+            return
+          }
+        }
+        if (chainInfo[0].chainId === 10) {
+          const contractReference = externalContracts['10'].contracts.REMIX_REWARD
+          const result = await allowedMinting(contractReference, localProvider, connectedAddress)
+          if (ethers.BigNumber.isBigNumber(result)) {
+            const final = ethers.BigNumber.from(result).toNumber().toString()
+            console.log({ final })
+            setMintCount(final)
+            return
+          }
+        }
+      } catch (error) {
+        console.log(`An error was caught in AllowedMintCount. See the details below`)
+        console.log({ error })
+      }
     }
     run()
     return () => {
-      console.log('cleaned up!')
+      run()
     }
-  }, [allowedMinting, connectedAddress, injectedProvider])
+  }, [allowedMinting, connectedAddress, localProvider])
+
+  useEffect(() => {
+    if (window.ethereum === undefined) return
+    const goerliContractReference = externalContracts['5'].contracts.REMIX_REWARD
+    const optimismContractReference = externalContracts['10'].contracts.REMIX_REWARD
+    let result
+    ;(async () => {
+      const chainInfo = await getCurrentChainId()
+      try {
+        if (chainInfo[0].chainId !== 5 || chainInfo[0].chainId !== 10) return
+        if (chainInfo[0].chainId === 5) {
+          result = ethers.BigNumber.from(
+            await allowedMinting(goerliContractReference, localProvider, connectedAddress),
+          ).toNumber()
+        }
+        if (chainInfo[0].chainId === 10) {
+          result = ethers.BigNumber.from(
+            await allowedMinting(optimismContractReference, localProvider, connectedAddress),
+          ).toNumber()
+        }
+        if (parseInt(mintCount) === result) return
+        setMintCount(result.toString())
+      } catch (error) {}
+    })()
+  }, [allowedMinting, connectedAddress, localProvider, mintCount])
 
   return (
     <>

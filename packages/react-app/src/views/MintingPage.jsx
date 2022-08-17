@@ -1,46 +1,59 @@
-// @ts-nocheck
+import React, { useReducer, useState, useContext, useEffect } from 'react'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import MintingPageCard from '../components/MintingPageCard'
-import { useContext, useState } from 'react'
 import MintingActions from 'components/MintingActions'
 import Account from 'components/Account'
 import { BadgeContext } from 'contexts/BadgeContext'
-import { switchToOptimism } from 'helpers/SwitchToOptimism'
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
+import externalContracts from 'contracts/external_contracts'
+const { ethers } = require('ethers')
+
+const APPSTATEACTION = {
+  GOERLICHAINID: '5',
+  OPTIMISMCHAINID: '10',
+}
+
+const defaultState = {
+  chainId: '5',
+  contractRef: externalContracts['5'].contracts.REMIX_REWARD,
+}
+
+function appStateReducer(state, actionType) {
+  switch (actionType.type) {
+    case '10':
+      const optimism = {
+        chainid: '10',
+        contractRef: externalContracts['10'].contracts.REMIX_REWARD,
+      }
+      return optimism
+    case '5':
+      const goerli = {
+        chainid: '1',
+        contractRef: externalContracts['1'].contracts.REMIX_REWARD,
+      }
+      return goerli
+    default:
+      throw new Error('The network selected is not supported!')
+  }
+}
 
 export default function MintingPage() {
-  const { contractRef, userSigner } = useContext(BadgeContext)
+  // @ts-ignore
+  const { injectedProvider, setConnectedAddress } = useContext(BadgeContext)
+  // @ts-ignore
+  const [appState, appDispatch] = useReducer(appStateReducer, defaultState)
 
-  const [enableButton, disableButton] = useState(false)
   const theme = useTheme()
   const mobile400 = useMediaQuery(theme.breakpoints.between('sm', 'md'))
   const mobile240 = useMediaQuery(theme.breakpoints.between('xs', 'sm'))
   const mobile900 = useMediaQuery('(min-width:900px)')
   const mobileResponsiveMatch = useMediaQuery('(min-width:600px)')
 
-  // console.log({ mobileResponsiveMatch, now: new Date() })
-  // console.log({ mobile400, mobile240, mobile900 })
-  async function doOptimismSwitch() {
-    try {
-      disableButton(true)
-      await switchToOptimism()
-    } catch (error) {
-      console.log({ error })
-    }
-  }
-
   return (
     <>
       <Box pt="76px" mb={20}>
-        <Account
-          // @ts-ignore
-          userSigner={userSigner}
-          doOptimismSwitch={doOptimismSwitch}
-          enableButton={enableButton}
-          disableButton={disableButton}
-        />
         <Box mb={10} sx={{ textAlign: 'left', padding: '10px', color: '#007aa6', marginLeft: 5, marginBottom: 5 }}>
           <Typography
             textAlign={'left'}
@@ -73,7 +86,9 @@ export default function MintingPage() {
             <a href="https://app.hop.exchange/#/send?sourceNetwork=optimism&destNetwork=ethereum&token=ETH">
               Hop Exchange
             </a>
-            Execution this transaction will cost you approximately 253,679 gas
+            {'.'}
+            <br />
+            Execution of this transaction will cost you approximately 253,679 gas.
           </Typography>
         </Box>
       </Box>
@@ -87,7 +102,7 @@ export default function MintingPage() {
           <MintingPageCard
             top={mobile900 ? -15 : mobileResponsiveMatch ? -16 : mobile400 ? -25 : mobile240 ? -14 : -15}
           />
-          <MintingActions contractRef={contractRef} />
+          <MintingActions contractRef={appState.contractRef} />
         </Box>
       </Box>
     </>

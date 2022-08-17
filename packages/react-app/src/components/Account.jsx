@@ -1,14 +1,25 @@
-// @ts-nocheck
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import Address from './Address'
-import Balance from './Balance'
 import Box from '@mui/material/Box'
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip'
 import { styled } from '@mui/material/styles'
 import { BadgeContext } from 'contexts/BadgeContext'
-import { getCurrentChainId } from 'helpers/SwitchToOptimism'
+import {
+  getCurrentChainId,
+  switchToGoerli,
+  externalParams,
+  switchChain,
+  switchToOptimism,
+} from 'helpers/SwitchToOptimism'
+// @ts-ignore
+import { ethers } from 'ethers'
+import { lightGreen } from '@mui/material/colors'
+import Toast from './Toast'
+import IconButton from '@mui/material/IconButton'
+import CloseIcon from '@mui/icons-material/Close'
+import { useQuery } from '@tanstack/react-query'
 
 /** 
   ~ What it does? ~
@@ -58,58 +69,197 @@ const MetaMaskTooltip = styled(({ className, ...props }) => <Tooltip {...props} 
   }),
 )
 
+const ConnectedButton = ({ handleConnection, connectedAddress, accountButtonConnected, accountButtonInfo }) => {
+  const hoveredGreen = lightGreen['800']
+  return (
+    <MetaMaskTooltip
+      title="This connection requires MetaMask. By clicking here, you accept a connection to Metamask"
+      placement="bottom"
+    >
+      <Button
+        variant={'contained'}
+        sx={{
+          borderRadius: 3,
+          padding: 1.2,
+          marginLeft: 3,
+          background: 'rgb(255,165,0)',
+          ':hover': {
+            background: hoveredGreen,
+          },
+        }}
+        onClick={handleConnection}
+        size={'small'}
+      >
+        <Typography variant={'button'} fontWeight={'bolder'}>
+          {
+            // @ts-ignore
+            connectedAddress && connectedAddress.length > 1 ? accountButtonConnected : accountButtonInfo.name
+          }
+        </Typography>
+      </Button>
+    </MetaMaskTooltip>
+  )
+}
+
 // @ts-ignore
-export default function Account({ minimized, disableOptimismButton, doOptimismSwitch, disableButton, enableButton }) {
-  const { localProvider, mainnet, loadWeb3Modal, price, targetNetwork, connectedAddress } = useContext(BadgeContext)
+// @ts-ignore
+export default function Account({ minimized }) {
+  const {
+    // @ts-ignore
+    injectedProvider,
+    // @ts-ignore
+    setInjectedProvider,
+    // @ts-ignore
+    mainnet,
+    // @ts-ignore
+    loadWeb3Modal,
+    // @ts-ignore
+    targetNetwork,
+    // @ts-ignore
+    setShowToast,
+    // @ts-ignore
+    connectedAddress,
+    // @ts-ignore
+    setConnectedAddress,
+    // @ts-ignore
+    selectedChainId,
+    // @ts-ignore
+    setShowWrongNetworkToast,
+    // @ts-ignore
+    closeWrongNetworkToast,
+    // @ts-ignore
+    showWrongNetworkToast,
+  } = useContext(BadgeContext)
   let accountButtonInfo
   accountButtonInfo = { name: 'Connect to Mint', action: loadWeb3Modal }
   const accountButtonConnected = 'Connected'
+  // eslint-disable-next-line no-unused-vars
   const [netInfo, setNetInfo] = useState([])
-  console.log({ connectedAddress })
-
   const display = !minimized && (
     <Box>
-      {connectedAddress && connectedAddress.length > 1 ? (
-        <Address
-          address={connectedAddress}
-          ensProvider={mainnet}
-          blockExplorer={targetNetwork.blockExplorer}
-          fontSize={20}
-        />
-      ) : (
-        <Typography variant="subtitle1" fontWeight={500} mb={3} sx={{ color: '#333333' }} component={'span'}>
-          There is no address connected to this wallet! Click the button to connect and view your wallet!
-        </Typography>
-      )}
-      <Balance
-        address={
-          // @ts-ignore
-          connectedAddress
-        }
-        provider={localProvider}
-        price={price}
-        size={20}
-      />
+      {
+        connectedAddress && connectedAddress.length > 1 ? (
+          <Address
+            address={connectedAddress}
+            ensProvider={mainnet}
+            blockExplorer={targetNetwork.blockExplorer}
+            fontSize={16}
+          />
+        ) : null
+        // (
+        //   <Typography variant="subtitle1" fontWeight={500} mb={3} sx={{ color: '#333333' }} component={'span'}>
+        //     There is no address connected to this wallet! Click the button to connect and view your wallet!
+        //   </Typography>
+        // )
+      }
+      {/* <Balance address={connectedAddress} provider={localProvider} price={price} size={20} /> */}
     </Box>
   )
 
+  const handleConnection = async () => {
+    const chainInfo = await getCurrentChainId()
+    let accounts
+    if (!chainInfo && chainInfo === undefined) {
+      setShowToast(true)
+      return
+    }
+    const { chainId, networkId } = chainInfo[0]
+    if (chainId !== selectedChainId) {
+      setShowWrongNetworkToast(true)
+      if (chainId === 5) {
+        await window.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: ethers.utils.hexValue(externalParams[1]['chainId']) }],
+        })
+      } else if (chainId === 10) {
+        await window.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: ethers.utils.hexValue(externalParams[0]['chainId']) }],
+        })
+      }
+      // return
+    }
+    accountButtonInfo.action()
+    if (injectedProvider === null) setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
+    accounts = await window.ethereum.request({
+      method: 'eth_requestAccounts',
+    })
+    // provider = new ethers.providers.Web3Provider(window.ethereum)
+    if (chainId === 5 && networkId === 5) {
+      await switchToGoerli()
+      setConnectedAddress(accounts[0])
+      setNetInfo(chainInfo)
+      return
+    }
+    if (chainId === 10 && networkId === 10) {
+      await switchToOptimism()
+      setConnectedAddress(accounts[0])
+      setNetInfo(chainInfo)
+    }
+  }
+
+  // useEffect(() => {
+  //   if (window.ethereum !== undefined) {
+  //     window.ethereum.on('chainChanged', chainid => {
+  //       window.location.reload()
+  //     })
+  //   }
+
+  //   return () => {
+  //     if (window.ethereum !== undefined) {
+  //       window.ethereum.removeAllListeners('chainChanged')
+  //     }
+  //   }
+  // }, [])
+
+  const wrongNetworkSnackBar = (
+    <>
+      <IconButton
+        size="small"
+        aria-label="close"
+        color="inherit"
+        onClick={() => {
+          setShowWrongNetworkToast(!showWrongNetworkToast)
+        }}
+      >
+        <CloseIcon fontSize="small" />
+      </IconButton>
+    </>
+  )
+  const errorMsg = `Network not supported! Currently supported network: ${
+    selectedChainId === 5 ? 'Goerli' : selectedChainId === 10 ? 'Optimism' : ''
+  }`
+  /* SETUP TOAST FOR WRONG NETWORK */
+  const WrongNetworkToast = ({ showWrongNetworkToast, closeWrongNetworkToast, wrongNetworkSnackBar }) => {
+    return (
+      <Toast
+        showToast={showWrongNetworkToast}
+        closeToast={closeWrongNetworkToast}
+        snackBarAction={wrongNetworkSnackBar}
+        message={errorMsg}
+      />
+    )
+  }
   return (
-    <Box sx={{ display: 'flex' }} alignItems={'center'} justifyContent={'center'} pb={5}>
+    <Box sx={{ display: 'flex' }} alignItems={'center'} justifyContent={'center'} pb={1}>
       {display}
-      {
+      {window.ethereum && window.ethereum.isConnected() && connectedAddress && connectedAddress.length ? (
+        <ConnectedButton
+          accountButtonConnected={accountButtonConnected}
+          accountButtonInfo={accountButtonInfo}
+          connectedAddress={connectedAddress}
+          handleConnection={handleConnection}
+        />
+      ) : (
         <MetaMaskTooltip
           title="This connection requires MetaMask. By clicking here, you accept a connection to Metamask"
           placement="bottom"
         >
           <Button
             variant={'contained'}
-            sx={{ borderRadius: 3, marginTop: 5, padding: 1.8, marginLeft: 3, background: '#81a6f7' }}
-            onClick={async () => {
-              accountButtonInfo.action()
-              await doOptimismSwitch()
-              setNetInfo(await getCurrentChainId())
-            }}
-            size={'large'}
+            sx={{ borderRadius: 3, padding: 1.2, marginLeft: 3, background: '#81a6f7' }}
+            onClick={handleConnection}
+            size={'small'}
           >
             <Typography variant={'button'} fontWeight={'bolder'}>
               {
@@ -119,21 +269,26 @@ export default function Account({ minimized, disableOptimismButton, doOptimismSw
             </Typography>
           </Button>
         </MetaMaskTooltip>
-      }
+      )}
+      <WrongNetworkToast
+        showWrongNetworkToast={showWrongNetworkToast}
+        closeWrongNetworkToast={closeWrongNetworkToast}
+        // @ts-ignore
+        wrongNetworkSnackBar={wrongNetworkSnackBar}
+      />
 
       {netInfo && netInfo.length > 0 && connectedAddress && connectedAddress.length > 1
         ? netInfo.map(n => (
-            <Box
+            <Typography
               key={n.chainId}
               component={'span'}
-              fontSize={16}
-              pt={10}
-              ml={5}
+              variant={'caption'}
+              ml={2}
               fontWeight={600}
               color={'#ff0420'}
               alignItems={'center'}
               justifyContent={'center'}
-            >{`You are currently connected to ${n.name}`}</Box>
+            >{`You are connected to ${n.name}`}</Typography>
           ))
         : null}
     </Box>

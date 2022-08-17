@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import externalContracts from '../contracts/external_contracts'
 import { getAllRewards } from '../helpers/getAllRewards'
 
@@ -11,12 +11,12 @@ import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft'
 import { Search } from '@mui/icons-material'
 import multihash from 'multihashes'
 import { Typography } from '@mui/material'
-import { Box, Grid } from '@mui/material'
-import NftCard from '../components/NftCard'
+import Box from '@mui/material/Box'
 import { Paper } from '@mui/material'
 import { FormControl } from '@mui/material'
 import { useContext } from 'react'
 import { BadgeContext } from 'contexts/BadgeContext'
+import BadgesPaginatedSection from 'components/BadgesPaginatedSection'
 
 export const toHex = ipfsHash => {
   let buf = multihash.fromB58String(ipfsHash)
@@ -30,9 +30,10 @@ export const isHexadecimal = value => {
 // const styles
 
 export default function BrowseBadges() {
+  const [badges, setBadges] = useState([])
   const [eventBadges, setEventBadges] = useState([])
   const [error, setErrorMessage] = useState('')
-  const { localProvider, mainnet, selectedChainId, address, setAddress } = useContext(BadgeContext)
+  const { localProvider, mainnet, address, setAddress, injectedProvider, selectedChainId } = useContext(BadgeContext)
 
   let contractRef
   let providerRef
@@ -58,32 +59,39 @@ export default function BrowseBadges() {
       setErrorMessage('')
     }
     run()
-  }, [address, contractRef, localProvider, selectedChainId])
 
-  const run = async () => {
+    return () => {
+      run()
+    }
+  }, [address, selectedChainId, contractRef])
+
+  const run = useCallback(async () => {
     if (address) {
-      console.log('address o wa!')
+      console.log({ address })
       return setEventBadges([])
     }
     let badges = await getAllRewards(contractRef.address, providerRef)
-    badges = badges.map((badge) => {
+    badges = badges.map(badge => {
       return {
         id: ethers.utils.hexStripZeros(badge.topics[3]),
         to: ethers.utils.hexStripZeros(badge.topics[2]),
-        transactionHash: badge.transactionHash
+        transactionHash: badge.transactionHash,
       }
     })
     setEventBadges(badges)
-  }
-
-  useEffect(() => {    
-    run()
-  }, [])
+  }, [address, contractRef.address, providerRef])
 
   useEffect(() => {
     if (address.length > 0) return
     run()
-  }, [address])
+    return () => {
+      run()
+    }
+  }, [address, run])
+
+  function checkeventBagesAndBadges(badges) {
+    return badges && badges.length > 0
+  }
 
   async function processAddress(address) {
     setEventBadges([])
@@ -99,7 +107,7 @@ export default function BrowseBadges() {
         badges.push({
           id: tokenId,
           to: ethers.utils.hexStripZeros(address),
-          transactionHash: ''
+          transactionHash: '',
         })
       }
     } catch (error) {
@@ -111,6 +119,7 @@ export default function BrowseBadges() {
   }
 
   async function submitHandler(e) {
+    console.log('submitHandler for address search reached successfully@@!!')
     try {
       if (address) {
         if (address.includes('.eth')) {
@@ -216,49 +225,14 @@ export default function BrowseBadges() {
           ) : null}
         </Box>
       </Box>
-      <Box
-        sx={{
-          background: 'linear-gradient(90deg, #f6e8fc, #f1e6fb, #ede5fb, #e8e4fa, #e3e2f9, #dee1f7, #d9dff6, #d4def4)',
-          height: '100vh',
-        }}
-        mt={15}
-      >
-        <Grid
-          container
-          spacing={1}
-          ml={'auto'}
-          mr={'auto'}
-          mt={15}
-          paddingRight={3}
-          paddingLeft={3}
-          rowSpacing={1}
-          columnSpacing={{ xs: 1, sm: 1.3, md: 2 }}
-          sx={{
-            background:
-              'linear-gradient(90deg, #f6e8fc, #f1e6fb, #ede5fb, #e8e4fa, #e3e2f9, #dee1f7, #d9dff6, #d4def4)',
-          }}
-        >
-          {eventBadges && eventBadges.length > 0 ? (
-            eventBadges.map(event => {         
-              let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)     
-              return (
-                <Grid
-                  item
-                  mt={-12}
-                  mb={15}
-                  ml={'auto'}
-                  mr={'auto'}
-                  key={`${event.to}-${event.id}`}
-                  alignItems={'center'}
-                  justifyContent={'center'}
-                >
-                  <NftCard etherscan={etherscanRef} to={event.to} id={event.id} transactionHash={event.transactionHash} contract={contract} mainnet={mainnet} />
-                </Grid>
-              )
-            })
-          ) : null}
-        </Grid>
-      </Box>
+      <BadgesPaginatedSection
+        badges={badges}
+        checkeventBagesAndBadges={checkeventBagesAndBadges}
+        etherscanRef={etherscanRef}
+        eventBadges={eventBadges}
+        injectedProvider={injectedProvider}
+        setBadges={setBadges}
+      />
     </>
   )
 }

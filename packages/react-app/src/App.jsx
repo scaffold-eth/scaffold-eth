@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useCallback } from 'react'
-import { useUserProviderAndSigner } from 'eth-hooks'
+import React, { useCallback, useEffect, useState } from 'react'
+// import { useUserProviderAndSigner } from 'eth-hooks'
 import { useExchangeEthPrice } from 'eth-hooks/dapps/dex'
 import { NETWORKS } from './constants'
 import { Layout } from './components'
@@ -9,34 +9,48 @@ import CloseIcon from '@mui/icons-material/Close'
 import IconButton from '@mui/material/IconButton'
 import Toast from 'components/Toast'
 import { BadgeContext } from 'contexts/BadgeContext'
+import { useUserProviderAndSigner } from 'eth-hooks'
 import externalContracts from 'contracts/external_contracts'
-import { switchToOptimism } from 'helpers/SwitchToOptimism'
+import { getCurrentChainId } from 'helpers/SwitchToOptimism'
 const { ethers } = require('ethers')
 
-function App({ mainnet, localProvider, appChainId }) {
+// @ts-ignore
+function App() {
+  // @ts-ignore
+  const [localProvider, setLocalProvider] = useState(null)
+  const [injectedProvider, setInjectedProvider] = useState(null)
+  const [mainnet, setMainnet] = useState(null)
   const [loaded, setLoaded] = useState(false)
-  // const [localProvider, setLocalProvider] = useState(null)
   const [connectedAddress, setConnectedAddress] = useState()
-  const [injectedProvider, setInjectedProvider] = useState()
-  // const [mainnet, setMainnet] = useState(null)
   const [address, setAddress] = useState('')
   const [tabValue, setTabValue] = useState(0)
   const [showToast, setShowToast] = useState(false)
-  const [selectedChainId] = useState(appChainId)
+  const [showWrongNetworkToast, setShowWrongNetworkToast] = useState(false)
+  const [selectedChainId] = useState(5)
   const contractConfig = { deployedContracts: {}, externalContracts: externalContracts || {} }
 
   const targetNetwork = NETWORKS['optimism']
   /* 💵 This hook will get the price of ETH from 🦄 Uniswap: */
   const price = useExchangeEthPrice(targetNetwork, mainnet)
 
+  let contractRef
+  let providerRef
+  if (
+    externalContracts[selectedChainId] &&
+    externalContracts[selectedChainId].contracts &&
+    externalContracts[selectedChainId].contracts.REMIX_REWARD
+  ) {
+    contractRef = externalContracts[selectedChainId].contracts.REMIX_REWARD
+    providerRef = externalContracts[selectedChainId].provider
+  } else {
+    console.log('kosi externalContract')
+  }
+
   const USE_BURNER_WALLET = false
-
   /* SETUP METAMASK */
-
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
   const userProviderAndSigner = useUserProviderAndSigner(injectedProvider, localProvider, USE_BURNER_WALLET)
   const userSigner = userProviderAndSigner.signer
-
   const closeToast = () => {
     setShowToast(false)
   }
@@ -44,37 +58,56 @@ function App({ mainnet, localProvider, appChainId }) {
   const displayToast = () => {
     setShowToast(true)
   }
-  let contractRef
-  if (
-    externalContracts[selectedChainId] &&
-    externalContracts[selectedChainId].contracts &&
-    externalContracts[selectedChainId].contracts.REMIX_REWARD
-  ) {
-    contractRef = externalContracts[selectedChainId].contracts.REMIX_REWARD
-  }
 
   useEffect(() => {
     async function getAddress() {
       if (userSigner) {
-        const newAddress = await userSigner.getAddress()
+        const holderForConnectedAddress = await userSigner.getAddress()
         // @ts-ignore
-        setConnectedAddress(newAddress)
-        console.log({ newAddress, userSigner })
+        setConnectedAddress(holderForConnectedAddress)
       }
     }
     getAddress()
+
+    return () => {
+      getAddress()
+    }
   }, [userSigner])
 
-  const logoutOfWeb3Modal = async () => {
-    // @ts-ignore
+  // useEffect(() => {
+  //   (async () => {
+  //     const chainInfo = await getCurrentChainId()
+  //     if (selectedChainId === chainInfo[0].chainid) return
+  //     setSelectedChainId(chainInfo[0].chainid)
+  //   })()
+  // }, [selectedChainId])
+
+  useEffect(() => {
+    const run = async () => {
+      const local = new ethers.providers.StaticJsonRpcProvider(providerRef)
+      const mainnet = new ethers.providers.StaticJsonRpcProvider(
+        'https://mainnet.infura.io/v3/1b3241e53c8d422aab3c7c0e4101de9c',
+      )
+      await local.ready
+      setLocalProvider(local)
+      setMainnet(mainnet)
+      setLoaded(true)
+    }
+    run()
+
+    return () => {
+      run()
+    }
+  }, [providerRef])
+
+  const logoutOfWeb3Modal = useCallback(async () => {
     if (injectedProvider && injectedProvider.provider && typeof injectedProvider.provider.disconnect == 'function') {
-      // @ts-ignore
       await injectedProvider.provider.disconnect()
     }
     setTimeout(() => {
       window.location.reload()
     }, 1)
-  }
+  }, [injectedProvider])
 
   const snackBarAction = (
     <>
@@ -88,77 +121,56 @@ function App({ mainnet, localProvider, appChainId }) {
     if (typeof window.ethereum === 'undefined') {
       // console.log('MetaMask is not installed!')
       displayToast()
-      // metamask not installed
       return
     }
     const provider = window.ethereum
-    // @ts-ignore
     setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
 
     provider.on('chainChanged', chainId => {
-      console.log(`chain changed to ${chainId}! updating providers`)
-      // @ts-ignore
       setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
     })
-
-    provider.on('accountsChanged', () => {
-      console.log(`account changed!`)
-      // @ts-ignore
+    provider.on('accountsChanged', accounts => {
       setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
     })
-
     // Subscribe to session disconnection
     provider.on('disconnect', (code, reason) => {
       console.log(code, reason)
       logoutOfWeb3Modal()
     })
 
-    console.log({ injectedProvider })
-    setTabValue(1)
-    // eslint-disable-next-line
-  }, [setInjectedProvider])
+    setTabValue(prev => prev)
+  }, [logoutOfWeb3Modal])
+
+  const closeWrongNetworkToast = () => {
+    setShowWrongNetworkToast(false)
+  }
 
   /* END - SETUP METAMASK */
 
-  /* SETUP MAINNET & OPTIMISM provider */
-
-  useEffect(() => {
-    const run = async () => {
-      
-      await localProvider.ready
-
-      // const mainnet = new ethers.providers.StaticJsonRpcProvider(
-      //   'https://mainnet.infura.io/v3/1b3241e53c8d422aab3c7c0e4101de9c',
-      // )
-
-      // setLocalProvider(localProvider)
-      // setMainnet(mainnet)
-      setLoaded(true)
-    }
-    run()
-  }, [localProvider.ready])
-
-  /* END - SETUP MAINNET & OPTIMISM provider */
   const contextPayload = {
     localProvider,
     mainnet,
-    injectedProvider,
     selectedChainId,
     address,
     setAddress,
     connectedAddress,
+    setConnectedAddress,
     contractConfig,
     externalContracts,
     contractRef,
-    switchToOptimism,
     price,
-    targetNetwork,
+    injectedProvider,
+    setInjectedProvider,
     loadWeb3Modal,
     logoutOfWeb3Modal,
+    setShowToast,
+    closeWrongNetworkToast,
+    showWrongNetworkToast,
+    setShowWrongNetworkToast,
+    targetNetwork,
     userSigner,
   }
 
-  console.log({ injectedProvider, contractRef, connectedAddress, userSigner })
   return (
     <div className="App">
       <BadgeContext.Provider value={contextPayload}>
@@ -170,10 +182,19 @@ function App({ mainnet, localProvider, appChainId }) {
               // @ts-ignore
               tabValue={tabValue}
               setTabValue={setTabValue}
+              loadWeb3Modal={loadWeb3Modal}
+              connectedAddress={connectedAddress}
+              setConnectedAddress={setConnectedAddress}
               injectedProvider={injectedProvider}
+              logoutOfWeb3Modal={logoutOfWeb3Modal}
             />
           )}
-          <Toast showToast={showToast} closeToast={closeToast} snackBarAction={snackBarAction} />
+          <Toast
+            showToast={showToast}
+            closeToast={closeToast}
+            snackBarAction={snackBarAction}
+            message={'MetaMask is not installed!'}
+          />
         </Layout>
       </BadgeContext.Provider>
     </div>

@@ -6,6 +6,7 @@ export default function AddressedCard({ badges }) {
   return (
     <>
       <Box
+        key={new Date().toISOString()}
         sx={{
           position: 'relative',
           background:
