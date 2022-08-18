@@ -1,4 +1,4 @@
-import { Button, Modal, Spin, Tooltip, Typography } from "antd";
+import { Button, message,  Modal, Spin, Tooltip, Typography } from "antd";
 import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import { KeyOutlined, QrcodeOutlined, SendOutlined, WalletOutlined } from "@ant-design/icons";
@@ -9,6 +9,7 @@ import Address from "./Address";
 import AddressInput from "./AddressInput";
 import Balance from "./Balance";
 import EtherInput from "./EtherInput";
+import WalletImport from "./WalletImport";
 
 const { Text, Paragraph } = Typography;
 
@@ -60,6 +61,8 @@ export default function Wallet(props) {
   const [toAddress, setToAddress] = useState();
   const [pk, setPK] = useState();
 
+  const [showImport, setShowImport] = useState();
+
   const providerSend = props.provider ? (
     <Tooltip title="Wallet">
       <WalletOutlined
@@ -78,6 +81,17 @@ export default function Wallet(props) {
     </Tooltip>
   ) : (
     ""
+  );
+
+  const showImportButton = (
+    <Button
+      style={{ marginTop: 16 }}
+      onClick={() => {
+        setShowImport(true)
+      }}
+    >
+      <span style={{ marginRight: 8 }}>💾</span>Import
+    </Button>
   );
 
   let display;
@@ -160,35 +174,56 @@ export default function Wallet(props) {
         }
       }
 
+      const fullLink = "https://punkwallet.io/pk#" + pk
+
       display = (
         <div>
-          <b>Private Key:</b>
-
           <div>
-            <Text copyable>{pk}</Text>
+            <b>Private Key:</b>
+            <div>
+              <Text style={{ fontSize: 11 }} copyable>
+                {pk}
+              </Text>
+            </div>
+
+            <div style={{marginTop:16}}>
+              <div><b>Punk Wallet:</b></div>
+              <Text style={{ fontSize: 11 }} copyable>
+                {fullLink}
+              </Text>
+            </div>
+
+            <br/>
+            <i>
+              Point your camera phone at qr code to open in &nbsp;
+              <a target="_blank" href={fullLink} rel="noopener noreferrer">
+                 Punk Wallet
+              </a>
+              :
+            </i>
+
+            <div
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                const el = document.createElement("textarea");
+                el.value = fullLink;
+                document.body.appendChild(el);
+                el.select();
+                document.execCommand("copy");
+                document.body.removeChild(el);
+                message.success(<span style={{ position: "relative" }}>Copied Private Key Link</span>);
+              }}
+            >
+              <QR
+                value={fullLink}
+                size="450"
+                level="H"
+                includeMargin
+                renderAs="svg"
+              />
           </div>
 
-          <hr />
-
-          <i>
-            Point your camera phone at qr code to open in
-            <a target="_blank" href={"https://xdai.io/" + pk} rel="noopener noreferrer">
-              burner wallet
-            </a>
-            :
-          </i>
-          <QR
-            value={"https://xdai.io/" + pk}
-            size="450"
-            level="H"
-            includeMargin
-            renderAs="svg"
-            imageSettings={{ excavate: false }}
-          />
-
-          <Paragraph style={{ fontSize: "16" }} copyable>
-            {"https://xdai.io/" + pk}
-          </Paragraph>
+        </div>
 
           {extraPkDisplay ? (
             <div>
@@ -312,7 +347,8 @@ export default function Wallet(props) {
           setPK();
           setOpen(!open);
         }}
-        footer={[
+        footer={showImport ? null :[
+          showImportButton,
           privateKeyButton,
           receiveButton,
           <Button
@@ -343,7 +379,13 @@ export default function Wallet(props) {
           </Button>,
         ]}
       >
-        {display}
+        {
+          showImport ?
+            <WalletImport
+              setShowImport={setShowImport}
+            />
+          : display
+        }
       </Modal>
     </span>
   );
