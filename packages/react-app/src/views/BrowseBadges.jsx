@@ -225,14 +225,14 @@ export default function BrowseBadges() {
           ) : null}
         </Box>
       </Box>
-      <BadgesPaginatedSection
+      {/* <BadgesPaginatedSection
         badges={badges}
         checkeventBagesAndBadges={checkeventBagesAndBadges}
         etherscanRef={etherscanRef}
         eventBadges={eventBadges}
         injectedProvider={injectedProvider}
         setBadges={setBadges}
-      />
+      /> */}
     </>
   )
 }

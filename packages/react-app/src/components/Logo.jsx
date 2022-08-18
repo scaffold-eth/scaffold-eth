@@ -1,11 +1,11 @@
-import React, { useReducer, useState } from 'react'
+import React, { useState } from 'react'
 import { Box, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles({
   logo: {
-    fill: '#81a6f7',
-    width: '35px',
+    fill: '#2F6DF2',
+    width: '55px',
     float: 'left',
     marginRight: 5,
   },

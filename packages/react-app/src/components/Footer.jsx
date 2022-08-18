@@ -1,35 +1,40 @@
 import Box from '@mui/material/Box'
-import Paper from '@mui/material/Paper'
 import Typography from '@mui/material/Typography'
 import Logo from './Logo'
 
+const footerCategories = {
+  PRODUCTS: ['Online IDE', 'Desktop App', 'Ethereum Remix', 'RemixD'],
+  GITHUB: ['Solidity', 'Remix', 'Plugins'],
+  CONTACT: ['Remix', 'Remix IDE', 'Plugins', 'Libraries'],
+}
+
 function Footer() {
   return (
-    <>
-      <Paper
-        style={{
-          position: 'sticky',
-          bottom: 0,
-          border: '2px solid #fff',
-          background: '#f8f9fa!',
-          color: '#ccc',
-          width: '100vw',
-          height: 192,
-          display: 'flex',
-          justifyContent: 'space-between',
-        }}
-      >
+    // <>
+    <Box component={'footer'}>
+      <Box  display={'flex'} justifyContent={'space-between'}>
         <Box>
-          <Logo showLogoText={false} />
+        <Logo showLogoText={false} />
+      </Box>
+      {Object.keys(footerCategories).map(category => (
+        <Box display={'flex'} flexDirection={'column'} justifyContent={'left'}>
+          <Typography variant={'h6'} color={'#666666'} sx={{ textAlign: 'left' }}>
+            {category}
+          </Typography>
+          {footerCategories[category].map(chilrn => (
+            <>
+              <Typography variant={'h6'} color={'#333333'} sx={{ textAlign: 'left' }}>
+                {chilrn}
+              </Typography>
+            </>
+          ))}
         </Box>
-        <Box>
-          <Typography sx={{ color: 'whitesmoke' }}>Docs</Typography>
-        </Box>
-        <Box></Box>
-        <Box></Box>
-        <Box></Box>
-      </Paper>
-    </>
+      ))}
+      </Box>
+      <Box borderTop={'1px solid #ccc'} display={'block'}>
+        <Typography variant={'subtitle2'}>2022 Remix. All rights reserved.</Typography>
+      </Box>
+    </Box>
   )
 }
 

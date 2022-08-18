@@ -56,7 +56,7 @@ export default function BadgesPaginatedSection({
       <Box
         sx={{
           background: 'linear-gradient(90deg, #f6e8fc, #f1e6fb, #ede5fb, #e8e4fa, #e3e2f9, #dee1f7, #d9dff6, #d4def4)',
-          height: '60vh',
+          height: '100vh',
         }}
         mt={15}
       >
@@ -66,7 +66,7 @@ export default function BadgesPaginatedSection({
           ml={'auto'}
           mr={'auto'}
           mt={15}
-          mb={40}
+          // mb={40}
           paddingRight={3}
           paddingLeft={3}
           rowSpacing={1}
