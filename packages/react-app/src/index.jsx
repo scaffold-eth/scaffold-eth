@@ -24,14 +24,14 @@ const apolloClient = new ApolloClient({
 });
 
 ReactDOM.render(
-  <WagmiConfig client={client}>
-    <ApolloProvider client={apolloClient}>
-      <ThemeSwitcherProvider themeMap={themes} defaultTheme={prevTheme || "light"}>
+  <ApolloProvider client={apolloClient}>
+    <ThemeSwitcherProvider themeMap={themes} defaultTheme={prevTheme || "light"}>
+      <WagmiConfig client={client}>
         <BrowserRouter>
           <App subgraphUri={subgraphUri} />
         </BrowserRouter>
-      </ThemeSwitcherProvider>
-    </ApolloProvider>
-  </WagmiConfig>,
+      </WagmiConfig>
+    </ThemeSwitcherProvider>
+  </ApolloProvider>,
   document.getElementById("root"),
 );
