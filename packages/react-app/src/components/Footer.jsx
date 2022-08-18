@@ -12,26 +12,26 @@ function Footer() {
   return (
     // <>
     <Box component={'footer'}>
-      <Box  display={'flex'} justifyContent={'space-between'}>
+      <Box display={'flex'} justifyContent={'space-between'}>
         <Box>
-        <Logo showLogoText={false} />
-      </Box>
-      {Object.keys(footerCategories).map(category => (
-        <Box display={'flex'} flexDirection={'column'} justifyContent={'left'}>
-          <Typography variant={'h6'} color={'#666666'} sx={{ textAlign: 'left' }}>
-            {category}
-          </Typography>
-          {footerCategories[category].map(chilrn => (
-            <>
-              <Typography variant={'h6'} color={'#333333'} sx={{ textAlign: 'left' }}>
-                {chilrn}
-              </Typography>
-            </>
-          ))}
+          <Logo showLogoText={false} />
         </Box>
-      ))}
+        {Object.keys(footerCategories).map(category => (
+          <Box display={'flex'} flexDirection={'column'} justifyContent={'left'}>
+            <Typography variant={'subtitle1'} color={'#666666'} sx={{ textAlign: 'left' }}>
+              {category}
+            </Typography>
+            {footerCategories[category].map(chilrn => (
+              <>
+                <Typography variant={'subtitle2'} color={'#333333'} sx={{ textAlign: 'left' }}>
+                  {chilrn}
+                </Typography>
+              </>
+            ))}
+          </Box>
+        ))}
       </Box>
-      <Box borderTop={'1px solid #ccc'} display={'block'}>
+      <Box borderTop={'1px solid #ccc'} display={'block'} sx={{ marginTop: 5 }}>
         <Typography variant={'subtitle2'}>2022 Remix. All rights reserved.</Typography>
       </Box>
     </Box>
