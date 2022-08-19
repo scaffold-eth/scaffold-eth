@@ -119,7 +119,6 @@ function App() {
 
   const loadWeb3Modal = useCallback(async () => {
     if (typeof window.ethereum === 'undefined') {
-      // console.log('MetaMask is not installed!')
       displayToast()
       return
     }

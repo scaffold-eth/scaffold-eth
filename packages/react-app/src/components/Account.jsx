@@ -6,20 +6,13 @@ import Box from '@mui/material/Box'
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip'
 import { styled } from '@mui/material/styles'
 import { BadgeContext } from 'contexts/BadgeContext'
-import {
-  getCurrentChainId,
-  switchToGoerli,
-  externalParams,
-  switchChain,
-  switchToOptimism,
-} from 'helpers/SwitchToOptimism'
+import { getCurrentChainId, switchToGoerli, externalParams, switchToOptimism } from 'helpers/SwitchToOptimism'
 // @ts-ignore
 import { ethers } from 'ethers'
 import { lightGreen } from '@mui/material/colors'
 import Toast from './Toast'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
-import { useQuery } from '@tanstack/react-query'
 
 /** 
   ~ What it does? ~
@@ -137,32 +130,24 @@ export default function Account({ minimized }) {
   const [netInfo, setNetInfo] = useState([])
   const display = !minimized && (
     <Box>
-      {
-        connectedAddress && connectedAddress.length > 1 ? (
-          <Address
-            address={connectedAddress}
-            ensProvider={mainnet}
-            blockExplorer={targetNetwork.blockExplorer}
-            fontSize={16}
-          />
-        ) : null
-        // (
-        //   <Typography variant="subtitle1" fontWeight={500} mb={3} sx={{ color: '#333333' }} component={'span'}>
-        //     There is no address connected to this wallet! Click the button to connect and view your wallet!
-        //   </Typography>
-        // )
-      }
-      {/* <Balance address={connectedAddress} provider={localProvider} price={price} size={20} /> */}
+      {connectedAddress && connectedAddress.length > 1 ? (
+        <Address
+          address={connectedAddress}
+          ensProvider={mainnet}
+          blockExplorer={targetNetwork.blockExplorer}
+          fontSize={16}
+        />
+      ) : null}
     </Box>
   )
 
   const handleConnection = async () => {
-    const chainInfo = await getCurrentChainId()
     let accounts
-    if (!chainInfo && chainInfo === undefined) {
+    if (window.ethereum === undefined) {
       setShowToast(true)
       return
     }
+    const chainInfo = await getCurrentChainId()
     const { chainId, networkId } = chainInfo[0]
     if (chainId !== selectedChainId) {
       setShowWrongNetworkToast(true)
@@ -177,14 +162,12 @@ export default function Account({ minimized }) {
           params: [{ chainId: ethers.utils.hexValue(externalParams[0]['chainId']) }],
         })
       }
-      // return
     }
     accountButtonInfo.action()
     if (injectedProvider === null) setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
     accounts = await window.ethereum.request({
       method: 'eth_requestAccounts',
     })
-    // provider = new ethers.providers.Web3Provider(window.ethereum)
     if (chainId === 5 && networkId === 5) {
       await switchToGoerli()
       setConnectedAddress(accounts[0])
@@ -197,20 +180,6 @@ export default function Account({ minimized }) {
       setNetInfo(chainInfo)
     }
   }
-
-  // useEffect(() => {
-  //   if (window.ethereum !== undefined) {
-  //     window.ethereum.on('chainChanged', chainid => {
-  //       window.location.reload()
-  //     })
-  //   }
-
-  //   return () => {
-  //     if (window.ethereum !== undefined) {
-  //       window.ethereum.removeAllListeners('chainChanged')
-  //     }
-  //   }
-  // }, [])
 
   const wrongNetworkSnackBar = (
     <>
