@@ -13,6 +13,7 @@ import { lightGreen } from '@mui/material/colors'
 import Toast from './Toast'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
+import { useQuery } from '@tanstack/react-query'
 
 /** 
   ~ What it does? ~
@@ -94,6 +95,13 @@ const ConnectedButton = ({ handleConnection, connectedAddress, accountButtonConn
   )
 }
 
+async function addEthereumWalletChain(paramsArray) {
+  return await window.ethereum.request({
+    method: 'wallet_addEthereumChain',
+    params: paramsArray,
+  })
+}
+
 // @ts-ignore
 // @ts-ignore
 export default function Account({ minimized }) {
@@ -128,6 +136,8 @@ export default function Account({ minimized }) {
   const accountButtonConnected = 'Connected'
   // eslint-disable-next-line no-unused-vars
   const [netInfo, setNetInfo] = useState([])
+  const [chainChanged, setChainChanged] = useState(false)
+  const { } = useQuery(['addEthChainToWallet', addEthereumWalletChain])
   const display = !minimized && (
     <Box>
       {connectedAddress && connectedAddress.length > 1 ? (
@@ -180,6 +190,12 @@ export default function Account({ minimized }) {
       setNetInfo(chainInfo)
     }
   }
+
+  useEffect(() => {
+    window.ethereum.on('chainChanged', () => {
+      setChainChanged(true)
+    })
+  }, [])
 
   const wrongNetworkSnackBar = (
     <>

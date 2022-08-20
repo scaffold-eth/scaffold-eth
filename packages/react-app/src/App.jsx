@@ -11,8 +11,26 @@ import Toast from 'components/Toast'
 import { BadgeContext } from 'contexts/BadgeContext'
 import { useUserProviderAndSigner } from 'eth-hooks'
 import externalContracts from 'contracts/external_contracts'
-import { getCurrentChainId } from 'helpers/SwitchToOptimism'
 const { ethers } = require('ethers')
+
+export const supportedNetworks = [
+  {
+    optimism: {
+      name: 'optimism',
+      color: '#f01a37',
+      chainId: 10,
+      blockExplorer: 'https://optimistic.etherscan.io/',
+      rpcUrl: ['https://opt-mainnet.g.alchemy.com/v2/cdGnPX6sQLXv-YWkbzYAXnTVVfuL8fhb', 'https://mainnet.optimism.io'],
+    },
+    goerli: {
+      name: 'goerli',
+      color: '#0975F6',
+      chainId: 5,
+      blockExplorer: 'https://goerli.etherscan.io/',
+      rpcUrl: ['https://eth-goerli.g.alchemy.com/v2/1fpzjlzdaT-hFeeTXFY-yzM-WujQLfEl', '']
+    },
+  },
+]
 
 // @ts-ignore
 function App() {
@@ -73,14 +91,6 @@ function App() {
       getAddress()
     }
   }, [userSigner])
-
-  // useEffect(() => {
-  //   (async () => {
-  //     const chainInfo = await getCurrentChainId()
-  //     if (selectedChainId === chainInfo[0].chainid) return
-  //     setSelectedChainId(chainInfo[0].chainid)
-  //   })()
-  // }, [selectedChainId])
 
   useEffect(() => {
     const run = async () => {
