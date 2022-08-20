@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import Address from './Address'
@@ -9,7 +9,7 @@ import { BadgeContext } from 'contexts/BadgeContext'
 import { getCurrentChainId, switchToGoerli, externalParams, switchToOptimism } from 'helpers/SwitchToOptimism'
 // @ts-ignore
 import { ethers } from 'ethers'
-import { lightGreen } from '@mui/material/colors'
+import { deepOrange } from '@mui/material/colors'
 import Toast from './Toast'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
@@ -64,7 +64,7 @@ const MetaMaskTooltip = styled(({ className, ...props }) => <Tooltip {...props} 
 )
 
 const ConnectedButton = ({ handleConnection, connectedAddress, accountButtonConnected, accountButtonInfo }) => {
-  const hoveredGreen = lightGreen['800']
+  const hoveredGreen = deepOrange['800']
   return (
     <MetaMaskTooltip
       title="This connection requires MetaMask. By clicking here, you accept a connection to Metamask"
@@ -87,7 +87,7 @@ const ConnectedButton = ({ handleConnection, connectedAddress, accountButtonConn
         <Typography variant={'button'} fontWeight={'bolder'}>
           {
             // @ts-ignore
-            connectedAddress && connectedAddress.length > 1 ? accountButtonConnected : accountButtonInfo.name
+            connectedAddress && connectedAddress.length > 1 ? 'Disconnect' : accountButtonInfo.name
           }
         </Typography>
       </Button>
@@ -107,17 +107,11 @@ async function addEthereumWalletChain(paramsArray) {
 export default function Account({ minimized }) {
   const {
     // @ts-ignore
-    injectedProvider,
-    // @ts-ignore
-    setInjectedProvider,
-    // @ts-ignore
     mainnet,
-    // @ts-ignore
-    loadWeb3Modal,
     // @ts-ignore
     targetNetwork,
     // @ts-ignore
-    setShowToast,
+    displayToast,
     // @ts-ignore
     connectedAddress,
     // @ts-ignore
@@ -132,12 +126,45 @@ export default function Account({ minimized }) {
     showWrongNetworkToast,
   } = useContext(BadgeContext)
   let accountButtonInfo
-  accountButtonInfo = { name: 'Connect to Mint', action: loadWeb3Modal }
   const accountButtonConnected = 'Connected'
   // eslint-disable-next-line no-unused-vars
   const [netInfo, setNetInfo] = useState([])
   const [chainChanged, setChainChanged] = useState(false)
-  const { } = useQuery(['addEthChainToWallet', addEthereumWalletChain])
+  const [injectedProvider, setInjectedProvider] = useState(null)
+
+  const logoutOfWeb3Modal = useCallback(async () => {
+    if (injectedProvider && injectedProvider.provider && typeof injectedProvider.provider.disconnect == 'function') {
+      await injectedProvider.provider.disconnect()
+    }
+    setTimeout(() => {
+      window.location.reload()
+    }, 1)
+  }, [injectedProvider])
+
+  const loadWeb3Modal = useCallback(async () => {
+    if (typeof window.ethereum === 'undefined') {
+      displayToast()
+      return
+    }
+    const provider = window.ethereum
+    setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
+
+    provider.on('chainChanged', chainId => {
+      setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
+    })
+    provider.on('accountsChanged', accounts => {
+      setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
+    })
+    // Subscribe to session disconnection
+    provider.on('disconnect', (code, reason) => {
+      console.log(code, reason)
+      logoutOfWeb3Modal()
+    })
+
+    // setTabValue(prev => prev)
+  }, [logoutOfWeb3Modal])
+
+  accountButtonInfo = { name: 'Connect to Mint', action: loadWeb3Modal }
   const display = !minimized && (
     <Box>
       {connectedAddress && connectedAddress.length > 1 ? (
@@ -154,7 +181,7 @@ export default function Account({ minimized }) {
   const handleConnection = async () => {
     let accounts
     if (window.ethereum === undefined) {
-      setShowToast(true)
+      displayToast()
       return
     }
     const chainInfo = await getCurrentChainId()
@@ -192,7 +219,8 @@ export default function Account({ minimized }) {
   }
 
   useEffect(() => {
-    window.ethereum.on('chainChanged', () => {
+    window.ethereum.on('chainChanged', chainId => {
+      console.log({ chainId })
       setChainChanged(true)
     })
   }, [])
@@ -233,7 +261,7 @@ export default function Account({ minimized }) {
           accountButtonConnected={accountButtonConnected}
           accountButtonInfo={accountButtonInfo}
           connectedAddress={connectedAddress}
-          handleConnection={handleConnection}
+          handleConnection={logoutOfWeb3Modal}
         />
       ) : (
         <MetaMaskTooltip

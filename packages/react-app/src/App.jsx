@@ -36,7 +36,6 @@ export const supportedNetworks = [
 function App() {
   // @ts-ignore
   const [localProvider, setLocalProvider] = useState(null)
-  const [injectedProvider, setInjectedProvider] = useState(null)
   const [mainnet, setMainnet] = useState(null)
   const [loaded, setLoaded] = useState(false)
   const [connectedAddress, setConnectedAddress] = useState()
@@ -67,8 +66,8 @@ function App() {
   const USE_BURNER_WALLET = false
   /* SETUP METAMASK */
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
-  const userProviderAndSigner = useUserProviderAndSigner(injectedProvider, localProvider, USE_BURNER_WALLET)
-  const userSigner = userProviderAndSigner.signer
+  // const userProviderAndSigner = useUserProviderAndSigner(injectedProvider, localProvider, USE_BURNER_WALLET)
+  // const userSigner = userProviderAndSigner.signer
   const closeToast = () => {
     setShowToast(false)
   }
@@ -77,20 +76,20 @@ function App() {
     setShowToast(true)
   }
 
-  useEffect(() => {
-    async function getAddress() {
-      if (userSigner) {
-        const holderForConnectedAddress = await userSigner.getAddress()
-        // @ts-ignore
-        setConnectedAddress(holderForConnectedAddress)
-      }
-    }
-    getAddress()
+  // useEffect(() => {
+  //   async function getAddress() {
+  //     if (userSigner) {
+  //       const holderForConnectedAddress = await userSigner.getAddress()
+  //       // @ts-ignore
+  //       setConnectedAddress(holderForConnectedAddress)
+  //     }
+  //   }
+  //   getAddress()
 
-    return () => {
-      getAddress()
-    }
-  }, [userSigner])
+  //   return () => {
+  //     getAddress()
+  //   }
+  // }, [userSigner])
 
   useEffect(() => {
     const run = async () => {
@@ -110,14 +109,14 @@ function App() {
     }
   }, [providerRef])
 
-  const logoutOfWeb3Modal = useCallback(async () => {
-    if (injectedProvider && injectedProvider.provider && typeof injectedProvider.provider.disconnect == 'function') {
-      await injectedProvider.provider.disconnect()
-    }
-    setTimeout(() => {
-      window.location.reload()
-    }, 1)
-  }, [injectedProvider])
+  // const logoutOfWeb3Modal = useCallback(async () => {
+  //   if (injectedProvider && injectedProvider.provider && typeof injectedProvider.provider.disconnect == 'function') {
+  //     await injectedProvider.provider.disconnect()
+  //   }
+  //   setTimeout(() => {
+  //     window.location.reload()
+  //   }, 1)
+  // }, [injectedProvider])
 
   const snackBarAction = (
     <>
@@ -127,28 +126,28 @@ function App() {
     </>
   )
 
-  const loadWeb3Modal = useCallback(async () => {
-    if (typeof window.ethereum === 'undefined') {
-      displayToast()
-      return
-    }
-    const provider = window.ethereum
-    setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
+  // const loadWeb3Modal = useCallback(async () => {
+  //   if (typeof window.ethereum === 'undefined') {
+  //     displayToast()
+  //     return
+  //   }
+  //   const provider = window.ethereum
+  //   setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
 
-    provider.on('chainChanged', chainId => {
-      setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
-    })
-    provider.on('accountsChanged', accounts => {
-      setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
-    })
-    // Subscribe to session disconnection
-    provider.on('disconnect', (code, reason) => {
-      console.log(code, reason)
-      logoutOfWeb3Modal()
-    })
+  //   provider.on('chainChanged', chainId => {
+  //     setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
+  //   })
+  //   provider.on('accountsChanged', accounts => {
+  //     setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
+  //   })
+  //   // Subscribe to session disconnection
+  //   provider.on('disconnect', (code, reason) => {
+  //     console.log(code, reason)
+  //     logoutOfWeb3Modal()
+  //   })
 
-    setTabValue(prev => prev)
-  }, [logoutOfWeb3Modal])
+  //   setTabValue(prev => prev)
+  // }, [logoutOfWeb3Modal])
 
   const closeWrongNetworkToast = () => {
     setShowWrongNetworkToast(false)
@@ -165,19 +164,18 @@ function App() {
     connectedAddress,
     setConnectedAddress,
     contractConfig,
+    displayToast,
     externalContracts,
     contractRef,
     price,
-    injectedProvider,
-    setInjectedProvider,
-    loadWeb3Modal,
-    logoutOfWeb3Modal,
+    // injectedProvider,
+    // setInjectedProvider,
     setShowToast,
     closeWrongNetworkToast,
     showWrongNetworkToast,
     setShowWrongNetworkToast,
     targetNetwork,
-    userSigner,
+    // userSigner,
   }
 
   return (
@@ -191,11 +189,9 @@ function App() {
               // @ts-ignore
               tabValue={tabValue}
               setTabValue={setTabValue}
-              loadWeb3Modal={loadWeb3Modal}
               connectedAddress={connectedAddress}
               setConnectedAddress={setConnectedAddress}
-              injectedProvider={injectedProvider}
-              logoutOfWeb3Modal={logoutOfWeb3Modal}
+              // injectedProvider={injectedProvider}
             />
           )}
           <Toast
