@@ -13,7 +13,7 @@ import { deepOrange } from '@mui/material/colors'
 import Toast from './Toast'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
-import { useQuery } from '@tanstack/react-query'
+import AutorenewRoundedIcon from '@mui/icons-material/AutorenewRounded'
 
 /** 
   ~ What it does? ~
@@ -63,7 +63,7 @@ const MetaMaskTooltip = styled(({ className, ...props }) => <Tooltip {...props} 
   }),
 )
 
-const ConnectedButton = ({ handleConnection, connectedAddress, accountButtonConnected, accountButtonInfo }) => {
+const ConnectedButton = ({ handleConnection, connectedAddress, accountButtonInfo }) => {
   const hoveredGreen = deepOrange['800']
   return (
     <MetaMaskTooltip
@@ -87,7 +87,7 @@ const ConnectedButton = ({ handleConnection, connectedAddress, accountButtonConn
         <Typography variant={'button'} fontWeight={'bolder'}>
           {
             // @ts-ignore
-            connectedAddress && connectedAddress.length > 1 ? 'Disconnect' : accountButtonInfo.name
+            connectedAddress && connectedAddress.length > 1 && 'Disconnect'
           }
         </Typography>
       </Button>
@@ -95,15 +95,6 @@ const ConnectedButton = ({ handleConnection, connectedAddress, accountButtonConn
   )
 }
 
-async function addEthereumWalletChain(paramsArray) {
-  return await window.ethereum.request({
-    method: 'wallet_addEthereumChain',
-    params: paramsArray,
-  })
-}
-
-// @ts-ignore
-// @ts-ignore
 export default function Account({ minimized }) {
   const {
     // @ts-ignore
@@ -131,6 +122,7 @@ export default function Account({ minimized }) {
   const [netInfo, setNetInfo] = useState([])
   const [chainChanged, setChainChanged] = useState(false)
   const [injectedProvider, setInjectedProvider] = useState(null)
+  const [connectedState, setConnectedState] = useState(false)
 
   const logoutOfWeb3Modal = useCallback(async () => {
     if (injectedProvider && injectedProvider.provider && typeof injectedProvider.provider.disconnect == 'function') {
@@ -179,43 +171,25 @@ export default function Account({ minimized }) {
   )
 
   const handleConnection = async () => {
+    setConnectedState(true) // disable the connect button until everything succeeds
     let accounts
     if (window.ethereum === undefined) {
       displayToast()
+      setConnectedState(false)
       return
     }
-    const chainInfo = await getCurrentChainId()
-    const { chainId, networkId } = chainInfo[0]
-    if (chainId !== selectedChainId) {
-      setShowWrongNetworkToast(true)
-      if (chainId === 5) {
-        await window.ethereum.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: ethers.utils.hexValue(externalParams[1]['chainId']) }],
-        })
-      } else if (chainId === 10) {
-        await window.ethereum.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: ethers.utils.hexValue(externalParams[0]['chainId']) }],
-        })
-      }
-    }
-    accountButtonInfo.action()
-    if (injectedProvider === null) setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
     accounts = await window.ethereum.request({
       method: 'eth_requestAccounts',
     })
-    if (chainId === 5 && networkId === 5) {
-      await switchToGoerli()
-      setConnectedAddress(accounts[0])
-      setNetInfo(chainInfo)
-      return
+    const chainInfo = await getCurrentChainId()
+    const { chainId } = chainInfo[0]
+    if (chainId !== 10 && chainId !== 5) {
+      setShowWrongNetworkToast(true)
+      setConnectedState(false)
     }
-    if (chainId === 10 && networkId === 10) {
-      await switchToOptimism()
-      setConnectedAddress(accounts[0])
-      setNetInfo(chainInfo)
-    }
+    if (injectedProvider === null) setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
+    setConnectedAddress(accounts[0])
+    setNetInfo(chainInfo)
   }
 
   useEffect(() => {
@@ -224,6 +198,18 @@ export default function Account({ minimized }) {
       setChainChanged(true)
     })
   }, [])
+
+  useEffect(() => {
+    if (window.ethereum === undefined) {
+      displayToast()
+      return
+    }
+    window.ethereum.on('accountsChanged', account => {
+      console.log({ account })
+      if (account.length === 0) displayToast()
+      if (account[0] !== connectedAddress) setConnectedAddress(account[0])
+    })
+  }, [connectedAddress, displayToast, setConnectedAddress])
 
   const wrongNetworkSnackBar = (
     <>
@@ -239,11 +225,9 @@ export default function Account({ minimized }) {
       </IconButton>
     </>
   )
-  const errorMsg = `Network not supported! Currently supported network: ${
-    selectedChainId === 5 ? 'Goerli' : selectedChainId === 10 ? 'Optimism' : ''
-  }`
   /* SETUP TOAST FOR WRONG NETWORK */
   const WrongNetworkToast = ({ showWrongNetworkToast, closeWrongNetworkToast, wrongNetworkSnackBar }) => {
+    const errorMsg = 'Network not supported! Currently supported networks are : Goerli & Optimism'
     return (
       <Toast
         showToast={showWrongNetworkToast}
@@ -258,7 +242,6 @@ export default function Account({ minimized }) {
       {display}
       {window.ethereum && window.ethereum.isConnected() && connectedAddress && connectedAddress.length ? (
         <ConnectedButton
-          accountButtonConnected={accountButtonConnected}
           accountButtonInfo={accountButtonInfo}
           connectedAddress={connectedAddress}
           handleConnection={logoutOfWeb3Modal}
@@ -272,6 +255,7 @@ export default function Account({ minimized }) {
             variant={'contained'}
             sx={{ borderRadius: 3, padding: 1.2, marginLeft: 3, background: '#81a6f7' }}
             onClick={handleConnection}
+            disabled={connectedState}
             size={'small'}
           >
             <Typography variant={'button'} fontWeight={'bolder'}>
@@ -304,6 +288,26 @@ export default function Account({ minimized }) {
             >{`You are connected to ${n.name}`}</Typography>
           ))
         : null}
+      {netInfo && netInfo.length > 0 && connectedAddress && connectedAddress.length > 1 ? (
+        <MetaMaskTooltip title="Click here to switch to chains" placement="bottom">
+          <Button
+            variant={'contained'}
+            sx={{ marginLeft: 3, borderRadius: 3 }}
+            onClick={async () => {
+              if (netInfo[0].chainId === 5) {
+                await switchToOptimism()
+                await logoutOfWeb3Modal()
+              }
+              if (netInfo[0].chainId === 10) {
+                await switchToGoerli()
+                await logoutOfWeb3Modal()
+              }
+            }}
+          >
+            <AutorenewRoundedIcon />
+          </Button>
+        </MetaMaskTooltip>
+      ) : null}
     </Box>
   )
 }

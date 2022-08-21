@@ -114,7 +114,9 @@ export async function getNetworkChainList() {
     const data = await (await fetch('https://chainid.network/chains.json')).json()
     // console.log({ data })
     return data
-  } catch (error) {}
+  } catch (error) {
+    console.log({ error })
+  }
 }
 
 export async function getCurrentChainId() {
@@ -125,5 +127,7 @@ export async function getCurrentChainId() {
     const netResult = await ethers.providers.getNetwork(Number(chainId))
     const result = networkList.filter(net => net.chainId === netResult.chainId)
     return result
-  } catch (error) {}
+  } catch (error) {
+    console.log({ error })
+  }
 }

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 // import { useUserProviderAndSigner } from 'eth-hooks'
 import { useExchangeEthPrice } from 'eth-hooks/dapps/dex'
 import { NETWORKS } from './constants'
@@ -9,28 +9,8 @@ import CloseIcon from '@mui/icons-material/Close'
 import IconButton from '@mui/material/IconButton'
 import Toast from 'components/Toast'
 import { BadgeContext } from 'contexts/BadgeContext'
-import { useUserProviderAndSigner } from 'eth-hooks'
 import externalContracts from 'contracts/external_contracts'
 const { ethers } = require('ethers')
-
-export const supportedNetworks = [
-  {
-    optimism: {
-      name: 'optimism',
-      color: '#f01a37',
-      chainId: 10,
-      blockExplorer: 'https://optimistic.etherscan.io/',
-      rpcUrl: ['https://opt-mainnet.g.alchemy.com/v2/cdGnPX6sQLXv-YWkbzYAXnTVVfuL8fhb', 'https://mainnet.optimism.io'],
-    },
-    goerli: {
-      name: 'goerli',
-      color: '#0975F6',
-      chainId: 5,
-      blockExplorer: 'https://goerli.etherscan.io/',
-      rpcUrl: ['https://eth-goerli.g.alchemy.com/v2/1fpzjlzdaT-hFeeTXFY-yzM-WujQLfEl', '']
-    },
-  },
-]
 
 // @ts-ignore
 function App() {
@@ -43,7 +23,7 @@ function App() {
   const [tabValue, setTabValue] = useState(0)
   const [showToast, setShowToast] = useState(false)
   const [showWrongNetworkToast, setShowWrongNetworkToast] = useState(false)
-  const [selectedChainId] = useState(5)
+  const [selectedChainId, setSelectedChainId] = useState(5)
   const contractConfig = { deployedContracts: {}, externalContracts: externalContracts || {} }
 
   const targetNetwork = NETWORKS['optimism']
@@ -63,11 +43,6 @@ function App() {
     console.log('kosi externalContract')
   }
 
-  const USE_BURNER_WALLET = false
-  /* SETUP METAMASK */
-  // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
-  // const userProviderAndSigner = useUserProviderAndSigner(injectedProvider, localProvider, USE_BURNER_WALLET)
-  // const userSigner = userProviderAndSigner.signer
   const closeToast = () => {
     setShowToast(false)
   }
@@ -75,21 +50,6 @@ function App() {
   const displayToast = () => {
     setShowToast(true)
   }
-
-  // useEffect(() => {
-  //   async function getAddress() {
-  //     if (userSigner) {
-  //       const holderForConnectedAddress = await userSigner.getAddress()
-  //       // @ts-ignore
-  //       setConnectedAddress(holderForConnectedAddress)
-  //     }
-  //   }
-  //   getAddress()
-
-  //   return () => {
-  //     getAddress()
-  //   }
-  // }, [userSigner])
 
   useEffect(() => {
     const run = async () => {
@@ -109,15 +69,6 @@ function App() {
     }
   }, [providerRef])
 
-  // const logoutOfWeb3Modal = useCallback(async () => {
-  //   if (injectedProvider && injectedProvider.provider && typeof injectedProvider.provider.disconnect == 'function') {
-  //     await injectedProvider.provider.disconnect()
-  //   }
-  //   setTimeout(() => {
-  //     window.location.reload()
-  //   }, 1)
-  // }, [injectedProvider])
-
   const snackBarAction = (
     <>
       <IconButton size="small" aria-label="close" color="inherit" onClick={closeToast}>
@@ -125,29 +76,6 @@ function App() {
       </IconButton>
     </>
   )
-
-  // const loadWeb3Modal = useCallback(async () => {
-  //   if (typeof window.ethereum === 'undefined') {
-  //     displayToast()
-  //     return
-  //   }
-  //   const provider = window.ethereum
-  //   setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
-
-  //   provider.on('chainChanged', chainId => {
-  //     setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
-  //   })
-  //   provider.on('accountsChanged', accounts => {
-  //     setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
-  //   })
-  //   // Subscribe to session disconnection
-  //   provider.on('disconnect', (code, reason) => {
-  //     console.log(code, reason)
-  //     logoutOfWeb3Modal()
-  //   })
-
-  //   setTabValue(prev => prev)
-  // }, [logoutOfWeb3Modal])
 
   const closeWrongNetworkToast = () => {
     setShowWrongNetworkToast(false)
@@ -159,6 +87,7 @@ function App() {
     localProvider,
     mainnet,
     selectedChainId,
+    setSelectedChainId,
     address,
     setAddress,
     connectedAddress,
@@ -168,14 +97,11 @@ function App() {
     externalContracts,
     contractRef,
     price,
-    // injectedProvider,
-    // setInjectedProvider,
     setShowToast,
     closeWrongNetworkToast,
     showWrongNetworkToast,
     setShowWrongNetworkToast,
     targetNetwork,
-    // userSigner,
   }
 
   return (
@@ -184,16 +110,7 @@ function App() {
         <Layout tabValue={tabValue} setTabValue={setTabValue}>
           {loaded && tabValue === 0 && <BrowseBadges />}
 
-          {tabValue === 1 && (
-            <MintingPage
-              // @ts-ignore
-              tabValue={tabValue}
-              setTabValue={setTabValue}
-              connectedAddress={connectedAddress}
-              setConnectedAddress={setConnectedAddress}
-              // injectedProvider={injectedProvider}
-            />
-          )}
+          {tabValue === 1 && <MintingPage />}
           <Toast
             showToast={showToast}
             closeToast={closeToast}
