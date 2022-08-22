@@ -5,6 +5,7 @@ import Logo from './Logo'
 import GitHubIcon from '@mui/icons-material/GitHub'
 import TwitterIcon from '@mui/icons-material/Twitter'
 import LinkedInIcon from '@mui/icons-material/LinkedIn'
+import Paper from '@mui/material/Paper'
 
 const footerCategories = {
   PRODUCTS: ['Online IDE', 'Desktop App', 'Ethereum Remix', 'RemixD'],
@@ -15,7 +16,7 @@ const footerCategories = {
 function Footer() {
   return (
     // <>
-    <Box component={'footer'}>
+    <Paper component={'footer'}>
       <Box display={'flex'} justifyContent={'space-between'}>
         <Box>
           <Logo />
@@ -50,7 +51,7 @@ function Footer() {
       >
         <Typography variant={'subtitle2'}>&copy; 2022 Remix. All rights reserved.</Typography>
       </Box>
-    </Box>
+    </Paper>
   )
 }
 
