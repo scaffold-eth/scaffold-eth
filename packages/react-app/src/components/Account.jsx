@@ -108,8 +108,6 @@ export default function Account({ minimized }) {
     // @ts-ignore
     setConnectedAddress,
     // @ts-ignore
-    selectedChainId,
-    // @ts-ignore
     setShowWrongNetworkToast,
     // @ts-ignore
     closeWrongNetworkToast,
@@ -289,10 +287,19 @@ export default function Account({ minimized }) {
           ))
         : null}
       {netInfo && netInfo.length > 0 && connectedAddress && connectedAddress.length > 1 ? (
-        <MetaMaskTooltip title="Click here to switch to chains" placement="bottom">
+        <MetaMaskTooltip
+          title={`Click here to switch to ${
+            netInfo[0].chainId === 5
+              ? externalParams[0].chainName
+              : netInfo[0].chainId === 10
+              ? externalParams[1].chainName
+              : 'chains'
+          }`}
+          placement="bottom"
+        >
           <Button
             variant={'contained'}
-            sx={{ marginLeft: 3, borderRadius: 3 }}
+            sx={{ marginLeft: 3, borderRadius: 3, background: '#81a6f7' }}
             onClick={async () => {
               if (netInfo[0].chainId === 5) {
                 await switchToOptimism()
