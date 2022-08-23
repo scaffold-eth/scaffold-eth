@@ -14,6 +14,7 @@ import Toast from './Toast'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
 import AutorenewRoundedIcon from '@mui/icons-material/AutorenewRounded'
+import { NetInfo } from './NetInfo'
 
 /** 
   ~ What it does? ~
@@ -122,6 +123,10 @@ export default function Account({ minimized }) {
   const [injectedProvider, setInjectedProvider] = useState(null)
   const [connectedState, setConnectedState] = useState(false)
 
+  const checkForWeb3Provider = useCallback(() => {
+    return window.ethereum === undefined ? 'Not Found' : 'Found'
+  }, [])
+
   const logoutOfWeb3Modal = useCallback(async () => {
     if (injectedProvider && injectedProvider.provider && typeof injectedProvider.provider.disconnect == 'function') {
       await injectedProvider.provider.disconnect()
@@ -132,7 +137,7 @@ export default function Account({ minimized }) {
   }, [injectedProvider])
 
   const loadWeb3Modal = useCallback(async () => {
-    if (typeof window.ethereum === 'undefined') {
+    if (checkForWeb3Provider() === 'Not Found') {
       displayToast()
       return
     }
@@ -152,7 +157,7 @@ export default function Account({ minimized }) {
     })
 
     // setTabValue(prev => prev)
-  }, [logoutOfWeb3Modal])
+  }, [checkForWeb3Provider, displayToast, logoutOfWeb3Modal])
 
   accountButtonInfo = { name: 'Connect to Mint', action: loadWeb3Modal }
   const display = !minimized && (
@@ -169,33 +174,27 @@ export default function Account({ minimized }) {
   )
 
   const handleConnection = async () => {
-    setConnectedState(true) // disable the connect button until everything succeeds
     let accounts
-    if (window.ethereum === undefined) {
-      displayToast()
-      setConnectedState(false)
-      return
-    }
-    accounts = await window.ethereum.request({
-      method: 'eth_requestAccounts',
-    })
+    await loadWeb3Modal()
     const chainInfo = await getCurrentChainId()
     const { chainId } = chainInfo[0]
-    if (chainId !== 10 && chainId !== 5) {
+    if (chainId !== 5) {
+      switchToGoerli()
+      accounts = await window.ethereum.request({
+        method: 'eth_requestAccounts',
+      })
       setShowWrongNetworkToast(true)
-      setConnectedState(false)
+      setConnectedAddress(accounts[0])
+      setNetInfo(chainInfo)
     }
-    if (injectedProvider === null) setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
-    setConnectedAddress(accounts[0])
-    setNetInfo(chainInfo)
+    if (chainId === 5) {
+      accounts = await window.ethereum.request({
+        method: 'eth_requestAccounts',
+      })
+      setConnectedAddress(accounts[0])
+      setNetInfo(chainInfo)
+    }
   }
-
-  useEffect(() => {
-    window.ethereum.on('chainChanged', chainId => {
-      console.log({ chainId })
-      setChainChanged(true)
-    })
-  }, [])
 
   useEffect(() => {
     if (window.ethereum === undefined) {
@@ -272,49 +271,12 @@ export default function Account({ minimized }) {
         wrongNetworkSnackBar={wrongNetworkSnackBar}
       />
 
-      {netInfo && netInfo.length > 0 && connectedAddress && connectedAddress.length > 1
-        ? netInfo.map(n => (
-            <Typography
-              key={n.chainId}
-              component={'span'}
-              variant={'caption'}
-              ml={2}
-              fontWeight={600}
-              color={'#ff0420'}
-              alignItems={'center'}
-              justifyContent={'center'}
-            >{`You are connected to ${n.name}`}</Typography>
-          ))
-        : null}
-      {netInfo && netInfo.length > 0 && connectedAddress && connectedAddress.length > 1 ? (
-        <MetaMaskTooltip
-          title={`Click here to switch to ${
-            netInfo[0].chainId === 5
-              ? externalParams[0].chainName
-              : netInfo[0].chainId === 10
-              ? externalParams[1].chainName
-              : 'chains'
-          }`}
-          placement="bottom"
-        >
-          <Button
-            variant={'contained'}
-            sx={{ marginLeft: 3, borderRadius: 3, background: '#81a6f7' }}
-            onClick={async () => {
-              if (netInfo[0].chainId === 5) {
-                await switchToOptimism()
-                await logoutOfWeb3Modal()
-              }
-              if (netInfo[0].chainId === 10) {
-                await switchToGoerli()
-                await logoutOfWeb3Modal()
-              }
-            }}
-          >
-            <AutorenewRoundedIcon />
-          </Button>
-        </MetaMaskTooltip>
-      ) : null}
+      <NetInfo
+        netInfo={netInfo}
+        connectedAddress={connectedAddress}
+        checkForWeb3Provider={checkForWeb3Provider}
+        setNetInfo={setNetInfo}
+      />
     </Box>
   )
 }

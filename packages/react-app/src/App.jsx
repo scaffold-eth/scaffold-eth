@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 // import { useUserProviderAndSigner } from 'eth-hooks'
 import { useExchangeEthPrice } from 'eth-hooks/dapps/dex'
 import { NETWORKS } from './constants'
@@ -47,9 +47,9 @@ function App() {
     setShowToast(false)
   }
 
-  const displayToast = () => {
+  const displayToast = useCallback(() => {
     setShowToast(true)
-  }
+  }, [])
 
   useEffect(() => {
     const run = async () => {
