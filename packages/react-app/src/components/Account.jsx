@@ -119,7 +119,6 @@ export default function Account({ minimized }) {
   const accountButtonConnected = 'Connected'
   // eslint-disable-next-line no-unused-vars
   const [netInfo, setNetInfo] = useState([])
-  const [chainChanged, setChainChanged] = useState(false)
   const [injectedProvider, setInjectedProvider] = useState(null)
   const [connectedState, setConnectedState] = useState(false)
 
@@ -197,7 +196,27 @@ export default function Account({ minimized }) {
   }
 
   useEffect(() => {
-    if (window.ethereum === undefined) {
+    if (checkForWeb3Provider() === 'Not Found') {
+      displayToast()
+      return
+    }
+    window.ethereum.on('chainChanged', async chainId => {
+      if (!netInfo && netInfo.length) setNetInfo(await getCurrentChainId())
+      const num = Number(chainId)
+      console.log('chainChanged Event happened', { chainId, num })
+      if (Number(chainId) !== 5) {
+        await switchToGoerli()
+      }
+    })
+    return () => {
+      checkForWeb3Provider() === 'Found'
+        ? window.ethereum.removeListener('chainChanged', () => console.log('removed'))
+        : console.log('Metamask is not installed')
+    }
+  }, [checkForWeb3Provider, displayToast, netInfo])
+
+  useEffect(() => {
+    if (checkForWeb3Provider() === 'Not Found') {
       displayToast()
       return
     }
@@ -206,7 +225,11 @@ export default function Account({ minimized }) {
       if (account.length === 0) displayToast()
       if (account[0] !== connectedAddress) setConnectedAddress(account[0])
     })
-  }, [connectedAddress, displayToast, setConnectedAddress])
+
+    return () => {
+      window.ethereum.removeListener('accountsChanged', () => console.log('accountsChanged removed!'))
+    }
+  }, [checkForWeb3Provider, connectedAddress, displayToast, setConnectedAddress])
 
   const wrongNetworkSnackBar = (
     <>

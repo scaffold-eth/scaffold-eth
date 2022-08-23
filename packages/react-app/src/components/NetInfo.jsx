@@ -6,9 +6,7 @@ export function NetInfo({ netInfo, setNetInfo, connectedAddress, checkForWeb3Pro
   useEffect(() => {
     if (checkForWeb3Provider() === 'Not Found') return
     window.ethereum.on('chainChanged', async chainId => {
-      console.log('inside netinfo', { chainId })
       const chainInfo = await getCurrentChainId()
-      console.log('current chain', { chainInfo })
       setNetInfo(chainInfo)
     })
   }, [checkForWeb3Provider, setNetInfo])
