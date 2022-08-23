@@ -1,18 +1,8 @@
 import React from 'react'
 import { Box, Typography } from '@mui/material'
-import { makeStyles } from '@mui/styles'
 
-const useStyles = makeStyles({
-  logo: {
-    fill: '#81a6f7',
-    width: '35px',
-    float: 'left',
-    marginRight: 5,
-  },
-})
-
-export default function Logo() {
-  const classes = useStyles()
+export default function Logo(props) {
+  const classes = props.useStyles()
   return (
     <>
       <Box pl={3}>
