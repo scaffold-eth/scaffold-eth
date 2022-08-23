@@ -6,14 +6,13 @@ import Box from '@mui/material/Box'
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip'
 import { styled } from '@mui/material/styles'
 import { BadgeContext } from 'contexts/BadgeContext'
-import { getCurrentChainId, switchToGoerli, externalParams, switchToOptimism } from 'helpers/SwitchToOptimism'
+import { getCurrentChainId, switchToGoerli } from 'helpers/SwitchToOptimism'
 // @ts-ignore
 import { ethers } from 'ethers'
 import { deepOrange } from '@mui/material/colors'
 import Toast from './Toast'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
-import AutorenewRoundedIcon from '@mui/icons-material/AutorenewRounded'
 import { NetInfo } from './NetInfo'
 
 /** 
@@ -109,6 +108,10 @@ export default function Account({ minimized }) {
     // @ts-ignore
     setConnectedAddress,
     // @ts-ignore
+    injectedProvider,
+    // @ts-ignore
+    setInjectedProvider,
+    // @ts-ignore
     setShowWrongNetworkToast,
     // @ts-ignore
     closeWrongNetworkToast,
@@ -119,8 +122,6 @@ export default function Account({ minimized }) {
   const accountButtonConnected = 'Connected'
   // eslint-disable-next-line no-unused-vars
   const [netInfo, setNetInfo] = useState([])
-  const [injectedProvider, setInjectedProvider] = useState(null)
-  const [connectedState, setConnectedState] = useState(false)
 
   const checkForWeb3Provider = useCallback(() => {
     return window.ethereum === undefined ? 'Not Found' : 'Found'
@@ -156,7 +157,7 @@ export default function Account({ minimized }) {
     })
 
     // setTabValue(prev => prev)
-  }, [checkForWeb3Provider, displayToast, logoutOfWeb3Modal])
+  }, [checkForWeb3Provider, displayToast, logoutOfWeb3Modal, setInjectedProvider])
 
   accountButtonInfo = { name: 'Connect to Mint', action: loadWeb3Modal }
   const display = !minimized && (
@@ -202,8 +203,6 @@ export default function Account({ minimized }) {
     }
     window.ethereum.on('chainChanged', async chainId => {
       if (!netInfo && netInfo.length) setNetInfo(await getCurrentChainId())
-      const num = Number(chainId)
-      console.log('chainChanged Event happened', { chainId, num })
       if (Number(chainId) !== 5) {
         await switchToGoerli()
       }
@@ -221,7 +220,6 @@ export default function Account({ minimized }) {
       return
     }
     window.ethereum.on('accountsChanged', account => {
-      console.log({ account })
       if (account.length === 0) displayToast()
       if (account[0] !== connectedAddress) setConnectedAddress(account[0])
     })
@@ -247,7 +245,7 @@ export default function Account({ minimized }) {
   )
   /* SETUP TOAST FOR WRONG NETWORK */
   const WrongNetworkToast = ({ showWrongNetworkToast, closeWrongNetworkToast, wrongNetworkSnackBar }) => {
-    const errorMsg = 'Network not supported! Currently supported networks are : Goerli & Optimism'
+    const errorMsg = 'Network not supported!'
     return (
       <Toast
         showToast={showWrongNetworkToast}
@@ -275,7 +273,6 @@ export default function Account({ minimized }) {
             variant={'contained'}
             sx={{ borderRadius: 3, padding: 1.2, marginLeft: 3, background: '#81a6f7' }}
             onClick={handleConnection}
-            disabled={connectedState}
             size={'small'}
           >
             <Typography variant={'button'} fontWeight={'bolder'}>

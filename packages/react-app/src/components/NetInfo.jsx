@@ -4,11 +4,19 @@ import { useEffect } from 'react'
 
 export function NetInfo({ netInfo, setNetInfo, connectedAddress, checkForWeb3Provider }) {
   useEffect(() => {
-    if (checkForWeb3Provider() === 'Not Found') return
+    if (checkForWeb3Provider() === 'Not Found') console.log('Metamask is not installed!')
     window.ethereum.on('chainChanged', async chainId => {
       const chainInfo = await getCurrentChainId()
       setNetInfo(chainInfo)
     })
+
+    return () => {
+      if (checkForWeb3Provider() === 'Not Found') {
+        console.log('Metamask is not installed!')
+        return
+      }
+      window.ethereum.removeListener('chainChanged', () => console.log('removed chainChanged from NetInfo'))
+    }
   }, [checkForWeb3Provider, setNetInfo])
   return (
     <>

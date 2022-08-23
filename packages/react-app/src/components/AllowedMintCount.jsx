@@ -52,6 +52,13 @@ export default function AllowedMintCount() {
     window.ethereum.on('accountsChanged', async account => {
       await checkBalance()
     })
+
+    return () => {
+      if (window.ethereum === undefined) return
+      window.ethereum.removeListener('accountsChanged', () =>
+        console.log('Removed accountsChanged from AllowedMintCount'),
+      )
+    }
   }, [checkBalance])
 
   useEffect(() => {
@@ -90,9 +97,9 @@ export default function AllowedMintCount() {
     }
   }, [allowedMinting, connectedAddress, localProvider])
 
-  useEffect(() => {
-    checkBalance()
-  }, [checkBalance])
+  // useEffect(() => {
+  //   checkBalance()
+  // }, [checkBalance])
 
   return (
     <>

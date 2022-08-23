@@ -19,6 +19,7 @@ function App() {
   const [mainnet, setMainnet] = useState(null)
   const [loaded, setLoaded] = useState(false)
   const [connectedAddress, setConnectedAddress] = useState()
+  const [injectedProvider, setInjectedProvider] = useState(null)
   const [address, setAddress] = useState('')
   const [tabValue, setTabValue] = useState(0)
   const [showToast, setShowToast] = useState(false)
@@ -92,6 +93,8 @@ function App() {
     setAddress,
     connectedAddress,
     setConnectedAddress,
+    injectedProvider,
+    setInjectedProvider,
     contractConfig,
     displayToast,
     externalContracts,
