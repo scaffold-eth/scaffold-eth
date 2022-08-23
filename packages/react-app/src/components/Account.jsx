@@ -296,6 +296,7 @@ export default function Account({ minimized }) {
         connectedAddress={connectedAddress}
         checkForWeb3Provider={checkForWeb3Provider}
         setNetInfo={setNetInfo}
+        displayToast={displayToast}
       />
     </Box>
   )

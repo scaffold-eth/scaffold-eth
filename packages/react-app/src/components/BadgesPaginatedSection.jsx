@@ -13,6 +13,7 @@ import AddressedCard from './AddressedCard'
 export default function BadgesPaginatedSection({
   badges,
   checkeventBagesAndBadges,
+  checkForWeb3Provider,
   etherscanRef,
   eventBadges,
   setBadges,
@@ -117,6 +118,7 @@ export default function BadgesPaginatedSection({
                     transactionHash={event.transactionHash}
                     contract={contract}
                     mainnet={mainnet}
+                    checkForWeb3Provider={checkForWeb3Provider}
                   />
                 </Grid>
               )

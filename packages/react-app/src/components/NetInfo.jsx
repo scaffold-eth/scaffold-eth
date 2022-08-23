@@ -2,9 +2,13 @@ import Typography from '@mui/material/Typography'
 import { getCurrentChainId } from 'helpers/SwitchToOptimism'
 import { useEffect } from 'react'
 
-export function NetInfo({ netInfo, setNetInfo, connectedAddress, checkForWeb3Provider }) {
+export function NetInfo({ netInfo, setNetInfo, connectedAddress, checkForWeb3Provider, displayToast }) {
   useEffect(() => {
-    if (checkForWeb3Provider() === 'Not Found') console.log('Metamask is not installed!')
+    if (checkForWeb3Provider() === 'Not Found') {
+      console.log('Metamask is not installed!')
+      displayToast()
+      return
+    }
     window.ethereum.on('chainChanged', async chainId => {
       const chainInfo = await getCurrentChainId()
       setNetInfo(chainInfo)
@@ -17,7 +21,7 @@ export function NetInfo({ netInfo, setNetInfo, connectedAddress, checkForWeb3Pro
       }
       window.ethereum.removeListener('chainChanged', () => console.log('removed chainChanged from NetInfo'))
     }
-  }, [checkForWeb3Provider, setNetInfo])
+  }, [checkForWeb3Provider, displayToast, setNetInfo])
   return (
     <>
       {netInfo && netInfo.length > 0 && connectedAddress && connectedAddress.length > 1

@@ -48,6 +48,10 @@ function App() {
     setShowToast(false)
   }
 
+  const checkForWeb3Provider = useCallback(() => {
+    return window.ethereum === undefined ? 'Not Found' : 'Found'
+  }, [])
+
   const displayToast = useCallback(() => {
     setShowToast(true)
   }, [])
@@ -91,6 +95,7 @@ function App() {
     setSelectedChainId,
     address,
     setAddress,
+    checkForWeb3Provider,
     connectedAddress,
     setConnectedAddress,
     injectedProvider,

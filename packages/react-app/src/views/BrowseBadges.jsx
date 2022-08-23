@@ -37,7 +37,8 @@ export default function BrowseBadges() {
   const [badges, setBadges] = useState([])
   const [eventBadges, setEventBadges] = useState([])
   const [error, setErrorMessage] = useState('')
-  const { localProvider, mainnet, address, setAddress, injectedProvider, selectedChainId } = useContext(BadgeContext)
+  const { localProvider, mainnet, address, setAddress, injectedProvider, selectedChainId, checkForWeb3Provider } =
+    useContext(BadgeContext)
 
   let contractRef
   let providerRef
@@ -51,23 +52,6 @@ export default function BrowseBadges() {
     providerRef = externalContracts[selectedChainId].provider
     etherscanRef = externalContracts[selectedChainId].etherscan
   }
-
-  // useEffect(() => {
-  //   const run = async () => {
-  //     if (!contractRef) return setErrorMessage('chain not supported. ' + selectedChainId)
-  //     if (!address) {
-  //       setEventBadges([])
-  //       setErrorMessage('')
-  //       return
-  //     }
-  //     setErrorMessage('')
-  //   }
-  //   run()
-
-  //   return () => {
-  //     run()
-  //   }
-  // }, [address, selectedChainId, contractRef])
 
   useEffect(() => {
     const run = async () => {
@@ -269,6 +253,7 @@ export default function BrowseBadges() {
         eventBadges={eventBadges}
         injectedProvider={injectedProvider}
         setBadges={setBadges}
+        checkForWeb3Provider={checkForWeb3Provider}
       />
     </>
   )
