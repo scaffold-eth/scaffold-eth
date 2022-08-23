@@ -11,7 +11,6 @@ import { useCallback } from 'react'
 import AddressedCard from './AddressedCard'
 
 export default function BadgesPaginatedSection({
-  appState,
   badges,
   checkeventBagesAndBadges,
   etherscanRef,
@@ -44,11 +43,6 @@ export default function BadgesPaginatedSection({
     if (pagedBadges.length === 0) {
       setPagedBadges(getPaginationData(pageSize, pageNumber))
     }
-    return () => {
-      if (pagedBadges.length === 0) {
-        setPagedBadges(getPaginationData(pageSize, pageNumber))
-      }
-    }
   }, [pagedBadges.length, getPaginationData, pageNumber, pageSize])
 
   return (
@@ -76,10 +70,19 @@ export default function BadgesPaginatedSection({
           }}
         >
           {checkeventBagesAndBadges(badges) ? (
-            <Grid item md={'auto'} lg={'auto'} mt={-12} ml={'auto'} mr={'auto'}>
-              <AddressedCard badges={badges} />
-            </Grid>
-          ) : pagedBadges && pagedBadges.length > 0 ? (
+            <AddressedCard badges={badges} />
+          ) : // <Grid
+          //   item
+          //   md={'auto'}
+          //   lg={'auto'}
+          //   mt={-12}
+          //   ml={'auto'}
+          //   mr={'auto'}
+          //   alignItems={'center'}
+          //   justifyContent={'center'}
+          // >
+          // </Grid>
+          pagedBadges && pagedBadges.length > 0 ? (
             [...new Set(pagedBadges)].map(event => {
               let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
               return (
@@ -130,34 +133,36 @@ export default function BadgesPaginatedSection({
               )
             })
           ) : null}
-          <Grid item justifySelf={'flex-end'}>
-            <Fab
-              variant={'extended'}
-              size="large"
-              sx={{
-                color: 'whitesmoke',
-                ':hover': {
-                  backgroundColor: '#1565c0',
-                },
-                padding: 3,
-                backgroundColor: '#81a6f7',
-              }}
-              disabled={!eventBadges.length}
-              onClick={() => {
-                setPageNumber(prev => prev + 1)
-                setPagedBadges(prevArray => {
-                  const newFetch = returnPaginatedData(pageSize, pageNumber)
-                  const result = [...prevArray, ...newFetch]
-                  return result
-                })
-              }}
-            >
-              <DownloadingRoundedIcon sx={{ marginRight: 2, fontSize: 48 }} />
-              <Typography variant="button" fontWeight={'700'}>
-                Load More
-              </Typography>
-            </Fab>
-          </Grid>
+          {!checkeventBagesAndBadges(badges) ? (
+            <Grid item justifySelf={'flex-end'}>
+              <Fab
+                variant={'extended'}
+                size="large"
+                sx={{
+                  color: 'whitesmoke',
+                  ':hover': {
+                    backgroundColor: '#1565c0',
+                  },
+                  padding: 3,
+                  backgroundColor: '#81a6f7',
+                }}
+                disabled={!eventBadges.length}
+                onClick={() => {
+                  setPageNumber(prev => prev + 1)
+                  setPagedBadges(prevArray => {
+                    const newFetch = returnPaginatedData(pageSize, pageNumber)
+                    const result = [...prevArray, ...newFetch]
+                    return result
+                  })
+                }}
+              >
+                <DownloadingRoundedIcon sx={{ marginRight: 2, fontSize: 48 }} />
+                <Typography variant="button" fontWeight={'700'}>
+                  Load More
+                </Typography>
+              </Fab>
+            </Grid>
+          ) : null}
         </Grid>
       </Box>
     </>

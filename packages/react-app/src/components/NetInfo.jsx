@@ -28,7 +28,7 @@ export function NetInfo({ netInfo, setNetInfo, connectedAddress, checkForWeb3Pro
               variant={'caption'}
               ml={2}
               fontWeight={600}
-              color={'#ff0420'}
+              color={n.chainId === 10 ? '#f01a37' : n.chainId === 5 ? '#0975F6' : '#ff8b9e'}
               alignItems={'center'}
               justifyContent={'center'}
             >{`You are connected to ${n.name}`}</Typography>

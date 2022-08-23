@@ -23,11 +23,15 @@ export const toHex = ipfsHash => {
   return '0x' + multihash.toHexString(buf)
 }
 
+export const toBase58 = contentHash => {
+  let hex = contentHash.substring(2)
+  let buf = multihash.fromHexString(hex)
+  return multihash.toB58String(buf)
+}
+
 export const isHexadecimal = value => {
   return /^[0-9a-fA-F]+$/.test(value) && value.length % 2 === 0
 }
-
-// const styles
 
 export default function BrowseBadges() {
   const [badges, setBadges] = useState([])
@@ -48,22 +52,55 @@ export default function BrowseBadges() {
     etherscanRef = externalContracts[selectedChainId].etherscan
   }
 
+  // useEffect(() => {
+  //   const run = async () => {
+  //     if (!contractRef) return setErrorMessage('chain not supported. ' + selectedChainId)
+  //     if (!address) {
+  //       setEventBadges([])
+  //       setErrorMessage('')
+  //       return
+  //     }
+  //     setErrorMessage('')
+  //   }
+  //   run()
+
+  //   return () => {
+  //     run()
+  //   }
+  // }, [address, selectedChainId, contractRef])
+
   useEffect(() => {
     const run = async () => {
       if (!contractRef) return setErrorMessage('chain not supported. ' + selectedChainId)
       if (!address) {
-        setEventBadges([])
+        setBadges([])
         setErrorMessage('')
         return
       }
       setErrorMessage('')
+      try {
+        let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
+        const balance = await contract.balanceOf(address)
+        const badges = []
+        for (let k = 0; k < balance; k++) {
+          try {
+            const tokenId = await contract.tokenOfOwnerByIndex(address, k)
+            let data = await contract.tokensData(tokenId)
+            // eslint-disable-next-line no-undef
+            const badge = Object.assign({}, data, { decodedIpfsHash: toBase58(data.hash) })
+            badges.push(badge)
+          } catch (e) {
+            console.error(e)
+          }
+        }
+        setBadges(badges)
+        setErrorMessage('')
+      } catch (e) {
+        setErrorMessage(e.message)
+      }
     }
     run()
-
-    return () => {
-      run()
-    }
-  }, [address, selectedChainId, contractRef])
+  }, [address, contractRef, localProvider, selectedChainId])
 
   const run = useCallback(async () => {
     if (address) {
