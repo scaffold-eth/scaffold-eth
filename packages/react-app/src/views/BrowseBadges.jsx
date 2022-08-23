@@ -23,17 +23,22 @@ export const toHex = ipfsHash => {
   return '0x' + multihash.toHexString(buf)
 }
 
+export const toBase58 = contentHash => {
+  let hex = contentHash.substring(2)
+  let buf = multihash.fromHexString(hex)
+  return multihash.toB58String(buf)
+}
+
 export const isHexadecimal = value => {
   return /^[0-9a-fA-F]+$/.test(value) && value.length % 2 === 0
 }
-
-// const styles
 
 export default function BrowseBadges() {
   const [badges, setBadges] = useState([])
   const [eventBadges, setEventBadges] = useState([])
   const [error, setErrorMessage] = useState('')
-  const { localProvider, mainnet, address, setAddress, injectedProvider, selectedChainId } = useContext(BadgeContext)
+  const { localProvider, mainnet, address, setAddress, injectedProvider, selectedChainId, checkForWeb3Provider } =
+    useContext(BadgeContext)
 
   let contractRef
   let providerRef
@@ -52,18 +57,34 @@ export default function BrowseBadges() {
     const run = async () => {
       if (!contractRef) return setErrorMessage('chain not supported. ' + selectedChainId)
       if (!address) {
-        setEventBadges([])
+        setBadges([])
         setErrorMessage('')
         return
       }
       setErrorMessage('')
+      try {
+        let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
+        const balance = await contract.balanceOf(address)
+        const badges = []
+        for (let k = 0; k < balance; k++) {
+          try {
+            const tokenId = await contract.tokenOfOwnerByIndex(address, k)
+            let data = await contract.tokensData(tokenId)
+            // eslint-disable-next-line no-undef
+            const badge = Object.assign({}, data, { decodedIpfsHash: toBase58(data.hash) })
+            badges.push(badge)
+          } catch (e) {
+            console.error(e)
+          }
+        }
+        setBadges(badges)
+        setErrorMessage('')
+      } catch (e) {
+        setErrorMessage(e.message)
+      }
     }
     run()
-
-    return () => {
-      run()
-    }
-  }, [address, selectedChainId, contractRef])
+  }, [address, contractRef, localProvider, selectedChainId])
 
   const run = useCallback(async () => {
     if (address) {
@@ -232,6 +253,7 @@ export default function BrowseBadges() {
         eventBadges={eventBadges}
         injectedProvider={injectedProvider}
         setBadges={setBadges}
+        checkForWeb3Provider={checkForWeb3Provider}
       />
     </>
   )

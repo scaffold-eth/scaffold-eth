@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import Address from './Address'
@@ -6,20 +6,14 @@ import Box from '@mui/material/Box'
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip'
 import { styled } from '@mui/material/styles'
 import { BadgeContext } from 'contexts/BadgeContext'
-import {
-  getCurrentChainId,
-  switchToGoerli,
-  externalParams,
-  switchChain,
-  switchToOptimism,
-} from 'helpers/SwitchToOptimism'
+import { getCurrentChainId, switchToGoerli } from 'helpers/SwitchToOptimism'
 // @ts-ignore
 import { ethers } from 'ethers'
-import { lightGreen } from '@mui/material/colors'
+import { deepOrange } from '@mui/material/colors'
 import Toast from './Toast'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
-import { useQuery } from '@tanstack/react-query'
+import { NetInfo } from './NetInfo'
 
 /** 
   ~ What it does? ~
@@ -69,8 +63,8 @@ const MetaMaskTooltip = styled(({ className, ...props }) => <Tooltip {...props} 
   }),
 )
 
-const ConnectedButton = ({ handleConnection, connectedAddress, accountButtonConnected, accountButtonInfo }) => {
-  const hoveredGreen = lightGreen['800']
+const ConnectedButton = ({ handleConnection, connectedAddress, accountButtonInfo }) => {
+  const hoveredGreen = deepOrange['800']
   return (
     <MetaMaskTooltip
       title="This connection requires MetaMask. By clicking here, you accept a connection to Metamask"
@@ -93,7 +87,7 @@ const ConnectedButton = ({ handleConnection, connectedAddress, accountButtonConn
         <Typography variant={'button'} fontWeight={'bolder'}>
           {
             // @ts-ignore
-            connectedAddress && connectedAddress.length > 1 ? accountButtonConnected : accountButtonInfo.name
+            connectedAddress && connectedAddress.length > 1 && 'Disconnect'
           }
         </Typography>
       </Button>
@@ -101,28 +95,22 @@ const ConnectedButton = ({ handleConnection, connectedAddress, accountButtonConn
   )
 }
 
-// @ts-ignore
-// @ts-ignore
 export default function Account({ minimized }) {
   const {
     // @ts-ignore
-    injectedProvider,
-    // @ts-ignore
-    setInjectedProvider,
-    // @ts-ignore
     mainnet,
-    // @ts-ignore
-    loadWeb3Modal,
     // @ts-ignore
     targetNetwork,
     // @ts-ignore
-    setShowToast,
+    displayToast,
     // @ts-ignore
     connectedAddress,
     // @ts-ignore
     setConnectedAddress,
     // @ts-ignore
-    selectedChainId,
+    injectedProvider,
+    // @ts-ignore
+    setInjectedProvider,
     // @ts-ignore
     setShowWrongNetworkToast,
     // @ts-ignore
@@ -131,86 +119,116 @@ export default function Account({ minimized }) {
     showWrongNetworkToast,
   } = useContext(BadgeContext)
   let accountButtonInfo
-  accountButtonInfo = { name: 'Connect to Mint', action: loadWeb3Modal }
   const accountButtonConnected = 'Connected'
   // eslint-disable-next-line no-unused-vars
   const [netInfo, setNetInfo] = useState([])
+
+  const checkForWeb3Provider = useCallback(() => {
+    return window.ethereum === undefined ? 'Not Found' : 'Found'
+  }, [])
+
+  const logoutOfWeb3Modal = useCallback(async () => {
+    if (injectedProvider && injectedProvider.provider && typeof injectedProvider.provider.disconnect == 'function') {
+      await injectedProvider.provider.disconnect()
+    }
+    setTimeout(() => {
+      window.location.reload()
+    }, 1)
+  }, [injectedProvider])
+
+  const loadWeb3Modal = useCallback(async () => {
+    if (checkForWeb3Provider() === 'Not Found') {
+      displayToast()
+      return
+    }
+    const provider = window.ethereum
+    setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
+
+    provider.on('chainChanged', chainId => {
+      setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
+    })
+    provider.on('accountsChanged', accounts => {
+      setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
+    })
+    // Subscribe to session disconnection
+    provider.on('disconnect', (code, reason) => {
+      console.log(code, reason)
+      logoutOfWeb3Modal()
+    })
+
+    // setTabValue(prev => prev)
+  }, [checkForWeb3Provider, displayToast, logoutOfWeb3Modal, setInjectedProvider])
+
+  accountButtonInfo = { name: 'Connect to Mint', action: loadWeb3Modal }
   const display = !minimized && (
     <Box>
-      {
-        connectedAddress && connectedAddress.length > 1 ? (
-          <Address
-            address={connectedAddress}
-            ensProvider={mainnet}
-            blockExplorer={targetNetwork.blockExplorer}
-            fontSize={16}
-          />
-        ) : null
-        // (
-        //   <Typography variant="subtitle1" fontWeight={500} mb={3} sx={{ color: '#333333' }} component={'span'}>
-        //     There is no address connected to this wallet! Click the button to connect and view your wallet!
-        //   </Typography>
-        // )
-      }
-      {/* <Balance address={connectedAddress} provider={localProvider} price={price} size={20} /> */}
+      {connectedAddress && connectedAddress.length > 1 ? (
+        <Address
+          address={connectedAddress}
+          ensProvider={mainnet}
+          blockExplorer={targetNetwork.blockExplorer}
+          fontSize={16}
+        />
+      ) : null}
     </Box>
   )
 
   const handleConnection = async () => {
-    const chainInfo = await getCurrentChainId()
     let accounts
-    if (!chainInfo && chainInfo === undefined) {
-      setShowToast(true)
-      return
-    }
-    const { chainId, networkId } = chainInfo[0]
-    if (chainId !== selectedChainId) {
+    await loadWeb3Modal()
+    if (checkForWeb3Provider() === 'Not Found') return
+    const chainInfo = await getCurrentChainId()
+    const { chainId } = chainInfo[0]
+    if (chainId !== 5) {
+      switchToGoerli()
+      accounts = await window.ethereum.request({
+        method: 'eth_requestAccounts',
+      })
       setShowWrongNetworkToast(true)
-      if (chainId === 5) {
-        await window.ethereum.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: ethers.utils.hexValue(externalParams[1]['chainId']) }],
-        })
-      } else if (chainId === 10) {
-        await window.ethereum.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: ethers.utils.hexValue(externalParams[0]['chainId']) }],
-        })
-      }
-      // return
-    }
-    accountButtonInfo.action()
-    if (injectedProvider === null) setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
-    accounts = await window.ethereum.request({
-      method: 'eth_requestAccounts',
-    })
-    // provider = new ethers.providers.Web3Provider(window.ethereum)
-    if (chainId === 5 && networkId === 5) {
-      await switchToGoerli()
       setConnectedAddress(accounts[0])
       setNetInfo(chainInfo)
-      return
     }
-    if (chainId === 10 && networkId === 10) {
-      await switchToOptimism()
+    if (chainId === 5) {
+      accounts = await window.ethereum.request({
+        method: 'eth_requestAccounts',
+      })
       setConnectedAddress(accounts[0])
       setNetInfo(chainInfo)
     }
   }
 
-  // useEffect(() => {
-  //   if (window.ethereum !== undefined) {
-  //     window.ethereum.on('chainChanged', chainid => {
-  //       window.location.reload()
-  //     })
-  //   }
+  useEffect(() => {
+    if (checkForWeb3Provider() === 'Not Found') {
+      displayToast()
+      return
+    }
+    window.ethereum.on('chainChanged', async chainId => {
+      if (!netInfo && netInfo.length) setNetInfo(await getCurrentChainId())
+      if (Number(chainId) !== 5) {
+        await switchToGoerli()
+      }
+    })
+    return () => {
+      checkForWeb3Provider() === 'Found'
+        ? window.ethereum.removeListener('chainChanged', () => console.log('removed'))
+        : console.log('Metamask is not installed')
+    }
+  }, [checkForWeb3Provider, displayToast, netInfo])
 
-  //   return () => {
-  //     if (window.ethereum !== undefined) {
-  //       window.ethereum.removeAllListeners('chainChanged')
-  //     }
-  //   }
-  // }, [])
+  useEffect(() => {
+    if (checkForWeb3Provider() === 'Not Found') {
+      displayToast()
+      return
+    }
+    window.ethereum.on('accountsChanged', account => {
+      if (account.length === 0) displayToast()
+      if (account[0] !== connectedAddress) setConnectedAddress(account[0])
+    })
+
+    return () => {
+      window.ethereum.removeListener('accountsChanged', () => console.log('accountsChanged removed!'))
+    }
+  }, [checkForWeb3Provider, connectedAddress, displayToast, setConnectedAddress])
 
   const wrongNetworkSnackBar = (
     <>
@@ -226,11 +244,9 @@ export default function Account({ minimized }) {
       </IconButton>
     </>
   )
-  const errorMsg = `Network not supported! Currently supported network: ${
-    selectedChainId === 5 ? 'Goerli' : selectedChainId === 10 ? 'Optimism' : ''
-  }`
   /* SETUP TOAST FOR WRONG NETWORK */
   const WrongNetworkToast = ({ showWrongNetworkToast, closeWrongNetworkToast, wrongNetworkSnackBar }) => {
+    const errorMsg = 'Network not supported!'
     return (
       <Toast
         showToast={showWrongNetworkToast}
@@ -245,10 +261,9 @@ export default function Account({ minimized }) {
       {display}
       {window.ethereum && window.ethereum.isConnected() && connectedAddress && connectedAddress.length ? (
         <ConnectedButton
-          accountButtonConnected={accountButtonConnected}
           accountButtonInfo={accountButtonInfo}
           connectedAddress={connectedAddress}
-          handleConnection={handleConnection}
+          handleConnection={logoutOfWeb3Modal}
         />
       ) : (
         <MetaMaskTooltip
@@ -277,20 +292,13 @@ export default function Account({ minimized }) {
         wrongNetworkSnackBar={wrongNetworkSnackBar}
       />
 
-      {netInfo && netInfo.length > 0 && connectedAddress && connectedAddress.length > 1
-        ? netInfo.map(n => (
-            <Typography
-              key={n.chainId}
-              component={'span'}
-              variant={'caption'}
-              ml={2}
-              fontWeight={600}
-              color={'#ff0420'}
-              alignItems={'center'}
-              justifyContent={'center'}
-            >{`You are connected to ${n.name}`}</Typography>
-          ))
-        : null}
+      <NetInfo
+        netInfo={netInfo}
+        connectedAddress={connectedAddress}
+        checkForWeb3Provider={checkForWeb3Provider}
+        setNetInfo={setNetInfo}
+        displayToast={displayToast}
+      />
     </Box>
   )
 }

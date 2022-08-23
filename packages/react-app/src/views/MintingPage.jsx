@@ -1,10 +1,8 @@
-import React, { useReducer, useState, useContext, useEffect } from 'react'
+import React, { useReducer } from 'react'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import MintingPageCard from '../components/MintingPageCard'
 import MintingActions from 'components/MintingActions'
-import Account from 'components/Account'
-import { BadgeContext } from 'contexts/BadgeContext'
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import externalContracts from 'contracts/external_contracts'
@@ -40,8 +38,6 @@ function appStateReducer(state, actionType) {
 }
 
 export default function MintingPage() {
-  // @ts-ignore
-  const { injectedProvider, setConnectedAddress } = useContext(BadgeContext)
   // @ts-ignore
   const [appState, appDispatch] = useReducer(appStateReducer, defaultState)
 

@@ -27,7 +27,8 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 export default function MintingActions({ contractRef }) {
   const [message, setMessage] = useState('')
   // @ts-ignore
-  const { logoutOfWeb3Modal } = useContext(BadgeContext)
+  const { injectedProvider } = useContext(BadgeContext)
+
   const [walletAddress, setWalletAddress] = useState('')
   const [showToast, setShowToast] = useState(false)
   const [showFormErrorToast, setShowFormErrorToast] = useState(false)
@@ -45,6 +46,8 @@ export default function MintingActions({ contractRef }) {
   }
   const showFormError = () => setShowFormErrorToast(true)
   const closeFormError = () => setShowFormErrorToast(false)
+
+  console.log('injectedProvider is now ', { injectedProvider })
 
   const formErrorSnackBar = (
     <>
@@ -80,13 +83,20 @@ export default function MintingActions({ contractRef }) {
       displayToast()
       return
     }
-    let provider = new ethers.providers.Web3Provider(window.ethereum)
+    // let provider = new ethers.providers.Web3Provider(window.ethereum)
     if (receiverAddress === '' || receiverAddress === undefined || receiverAddress === null) {
       // console.log('the form must have an input with a valid account hash!')
       showFormError()
       return
     }
-    let contract = new ethers.Contract(contractRef.address, contractRef.abi, provider.getSigner())
+    // if (provider === null) {
+    //   setProvider(new ethers.providers.Web3Provider(window.ethereum))
+    // }
+    if (injectedProvider === null || injectedProvider === undefined) {
+      console.log('you might not be logged in because provider is null or undefined', { injectedProvider })
+      return
+    }
+    let contract = new ethers.Contract(contractRef.address, contractRef.abi, injectedProvider.getSigner())
     console.log({ contract })
     try {
       setMessage('Please approve the transaction and wait for the validation')
@@ -98,7 +108,7 @@ export default function MintingActions({ contractRef }) {
       setMessage('error while sending the transaction. ' + e.message)
     }
     setTimeout(() => setMessage(''), 10000)
-    provider = null
+    // provider = null
   }
 
   const ShowFormError = ({ showToast, closeToast, snackBarAction, message }) => {
@@ -107,7 +117,6 @@ export default function MintingActions({ contractRef }) {
 
   const doMinting = async () => {
     await mintBadge(walletAddress)
-    await logoutOfWeb3Modal()
   }
 
   return (

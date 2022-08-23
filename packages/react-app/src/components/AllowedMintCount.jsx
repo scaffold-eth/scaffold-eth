@@ -22,6 +22,45 @@ export default function AllowedMintCount() {
   }, [])
   const [mintCount, setMintCount] = useState('0')
 
+  const checkBalance = useCallback(async () => {
+    if (window.ethereum === undefined) return
+    const goerliContractReference = externalContracts['5'].contracts.REMIX_REWARD
+    const optimismContractReference = externalContracts['10'].contracts.REMIX_REWARD
+    let result
+    const chainInfo = await getCurrentChainId()
+    try {
+      if (chainInfo[0].chainId !== 5 || chainInfo[0].chainId !== 10) return
+      if (chainInfo[0].chainId === 5) {
+        result = ethers.BigNumber.from(
+          await allowedMinting(goerliContractReference, localProvider, connectedAddress),
+        ).toNumber()
+      }
+      if (chainInfo[0].chainId === 10) {
+        result = ethers.BigNumber.from(
+          await allowedMinting(optimismContractReference, localProvider, connectedAddress),
+        ).toNumber()
+      }
+      if (parseInt(mintCount) === result) return
+      setMintCount(result.toString())
+    } catch (error) {
+      console.log({ error })
+    }
+  }, [allowedMinting, connectedAddress, localProvider, mintCount])
+
+  useEffect(() => {
+    if (window.ethereum === undefined) return
+    window.ethereum.on('accountsChanged', async account => {
+      await checkBalance()
+    })
+
+    return () => {
+      if (window.ethereum === undefined) return
+      window.ethereum.removeListener('accountsChanged', () =>
+        console.log('Removed accountsChanged from AllowedMintCount'),
+      )
+    }
+  }, [checkBalance])
+
   useEffect(() => {
     if (localProvider === undefined || connectedAddress === undefined) return
     const run = async () => {
@@ -58,30 +97,9 @@ export default function AllowedMintCount() {
     }
   }, [allowedMinting, connectedAddress, localProvider])
 
-  useEffect(() => {
-    if (window.ethereum === undefined) return
-    const goerliContractReference = externalContracts['5'].contracts.REMIX_REWARD
-    const optimismContractReference = externalContracts['10'].contracts.REMIX_REWARD
-    let result
-    ;(async () => {
-      const chainInfo = await getCurrentChainId()
-      try {
-        if (chainInfo[0].chainId !== 5 || chainInfo[0].chainId !== 10) return
-        if (chainInfo[0].chainId === 5) {
-          result = ethers.BigNumber.from(
-            await allowedMinting(goerliContractReference, localProvider, connectedAddress),
-          ).toNumber()
-        }
-        if (chainInfo[0].chainId === 10) {
-          result = ethers.BigNumber.from(
-            await allowedMinting(optimismContractReference, localProvider, connectedAddress),
-          ).toNumber()
-        }
-        if (parseInt(mintCount) === result) return
-        setMintCount(result.toString())
-      } catch (error) {}
-    })()
-  }, [allowedMinting, connectedAddress, localProvider, mintCount])
+  // useEffect(() => {
+  //   checkBalance()
+  // }, [checkBalance])
 
   return (
     <>
