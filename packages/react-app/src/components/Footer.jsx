@@ -6,11 +6,24 @@ import GitHubIcon from '@mui/icons-material/GitHub'
 import TwitterIcon from '@mui/icons-material/Twitter'
 import LinkedInIcon from '@mui/icons-material/LinkedIn'
 import Paper from '@mui/material/Paper'
+import Button from '@mui/material/Button'
 
 const footerCategories = {
-  PRODUCTS: ['Online IDE', 'Desktop App', 'Ethereum Remix', 'RemixD'],
-  GITHUB: ['Solidity', 'Remix', 'Plugins'],
-  CONTACT: ['Remix', 'Remix IDE', 'Plugins', 'Libraries'],
+  PRODUCTS: [
+    { text: 'Online IDE', url: 'https://remix.ethereum.org/' },
+    { text: 'Desktop App', url: 'https://github.com/ethereum/remix-desktop/releases' },
+    { text: 'Ethereum Remix', url: '' },
+    { text: 'RemixD', url: '' },
+  ],
+  DOCUMENTATION: [
+    { text: 'Remix', url: 'https://remix-ide.readthedocs.io/en/latest/' },
+    { text: 'Solidity', url: 'https://docs.soliditylang.org/' },
+    { text: 'Remix Plugin Engine', url: 'https://github.com/ethereum/remix-plugin#readme' },
+  ],
+  GITHUB: [
+    { text: 'Remix', url: 'https://github.com/ethereum/remix-project' },
+    { text: 'Remix Plugin Engine', url: 'https://github.com/ethereum/remix-plugin#readme' },
+  ],
 }
 
 function Footer() {
@@ -27,11 +40,11 @@ function Footer() {
               {category}
             </Typography>
             {footerCategories[category].map(chilrn => (
-              <>
+              <Button variant={'text'} sx={{ justifyContent: 'left' }} href={chilrn.url}>
                 <Typography variant={'subtitle2'} color={'#333333'} sx={{ textAlign: 'left' }}>
-                  {chilrn}
+                  {chilrn.text}
                 </Typography>
-              </>
+              </Button>
             ))}
           </Box>
         ))}
