@@ -6,7 +6,7 @@ export function NetInfo({ netInfo, setNetInfo, connectedAddress, checkForWeb3Pro
   useEffect(() => {
     if (checkForWeb3Provider() === 'Not Found') {
       console.log('Metamask is not installed!')
-      displayToast()
+      // displayToast()
       return
     }
     window.ethereum.on('chainChanged', async chainId => {

@@ -176,6 +176,7 @@ export default function Account({ minimized }) {
   const handleConnection = async () => {
     let accounts
     await loadWeb3Modal()
+    if (checkForWeb3Provider() === 'Not Found') return
     const chainInfo = await getCurrentChainId()
     const { chainId } = chainInfo[0]
     if (chainId !== 5) {
