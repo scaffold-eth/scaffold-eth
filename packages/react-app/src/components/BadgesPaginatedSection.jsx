@@ -71,18 +71,7 @@ export default function BadgesPaginatedSection({
         >
           {checkeventBagesAndBadges(badges) ? (
             <AddressedCard badges={badges} />
-          ) : // <Grid
-          //   item
-          //   md={'auto'}
-          //   lg={'auto'}
-          //   mt={-12}
-          //   ml={'auto'}
-          //   mr={'auto'}
-          //   alignItems={'center'}
-          //   justifyContent={'center'}
-          // >
-          // </Grid>
-          pagedBadges && pagedBadges.length > 0 ? (
+          ) : pagedBadges && pagedBadges.length > 0 ? (
             [...new Set(pagedBadges)].map(event => {
               let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
               return (
