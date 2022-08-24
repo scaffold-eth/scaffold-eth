@@ -10,6 +10,8 @@ import Button from '@mui/material/Button'
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import makeStyles from '@mui/styles/makeStyles'
+import IconButton from '@mui/material/IconButton'
+import Grid from '@mui/material/Grid'
 
 const footerCategories = {
   PRODUCTS: [
@@ -33,7 +35,8 @@ const useStyles = makeStyles({
     fill: '#2F6DF2', //'#81a6f7',
     width: '45px',
     float: 'left',
-    marginLeft: 5,
+    marginLeft: 45,
+    marginRight: 5,
   },
 })
 
@@ -44,39 +47,53 @@ function Footer() {
   const mobileResponsiveMatch = useMediaQuery('(min-width:600px)')
   return (
     <Paper component={'footer'} sx={{ marginTop: 5 }}>
-      <Box display={'flex'} justifyContent={'space-between'}>
-        <Box>
+      <Grid container spacing={10}>
+        <Grid item xs={12} md={3} lg={3}>
           <Logo useStyles={useStyles} />
-        </Box>
+        </Grid>
         {Object.keys(footerCategories).map(category => (
-          <Box display={'flex'} flexDirection={'column'} justifyContent={'left'} gap={5} rowGap={1}>
-            <Typography variant={'h6'} color={'#666666'} sx={{ textAlign: 'left' }}>
+          <Grid item sx={{ textAlign: 'left' }} xs={6}>
+            <Typography variant={'h6'} color={'#666666'}>
               {category}
             </Typography>
             {footerCategories[category].map(chilrn => (
-              <Button variant={'text'} sx={{ justifyContent: 'left' }} href={chilrn.url}>
-                <Typography variant={'subtitle1'} color={'#333333'} sx={{ textAlign: 'left' }}>
-                  {chilrn.text}
-                </Typography>
-              </Button>
+              <Box component={'ul'} sx={{ paddingLeft: 0 }}>
+                <li style={{ listStyle: 'none' }}>
+                  <Button variant={'text'} href={chilrn.url}>
+                    <Typography variant={'subtitle1'} color={'#333333'}>
+                      {chilrn.text}
+                    </Typography>
+                  </Button>
+                </li>
+              </Box>
             ))}
-          </Box>
+          </Grid>
         ))}
-        <Box display={'flex'} mr={15}>
-          <EmailIcon sx={{ color: '#4F4F4F', marginRight: 5, fontSize: 48 }} />
-          <GitHubIcon sx={{ color: '#4F4F4F', marginRight: 5, fontSize: 48 }} />
-          <TwitterIcon sx={{ color: '#4f4f4f', marginRight: 5, fontSize: 48 }} />
-          <LinkedInIcon sx={{ color: '#4f4f4f', marginRight: 5, fontSize: 48 }} />
-        </Box>
-      </Box>
+      </Grid>
       <Box
         borderTop={'1px solid #EAEAEA'}
-        display={'block'}
+        display={'flex'}
         sx={{ marginTop: 5, height: 66 }}
         p={5}
+        justifyContent={'space-between'}
         alignItems={'center'}
       >
+        <Box width={80}></Box>
         <Typography variant={'subtitle2'}>&copy; 2022 Remix. All rights reserved.</Typography>
+        <Box mr={15} sx={{ float: 'right' }}>
+          <IconButton size={'small'}>
+            <EmailIcon sx={{ color: '#4F4F4F', marginRight: 5, fontSize: 24 }} />
+          </IconButton>
+          <IconButton size={'small'}>
+            <GitHubIcon sx={{ color: '#4F4F4F', marginRight: 5, fontSize: 24 }} />
+          </IconButton>
+          <IconButton size={'small'}>
+            <TwitterIcon sx={{ color: '#4f4f4f', marginRight: 5, fontSize: 24 }} />
+          </IconButton>
+          <IconButton size={'small'}>
+            <LinkedInIcon sx={{ color: '#4f4f4f', marginRight: 5, fontSize: 24 }} />
+          </IconButton>
+        </Box>
       </Box>
     </Paper>
   )

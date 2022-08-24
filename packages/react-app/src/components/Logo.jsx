@@ -1,6 +1,9 @@
 import React from 'react'
 import { Box, Typography } from '@mui/material'
 
+/**
+ * @param {{ useStyles: () => any; }} props
+ */
 export default function Logo(props) {
   const classes = props.useStyles()
   return (
