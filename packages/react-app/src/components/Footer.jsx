@@ -7,7 +7,7 @@ import TwitterIcon from '@mui/icons-material/Twitter'
 import LinkedInIcon from '@mui/icons-material/LinkedIn'
 import Paper from '@mui/material/Paper'
 import Button from '@mui/material/Button'
-import ButtonUnstyled from '@mui/base/ButtonUnstyled'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import makeStyles from '@mui/styles/makeStyles'
 import IconButton from '@mui/material/IconButton'
 import Grid from '@mui/material/Grid'
@@ -86,17 +86,30 @@ function Footer() {
         <Box width={80}></Box>
         <Typography variant={'subtitle2'}>&copy; 2022 Remix. All rights reserved.</Typography>
         <Box mr={5} sx={{ float: 'right' }}>
-          <IconButton size={'small'}>
+          <IconButton size={'small'} href={'mailto: remix@ethereum.org'} target={'_blank'} rel={'noreferrer'}>
             <EmailIcon sx={{ color: '#4F4F4F', marginRight: 3, fontSize: 24 }} />
           </IconButton>
-          <IconButton size={'small'}>
+          <IconButton
+            size={'small'}
+            href={'https://github.com/ethereum/remix-project'}
+            target={'_blank'}
+            rel={'noreferrer'}
+          >
             <GitHubIcon sx={{ color: '#4F4F4F', marginRight: 3, fontSize: 24 }} />
           </IconButton>
-          <IconButton size={'small'}>
+          <IconButton size={'small'} href={'https://twitter.com/EthereumRemix'} target={'_blank'} rel={'noreferrer'}>
             <TwitterIcon sx={{ color: '#4f4f4f', marginRight: 3, fontSize: 24 }} />
           </IconButton>
-          <IconButton size={'small'}>
+          <IconButton
+            size={'small'}
+            href={'https://www.linkedin.com/company/ethereum-remix/'}
+            target={'_blank'}
+            rel={'noreferrer'}
+          >
             <LinkedInIcon sx={{ color: '#4f4f4f', marginRight: 3, fontSize: 24 }} />
+          </IconButton>
+          <IconButton size={'small'} href={'https://medium.com/remix-ide'} target={'_blank'} rel={'noreferrer'}>
+            <FontAwesomeIcon icon={['fal', 'medium']} />
           </IconButton>
         </Box>
       </Box>
