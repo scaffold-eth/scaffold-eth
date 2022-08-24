@@ -6,7 +6,7 @@ import Account from './Account'
 
 export default function Navbar(props) {
   const { tabValue, setTabValue } = props
-  const [enableButton, disableButton] = useState(false)
+  const [enableButton] = useState(false)
   return (
     <>
       <Box sx={{ flexGrow: 1, marginBottom: 3 }}>
