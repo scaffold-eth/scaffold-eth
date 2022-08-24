@@ -32,7 +32,7 @@ const footerCategories = {
   ],
   COMPANY: [
     { text: 'About', url: '' },
-    { text: 'Caeeres', url: '' },
+    { text: 'Careers', url: '' },
   ],
 }
 const useStyles = makeStyles({
