@@ -6,12 +6,6 @@ import MintingActions from 'components/MintingActions'
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import externalContracts from 'contracts/external_contracts'
-const { ethers } = require('ethers')
-
-const APPSTATEACTION = {
-  GOERLICHAINID: '5',
-  OPTIMISMCHAINID: '10',
-}
 
 const defaultState = {
   chainId: '5',

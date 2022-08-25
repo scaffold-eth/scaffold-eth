@@ -7,11 +7,9 @@ import TwitterIcon from '@mui/icons-material/Twitter'
 import LinkedInIcon from '@mui/icons-material/LinkedIn'
 import Paper from '@mui/material/Paper'
 import Button from '@mui/material/Button'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import makeStyles from '@mui/styles/makeStyles'
 import IconButton from '@mui/material/IconButton'
 import Grid from '@mui/material/Grid'
-import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
 
 const footerCategories = {
@@ -48,9 +46,6 @@ const useMakeStyles = props => {
 }
 
 function Footer() {
-  const theme = useTheme()
-  const mobile400 = useMediaQuery(theme.breakpoints.between('sm', 'md'))
-  const mobile900 = useMediaQuery('(min-width:900px)')
   const mobileResponsiveMatch = useMediaQuery('(min-width:600px)')
   const payload = {
     fill: '#2F6DF2',
