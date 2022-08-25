@@ -58,13 +58,13 @@ contract YourCollectible is ERC721, Ownable {
   //mapping (uint256 => bytes3) public color;
   //mapping (uint256 => uint256) public chubbiness;
 
-  uint256 mintDeadline = block.timestamp + 24 hours;
+  //uint256 mintDeadline = block.timestamp + 24 hours;
 
   function mintItem()
       public
       returns (uint256)
   {
-      require( block.timestamp < mintDeadline, "DONE MINTING");
+      //require( block.timestamp < mintDeadline, "DONE MINTING");
       //_tokenIds.increment();
 
       uint256 id = dodos.length;

@@ -532,6 +532,7 @@ function App(props) {
                         </div>:<Card title="Challenge">
                           <div style={{ padding: 8 }}>
                             <Input
+                              type="number"
                               style={{ textAlign: "center" }}
                               placeholder={"Dodo to challenge"}
                               onChange={e => {
@@ -544,18 +545,19 @@ function App(props) {
                           <div style={{ padding: 8 }}>
 
                             <Button
-                              onClick={async () => {
-                                console.log("id: ",id);
-                                console.log("dodoToChallenge: ",dodoToChallenge);
-                                const result = await tx(writeContracts.YourCollectible.challenge(id, dodoToChallenge));
-                                const fullResult = result && await result.wait()
-                                let nextChallenges = challenges + 1
-                                setChallenges(nextChallenges)
+                              onClick={async () => {  
+                                try {                        
+                                  console.log("id: ",id);
+                                  console.log("dodoToChallenge: ",dodoToChallenge);
+                                  const result = await tx(writeContracts.YourCollectible.challenge(id, dodoToChallenge));
+                                  const fullResult = result && await result.wait()
+                                  let nextChallenges = challenges + 1
+                                  setChallenges(nextChallenges)
 
-                                console.log("fullResult",fullResult.events[0].args.fightid.toNumber())
-                                //setRoute("/fight/"+fullResult.events[0].args.fightid.toNumber());
-                                //window.location = "/fight/"+fullResult.events[0].args.fightid.toNumber()
-                                window.open("/fight/"+fullResult.events[0].args.fightid.toNumber(),"_blank")
+                                  console.log("fullResult",fullResult.events[0].args.fightid.toNumber())
+                                  window.open("/fight/"+fullResult.events[0].args.fightid.toNumber(),"_blank")
+                                } catch (e) {
+                                }                               
                               }}
                             >
                               Challenge
