@@ -7,6 +7,7 @@ import { ethers } from 'ethers'
 import { useContext, useEffect, useState } from 'react'
 import { BadgeContext } from 'contexts/BadgeContext'
 import Fab from '@mui/material/Fab'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import { useCallback } from 'react'
 import AddressedCard from './AddressedCard'
 
@@ -24,6 +25,7 @@ export default function BadgesPaginatedSection({
   const contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
   const [pageNumber, setPageNumber] = useState(1)
   const [pagedBadges, setPagedBadges] = useState([])
+  const mobileResponsiveMatch = useMediaQuery('(min-width:600px)')
   const getPaginationData = useCallback(
     (pgSize, pgNumber) => {
       const startIndex = pgNumber * pgSize - pgSize
@@ -125,29 +127,36 @@ export default function BadgesPaginatedSection({
               )
             })
           ) : null}
-          {!checkeventBagesAndBadges(badges) ? (
-            <Grid item justifySelf={'flex-end'}>
-              <Fab
-                variant={'extended'}
-                size="large"
-                sx={{
-                  color: 'whitesmoke',
-                  ':hover': {
-                    backgroundColor: '#1565c0',
-                  },
-                  padding: 3,
-                  backgroundColor: '#81a6f7',
-                }}
-                disabled={!eventBadges.length}
-                onClick={loadMore}
-              >
-                <DownloadingRoundedIcon sx={{ marginRight: 2, fontSize: 48 }} />
-                <Typography variant="button" fontWeight={'700'}>
-                  Load More
-                </Typography>
-              </Fab>
-            </Grid>
-          ) : null}
+          <Fab
+            variant={'extended'}
+            size="large"
+            sx={{
+              position: 'fixed',
+              bottom: mobileResponsiveMatch ? 590 : 400,
+              top: mobileResponsiveMatch ? 690 : 400,
+              right: 36,
+              color: 'whitesmoke',
+              ':hover': {
+                backgroundColor: '#1565c0',
+              },
+              padding: 3,
+              backgroundColor: '#81a6f7',
+            }}
+            disabled={!eventBadges.length}
+            onClick={() => {
+              setPageNumber(prev => prev + 1)
+              setPagedBadges(prevArray => {
+                const newFetch = returnPaginatedData(pageSize, pageNumber)
+                const result = [...prevArray, ...newFetch]
+                return result
+              })
+            }}
+          >
+            <DownloadingRoundedIcon sx={{ marginRight: 2, fontSize: 48 }} />
+            <Typography variant="button" fontWeight={'700'}>
+              Load More
+            </Typography>
+          </Fab>
         </Grid>
       </Box>
     </>
