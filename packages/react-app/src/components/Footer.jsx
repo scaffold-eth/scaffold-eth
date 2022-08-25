@@ -35,24 +35,35 @@ const footerCategories = {
     { text: 'Careers', url: '' },
   ],
 }
-const useStyles = makeStyles({
-  logo: {
-    fill: '#2F6DF2', //'#81a6f7',
-    width: '45px',
-    float: 'left',
-    marginRight: 5,
-  },
-})
+
+const useMakeStyles = props => {
+  return makeStyles({
+    logo: {
+      fill: props.fill,
+      width: props.width,
+      float: props.float,
+      marginLeft: props.leftMargin,
+    },
+  })
+}
 
 function Footer() {
   const theme = useTheme()
   const mobile400 = useMediaQuery(theme.breakpoints.between('sm', 'md'))
   const mobile900 = useMediaQuery('(min-width:900px)')
   const mobileResponsiveMatch = useMediaQuery('(min-width:600px)')
+  const payload = {
+    fill: '#2F6DF2',
+    width: '45px',
+    float: 'left',
+    marginRight: 5,
+  }
+  const useStyles = useMakeStyles(payload)
+
   return (
     <Paper component={'footer'} sx={{ marginTop: 5 }}>
       <Grid container spacing={0.5} pl={mobileResponsiveMatch ? 10 : 1}>
-        <Grid item xs={12} md={3} lg={3}>
+        <Grid item xs={12} md={3} lg={3} sx={{ marginBottom: mobileResponsiveMatch ? 3 : 0 }}>
           <Logo useStyles={useStyles} />
         </Grid>
         {Object.keys(footerCategories).map(category => (
@@ -109,7 +120,7 @@ function Footer() {
             <LinkedInIcon sx={{ color: '#4f4f4f', marginRight: 3, fontSize: 24 }} />
           </IconButton>
           <IconButton size={'small'} href={'https://medium.com/remix-ide'} target={'_blank'} rel={'noreferrer'}>
-            <FontAwesomeIcon icon={['fal', 'medium']} />
+            M
           </IconButton>
         </Box>
       </Box>
