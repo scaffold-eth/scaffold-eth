@@ -430,8 +430,11 @@ function App(props) {
 
             <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
               {isSigner?(
-                <Button type={"primary"} onClick={()=>{
-                  tx( writeContracts.YourCollectible.mintItem() )
+                <Button type={"primary"} onClick={async ()=>{
+
+                  let price = await writeContracts.YourCollectible.price()
+
+                  tx( writeContracts.YourCollectible.mintItem({value:price.mul(5)}) )
                 }}>MINT</Button>
               ):(
                 <Button type={"primary"} onClick={loadWeb3Modal}>CONNECT WALLET</Button>
@@ -452,6 +455,8 @@ function App(props) {
                   let fightId = item && item.fight && item.fight.toNumber()
 
                   let wins = item && item.wins && item.wins.toNumber()
+
+                  let lives = item && item.lives// && item.lives.toNumber()
 
                   if(fightId){
                     inMatch = (
@@ -489,7 +494,7 @@ function App(props) {
                       <Card
                         title={
                           <div>
-                            <span style={{ fontSize: 18, marginRight: 8 }}>{item.name} ({wins} win{wins==1?"":"s"})</span>
+                            <span style={{ fontSize: 18, marginRight: 8 }}>{item.name} ({wins} win{wins==1?"":"s"}) [{lives}💛]</span>
                           </div>
                         }
                       >

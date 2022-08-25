@@ -10,7 +10,7 @@ import 'base64-sol/base64.sol';
 import './HexStrings.sol';
 import './ToColor.sol';
 
-import "hardhat/console.sol";
+//import "hardhat/console.sol";
 //learn more: https://docs.openzeppelin.com/contracts/3.x/erc721
 
 // GET LISTED ON OPENSEA: https://testnets.opensea.io/get-listed/step-two
@@ -24,6 +24,7 @@ contract YourCollectible is ERC721, Ownable {
   constructor() public ERC721("Dodo Birds Fight", "DODO") {
     // create a junk bird for index 0
     dodos.push(Dodo({
+      lives: 0,
       wins: 0,
       color: 0,
       fight: 0
@@ -47,7 +48,8 @@ contract YourCollectible is ERC721, Ownable {
 
 
   struct Dodo {
-      uint256 wins;
+      uint8 lives;
+      uint248 wins;
       bytes3 color;
       uint256 fight;
   }
@@ -58,13 +60,24 @@ contract YourCollectible is ERC721, Ownable {
   //mapping (uint256 => bytes3) public color;
   //mapping (uint256 => uint256) public chubbiness;
 
-  uint256 mintDeadline = block.timestamp + 24 hours;
+  //uint256 mintDeadline = block.timestamp + 24 hours;
+
+  uint256 public price = 0.01 ether;
+
+  address public constant dodoTreasury = 0xF0b8A88fF89A6C581b9f99fF55a6766593c192B0;
+
+  function setPrice(uint256 amount) public {
+    require(msg.sender==dodoTreasury,"not treasury");
+    price = amount;
+  }
 
   function mintItem()
       public
+      payable
       returns (uint256)
   {
-      require( block.timestamp < mintDeadline, "DONE MINTING");
+      require( msg.value >= price, "not enough");
+      //require( block.timestamp < mintDeadline, "DONE MINTING");
       //_tokenIds.increment();
 
       uint256 id = dodos.length;
@@ -75,10 +88,14 @@ contract YourCollectible is ERC721, Ownable {
       //chubbiness[id] = 35+((55*uint256(uint8(predictableRandom[3])))/255);
 
       dodos.push(Dodo({
+        lives: uint8(msg.value/price),
         wins: 0,
         color: bytes2(predictableRandom[0]) | ( bytes2(predictableRandom[1]) >> 8 ) | ( bytes3(predictableRandom[2]) >> 16 ),
         fight: 0
       }));
+
+      (bool sent,) = payable(dodoTreasury).call{value: msg.value}("");
+      require(sent, "failed to treasury");
 
       return id;
   }
@@ -112,7 +129,7 @@ contract YourCollectible is ERC721, Ownable {
 
      bool result = viewProcess(fightid);
 
-     console.log("fightresult",result);
+     //console.log("fightresult",result);
 
      Fight storage fight = fights[fightid];
 
@@ -121,13 +138,18 @@ contract YourCollectible is ERC721, Ownable {
 
      if(result){
        dodo1.wins++;
-       console.log("(dodo 1 won)");
+       //console.log("(dodo 1 won)");
        _burn(fight.id2);
        dodo1.fight=0;
      }else{
        dodo2.wins++;
-       console.log("(dodo 2 won)");
-       _burn(fight.id1);
+       //console.log("(dodo 2 won)");
+       if(dodo1.lives<=1){
+         _burn(fight.id1);
+       }else{
+         dodo1.lives--;
+       }
+
        dodo2.fight=0;
      }
 
@@ -137,7 +159,7 @@ contract YourCollectible is ERC721, Ownable {
 
   }
 
-  function viewProcess(uint256 fightid) internal returns (bool winner) {
+  function viewProcess(uint256 fightid) internal view returns (bool winner) {
     Fight storage fight = fights[fightid];
 
     require(fight.id1>0,"unknown fight");
@@ -150,7 +172,7 @@ contract YourCollectible is ERC721, Ownable {
     bool whosTurn = false;
 
     uint8 coinflip = uint8(lessPredictableRandom[index++]);
-    console.log("coinflip",coinflip);
+    //console.log("coinflip",coinflip);
     if(coinflip>=128){
       whosTurn=true;
     }
@@ -162,16 +184,16 @@ contract YourCollectible is ERC721, Ownable {
     while(health1>0&&health2>0){
 
       if(index>=32){
-        console.log("hashing");
+        //console.log("hashing");
         lessPredictableRandom = keccak256(abi.encodePacked(lessPredictableRandom));
-        console.log("new hashing");
+        //console.log("new hashing");
         index=0;
       }
 
       uint8 thisDamage = uint8(lessPredictableRandom[index++])/divider;
 
       if(whosTurn){
-        console.log("damaging bird 1",thisDamage);
+        //console.log("damaging bird 1",thisDamage);
         /*if(health1<thisDamage-4) {
           _burn(fight.id1);
         }else */if(health1<thisDamage) {
@@ -180,7 +202,7 @@ contract YourCollectible is ERC721, Ownable {
           health1-=thisDamage;
         }
       }else{
-        console.log("damaging bird 2",thisDamage);
+        //console.log("damaging bird 2",thisDamage);
         /*if(health2<thisDamage-4) {
           _burn(fight.id2);
         }else */if(health2<thisDamage) {
@@ -196,10 +218,10 @@ contract YourCollectible is ERC721, Ownable {
 
     if(health1>0){
       return true;
-      console.log("dodo1 wins!");
+      //console.log("dodo1 wins!");
     } else {
       return false;
-      console.log("dodo2 wins!");
+      //console.log("dodo2 wins!");
     }
 
   }

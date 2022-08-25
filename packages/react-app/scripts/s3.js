@@ -8,7 +8,7 @@ const BUCKETNAME = "dodofights.com"; // <<---- SET YOUR BUCKET NAME AND CREATE a
 
 
  const invalidation = {
-  awsDistributionId: "E2E1NVVX6PLPQQ",
+  awsDistributionId: "E2TVGA9IX29XN",
   awsInvalidationPath: "/*"
  }
 

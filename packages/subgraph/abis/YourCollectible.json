@@ -204,6 +204,19 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "dodoTreasury",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "uint256",
@@ -214,9 +227,14 @@
     "name": "dodos",
     "outputs": [
       {
-        "internalType": "uint256",
+        "internalType": "uint8",
+        "name": "lives",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint248",
         "name": "wins",
-        "type": "uint256"
+        "type": "uint248"
       },
       {
         "internalType": "bytes3",
@@ -314,7 +332,7 @@
         "type": "uint256"
       }
     ],
-    "stateMutability": "nonpayable",
+    "stateMutability": "payable",
     "type": "function"
   },
   {
@@ -357,6 +375,19 @@
         "internalType": "address",
         "name": "",
         "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "price",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -466,6 +497,19 @@
       }
     ],
     "name": "setApprovalForAll",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "setPrice",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
