@@ -20,16 +20,17 @@ const footerCategories = {
     { text: 'RemixD', url: '' },
   ],
   DOCUMENTATION: [
-    { text: 'Remix', url: 'https://remix-ide.readthedocs.io/en/latest/' },
-    { text: 'Solidity', url: 'https://docs.soliditylang.org/' },
-    { text: 'Plugins', url: 'https://github.com/ethereum/remix-plugin#readme' },
+    { text: 'Remix       ', url: 'https://remix-ide.readthedocs.io/en/latest/' },
+    { text: 'Solidity        ', url: 'https://docs.soliditylang.org/' },
+    { text: 'Plugins     ', url: 'https://github.com/ethereum/remix-plugin#readme' },
   ],
   GITHUB: [
-    { text: 'Remix', url: 'https://github.com/ethereum/remix-project' },
-    { text: 'Plugins', url: 'https://github.com/ethereum/remix-plugin#readme' },
+    { text: 'Remix Project', url: 'https://github.com/ethereum/remix-project' },
+    { text: 'Plugins Project', url: 'https://github.com/ethereum/remix-plugin#readme' },
+    { text: 'Libraries', url: '' },
   ],
   COMPANY: [
-    { text: 'About', url: '' },
+    { text: 'About Us', url: '' },
     { text: 'Careers', url: '' },
   ],
 }
@@ -66,17 +67,17 @@ function Footer() {
             <Typography variant={'h6'} color={'#666666'}>
               {category}
             </Typography>
-            {footerCategories[category].map(chilrn => (
-              <Box component={'ul'} sx={{ paddingLeft: 0 }} minWidth={170} maxWidth={180}>
-                <li style={{ listStyle: 'none', padding: 0, width: 150 }}>
-                  <Button variant={'text'} href={chilrn.url} sx={{ padding: 0 }}>
+            <Box component={'ul'} sx={{ paddingLeft: 0, justifyContent: 'left' }} minWidth={170} maxWidth={180}>
+              {footerCategories[category].map(chilrn => (
+                <li style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                  <Button variant={'text'} href={chilrn.url} sx={{ padding: 0, margin: 0 }}>
                     <Typography variant={'body1'} color={'#333333'} p={0}>
                       {`${chilrn.text}`.charAt(0).toUpperCase() + chilrn.text.slice(1)}
                     </Typography>
                   </Button>
                 </li>
-              </Box>
-            ))}
+              ))}
+            </Box>
           </Grid>
         ))}
       </Grid>
