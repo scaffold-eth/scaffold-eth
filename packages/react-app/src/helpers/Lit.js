@@ -7,12 +7,12 @@ const accessControlConditions = [
   {
     contractAddress: "",
     standardContractType: "",
-    chain,
-    method: "",
-    parameters: [":userAddress"],
+    chain: "ethereum",
+    method: "eth_getBalance",
+    parameters: [":userAddress", "latest"],
     returnValueTest: {
-      comparator: "=",
-      value: "0xA4ca1b15fE81F57cb2d3f686c7B13309906cd37B",
+      comparator: ">=",
+      value: "1000000000000", // 0.000001 ETH
     },
   },
 ];
