@@ -143,14 +143,7 @@ export default function BadgesPaginatedSection({
               backgroundColor: '#81a6f7',
             }}
             disabled={!eventBadges.length}
-            onClick={() => {
-              setPageNumber(prev => prev + 1)
-              setPagedBadges(prevArray => {
-                const newFetch = returnPaginatedData(pageSize, pageNumber)
-                const result = [...prevArray, ...newFetch]
-                return result
-              })
-            }}
+            onClick={loadMore}
           >
             <DownloadingRoundedIcon sx={{ marginRight: 2, fontSize: 48 }} />
             <Typography variant="button" fontWeight={'700'}>
