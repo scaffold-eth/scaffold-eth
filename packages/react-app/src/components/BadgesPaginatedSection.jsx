@@ -18,10 +18,11 @@ export default function BadgesPaginatedSection({
   eventBadges,
   setBadges,
 }) {
+  const pageSize = 10
   // @ts-ignore
   const { contractRef, localProvider, mainnet } = useContext(BadgeContext)
+  const contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
   const [pageNumber, setPageNumber] = useState(1)
-  const [pageSize] = useState(10)
   const [pagedBadges, setPagedBadges] = useState([])
   const getPaginationData = useCallback(
     (pgSize, pgNumber) => {
@@ -33,16 +34,17 @@ export default function BadgesPaginatedSection({
     [eventBadges],
   )
 
-  const returnPaginatedData = (pgSize, pgNumber) => {
-    const startIndex = pgNumber * pgSize - pgSize
-    const endIndex = startIndex + pgSize
-    const result = eventBadges.slice(startIndex, endIndex)
-    return result
+  const loadMore = async () => {
+    setPageNumber(prev => prev + 1)
+    setPagedBadges(prevArray => {
+      const result = [...new Set([...prevArray, ...eventBadges])]
+      return result
+    })
   }
 
   useEffect(() => {
     if (pagedBadges.length === 0) {
-      setPagedBadges(getPaginationData(pageSize, pageNumber))
+      setPagedBadges([...new Set(getPaginationData(pageSize, pageNumber))])
     }
   }, [pagedBadges.length, getPaginationData, pageNumber, pageSize])
 
@@ -73,8 +75,7 @@ export default function BadgesPaginatedSection({
           {checkeventBagesAndBadges(badges) ? (
             <AddressedCard badges={badges} />
           ) : pagedBadges && pagedBadges.length > 0 ? (
-            [...new Set(pagedBadges)].map(event => {
-              let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
+            pagedBadges.map(event => {
               return (
                 <Grid
                   item
@@ -138,14 +139,7 @@ export default function BadgesPaginatedSection({
                   backgroundColor: '#81a6f7',
                 }}
                 disabled={!eventBadges.length}
-                onClick={() => {
-                  setPageNumber(prev => prev + 1)
-                  setPagedBadges(prevArray => {
-                    const newFetch = returnPaginatedData(pageSize, pageNumber)
-                    const result = [...prevArray, ...newFetch]
-                    return result
-                  })
-                }}
+                onClick={loadMore}
               >
                 <DownloadingRoundedIcon sx={{ marginRight: 2, fontSize: 48 }} />
                 <Typography variant="button" fontWeight={'700'}>
