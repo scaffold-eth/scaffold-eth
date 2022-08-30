@@ -558,7 +558,7 @@ function App(props) {
               <div style={{ width: 250, margin: "auto", marginTop: 64 }}>
                 <div>Bets:</div>
                 <List
-                  style={{ height: 258, overflow: "hidden" }}
+                  style={{ height: 750, overflow: "hidden" }}
                   dataSource={betEvents}
                   renderItem={item => {
                     return (
@@ -592,7 +592,7 @@ function App(props) {
                 </div>
                 <div>Rolls:</div>
                 <List
-                  style={{ height: 258, overflow: "hidden" }}
+                  style={{ height: 500, overflow: "hidden" }}
                   dataSource={rollEvents}
                   renderItem={item => {
                     return (
@@ -608,7 +608,7 @@ function App(props) {
               <div style={{ width: 250, margin: "auto", marginTop: 32 }}>
                 <div>Winners:</div>
                 <List
-                  style={{ height: 258, overflow: "hidden" }}
+                  style={{ height: 750, overflow: "hidden" }}
                   dataSource={winnerEvents}
                   renderItem={item => {
                     return (
