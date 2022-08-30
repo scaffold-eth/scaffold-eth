@@ -53,26 +53,23 @@ export default function BadgesPaginatedSection({
   return (
     <>
       <Box
+        display={'flex'}
+        flexDirection={'column'}
         sx={{
           background: 'linear-gradient(90deg, #f6e8fc, #f1e6fb, #ede5fb, #e8e4fa, #e3e2f9, #dee1f7, #d9dff6, #d4def4)',
         }}
         mt={15}
-        // mb={10}
       >
         <Grid
           container
           spacing={1}
           ml={'auto'}
           mr={'auto'}
-          mt={15}
+          mt={5}
           paddingRight={3}
           paddingLeft={3}
           rowSpacing={1}
           columnSpacing={{ xs: 1, sm: 1.3, md: 2 }}
-          sx={{
-            background:
-              'linear-gradient(90deg, #f6e8fc, #f1e6fb, #ede5fb, #e8e4fa, #e3e2f9, #dee1f7, #d9dff6, #d4def4)',
-          }}
         >
           {checkeventBagesAndBadges(badges) ? (
             <AddressedCard badges={badges} />
@@ -127,14 +124,19 @@ export default function BadgesPaginatedSection({
               )
             })
           ) : null}
+        </Grid>
+        <Box display={'flex'} justifyContent={'right'} paddingRight={2}>
           <Fab
             variant={'extended'}
             size="large"
             sx={{
-              position: 'fixed',
+              position: 'sticky',
               bottom: mobileResponsiveMatch ? 590 : 400,
-              top: mobileResponsiveMatch ? 690 : 400,
-              right: 36,
+              top: mobileResponsiveMatch ? 805 : 400,
+              alignItems: 'right',
+              justifyContent: 'right',
+              alignSelf: 'end',
+              marginBottom: 5,
               color: 'whitesmoke',
               ':hover': {
                 backgroundColor: '#1565c0',
@@ -150,7 +152,7 @@ export default function BadgesPaginatedSection({
               Load More
             </Typography>
           </Fab>
-        </Grid>
+        </Box>
       </Box>
     </>
   )
