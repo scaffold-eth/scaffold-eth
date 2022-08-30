@@ -1,6 +1,6 @@
 import Portis from "@portis/web3";
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import { Alert, Button, Col, List, Menu, Row } from "antd";
+import { Alert, Button, Col, List, Menu, Row, InputNumber } from "antd";
 import "antd/dist/antd.css";
 import Authereum from "authereum";
 import {
@@ -29,15 +29,7 @@ import { Transactor } from "./helpers";
 // import Hints from "./Hints";
 import { ExampleUI, Hints, Subgraph } from "./views";
 
-function importAll(r) {
-  let images = {};
-  r.keys().map((item, index) => {
-    images[item.replace("./", "")] = r(item);
-  });
-  return images;
-}
-
-const diceImages = importAll(require.context("./images/", false, /\.(png)$/));
+import { JsonRpcProvider, TinyBig } from "essential-eth";
 
 const { ethers } = require("ethers");
 /*
@@ -91,6 +83,8 @@ const localProviderUrl = targetNetwork.rpcUrl;
 const localProviderUrlFromEnv = process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : localProviderUrl;
 if (DEBUG) console.log("🏠 Connecting to provider:", localProviderUrlFromEnv);
 const localProvider = new ethers.providers.StaticJsonRpcProvider(localProviderUrlFromEnv);
+// const essentialProvider = new JsonRpcProvider("https://rpc.scaffoldeth.io:48544");
+const essentialProvider = new JsonRpcProvider(targetNetwork.rpcUrl);
 
 // 🔭 block explorer URL
 const blockExplorer = targetNetwork.blockExplorer;
@@ -250,19 +244,6 @@ function App(props) {
   useOnBlock(mainnetProvider, () => {
     console.log(`⛓ A new mainnet block is here: ${mainnetProvider._lastBlockNumber}`);
   });
-
-  // Then read your DAI balance like:
-  const myMainnetDAIBalance = useContractReader(mainnetContracts, "DAI", "balanceOf", [
-    "0x34aA3F359A9D614239015126635CE7732c18fDF3",
-  ]);
-
-  // keep track of a variable from the contract in the local React state:
-  const purpose = useContractReader(readContracts, "DiceGame", "purpose");
-
-  /*
-  const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
-  console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
-  */
 
   //
   // 🧫 DEBUG 👨🏻‍🔬
@@ -451,73 +432,94 @@ function App(props) {
 
   const winnerEvents = useEventListener(readContracts, "DiceGame", "Winner");
   const rollEvents = useEventListener(readContracts, "DiceGame", "Roll");
-  const difficultyEvents = useEventListener(readContracts, "DiceGame", "Difficulty");
-  const prize = useContractReader(readContracts, "DiceGame", "prize");
+  const betEvents = useEventListener(readContracts, "DiceGame", "Bet");
 
-  const rollRiggedEvents = useEventListener(readContracts, "RiggedRoll", "Roll");
-  const difficultyRiggedEvents = useEventListener(readContracts, "RiggedRoll", "Difficulty");
+  const [number, setNumber] = useState();
+  const [blockNumber, setBlockNumber] = useState(0);
+  const [rollDisabled, setRollDisabled] = useState(true);
 
-  const [diceRolled, setDiceRolled] = useState(false);
-  const [diceRollImage, setDiceRollImage] = useState(null);
-  const [claiming, setClaiming] = useState(false);
+  const futureBlocks = 2;
 
-  let diceRollImg = "";
-  if (diceRollImage) {
-    diceRollImg = <img style={{ width: "300px", heigth: "300px" }} src={diceImages[`${diceRollImage}.png`].default} />;
-  }
+  useOnBlock(localProvider, () => {
+    if (DEBUG) console.log(`⛓ A new local block is here: ${localProvider._lastBlockNumber}`);
+    if (DEBUG) console.log("blockNumber: ", blockNumber);
+    setRollDisabled(
+      blockNumber === 0 ||
+        ethers.BigNumber.from(localProvider._lastBlockNumber) < blockNumber.add(futureBlocks) ||
+        ethers.BigNumber.from(localProvider._lastBlockNumber) > blockNumber.add(futureBlocks + 256),
+    );
+  });
+
+  const bet = async () => {
+    try {
+      const txCur = await tx(
+        writeContracts.DiceGame.bet(number, { value: ethers.utils.parseEther("0.001"), gasLimit: 500000 }),
+      );
+      await txCur.wait();
+      const betData = await readContracts.DiceGame.bets(address);
+      if (DEBUG) console.log("betData: ", betData);
+      const betBlockNumber = betData[1];
+      if (DEBUG) console.log("betBlockNumber: ", betBlockNumber);
+      setBlockNumber(betBlockNumber);
+    } catch (e) {
+      console.log("Failed to bet", e);
+    }
+  };
 
   const rollTheDice = async () => {
-    setDiceRolled(true);
-    setDiceRollImage("ROLL");
+    if (DEBUG) console.log("Roll the dice: ", blockNumber);
 
-    tx(writeContracts.DiceGame.rollTheDice({ value: ethers.utils.parseEther("0.002"), gasLimit: 500000 }), update => {
-      if (update?.status === "failed") {
-        setDiceRolled(false);
-        //setDiceRollImage(null);
-      }
-    });
-  };
+    const futureBlockNumber = blockNumber.add(futureBlocks).toNumber();
+    if (DEBUG) console.log("futureBlockNumber: ", futureBlockNumber);
 
-  const riggedRoll = async () => {
-    tx(writeContracts.RiggedRoll.riggedRoll({ gasLimit: 500000 }), update => {
-      console.log("TX UPDATE", update);
-      if (update?.status === "sent" || update?.status === 1) {
-        setDiceRolled(true);
-        setDiceRollImage("ROLL");
-      }
-      if (update?.status === "failed") {
-        setDiceRolled(false);
-        //setDiceRollImage(null);
-      }
-      if (update?.status == 1 || update?.status == "confirmed") {
-        setTimeout(() => {
-          setDiceRolled(false);
-        }, 1500);
-      }
-    });
-  };
+    const blockData = await essentialProvider.getBlock(futureBlockNumber);
+    if (DEBUG) console.log("blockData: ", blockData);
 
-  const riggedFilter = readContracts.DiceGame?.filters.Roll(riggedRoll.address, null);
-
-  readContracts.DiceGame?.on(riggedFilter, (_, value) => {
-    if (value) {
-      const numberRolled = value.toNumber().toString(16).toUpperCase();
-      setDiceRollImage(numberRolled);
-      setDiceRolled(false);
+    let values = [];
+    values.push(blockData.parentHash);
+    values.push(blockData.sha3Uncles);
+    values.push(blockData.miner);
+    values.push(blockData.stateRoot);
+    values.push(blockData.transactionsRoot);
+    values.push(blockData.receiptsRoot);
+    values.push(blockData.logsBloom);
+    values.push(blockData.difficulty.toHexString());
+    values.push(new TinyBig(blockData.number).toHexString());
+    values.push(blockData.gasLimit.toHexString());
+    values.push(blockData.gasUsed.toHexString());
+    values.push(blockData.timestamp.toHexString());
+    values.push(blockData.extraData);
+    values.push(blockData.mixHash);
+    values.push(blockData.nonce);
+    if ("baseFeePerGas" in blockData) {
+      values.push(blockData.baseFeePerGas.toHexString());
     }
-  });
 
-  const filter = readContracts.DiceGame?.filters.Roll(address, null);
-
-  readContracts.DiceGame?.on(filter, (_, value) => {
-    if (value) {
-      const numberRolled = value.toNumber().toString(16).toUpperCase();
-      setDiceRollImage(numberRolled);
-      setDiceRolled(false);
+    for (let i = 0; i < values.length; i++) {
+      if (values[i] === "0x0") {
+        values[i] = "0x";
+      }
+      if (values[i].length % 2) {
+        values[i] = "0x0" + values[i].substring(2);
+      }
     }
-  });
 
-  const date = new Date();
+    if (DEBUG) console.log("blockData values: ", values);
+
+    const rlpEncoded = ethers.utils.RLP.encode(values);
+    if (DEBUG) console.log("blockData RLP: ", rlpEncoded);
+
+    const blockHash = ethers.utils.keccak256(rlpEncoded);
+    if (DEBUG) console.log("blockData hash: ", blockHash);
+
+    try {
+      const txCur = await tx(writeContracts.DiceGame.rollTheDice(rlpEncoded, { gasLimit: 500000 }));
+      await txCur.wait();
+      setBlockNumber(0);
+    } catch (e) {
+      console.log("Failed to roll the dice", e);
+    }
+  };
 
   return (
     <div className="App">
@@ -547,84 +549,73 @@ function App(props) {
             </Link>
           </Menu.Item>
         </Menu>
+        {console.log("bet events: ", betEvents)}
         {console.log("roll events: ", rollEvents)}
-        {console.log("difficulty events: ", difficultyEvents)}
-        {console.log("roll rigged events: ", rollRiggedEvents)}
-        {console.log("difficulty rigged events: ", difficultyRiggedEvents)}
+        {console.log("winner events: ", winnerEvents)}
         <Switch>
           <Route exact path="/">
             <div style={{ display: "flex" }}>
               <div style={{ width: 250, margin: "auto", marginTop: 64 }}>
-                <div>Roll Events:</div>
+                <div>Bets:</div>
                 <List
                   style={{ height: 258, overflow: "hidden" }}
-                  dataSource={rollEvents}
+                  dataSource={betEvents}
                   renderItem={item => {
                     return (
-                      <List.Item
-                        key={item.args[0] + " " + item.args[1] + " " + date.getTime() + " " + item.blockNumber}
-                      >
+                      <List.Item key={"betEvents" + item.blockNumber}>
                         <Address value={item.args[0]} ensProvider={mainnetProvider} fontSize={16} />
-                        &nbsp;Roll:&nbsp;{item.args[1].toNumber().toString(16).toUpperCase()}
-                      </List.Item>
-                    );
-                  }}
-                />
-                <div>Roll Rigged Events:</div>
-                <List
-                  style={{ height: 258, overflow: "hidden" }}
-                  dataSource={rollRiggedEvents}
-                  renderItem={item => {
-                    return (
-                      <List.Item
-                        key={item.args[0] + " " + item.args[1] + " " + date.getTime() + " " + item.blockNumber}
-                      >
-                        <Address value={item.args[0]} ensProvider={mainnetProvider} fontSize={16} />
-                        &nbsp;Roll:&nbsp;{item.args[1].toNumber().toString(16).toUpperCase()}
+                        &nbsp;Block:&nbsp;{item.args.blockNumber.toString()}
+                        &nbsp;Bet:&nbsp;{item.args.number}
                       </List.Item>
                     );
                   }}
                 />
               </div>
               <div id="centerWrapper" style={{ padding: 16 }}>
-                <h2>Roll a 0, 1, or 2 to win the prize!</h2>
-                <Balance balance={prize} dollarMultiplier={price} fontSize={32} />
+                <h2>Bet a number from 0 to 15:</h2>
+                <InputNumber min="0" max="15" value={number} onChange={setNumber} />
                 <div style={{ padding: 16, format: "flex", flexDirection: "row" }}>
-                  <Button type="primary" disabled={diceRolled} onClick={rollTheDice}>
-                    Roll the dice!
+                  <Button type="primary" disabled={blockNumber > 0} onClick={bet}>
+                    Bet
                   </Button>
                   <div style={{ padding: 16 }}>
-                    <Account
-                      address={readContracts?.RiggedRoll?.address}
-                      localProvider={localProvider}
-                      userSigner={false}
-                      mainnetProvider={mainnetProvider}
-                      price={price}
-                      web3Modal={false}
-                      loadWeb3Modal={false}
-                      logoutOfWeb3Modal={false}
-                      blockExplorer={blockExplorer}
-                    />
-                    <Button style={{ margin: 16 }} type="primary" disabled={diceRolled} onClick={riggedRoll}>
-                      Rigged Roll!
+                    <Button style={{ margin: 16 }} type="primary" disabled={rollDisabled} onClick={rollTheDice}>
+                      Roll the dice
                     </Button>
+                    {rollDisabled && blockNumber > 0 && (
+                      <p>
+                        Bet on block: {blockNumber.toString()} - Roll the dice after block:
+                        {blockNumber.add(futureBlocks).toString()} - Current block: {localProvider._lastBlockNumber}
+                      </p>
+                    )}
                   </div>
                 </div>
-                {diceRollImg}
+                <div>Rolls:</div>
+                <List
+                  style={{ height: 258, overflow: "hidden" }}
+                  dataSource={rollEvents}
+                  renderItem={item => {
+                    return (
+                      <List.Item key={"rollEvents" + item.blockNumber}>
+                        <Address value={item.args[0]} ensProvider={mainnetProvider} fontSize={16} />
+                        &nbsp;Block:&nbsp;{item.args.blockNumber.toString()}
+                        &nbsp;Roll:&nbsp;{item.args.number}
+                      </List.Item>
+                    );
+                  }}
+                />
               </div>
               <div style={{ width: 250, margin: "auto", marginTop: 32 }}>
-                <div>Winner Events:</div>
+                <div>Winners:</div>
                 <List
                   style={{ height: 258, overflow: "hidden" }}
                   dataSource={winnerEvents}
                   renderItem={item => {
                     return (
-                      <List.Item
-                        key={item.args[0] + " " + item.args[1] + " " + date.getTime() + " " + item.blockNumber}
-                      >
+                      <List.Item key={"winnerEvents" + item.blockNumber}>
                         <Address value={item.args[0]} ensProvider={mainnetProvider} fontSize={16} />
-                        <br></br>
-                        <Balance balance={item.args[1]} dollarMultiplier={price} />
+                        &nbsp;Block:&nbsp;{item.args.blockNumber.toString()}
+                        &nbsp;Number:&nbsp;{item.args.number}
                       </List.Item>
                     );
                   }}
@@ -633,23 +624,8 @@ function App(props) {
             </div>
           </Route>
           <Route exact path="/debug">
-            {/*
-                🎛 this scaffolding is full of commonly used components
-                this <Contract/> component will automatically parse your ABI
-                and give you a form to interact with it locally
-            */}
-
             <Contract
               name="DiceGame"
-              price={price}
-              signer={userSigner}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-              contractConfig={contractConfig}
-            />
-            <Contract
-              name="RiggedRoll"
               price={price}
               signer={userSigner}
               provider={localProvider}
