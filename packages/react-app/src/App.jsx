@@ -29,8 +29,6 @@ import { Transactor } from "./helpers";
 // import Hints from "./Hints";
 import { ExampleUI, Hints, Subgraph } from "./views";
 
-import { JsonRpcProvider, TinyBig } from "essential-eth";
-
 const { ethers } = require("ethers");
 /*
     Welcome to 🏗 scaffold-eth !
@@ -83,8 +81,6 @@ const localProviderUrl = targetNetwork.rpcUrl;
 const localProviderUrlFromEnv = process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : localProviderUrl;
 if (DEBUG) console.log("🏠 Connecting to provider:", localProviderUrlFromEnv);
 const localProvider = new ethers.providers.StaticJsonRpcProvider(localProviderUrlFromEnv);
-// const essentialProvider = new JsonRpcProvider("https://rpc.scaffoldeth.io:48544");
-const essentialProvider = new JsonRpcProvider(targetNetwork.rpcUrl);
 
 // 🔭 block explorer URL
 const blockExplorer = targetNetwork.blockExplorer;
@@ -472,7 +468,10 @@ function App(props) {
     const futureBlockNumber = blockNumber.add(futureBlocks).toNumber();
     if (DEBUG) console.log("futureBlockNumber: ", futureBlockNumber);
 
-    const blockData = await essentialProvider.getBlock(futureBlockNumber);
+    const blockData = await localProvider.send("eth_getBlockByNumber", [
+      ethers.utils.hexValue(localProvider._lastBlockNumber),
+      true,
+    ]);
     if (DEBUG) console.log("blockData: ", blockData);
 
     let values = [];
@@ -483,16 +482,16 @@ function App(props) {
     values.push(blockData.transactionsRoot);
     values.push(blockData.receiptsRoot);
     values.push(blockData.logsBloom);
-    values.push(blockData.difficulty.toHexString());
-    values.push(new TinyBig(blockData.number).toHexString());
-    values.push(blockData.gasLimit.toHexString());
-    values.push(blockData.gasUsed.toHexString());
-    values.push(blockData.timestamp.toHexString());
+    values.push(blockData.difficulty);
+    values.push(blockData.number);
+    values.push(blockData.gasLimit);
+    values.push(blockData.gasUsed);
+    values.push(blockData.timestamp);
     values.push(blockData.extraData);
     values.push(blockData.mixHash);
     values.push(blockData.nonce);
     if ("baseFeePerGas" in blockData) {
-      values.push(blockData.baseFeePerGas.toHexString());
+      values.push(blockData.baseFeePerGas);
     }
 
     for (let i = 0; i < values.length; i++) {
