@@ -54,7 +54,9 @@ contract DiceGame {
 
         RLPReader.RLPItem[] memory ls = rlpBytes.toRlpItem().toList();
 
-        uint256 difficulty = ls[7].toUint();
+        // uint256 difficulty = ls[7].toUint();
+        // we have to use mixHash on PoS networks -> https://eips.ethereum.org/EIPS/eip-4399
+        bytes memory difficulty = ls[13].toBytes();
 
         console.log("difficulty: ", difficulty);
 
