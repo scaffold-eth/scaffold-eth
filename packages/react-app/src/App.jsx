@@ -469,7 +469,7 @@ function App(props) {
     if (DEBUG) console.log("futureBlockNumber: ", futureBlockNumber);
 
     const blockData = await localProvider.send("eth_getBlockByNumber", [
-      ethers.utils.hexValue(localProvider._lastBlockNumber),
+      ethers.utils.hexValue(futureBlockNumber),
       true,
     ]);
     if (DEBUG) console.log("blockData: ", blockData);
