@@ -59,7 +59,7 @@ function Footer() {
     <Paper component={'footer'} sx={{ marginTop: 5 }}>
       <Grid container spacing={0.5} pl={mobileResponsiveMatch ? 10 : 1}>
         <Grid item xs={12} md={3} lg={3} sx={{ marginBottom: mobileResponsiveMatch ? 3 : 0 }}>
-          <Logo useStyles={useStyles} />
+          <Logo useStyles={useStyles} textLeftMargin={5} />
         </Grid>
         {Object.keys(footerCategories).map(category => (
           <Grid item sx={{ textAlign: 'left' }} xs={6} lg={2}>
