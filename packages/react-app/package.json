@@ -99,11 +99,5 @@
     "theme": "npx gulp less",
     "watch": "node ./scripts/watch.js",
     "prettier": "npx prettier --write . '!(node_module|build)/**/*'"
-  },
-  "lint-staged": {
-    "/src/**/*.{js,jsx}": [
-      "yarn prettier",
-      "yarn lint"
-    ]
   }
 }
