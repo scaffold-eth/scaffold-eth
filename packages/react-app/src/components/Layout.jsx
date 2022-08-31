@@ -9,7 +9,7 @@ const useStyles = makeStyles({
     fill: '#2F6DF2', //'#81a6f7',
     width: '35px',
     float: 'left',
-    marginRight: 5,
+    // marginRight: 3,
   },
 })
 

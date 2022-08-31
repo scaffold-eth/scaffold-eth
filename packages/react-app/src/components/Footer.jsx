@@ -6,7 +6,6 @@ import GitHubIcon from '@mui/icons-material/GitHub'
 import TwitterIcon from '@mui/icons-material/Twitter'
 import LinkedInIcon from '@mui/icons-material/LinkedIn'
 import Paper from '@mui/material/Paper'
-import Button from '@mui/material/Button'
 import makeStyles from '@mui/styles/makeStyles'
 import IconButton from '@mui/material/IconButton'
 import Grid from '@mui/material/Grid'
@@ -60,7 +59,7 @@ function Footer() {
     <Paper component={'footer'} sx={{ marginTop: 5 }}>
       <Grid container spacing={0.5} pl={mobileResponsiveMatch ? 10 : 1}>
         <Grid item xs={12} md={3} lg={3} sx={{ marginBottom: mobileResponsiveMatch ? 3 : 0 }}>
-          <Logo useStyles={useStyles} />
+          <Logo useStyles={useStyles} textLeftMargin={5} />
         </Grid>
         {Object.keys(footerCategories).map(category => (
           <Grid item sx={{ textAlign: 'left' }} xs={6} lg={2}>
@@ -70,11 +69,11 @@ function Footer() {
             <Box component={'ul'} sx={{ paddingLeft: 0, justifyContent: 'left' }} minWidth={170} maxWidth={180}>
               {footerCategories[category].map(chilrn => (
                 <li style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                  <Button variant={'text'} href={chilrn.url} sx={{ padding: 0, margin: 0 }}>
+                  <a href={chilrn.url} style={{ padding: 0, margin: 0, textDecoration: 'none' }}>
                     <Typography variant={'body1'} color={'#333333'} p={0}>
                       {`${chilrn.text}`.charAt(0).toUpperCase() + chilrn.text.slice(1)}
                     </Typography>
-                  </Button>
+                  </a>
                 </li>
               ))}
             </Box>

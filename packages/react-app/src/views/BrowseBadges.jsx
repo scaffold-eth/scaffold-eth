@@ -178,7 +178,7 @@ export default function BrowseBadges() {
               Optimism.
               <br />
               Remix Reward holders are able to mint a second “Remixer” user NFT badge to give to any other user of their
-              choice (friendlier UX coming soon).
+              choice.
               <br />
               This feature is a way to reward Remix contributors to help grow our user base into a larger and more
               genuine open source community of practice.
@@ -186,7 +186,7 @@ export default function BrowseBadges() {
             <Typography variant="inherit" fontWeight={500} sx={{ color: '#333333' }}>
               Remix Rewards are currently not transferable. This feature leaves open the possibility of granting holders
               proportional voting power to help the community decide on new features for the IDE and/or other issues
-              governing the development of the Remix toolset.
+              governing the development of the Remix toolset at some point in the future.
             </Typography>
           </Box>
           <Box></Box>
