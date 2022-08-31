@@ -6,7 +6,7 @@ import Box from '@mui/material/Box'
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip'
 import { styled } from '@mui/material/styles'
 import { BadgeContext } from 'contexts/BadgeContext'
-import { getCurrentChainId, switchToGoerli } from 'helpers/SwitchToOptimism'
+import { getCurrentChainId, switchToGoerli, switchToOptimism } from 'helpers/SwitchToOptimism'
 // @ts-ignore
 import { ethers } from 'ethers'
 import { deepOrange } from '@mui/material/colors'
@@ -179,8 +179,9 @@ export default function Account({ minimized }) {
     if (checkForWeb3Provider() === 'Not Found') return
     const chainInfo = await getCurrentChainId()
     const { chainId } = chainInfo[0]
-    if (chainId !== 5) {
-      switchToGoerli()
+    if (chainId !== 10) {
+      // switchToGoerli()
+      switchToOptimism()
       accounts = await window.ethereum.request({
         method: 'eth_requestAccounts',
       })
@@ -188,7 +189,7 @@ export default function Account({ minimized }) {
       setConnectedAddress(accounts[0])
       setNetInfo(chainInfo)
     }
-    if (chainId === 5) {
+    if (chainId === 10) {
       accounts = await window.ethereum.request({
         method: 'eth_requestAccounts',
       })
@@ -204,8 +205,8 @@ export default function Account({ minimized }) {
     }
     window.ethereum.on('chainChanged', async chainId => {
       if (!netInfo && netInfo.length) setNetInfo(await getCurrentChainId())
-      if (Number(chainId) !== 5) {
-        await switchToGoerli()
+      if (Number(chainId) !== 10) {
+        await switchToOptimism()
       }
     })
     return () => {

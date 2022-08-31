@@ -97,10 +97,6 @@ export default function AllowedMintCount() {
     }
   }, [allowedMinting, connectedAddress, localProvider])
 
-  // useEffect(() => {
-  //   checkBalance()
-  // }, [checkBalance])
-
   return (
     <>
       <Typography variant="h2" fontWeight={900} sx={{ padding: 2, color: '#81a6f7' }}>
