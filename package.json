@@ -72,5 +72,11 @@
   "devDependencies": {
     "husky": "^7.0.2",
     "lint-staged": "^13.0.3"
+  },
+  "lint-staged" : {
+    "packages/react-app/src/**/*.{js,jsx,css}": [
+      "prettier --write",
+      "yarn react-app:lint"
+    ]
   }
 }

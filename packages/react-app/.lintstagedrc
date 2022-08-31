@@ -1,6 +1,0 @@
-{
-  "./src/**/*.{js,jsx}": [
-    "yarn prettier",
-    "yarn lint"
-  ]
-}
