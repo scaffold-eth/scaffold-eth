@@ -12,7 +12,6 @@ import { BadgeContext } from 'contexts/BadgeContext'
 import externalContracts from 'contracts/external_contracts'
 const { ethers } = require('ethers')
 
-// @ts-ignore
 function App() {
   // @ts-ignore
   const [localProvider, setLocalProvider] = useState(null)
@@ -85,8 +84,6 @@ function App() {
   const closeWrongNetworkToast = () => {
     setShowWrongNetworkToast(false)
   }
-
-  /* END - SETUP METAMASK */
 
   const contextPayload = {
     localProvider,
