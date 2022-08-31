@@ -74,9 +74,10 @@
     "lint-staged": "^13.0.3"
   },
   "lint-staged" : {
-    "packages/react-app/src/**/*.{js,jsx,css}": [
+    "packages/react-app/src/**/*.{js,jsx}": [
       "prettier --write",
-      "yarn react-app:lint"
+      "eslint --fix",
+      "eslint --max-warnings=0 --ignore-path packages/react-app/.eslintignore"
     ]
   }
 }
