@@ -70,6 +70,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "husky": "^7.0.2"
+    "husky": "^7.0.2",
+    "lint-staged": "^13.0.3"
   }
 }
