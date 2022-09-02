@@ -51,7 +51,8 @@ function App() {
     return window.ethereum === undefined ? 'Not Found' : 'Found'
   }, [])
 
-  const displayToast = useCallback(() => {
+  const displayToast = useCallback(msg => {
+    console.log(msg)
     setShowToast(true)
   }, [])
 

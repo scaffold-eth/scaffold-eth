@@ -88,11 +88,9 @@ export default function BrowseBadges() {
 
   const run = useCallback(async () => {
     if (address) {
-      console.log({ address })
       return setEventBadges([])
     }
     let badges = await getAllRewards(contractRef.address, providerRef)
-    console.log({ badges })
     badges = badges.map(badge => {
       return {
         id: ethers.utils.hexStripZeros(badge.topics[3]),
@@ -106,9 +104,6 @@ export default function BrowseBadges() {
   useEffect(() => {
     if (address.length > 0) return
     run()
-    return () => {
-      run()
-    }
   }, [address, run])
 
   function checkeventBagesAndBadges(badges) {

@@ -6,7 +6,7 @@ import Box from '@mui/material/Box'
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip'
 import { styled } from '@mui/material/styles'
 import { BadgeContext } from 'contexts/BadgeContext'
-import { getCurrentChainId, switchToGoerli, switchToOptimism } from 'helpers/SwitchToOptimism'
+import { getCurrentChainId, switchToOptimism } from 'helpers/SwitchToOptimism'
 // @ts-ignore
 import { ethers } from 'ethers'
 import { deepOrange } from '@mui/material/colors'
@@ -200,7 +200,7 @@ export default function Account({ minimized }) {
 
   useEffect(() => {
     if (checkForWeb3Provider() === 'Not Found') {
-      displayToast()
+      displayToast('displayed on line 203 of Account.jsx')
       return
     }
     window.ethereum.on('chainChanged', async chainId => {
@@ -212,13 +212,13 @@ export default function Account({ minimized }) {
     return () => {
       checkForWeb3Provider() === 'Found'
         ? window.ethereum.removeListener('chainChanged', () => console.log('removed'))
-        : console.log('Metamask is not installed')
+        : console.log('Metamask is not installed in unmount accounts.jsx')
     }
   }, [checkForWeb3Provider, displayToast, netInfo])
 
   useEffect(() => {
     if (checkForWeb3Provider() === 'Not Found') {
-      displayToast()
+      displayToast('shown in Account.jsx on line 221')
       return
     }
     window.ethereum.on('accountsChanged', account => {
