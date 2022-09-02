@@ -37,9 +37,6 @@ export default function NftCard(props) {
   useEffect(() => {
     try {
       run()
-      return () => {
-        run()
-      }
     } catch (error) {
       console.log({ error })
     }

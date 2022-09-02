@@ -92,9 +92,6 @@ export default function AllowedMintCount() {
       }
     }
     run()
-    return () => {
-      run()
-    }
   }, [allowedMinting, connectedAddress, localProvider])
 
   return (
