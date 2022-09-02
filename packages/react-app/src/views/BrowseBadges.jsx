@@ -92,6 +92,7 @@ export default function BrowseBadges() {
       return setEventBadges([])
     }
     let badges = await getAllRewards(contractRef.address, providerRef)
+    console.log({ badges })
     badges = badges.map(badge => {
       return {
         id: ethers.utils.hexStripZeros(badge.topics[3]),
