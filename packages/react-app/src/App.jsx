@@ -68,10 +68,6 @@ function App() {
       setLoaded(true)
     }
     run()
-
-    return () => {
-      run()
-    }
   }, [providerRef])
 
   const snackBarAction = (

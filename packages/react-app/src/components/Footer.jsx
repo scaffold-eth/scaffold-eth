@@ -68,7 +68,7 @@ function Footer() {
             </Typography>
             <Box component={'ul'} sx={{ paddingLeft: 0, justifyContent: 'left' }} minWidth={170} maxWidth={180}>
               {footerCategories[category].map(chilrn => (
-                <li style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                <li style={{ listStyle: 'none', padding: 0, margin: 0 }} key={`${chilrn.text}-${chilrn.url}`}>
                   <a href={chilrn.url} style={{ padding: 0, margin: 0, textDecoration: 'none' }}>
                     <Typography variant={'body1'} color={'#333333'} p={0}>
                       {`${chilrn.text}`.charAt(0).toUpperCase() + chilrn.text.slice(1)}
