@@ -33,7 +33,7 @@ export default function ImageToIPFS() {
     return result;
   };
 
-  const getFromIPFS = async hashToGet => {
+  /*   const getFromIPFS = async hashToGet => {
     for await (const file of ipfs.get(hashToGet)) {
       console.log(file.path);
       if (!file.content) continue;
@@ -44,7 +44,7 @@ export default function ImageToIPFS() {
       console.log(content);
       return content;
     }
-  };
+  }; */
 
   /* useEffect(()=>{
         if(ipfsHash) asyncGetFile()
@@ -75,6 +75,7 @@ export default function ImageToIPFS() {
       console.log("buffer: ", buffer);
     };
     setIsSelected(true);
+    console.log(isSelected);
   };
 
   return (
