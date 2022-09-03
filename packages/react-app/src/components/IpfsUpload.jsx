@@ -105,7 +105,7 @@ export default function ImageToIPFS() {
         <div>{ipfsHash ? <h1>Your image is uploaded!</h1> : <p>{""}</p>}</div>
         {ipfsHash ? (
           <Card>
-            <img src={"https://ipfs.io/ipfs/" + ipfsHash} style={{ width: "300px" }} />
+            <img src={"https://ipfs.io/ipfs/" + ipfsHash} alt="Uploaded image" style={{ width: "300px" }} />
           </Card>
         ) : (
           <p>{""}</p>
