@@ -89,6 +89,7 @@ export default function ImageToIPFS() {
           onClick={async () => {
             console.log("UPLOADING...");
             setSending(true);
+            console.log(sending);
 
             const result = await addToIPFS(selectedFile);
             if (result && result.path) {
