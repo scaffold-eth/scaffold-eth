@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Input, Col, Row, Spin, Card, Form } from "antd";
+import { Button, Input, Card, Form } from "antd";
 
 const { BufferList } = require("bl");
 const ipfsClient = require("ipfs-http-client");
@@ -26,7 +26,6 @@ export default function ImageToIPFS() {
   // IPFS Bits:
   const [sending, setSending] = useState();
   const [ipfsHash, setIpfsHash] = useState();
-  const [ipfsMetadataHash, setIpfsMetadataHash] = useState();
   const [buffer, setBuffer] = useState();
 
   const addToIPFS = async fileToUpload => {
