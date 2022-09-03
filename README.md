@@ -25,18 +25,18 @@ yarn install
 yarn chain
 ```
 
-> in a second terminal window, start your 📱 frontend:
+> in a second terminal window, 🛰 deploy your contract:
+
+```bash
+cd scaffold-eth
+yarn watch
+```
+
+> in a third terminal window, start your 📱 frontend:
 
 ```bash
 cd scaffold-eth
 yarn start
-```
-
-> in a third terminal window, 🛰 deploy your contract:
-
-```bash
-cd scaffold-eth
-yarn deploy
 ```
 
 🔏 Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
