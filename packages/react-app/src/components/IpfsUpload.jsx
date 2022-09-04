@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Button, Input, Card, Form } from "antd";
 
-const { BufferList } = require("bl");
+// You can add uploaded files to BufferList in the client, then read the files and display the images from the list
+/* const { BufferList } = require("bl"); */
 const ipfsClient = require("ipfs-http-client");
 
 const { REACT_APP_INFURA_ID, REACT_APP_INFURA_SECRET } = process.env;
