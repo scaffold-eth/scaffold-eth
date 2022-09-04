@@ -39,9 +39,9 @@ yarn deploy
 
 # Accessing IPFS with Infura
 
-> We're going to be using the ipfs-http-client method, you can see this and other options at [Infura](https://docs.infura.io/infura/networks/ipfs/how-to/make-requests). The code uses a .env file to protect yourself from uploading your Infura keys to your git repo. THIS DOES NOT PROTECT YOUR KEYS WHEN YOUR APP IS DEPLOYED PUBLICLY!!!
+We're going to be using the ipfs-http-client method, you can see this and other options at [Infura](https://docs.infura.io/infura/networks/ipfs/how-to/make-requests). The code uses a .env file to protect yourself from uploading your Infura keys to your git repo. THIS DOES NOT PROTECT YOUR KEYS WHEN YOUR APP IS DEPLOYED PUBLICLY!!!
 
-'''bash
+
 const ipfsClient = require('ipfs-http-client');
 
 const { REACT_APP_INFURA_ID, REACT_APP_INFURA_SECRET } = process.env;
@@ -59,7 +59,6 @@ const client = ipfsClient.create({
         authorization: auth,
     },
 });
-'''
 
 # 📚 Documentation
 
