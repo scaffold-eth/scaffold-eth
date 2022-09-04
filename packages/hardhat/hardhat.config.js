@@ -38,6 +38,7 @@ function mnemonic() {
 }
 
 module.exports = {
+  defaultNetwork,
   /**
    * gas reporter configuration that let's you know
    * an estimate of gas for contract deployments and function calls
