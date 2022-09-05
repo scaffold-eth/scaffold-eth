@@ -53,7 +53,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const initialNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const initialNetwork = NETWORKS.mainnet; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -286,31 +286,69 @@ function App(props) {
         logoutOfWeb3Modal={logoutOfWeb3Modal}
         USE_NETWORK_SELECTOR={USE_NETWORK_SELECTOR}
       />
-      <Menu style={{ textAlign: "center", marginTop: 20 }} selectedKeys={[location.pathname]} mode="horizontal">
-        <Menu.Item key="/">
-          <Link to="/">App Home</Link>
-        </Menu.Item>
-        <Menu.Item key="/debug">
-          <Link to="/debug">Debug Contracts</Link>
-        </Menu.Item>
-        <Menu.Item key="/hints">
-          <Link to="/hints">Hints</Link>
-        </Menu.Item>
-        <Menu.Item key="/exampleui">
-          <Link to="/exampleui">ExampleUI</Link>
-        </Menu.Item>
-        <Menu.Item key="/mainnetdai">
-          <Link to="/mainnetdai">Mainnet DAI</Link>
-        </Menu.Item>
-        <Menu.Item key="/subgraph">
-          <Link to="/subgraph">Subgraph</Link>
-        </Menu.Item>
-      </Menu>
 
       <Switch>
         <Route exact path="/">
-          {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
-          <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} />
+          <div>
+            <pre style={{ margin: 32 }}>
+              This lets you mint _many_ "ethereum-merge-fractals" (https://ethereum-merge-fractals.surge.sh)
+            </pre>
+          </div>
+
+          <Button
+            onClick={async () => {
+              let price = await readContracts.YourContract.price();
+              console.log("price", price);
+              let result = await tx(writeContracts.YourContract.mint(1, { value: price }));
+              console.log("result", result);
+            }}
+          >
+            Mint 1
+          </Button>
+
+          <Button
+            onClick={async () => {
+              let price = await readContracts.YourContract.price();
+              console.log("price", price);
+              let result = await tx(writeContracts.YourContract.mint(2, { value: price.mul(2) }));
+              console.log("result", result);
+            }}
+          >
+            Mint 2
+          </Button>
+
+          <Button
+            onClick={async () => {
+              let price = await readContracts.YourContract.price();
+              console.log("price", price);
+              let result = await tx(writeContracts.YourContract.mint(3, { value: price.mul(3) }));
+              console.log("result", result);
+            }}
+          >
+            Mint 3
+          </Button>
+
+          <Button
+            onClick={async () => {
+              let price = await readContracts.YourContract.price();
+              console.log("price", price);
+              let result = await tx(writeContracts.YourContract.mint(5, { value: price.mul(5) }));
+              console.log("result", result);
+            }}
+          >
+            Mint 5
+          </Button>
+
+          <Button
+            onClick={async () => {
+              let price = await readContracts.YourContract.price();
+              console.log("price", price);
+              let result = await tx(writeContracts.YourContract.mint(10, { value: price.mul(10) }));
+              console.log("result", result);
+            }}
+          >
+            Mint 10
+          </Button>
         </Route>
         <Route exact path="/debug">
           {/*
