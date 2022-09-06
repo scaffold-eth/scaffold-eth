@@ -6,7 +6,7 @@ import Box from '@mui/material/Box'
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip'
 import { styled } from '@mui/material/styles'
 import { BadgeContext } from 'contexts/BadgeContext'
-import { getCurrentChainId, switchToOptimism } from 'helpers/SwitchToOptimism'
+import { getCurrentChainId, switchNetworkChain } from 'helpers/SwitchToOptimism'
 // @ts-ignore
 import { ethers } from 'ethers'
 import { deepOrange } from '@mui/material/colors'
@@ -108,6 +108,8 @@ export default function Account({ minimized }) {
     // @ts-ignore
     setConnectedAddress,
     // @ts-ignore
+    selectedChainId,
+    // @ts-ignore
     injectedProvider,
     // @ts-ignore
     setInjectedProvider,
@@ -153,11 +155,10 @@ export default function Account({ minimized }) {
     // Subscribe to session disconnection
     provider.on('disconnect', (code, reason) => {
       console.log(code, reason)
-      logoutOfWeb3Modal()
     })
 
     // setTabValue(prev => prev)
-  }, [checkForWeb3Provider, displayToast, logoutOfWeb3Modal, setInjectedProvider])
+  }, [checkForWeb3Provider, displayToast, setInjectedProvider])
 
   accountButtonInfo = { name: 'Connect to Mint', action: loadWeb3Modal }
   const display = !minimized && (
@@ -179,46 +180,51 @@ export default function Account({ minimized }) {
     if (checkForWeb3Provider() === 'Not Found') return
     const chainInfo = await getCurrentChainId()
     const { chainId } = chainInfo[0]
-    if (chainId !== 10) {
-      // switchToGoerli()
-      switchToOptimism()
-      accounts = await window.ethereum.request({
-        method: 'eth_requestAccounts',
-      })
+    console.log({ chainId })
+    if (chainId !== selectedChainId) {
       setShowWrongNetworkToast(true)
-      setConnectedAddress(accounts[0])
-      setNetInfo(chainInfo)
-    }
-    if (chainId === 10) {
+      await switchNetworkChain(selectedChainId)
       accounts = await window.ethereum.request({
         method: 'eth_requestAccounts',
       })
       setConnectedAddress(accounts[0])
       setNetInfo(chainInfo)
+      return
+    }
+    if (chainId === selectedChainId) {
+      accounts = await window.ethereum.request({
+        method: 'eth_requestAccounts',
+      })
+      setConnectedAddress(accounts[0])
+      setNetInfo(chainInfo)
+      return
     }
   }
 
   useEffect(() => {
     if (checkForWeb3Provider() === 'Not Found') {
-      displayToast('displayed on line 203 of Account.jsx')
+      displayToast()
       return
     }
     window.ethereum.on('chainChanged', async chainId => {
+      const accounts = await window.ethereum.request({
+        method: 'eth_requestAccounts',
+      })
       if (!netInfo && netInfo.length) setNetInfo(await getCurrentChainId())
-      if (Number(chainId) !== 10) {
-        await switchToOptimism()
+      if (accounts && accounts.length) {
+        setConnectedAddress(accounts[0])
       }
     })
     return () => {
       checkForWeb3Provider() === 'Found'
         ? window.ethereum.removeListener('chainChanged', () => console.log('removed'))
-        : console.log('Metamask is not installed in unmount accounts.jsx')
+        : console.log('Metamask is not installed')
     }
-  }, [checkForWeb3Provider, displayToast, netInfo])
+  }, [checkForWeb3Provider, displayToast, netInfo, setConnectedAddress])
 
   useEffect(() => {
     if (checkForWeb3Provider() === 'Not Found') {
-      displayToast('shown in Account.jsx on line 221')
+      displayToast()
       return
     }
     window.ethereum.on('accountsChanged', account => {
