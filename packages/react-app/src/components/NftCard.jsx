@@ -60,7 +60,6 @@ export default function NftCard(props) {
                 'linear-gradient(90deg, #d4def4, #d9dff6, #dee1f7, #e3e2f9, #e8e4fa, #ede5fb, #f1e6fb, #f6e8fc)',
             }}
           >
-            <Typography fontWeight={700}>{'Owner'}</Typography>
             <Typography variant={'body2'} noWrap={false} fontWeight={400} color={'#333333'}>
               {state.title.length > 20
                 ? `${state.title.substring(0, 7)}...${state.title.substring(state.title.length - 7)}`
