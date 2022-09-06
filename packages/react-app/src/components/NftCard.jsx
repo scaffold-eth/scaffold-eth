@@ -21,7 +21,7 @@ export default function NftCard(props) {
   const run = useCallback(async () => {
     try {
       let data = await contract.tokensData(ethers.BigNumber.from(id === '0x' ? '0x0' : id))
-      let toFormatted = ethers.utils.hexStripZeros(to)
+      let toFormatted = ethers.utils.hexZeroPad(ethers.utils.hexStripZeros(to), 20)
       const name = await mainnet.lookupAddress(toFormatted)
       let title = name ? name : toFormatted
 
@@ -33,7 +33,7 @@ export default function NftCard(props) {
       if (error.value === to) {
         // '0x11e12a06af51229039ae9a096135512009149f2'
         let data = await contract.tokensData(ethers.BigNumber.from(id === '0x' ? '0x0' : id))
-        let toFormatted = ethers.utils.hexStripZeros(to)
+        let toFormatted = ethers.utils.hexZeroPad(ethers.utils.hexStripZeros(to), 20)
         let title = toFormatted
 
         const src = 'https://remix-project.mypinata.cloud/ipfs/' + toBase58(data.hash)

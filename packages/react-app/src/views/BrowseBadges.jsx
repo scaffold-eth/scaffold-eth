@@ -95,7 +95,7 @@ export default function BrowseBadges() {
     badges = badges.map(badge => {
       return {
         id: ethers.utils.hexStripZeros(badge.topics[3]),
-        to: ethers.utils.hexStripZeros(badge.topics[2]),
+        to: ethers.utils.hexZeroPad(ethers.utils.hexStripZeros(badge.topics[2]), 20),
         transactionHash: badge.transactionHash,
       }
     })
@@ -124,7 +124,7 @@ export default function BrowseBadges() {
         const tokenId = await contract.tokenOfOwnerByIndex(address, k)
         badges.push({
           id: tokenId,
-          to: ethers.utils.hexStripZeros(address),
+          to: ethers.utils.hexZeroPad(ethers.utils.hexStripZeros(address), 20),
           transactionHash: '',
         })
       }
