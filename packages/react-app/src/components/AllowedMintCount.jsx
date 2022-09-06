@@ -62,7 +62,7 @@ export default function AllowedMintCount() {
   }, [checkBalance])
 
   useEffect(() => {
-    if (localProvider === undefined || connectedAddress === undefined) return
+    if (window.ethereum === undefined || localProvider === undefined || connectedAddress === undefined) return
     const run = async () => {
       try {
         const chainInfo = await getCurrentChainId()
@@ -92,14 +92,7 @@ export default function AllowedMintCount() {
       }
     }
     run()
-    return () => {
-      run()
-    }
   }, [allowedMinting, connectedAddress, localProvider])
-
-  // useEffect(() => {
-  //   checkBalance()
-  // }, [checkBalance])
 
   return (
     <>

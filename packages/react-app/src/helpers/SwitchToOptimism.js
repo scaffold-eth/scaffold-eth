@@ -1,19 +1,15 @@
 const { ethers } = require('ethers')
 
-export const externalParams = [
-  {
-    chainName: 'Optimism',
-    chainId: 0x0a,
-    blockExplorer: 'https://optimistic.etherscan.io/',
-    rpcUrls: ['https://opt-mainnet.g.alchemy.com/v2/cdGnPX6sQLXv-YWkbzYAXnTVVfuL8fhb', 'https://mainnet.optimism.io'],
-  },
-  {
-    chainName: 'Görli',
-    chainId: 0x5,
-    blockExplorer: 'https://goerli.etherscan.io/',
-    rpcUrls: ['https://eth-goerli.g.alchemy.com/v2/1fpzjlzdaT-hFeeTXFY-yzM-WujQLfEl', 'https://rpc.goerli.mudit.blog'],
-  },
-]
+export const externalParams = {
+  chainName: 'Optimism',
+  decimalChain: 10,
+  chainId: 0x0a,
+  rpcUrls: ['https://opt-mainnet.g.alchemy.com/v2/cdGnPX6sQLXv-YWkbzYAXnTVVfuL8fhb'],
+  testchainName: 'Görli',
+  testdecimalChain: 5,
+  testchainId: 0x5,
+  testrpcUrls: ['https://eth-goerli.g.alchemy.com/v2/1fpzjlzdaT-hFeeTXFY-yzM-WujQLfEl'],
+}
 
 /**
  * @param {{chainName: string;chainId: number;rpcUrls: string[];}} switchPayload - An object
@@ -52,9 +48,26 @@ export async function switchChain(switchPayload) {
   }
 }
 
-export async function switchToGoerli() {
-  const chainId = externalParams[1].chainId
-  const correctHexChainId = ethers.utils.hexValue(chainId)
+export async function switchNetworkChain(selectedChainId) {
+  const hexChainId =
+    selectedChainId === externalParams.decimalChain
+      ? externalParams.chainId
+      : selectedChainId === externalParams.testdecimalChain
+      ? externalParams.testchainId
+      : externalParams.chainId
+  const correctHexChainId = ethers.utils.hexValue(hexChainId)
+  if (selectedChainId === 10) {
+    await switchToOptimism(correctHexChainId)
+    return
+  }
+  if (selectedChainId === 5) {
+    await switchToGoerli(correctHexChainId)
+    return
+  }
+}
+
+export async function switchToGoerli(correctHexChainId) {
+  console.log({ correctHexChainId })
   try {
     await window.ethereum.request({
       method: 'wallet_switchEthereumChain',
@@ -68,8 +81,8 @@ export async function switchToGoerli() {
         params: [
           {
             chainId: correctHexChainId,
-            chainName: externalParams[1].chainName,
-            rpcUrls: [...externalParams[1].rpcUrls],
+            chainName: externalParams[1].testchainName,
+            rpcUrls: [...externalParams[1].testrpcUrls],
           },
         ],
       })
@@ -81,9 +94,8 @@ export async function switchToGoerli() {
   }
 }
 
-export async function switchToOptimism() {
-  const chainId = externalParams[0].chainId
-  const correctHexChainId = ethers.utils.hexValue(chainId)
+export async function switchToOptimism(correctHexChainId) {
+  console.log({ correctHexChainId })
   try {
     await window.ethereum.request({
       method: 'wallet_switchEthereumChain',
@@ -96,8 +108,8 @@ export async function switchToOptimism() {
         params: [
           {
             chainId: correctHexChainId,
-            chainName: externalParams[0].chainName,
-            rpcUrls: [...externalParams[0].rpcUrls],
+            chainName: externalParams.chainName,
+            rpcUrls: [...externalParams.rpcUrls],
           },
         ],
       })
@@ -126,6 +138,7 @@ export async function getCurrentChainId() {
     const chainId = await window.ethereum.request({ method: 'eth_chainId' })
     const netResult = await ethers.providers.getNetwork(Number(chainId))
     const result = networkList.filter(net => net.chainId === netResult.chainId)
+    // console.log({ result })
     return result
   } catch (error) {
     console.log({ error })

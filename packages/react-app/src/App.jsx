@@ -23,7 +23,7 @@ function App() {
   const [tabValue, setTabValue] = useState(0)
   const [showToast, setShowToast] = useState(false)
   const [showWrongNetworkToast, setShowWrongNetworkToast] = useState(false)
-  const [selectedChainId, setSelectedChainId] = useState(5)
+  const [selectedChainId, setSelectedChainId] = useState(10)
   const contractConfig = { deployedContracts: {}, externalContracts: externalContracts || {} }
 
   const targetNetwork = NETWORKS['optimism']
@@ -51,7 +51,8 @@ function App() {
     return window.ethereum === undefined ? 'Not Found' : 'Found'
   }, [])
 
-  const displayToast = useCallback(() => {
+  const displayToast = useCallback(msg => {
+    console.log(msg)
     setShowToast(true)
   }, [])
 
@@ -67,10 +68,6 @@ function App() {
       setLoaded(true)
     }
     run()
-
-    return () => {
-      run()
-    }
   }, [providerRef])
 
   const snackBarAction = (

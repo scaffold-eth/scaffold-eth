@@ -19,23 +19,24 @@ export default function NftCard(props) {
     txLink: '',
   })
   const run = useCallback(async () => {
-    let data = await contract.tokensData(ethers.BigNumber.from(id === '0x' ? '0x0' : id))
-    let toFormatted = ethers.utils.hexStripZeros(to)
-    const name = await mainnet.lookupAddress(toFormatted)
-    let title = name ? name : toFormatted
+    try {
+      let data = await contract.tokensData(ethers.BigNumber.from(id === '0x' ? '0x0' : id))
+      let toFormatted = ethers.utils.hexZeroPad(ethers.utils.hexStripZeros(to), 20)
+      const name = await mainnet.lookupAddress(toFormatted)
+      let title = name ? name : toFormatted
 
-    const src = 'https://remix-project.mypinata.cloud/ipfs/' + toBase58(data.hash)
-    const txLink = etherscan + transactionHash
+      const src = 'https://remix-project.mypinata.cloud/ipfs/' + toBase58(data.hash)
+      const txLink = etherscan + transactionHash
 
-    setState({ data, title, src, txLink })
+      setState({ data, title, src, txLink })
+    } catch (error) {
+      console.error(error)
+    }
   }, [contract, etherscan, id, mainnet, to, transactionHash])
 
   useEffect(() => {
     try {
       run()
-      return () => {
-        run()
-      }
     } catch (error) {
       console.log({ error })
     }
@@ -61,7 +62,9 @@ export default function NftCard(props) {
           >
             <Typography fontWeight={700}>{'Owner'}</Typography>
             <Typography variant={'body2'} noWrap={false} fontWeight={400} color={'#333333'}>
-              {state.title}
+              {state.title.length > 20
+                ? `${state.title.substring(0, 7)}...${state.title.substring(state.title.length - 7)}`
+                : state.title}
             </Typography>
             <Typography variant={'caption'} fontWeight={700} color={'#333333'}>
               {state.data.tokenType} {state.data.payload}
