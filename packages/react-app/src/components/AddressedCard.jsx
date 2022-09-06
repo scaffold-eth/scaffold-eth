@@ -2,7 +2,7 @@ import React from 'react'
 import { Box, Button, Card, CardActions, CardContent, CardMedia, Grid, Skeleton, Typography } from '@mui/material'
 import InfoIcon from '@mui/icons-material/Info'
 
-export default function AddressedCard({ badges }) {
+export default function AddressedCard({ badges, etherscanRef }) {
   return (
     <>
       {/* <Box
@@ -33,7 +33,7 @@ export default function AddressedCard({ badges }) {
         {badges && badges.length > 0 ? (
           badges.map(badge => {
             const src = 'https://remix-project.mypinata.cloud/ipfs/' + badge.decodedIpfsHash
-            const txLink = 'https://optimistic.etherscan.io/tx/' + badge.transactionHash
+            const txLink = etherscanRef + badge.transactionHash
             return (
               <Box
                 sx={{

@@ -70,8 +70,12 @@ export default function BrowseBadges() {
           try {
             const tokenId = await contract.tokenOfOwnerByIndex(address, k)
             let data = await contract.tokensData(tokenId)
+            const found = eventBadges.find(x => x.to === address)
             // eslint-disable-next-line no-undef
-            const badge = Object.assign({}, data, { decodedIpfsHash: toBase58(data.hash) })
+            const badge = Object.assign({}, { transactionHash: found.transactionHash }, data, {
+              decodedIpfsHash: toBase58(data.hash),
+            })
+            // console.log({ badge })
             badges.push(badge)
           } catch (e) {
             console.error(e)
@@ -84,7 +88,7 @@ export default function BrowseBadges() {
       }
     }
     run()
-  }, [address, contractRef, localProvider, selectedChainId])
+  }, [address, contractRef, eventBadges, localProvider, selectedChainId])
 
   const run = useCallback(async () => {
     if (address) {
