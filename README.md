@@ -1,5 +1,7 @@
 # 🏗 Scaffold-ETH - 🐈 kitty licks
 
+🎥 [watch the live build](https://youtu.be/JNerhaIU9RM)
+
 ![unnamed](https://user-images.githubusercontent.com/2653167/188954644-3d18e1e3-8b76-4848-8ed6-180bb99a7a85.png)
 
 # 🏄‍♂️ Quick Start
