@@ -69,8 +69,9 @@ export default function BrowseBadges() {
         for (let k = 0; k < balance; k++) {
           try {
             const tokenId = await contract.tokenOfOwnerByIndex(address, k)
+            const tId = tokenId.toHexString()
             let data = await contract.tokensData(tokenId)
-            const found = eventBadges.find(x => x.to === address)
+            const found = eventBadges.find(x => x.id === tId)
             // eslint-disable-next-line no-undef
             const badge = Object.assign({}, { transactionHash: found.transactionHash }, data, {
               decodedIpfsHash: toBase58(data.hash),
@@ -145,7 +146,6 @@ export default function BrowseBadges() {
     try {
       if (address) {
         if (address.includes('.eth')) {
-          console.log('calling resolveName')
           let resolvedAddress = await mainnet.resolveName(address)
           if (!resolvedAddress) {
             setErrorMessage(`Could not resolve this address ${address}`)

@@ -22,7 +22,6 @@ export default function NftCard(props) {
     try {
       let data = await contract.tokensData(ethers.BigNumber.from(id === '0x' ? '0x0' : id))
       let toFormatted = ethers.utils.hexZeroPad(ethers.utils.hexStripZeros(to), 20)
-      console.log('called lookupAddress')
       const name = await mainnet.lookupAddress(toFormatted)
       let title = name ? name : toFormatted
 
