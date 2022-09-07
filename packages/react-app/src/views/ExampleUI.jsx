@@ -2,7 +2,7 @@ import { Button, Card, DatePicker, Divider, Input, Progress, Slider, Spin, Switc
 import React, { useState } from "react";
 import { utils } from "ethers";
 import { SyncOutlined } from "@ant-design/icons";
-
+import { useContractReader } from "eth-hooks";
 import { Address, Balance, Events } from "../components";
 
 export default function ExampleUI({
@@ -16,7 +16,63 @@ export default function ExampleUI({
   readContracts,
   writeContracts,
 }) {
-  const [newPurpose, setNewPurpose] = useState("loading...");
+  //const [newPurpose, setNewPurpose] = useState("loading...");
+
+  const balanceOf = useContractReader(readContracts, "YourContract", "balanceOf", [address]);
+
+  const priceOfCollectibles = useContractReader(readContracts, "YourContract", "price");
+
+  const currentReward = useContractReader(readContracts, "YourContract", "currentReward");
+
+  let artistUI = "";
+
+  const streamBalance = useContractReader(readContracts, "YourContract", "streamBalance");
+
+  const cap = useContractReader(readContracts, "YourContract", "cap");
+
+  const toAddress = useContractReader(readContracts, "YourContract", "toAddress");
+
+  const [reason, setReason] = useState("");
+  const [amount, setAmount] = useState();
+
+  if (address == toAddress) {
+    artistUI = (
+      <div style={{ padding: 32, width: 320, margin: "auto" }}>
+        <div>You are the artist. You can withdraw:</div>
+        <div>
+          <Balance value={streamBalance} provider={localProvider} price={price} /> /{" "}
+          <Balance value={cap} provider={localProvider} price={price} />
+        </div>
+        <div>
+          reason:{" "}
+          <Input
+            value={reason}
+            onChange={e => {
+              setReason(e.target.value);
+            }}
+          />
+        </div>
+        <div>
+          amount: $
+          <Input
+            value={amount}
+            onChange={e => {
+              setAmount(e.target.value);
+            }}
+          />
+        </div>
+        <div>
+          <Button
+            onClick={() => {
+              tx(writeContracts.YourContract.streamWithdraw(utils.parseEther("" + parseFloat(amount) / price), reason));
+            }}
+          >
+            Withdraw
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -24,198 +80,48 @@ export default function ExampleUI({
         ⚙️ Here is an example UI that displays and sets the purpose in your smart contract:
       */}
       <div style={{ border: "1px solid #cccccc", padding: 16, width: 400, margin: "auto", marginTop: 64 }}>
-        <h2>Example UI:</h2>
-        <h4>purpose: {purpose}</h4>
-        <Divider />
-        <div style={{ margin: 8 }}>
-          <Input
-            onChange={e => {
-              setNewPurpose(e.target.value);
-            }}
-          />
-          <Button
-            style={{ marginTop: 8 }}
-            onClick={async () => {
-              /* look how you call setPurpose on your contract: */
-              /* notice how you pass a call back for tx updates too */
-              const result = tx(writeContracts.YourContract.setPurpose(newPurpose), update => {
-                console.log("📡 Transaction Update:", update);
-                if (update && (update.status === "confirmed" || update.status === 1)) {
-                  console.log(" 🍾 Transaction " + update.hash + " finished!");
-                  console.log(
-                    " ⛽️ " +
-                      update.gasUsed +
-                      "/" +
-                      (update.gasLimit || update.gas) +
-                      " @ " +
-                      parseFloat(update.gasPrice) / 1000000000 +
-                      " gwei",
-                  );
-                }
-              });
-              console.log("awaiting metamask/web3 confirm result...", result);
-              console.log(await result);
-            }}
-          >
-            Set Purpose!
-          </Button>
+        <div>
+          <img src="https://ipfs.io/ipfs/QmTw98vzxH1F62FgGsMYAbUZP9PB7uCYNM37YdvBJsgwjb" style={{ maxWidth: 200 }} />
         </div>
-        <Divider />
-        Your Address:
-        <Address address={address} ensProvider={mainnetProvider} fontSize={16} />
-        <Divider />
-        ENS Address Example:
-        <Address
-          address="0x34aA3F359A9D614239015126635CE7732c18fDF3" /* this will show as austingriffith.eth */
-          ensProvider={mainnetProvider}
-          fontSize={16}
-        />
-        <Divider />
-        {/* use utils.formatEther to display a BigNumber: */}
-        <h2>Your Balance: {yourLocalBalance ? utils.formatEther(yourLocalBalance) : "..."}</h2>
-        <div>OR</div>
-        <Balance address={address} provider={localProvider} price={price} />
-        <Divider />
-        <div>🐳 Example Whale Balance:</div>
-        <Balance balance={utils.parseEther("1000")} provider={localProvider} price={price} />
-        <Divider />
-        {/* use utils.formatEther to display a BigNumber: */}
-        <h2>Your Balance: {yourLocalBalance ? utils.formatEther(yourLocalBalance) : "..."}</h2>
-        <Divider />
-        Your Contract Address:
-        <Address
-          address={readContracts && readContracts.YourContract ? readContracts.YourContract.address : null}
-          ensProvider={mainnetProvider}
-          fontSize={16}
-        />
-        <Divider />
-        <div style={{ margin: 8 }}>
-          <Button
-            onClick={() => {
-              /* look how you call setPurpose on your contract: */
-              tx(writeContracts.YourContract.setPurpose("🍻 Cheers"));
-            }}
-          >
-            Set Purpose to &quot;🍻 Cheers&quot;
-          </Button>
+
+        <div>
+          <Address address={writeContracts?.YourContract?.address} />
         </div>
-        <div style={{ margin: 8 }}>
-          <Button
-            onClick={() => {
-              /*
-              you can also just craft a transaction and send it to the tx() transactor
-              here we are sending value straight to the contract's address:
-            */
-              tx({
-                to: writeContracts.YourContract.address,
-                value: utils.parseEther("0.001"),
-              });
-              /* this should throw an error about "no fallback nor receive function" until you add it */
-            }}
-          >
-            Send Value
-          </Button>
+
+        <div>
+          Contract balance:{" "}
+          <Balance address={writeContracts?.YourContract?.address} provider={localProvider} price={price} />
         </div>
-        <div style={{ margin: 8 }}>
-          <Button
-            onClick={() => {
-              /* look how we call setPurpose AND send some value along */
-              tx(
-                writeContracts.YourContract.setPurpose("💵 Paying for this one!", {
-                  value: utils.parseEther("0.001"),
-                }),
-              );
-              /* this will fail until you make the setPurpose function payable */
-            }}
-          >
-            Set Purpose With Value
-          </Button>
+
+        <div>
+          Price: <Balance value={priceOfCollectibles} provider={localProvider} price={price} />
         </div>
-        <div style={{ margin: 8 }}>
-          <Button
-            onClick={() => {
-              /* you can also just craft a transaction and send it to the tx() transactor */
-              tx({
-                to: writeContracts.YourContract.address,
-                value: utils.parseEther("0.001"),
-                data: writeContracts.YourContract.interface.encodeFunctionData("setPurpose(string)", [
-                  "🤓 Whoa so 1337!",
-                ]),
-              });
-              /* this should throw an error about "no fallback nor receive function" until you add it */
-            }}
-          >
-            Another Example
-          </Button>
+
+        <div>Your kitties: {balanceOf?.toNumber()}</div>
+
+        <Button
+          onClick={async () => {
+            let price = await readContracts.YourContract.price();
+            console.log("PRICE", utils.formatEther(price));
+            tx(writeContracts.YourContract.mintItem({ value: price }));
+          }}
+        >
+          MINT
+        </Button>
+
+        <Button
+          onClick={async () => {
+            tx(writeContracts.YourContract.burnItem());
+          }}
+        >
+          BURN
+        </Button>
+
+        <div>
+          reward: <Balance value={currentReward} provider={localProvider} price={price} />
         </div>
       </div>
-
-      {/*
-        📑 Maybe display a list of events?
-          (uncomment the event and emit line in YourContract.sol! )
-      */}
-      <Events
-        contracts={readContracts}
-        contractName="YourContract"
-        eventName="SetPurpose"
-        localProvider={localProvider}
-        mainnetProvider={mainnetProvider}
-        startBlock={1}
-      />
-
-      <div style={{ width: 600, margin: "auto", marginTop: 32, paddingBottom: 256 }}>
-        <Card>
-          Check out all the{" "}
-          <a
-            href="https://github.com/austintgriffith/scaffold-eth/tree/master/packages/react-app/src/components"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            📦 components
-          </a>
-        </Card>
-
-        <Card style={{ marginTop: 32 }}>
-          <div>
-            There are tons of generic components included from{" "}
-            <a href="https://ant.design/components/overview/" target="_blank" rel="noopener noreferrer">
-              🐜 ant.design
-            </a>{" "}
-            too!
-          </div>
-
-          <div style={{ marginTop: 8 }}>
-            <Button type="primary">Buttons</Button>
-          </div>
-
-          <div style={{ marginTop: 8 }}>
-            <SyncOutlined spin /> Icons
-          </div>
-
-          <div style={{ marginTop: 8 }}>
-            Date Pickers?
-            <div style={{ marginTop: 2 }}>
-              <DatePicker onChange={() => {}} />
-            </div>
-          </div>
-
-          <div style={{ marginTop: 32 }}>
-            <Slider range defaultValue={[20, 50]} onChange={() => {}} />
-          </div>
-
-          <div style={{ marginTop: 32 }}>
-            <Switch defaultChecked onChange={() => {}} />
-          </div>
-
-          <div style={{ marginTop: 32 }}>
-            <Progress percent={50} status="active" />
-          </div>
-
-          <div style={{ marginTop: 32 }}>
-            <Spin />
-          </div>
-        </Card>
-      </div>
+      <div style={{ paddingBottom: 164, marginBottom: 128 }}>{artistUI}</div>
     </div>
   );
 }
