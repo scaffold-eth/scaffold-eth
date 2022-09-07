@@ -29,8 +29,6 @@ function App() {
   const contractConfig = { deployedContracts: {}, externalContracts: externalContracts || {} }
 
   const targetNetwork = NETWORKS['optimism']
-  /* 💵 This hook will get the price of ETH from 🦄 Uniswap: */
-  const price = useExchangeEthPrice(targetNetwork, mainnet)
 
   let contractRef
   let providerRef
@@ -97,7 +95,6 @@ function App() {
     displayToast,
     externalContracts,
     contractRef,
-    price,
     setShowToast,
     closeWrongNetworkToast,
     showWrongNetworkToast,
