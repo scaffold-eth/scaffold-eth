@@ -207,7 +207,7 @@ export default function BrowseBadges() {
               <TextField
                 id="addressEnsSearch"
                 sx={{ color: '#007aa6' }}
-                label="Address or ENS name"
+                label="Wallet Address..."
                 onChange={e => {
                   setAddress(e.target.value)
                 }}
