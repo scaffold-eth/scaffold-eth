@@ -72,7 +72,7 @@ export default function BadgesPaginatedSection({
           columnSpacing={{ xs: 1, sm: 1.3, md: 2 }}
         >
           {checkeventBagesAndBadges(badges) ? (
-            <AddressedCard badges={badges} />
+            <AddressedCard badges={badges} etherscanRef={etherscanRef} />
           ) : pagedBadges && pagedBadges.length > 0 ? (
             pagedBadges.map(event => {
               return (

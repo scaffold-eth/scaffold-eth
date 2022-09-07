@@ -87,7 +87,6 @@ export default function AllowedMintCount() {
           }
         }
       } catch (error) {
-        console.log(`An error was caught in AllowedMintCount. See the details below`)
         console.log({ error })
       }
     }

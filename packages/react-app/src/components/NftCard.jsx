@@ -33,7 +33,6 @@ export default function NftCard(props) {
       console.error(error)
     }
   }, [contract, etherscan, id, mainnet, to, transactionHash])
-
   useEffect(() => {
     try {
       run()
@@ -61,9 +60,7 @@ export default function NftCard(props) {
             }}
           >
             <Typography variant={'body2'} noWrap={false} fontWeight={400} color={'#333333'}>
-              {state.title.length > 20
-                ? `${state.title.substring(0, 7)}...${state.title.substring(state.title.length - 7)}`
-                : state.title}
+              {state.title}
             </Typography>
             <Typography variant={'caption'} fontWeight={700} color={'#333333'}>
               {state.data.tokenType} {state.data.payload}
