@@ -11,11 +11,13 @@ import Toast from 'components/Toast'
 import { BadgeContext } from 'contexts/BadgeContext'
 import externalContracts from 'contracts/external_contracts'
 const { ethers } = require('ethers')
-
+const temmainnet = new ethers.providers.StaticJsonRpcProvider(
+        'https://mainnet.infura.io/v3/1b3241e53c8d422aab3c7c0e4101de9c',
+      )
 function App() {
   // @ts-ignore
   const [localProvider, setLocalProvider] = useState(null)
-  const [mainnet, setMainnet] = useState(null)
+  const [mainnet, setMainnet] = useState(temmainnet)
   const [loaded, setLoaded] = useState(false)
   const [connectedAddress, setConnectedAddress] = useState()
   const [injectedProvider, setInjectedProvider] = useState(null)
@@ -59,12 +61,9 @@ function App() {
   useEffect(() => {
     const run = async () => {
       const local = new ethers.providers.StaticJsonRpcProvider(providerRef)
-      const mainnet = new ethers.providers.StaticJsonRpcProvider(
-        'https://mainnet.infura.io/v3/1b3241e53c8d422aab3c7c0e4101de9c',
-      )
       await local.ready
       setLocalProvider(local)
-      setMainnet(mainnet)
+      // setMainnet(temmainnet)
       setLoaded(true)
     }
     run()

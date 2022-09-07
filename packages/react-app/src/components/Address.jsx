@@ -34,6 +34,7 @@ const blockExplorerLink = (address, blockExplorer) => `${blockExplorer || 'https
 export default function Address(props) {
   const currentTheme = 'light'
   const address = props.value || props.address
+  console.log('called useLookupAddress')
   const ens = useLookupAddress(props.ensProvider, address)
   const ensSplit = ens && ens.split('.')
   const validEnsCheck = ensSplit && ensSplit[ensSplit.length - 1] === 'eth'

@@ -145,6 +145,7 @@ export default function BrowseBadges() {
     try {
       if (address) {
         if (address.includes('.eth')) {
+          console.log('calling resolveName')
           let resolvedAddress = await mainnet.resolveName(address)
           if (!resolvedAddress) {
             setErrorMessage(`Could not resolve this address ${address}`)
