@@ -296,9 +296,6 @@ function App(props) {
         <Menu.Item key="/DM">
           <Link to="/DM">DM</Link>
         </Menu.Item>
-        <Menu.Item key="/Hints">
-          <Link to="/DM">hints</Link>
-        </Menu.Item>
       </Menu>
 
       <Switch>
