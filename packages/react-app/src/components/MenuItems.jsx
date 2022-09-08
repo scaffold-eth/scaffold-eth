@@ -3,12 +3,12 @@ import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
 
 const browseBage = {
-  name: 'Browse Badges',
-  url: '',
+  name: 'Browse',
+  url: '/',
   component: 'a',
 }
 const mintBadge = {
-  name: 'Mint Badge',
+  name: 'Mint A Badge',
   url: '/mintbadge',
   // component: 'button',
 }

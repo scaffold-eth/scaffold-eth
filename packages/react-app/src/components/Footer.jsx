@@ -15,8 +15,7 @@ const footerCategories = {
   PRODUCTS: [
     { text: 'Online IDE', url: 'https://remix.ethereum.org/' },
     { text: 'Desktop App', url: 'https://github.com/ethereum/remix-desktop/releases' },
-    { text: 'Ethereum Remix', url: '' },
-    { text: 'RemixD', url: '' },
+    { text: 'RemixD', url: 'https://github.com/ethereum/remix-project#readme' },
   ],
   DOCUMENTATION: [
     { text: 'Remix       ', url: 'https://remix-ide.readthedocs.io/en/latest/' },
@@ -25,13 +24,10 @@ const footerCategories = {
   ],
   GITHUB: [
     { text: 'Remix Project', url: 'https://github.com/ethereum/remix-project' },
-    { text: 'Plugins Project', url: 'https://github.com/ethereum/remix-plugin#readme' },
-    { text: 'Libraries', url: '' },
+    { text: 'Plugins Project', url: 'https://remix-plugins-directory.readthedocs.io/en/latest/index.html' },
+    { text: 'Libraries', url: 'https://github.com/ethereum/remix-project/blob/master/libs/remixd/README.md' },
   ],
-  COMPANY: [
-    { text: 'About Us', url: '' },
-    { text: 'Careers', url: '' },
-  ],
+  COMPANY: [{ text: 'About Us', url: 'https://remix-project.org' }],
 }
 
 const useMakeStyles = props => {

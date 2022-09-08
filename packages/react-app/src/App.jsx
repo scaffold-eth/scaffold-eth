@@ -12,8 +12,8 @@ import { BadgeContext } from 'contexts/BadgeContext'
 import externalContracts from 'contracts/external_contracts'
 const { ethers } = require('ethers')
 const temmainnet = new ethers.providers.StaticJsonRpcProvider(
-        'https://mainnet.infura.io/v3/1b3241e53c8d422aab3c7c0e4101de9c',
-      )
+  'https://mainnet.infura.io/v3/1b3241e53c8d422aab3c7c0e4101de9c',
+)
 function App() {
   // @ts-ignore
   const [localProvider, setLocalProvider] = useState(null)
@@ -61,7 +61,6 @@ function App() {
       const local = new ethers.providers.StaticJsonRpcProvider(providerRef)
       await local.ready
       setLocalProvider(local)
-      // setMainnet(temmainnet)
       setLoaded(true)
     }
     run()
