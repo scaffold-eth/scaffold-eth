@@ -12,7 +12,7 @@ export default function MintingPageCard({ top }) {
         maxWidth={350}
       >
         <Card variant={'outlined'} sx={{ borderRadius: 5, marginTop: top }}>
-          <CardMedia component={'img'} width={300} image={'/Remixer.png'} alt={'remixer'} />
+          <CardMedia component={'img'} width={300} image={'./Remixer.png'} alt={'remixer'} />
         </Card>
       </Box>
     </>
