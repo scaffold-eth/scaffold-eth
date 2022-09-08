@@ -4,13 +4,12 @@ import externalContracts from '../contracts/external_contracts'
 import { getAllRewards } from '../helpers/getAllRewards'
 
 import { ethers } from 'ethers'
-import TextField from '@mui/material/TextField'
-import Button from '@mui/material/Button'
+import InputLabel from '@mui/material/InputLabel'
+import SearchIcon from '@mui/icons-material/Search'
 import IconButton from '@mui/material/IconButton'
 import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft'
-import { Search } from '@mui/icons-material'
 import multihash from 'multihashes'
-import { Typography } from '@mui/material'
+import { CircularProgress, InputAdornment, OutlinedInput, Typography } from '@mui/material'
 import Box from '@mui/material/Box'
 import { Paper } from '@mui/material'
 import { FormControl } from '@mui/material'
@@ -199,38 +198,30 @@ export default function BrowseBadges() {
           <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>
             {address.length > 0 ? (
               <IconButton onClick={() => setAddress('')} sx={{ color: '#81a6f7', ':hover': { color: '#1976d2' } }}>
-                {'Back to Badge Gallery'}
+                {/* {'Back to Badge Gallery'} */}
                 <ArrowCircleLeftIcon fontSize="large" />
               </IconButton>
             ) : null}
             <FormControl sx={{ width: '50vw' }} variant="outlined">
-              <TextField
+              <InputLabel htmlFor="addressEnsSearch">Wallet Address</InputLabel>
+              <OutlinedInput
                 id="addressEnsSearch"
-                sx={{ color: '#007aa6' }}
+                sx={{ color: '#444444' }}
                 label="Wallet Address..."
                 onChange={e => {
                   setAddress(e.target.value)
                 }}
                 value={address}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton>{address.length > 3 && <SearchIcon />}</IconButton>
+                  </InputAdornment>
+                }
               />
             </FormControl>
-            <Button
-              type="submit"
-              variant="contained"
-              sx={{
-                padding: 1.8,
-                marginLeft: 3,
-                background: '#81a6f7',
-                ':disabled': {
-                  background: '#81a6f7',
-                  color: 'whitesmoke',
-                },
-              }}
-              onClick={e => submitHandler(e)}
-              disabled={address === ''}
-            >
-              <Search />
-            </Button>
+            {address.length > 3 && badges.length === 0 ? (
+              <CircularProgress color="secondary" sx={{ marginLeft: 5 }} />
+            ) : null}
           </Box>
           {error && error.length > 0 ? (
             <Paper>
