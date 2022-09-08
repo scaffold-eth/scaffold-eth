@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
 // import { useUserProviderAndSigner } from 'eth-hooks'
-import { useExchangeEthPrice } from 'eth-hooks/dapps/dex'
 import { NETWORKS } from './constants'
 import { Layout } from './components'
 import { BrowseBadges } from './views'
@@ -17,7 +16,7 @@ const temmainnet = new ethers.providers.StaticJsonRpcProvider(
 function App() {
   // @ts-ignore
   const [localProvider, setLocalProvider] = useState(null)
-  const [mainnet, setMainnet] = useState(temmainnet)
+  const [mainnet] = useState(temmainnet)
   const [loaded, setLoaded] = useState(false)
   const [connectedAddress, setConnectedAddress] = useState()
   const [injectedProvider, setInjectedProvider] = useState(null)
