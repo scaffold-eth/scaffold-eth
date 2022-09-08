@@ -1,5 +1,5 @@
 // @ts-ignore
-import React, { Fragment, useCallback, useEffect, useState } from 'react'
+import React, { Fragment, useCallback, useEffect, useReducer, useState } from 'react'
 import { Box, Button, Card, CardActions, CardMedia, CardContent, Typography } from '@mui/material'
 import InfoIcon from '@mui/icons-material/Info'
 import { ethers } from 'ethers'
@@ -30,7 +30,7 @@ export default function NftCard(props) {
     txLink: '',
   })
   const [open, setOpen] = useState(false)
-
+  const [hoverActive, setHoverActive] = useReducer(previous => !previous, false)
   const handleTooltipClose = () => {
     setOpen(false)
   }
@@ -85,6 +85,8 @@ export default function NftCard(props) {
                 noWrap={false}
                 fontWeight={400}
                 color={'#333333'}
+                onMouseOver={() => setHoverActive()}
+                onMouseOut={() => setHoverActive()}
                 sx={{
                   display: 'flex',
                   alignItems: 'center',
@@ -96,9 +98,11 @@ export default function NftCard(props) {
                 {state.title.length > 20
                   ? `${state.title.substring(0, 7)}...${state.title.substring(state.title.length - 7)}`
                   : state.title}
-                <Box component={'span'} ml={1}>
-                  <ContentCopyIcon fontSize="small" />
-                </Box>
+                {hoverActive && (
+                  <Box component={'span'} ml={1}>
+                    <ContentCopyIcon fontSize="small" />
+                  </Box>
+                )}
               </Typography>
             </CopyToClipboard>
             <Typography variant={'caption'} fontWeight={700} color={'#333333'}>
