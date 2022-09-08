@@ -1,6 +1,6 @@
 import Portis from "@portis/web3";
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import { Alert, Button, Col, List, Menu, Row, InputNumber } from "antd";
+import { Alert, Button, Col, List, Menu, Row, InputNumber, notification } from "antd";
 import "antd/dist/antd.css";
 import Authereum from "authereum";
 import {
@@ -447,6 +447,13 @@ function App(props) {
   });
 
   const bet = async () => {
+    if (!number) {
+      notification["warning"]({
+        message: "No number selected",
+        description: "Please choose a number between 0 and 15",
+      });
+      return;
+    }
     try {
       const txCur = await tx(
         writeContracts.DiceGame.bet(number, { value: ethers.utils.parseEther("0.001"), gasLimit: 500000 }),
@@ -526,28 +533,6 @@ function App(props) {
       <Header />
       {networkDisplay}
       <BrowserRouter>
-        <Menu style={{ textAlign: "center" }} selectedKeys={[route]} mode="horizontal">
-          <Menu.Item key="/">
-            <Link
-              onClick={() => {
-                setRoute("/");
-              }}
-              to="/"
-            >
-              Dice!
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/debug">
-            <Link
-              onClick={() => {
-                setRoute("/debug");
-              }}
-              to="/debug"
-            >
-              Debug
-            </Link>
-          </Menu.Item>
-        </Menu>
         {console.log("bet events: ", betEvents)}
         {console.log("roll events: ", rollEvents)}
         {console.log("winner events: ", winnerEvents)}
@@ -571,11 +556,12 @@ function App(props) {
                 />
               </div>
               <div id="centerWrapper" style={{ padding: 16 }}>
-                <h2>Bet a number from 0 to 15:</h2>
+                <h2>Bet a number from 0 to 15 and then roll the dice when the button is enabled.</h2>
+                <h3>You can win Ξ0.015 if you guess the rolled number!</h3>
                 <InputNumber min="0" max="15" value={number} onChange={setNumber} />
                 <div style={{ padding: 16, format: "flex", flexDirection: "row" }}>
                   <Button type="primary" disabled={blockNumber > 0} onClick={bet}>
-                    Bet
+                    Bet Ξ0.001
                   </Button>
                   <div style={{ padding: 16 }}>
                     <Button style={{ margin: 16 }} type="primary" disabled={rollDisabled} onClick={rollTheDice}>
