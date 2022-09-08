@@ -6,41 +6,7 @@ import Balance from "../Balance";
 import DisplayVariable from "./DisplayVariable";
 import FunctionForm from "./FunctionForm";
 
-const noContractDisplay = (
-  <div>
-    Loading...{" "}
-    <div style={{ padding: 32 }}>
-      You need to run{" "}
-      <span
-        className="highlight"
-        style={{ marginLeft: 4, /* backgroundColor: "#f1f1f1", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-      >
-        yarn run chain
-      </span>{" "}
-      and{" "}
-      <span
-        className="highlight"
-        style={{ marginLeft: 4, /* backgroundColor: "#f1f1f1", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-      >
-        yarn run deploy
-      </span>{" "}
-      to see your contract here.
-    </div>
-    <div style={{ padding: 32 }}>
-      <span style={{ marginRight: 4 }} role="img" aria-label="warning">
-        ☢️
-      </span>
-      Warning: You might need to run
-      <span
-        className="highlight"
-        style={{ marginLeft: 4, /* backgroundColor: "#f1f1f1", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-      >
-        yarn run deploy
-      </span>{" "}
-      <i>again</i> after the frontend comes up!
-    </div>
-  </div>
-);
+const noContractDisplay = <div>This is the Intercom page</div>;
 
 const isQueryable = fn => (fn.stateMutability === "view" || fn.stateMutability === "pure") && fn.inputs.length === 0;
 
