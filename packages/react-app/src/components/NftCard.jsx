@@ -3,6 +3,9 @@ import { Box, Button, Card, CardActions, CardMedia, CardContent, Typography } fr
 import InfoIcon from '@mui/icons-material/Info'
 import { ethers } from 'ethers'
 import multihash from 'multihashes'
+import ContentCopyIcon from '@mui/icons-material/ContentCopy'
+import Tooltip from '@mui/material/Tooltip'
+import { CopyToClipboard } from 'react-copy-to-clipboard'
 
 export const toBase58 = contentHash => {
   let hex = contentHash.substring(2)
@@ -59,9 +62,27 @@ export default function NftCard(props) {
                 'linear-gradient(90deg, #d4def4, #d9dff6, #dee1f7, #e3e2f9, #e8e4fa, #ede5fb, #f1e6fb, #f6e8fc)',
             }}
           >
-            <Typography variant={'body2'} noWrap={false} fontWeight={400} color={'#333333'}>
-              {state.title}
-            </Typography>
+            <CopyToClipboard text={state.title} onCopy={() => console.log('copied')}>
+              <Typography
+                variant={'body2'}
+                noWrap={false}
+                fontWeight={400}
+                color={'#333333'}
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  ':hover': { cursor: 'pointer' },
+                }}
+              >
+                {state.title.length > 20
+                  ? `${state.title.substring(0, 7)}...${state.title.substring(state.title.length - 7)}`
+                  : state.title}
+                <Box component={'span'} ml={1}>
+                  <ContentCopyIcon fontSize="small" />
+                </Box>
+              </Typography>
+            </CopyToClipboard>
             <Typography variant={'caption'} fontWeight={700} color={'#333333'}>
               {state.data.tokenType} {state.data.payload}
             </Typography>
