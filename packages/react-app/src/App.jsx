@@ -320,7 +320,7 @@ function App(props) {
             */}
 
           <Contract
-            name="YourContract"
+            name="NFTixBooth"
             price={price}
             signer={userSigner}
             provider={localProvider}
