@@ -3,8 +3,8 @@ pragma solidity >=0.8.0 <0.9.0;
 import "hardhat/console.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "@openzeppelin/contracts/utils/String.sol";
-import "./Base64.sol"
+import "@openzeppelin/contracts/utils/Strings.sol";
+import "@openzeppelin/contracts/utils/Base64.sol";
 
 
 contract NFTixBooth is ERC721URIStorage {
@@ -27,15 +27,15 @@ contract NFTixBooth is ERC721URIStorage {
  function mint() public {
   require(availableTickets > 0, "Not enough tickets");
 
-  string[] memory svg;
-  svg[0] = '<svg viewBox="0 0 100 100" xmlns="https://www.w3.org/2000/svg"><text y="50">'
-  svg[1] = String.toString(currentId.current());
+  string[3] memory svg;
+  svg[0] = '<svg viewBox="0 0 100 100" xmlns="https://www.w3.org/2000/svg"><text y="50">';
+  svg[1] = Strings.toString(currentId.current());
   svg[2] = '</text></svg>';
 
-  String memory image = abi.encodePacked(svg[0], svg[1]. svg[2]);
+  string memory image = string(abi.encodePacked(svg[0], svg[1], svg[2]));
 
- String memory encodedImage = Base64.encode(bytes(image));
- console.log(encodedImage)
+  string memory encodedImage = Base64.encode(bytes(image));
+  console.log(encodedImage);
 
   _safeMint(msg.sender, currentId.current());
   currentId.increment();
