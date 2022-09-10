@@ -1,0 +1,6 @@
+{
+  "name": "NFTix #1",
+  "description": "A NFT-powered ticketing system",
+  "tracits": [{ "trait_type": "Purchased", "value": "true" }],
+  "image": "data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTAwIDEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48dGV4dCB5PSI1MCI+MTwvdGV4dD48L3N2Zz4="
+}
