@@ -5,9 +5,9 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/Base64.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-
-contract NFTixBooth is ERC721URIStorage {
+contract NFTixBooth is ERC721URIStorage, Ownable {
   using Counters for Counters.Counter;
   Counters.Counter private currentId;
 
@@ -29,7 +29,7 @@ contract NFTixBooth is ERC721URIStorage {
  function mint() public payable {
   require(availableTickets > 0, "Not enough tickets");
   require(msg.value >= mintPrice, "Not enough mit price");
-
+  require(saleIsActive," Tickets are not on sale!");
   
 
   string[3] memory svg;
@@ -81,11 +81,11 @@ contract NFTixBooth is ERC721URIStorage {
 
 
 
- function openSale() public {
+ function openSale() public onlyOwner {
   saleIsActive = true;
  }
 
- function closeSale() public {
+ function closeSale() public onlyOwner {
    saleIsActive =false;
  }
 }
