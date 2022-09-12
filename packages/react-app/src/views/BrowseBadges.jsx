@@ -70,7 +70,7 @@ export default function BrowseBadges() {
             const tokenId = await contract.tokenOfOwnerByIndex(address, k)
             const tId = tokenId.toHexString()
             let data = await contract.tokensData(tokenId)
-            const found = eventBadges.find(x => x.id === tId)
+            const found = eventBadges.find(x => ethers.utils.hexStripZeros(x.id) === ethers.utils.hexStripZeros(tId))
             // eslint-disable-next-line no-undef
             const badge = Object.assign({}, { transactionHash: found.transactionHash }, data, {
               decodedIpfsHash: toBase58(data.hash),
