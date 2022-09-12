@@ -226,6 +226,20 @@ export const NETWORKS = {
     blockExplorer: "https://moonbeam-explorer.netlify.app/",
     rpcUrl: "http://127.0.0.1:9933",
   },
+  testnetFindora: {
+    name: "testnetFindora",
+    color: "#7333ff",
+    chainId: 2153,
+    blockExplorer: "https://testnet-anvil.evm.findorascan.io/",
+    rpcUrl: "https://prod-testnet.prod.findora.org:8545",
+  },
+  mainnetFindora: {
+    name: "mainnetFindora",
+    color: "#7333ff",
+    chainId: 2152,
+    blockExplorer: "https://evm.findorascan.io",
+    rpcUrl: "https://rpc-mainnet.findora.org",
+  },
 };
 
 export const NETWORK = chainId => {

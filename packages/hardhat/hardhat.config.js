@@ -274,6 +274,20 @@ module.exports = {
         mnemonic: mnemonic(),
       },
     },
+    testnetFindora: {
+      url: "https://prod-testnet.prod.findora.org:8545",
+      chainId: 2153,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
+    mainnetFindora: {
+      url: "https://rpc-mainnet.findora.org",
+      chainId: 2152,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
   },
   solidity: {
     compilers: [
