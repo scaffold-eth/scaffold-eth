@@ -439,11 +439,10 @@ function App(props) {
   useOnBlock(localProvider, () => {
     if (DEBUG) console.log(`⛓ A new local block is here: ${localProvider._lastBlockNumber}`);
     if (DEBUG) console.log("blockNumber: ", blockNumber);
-    setRollDisabled(
-      blockNumber === 0 ||
-        ethers.BigNumber.from(localProvider._lastBlockNumber) < blockNumber.add(futureBlocks) ||
-        ethers.BigNumber.from(localProvider._lastBlockNumber) > blockNumber.add(futureBlocks + 256),
-    );
+    const lastBlock = parseInt(ethers.BigNumber.from(localProvider._lastBlockNumber).toString());
+    const betBlock = parseInt(blockNumber.toString());
+    const disable = betBlock === 0 || lastBlock < betBlock + futureBlocks || lastBlock > betBlock + futureBlocks + 256;
+    setRollDisabled(disable);
   });
 
   const bet = async () => {
