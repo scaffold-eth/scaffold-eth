@@ -117,9 +117,6 @@ contract MandalaMerge is ERC721Enumerable, Ownable {
     if (!_exists(id))
       revert NotExists();
 
-    if (!claimed[id])
-      revert NotClaimed();
-
     if (claimed[id] || block.number >= blockNumbers[id] + futureBlocks + 256) {
       return MandalaMetadata.tokenURI(id, ownerOf(id), generateSVGofTokenById(id));
     }
