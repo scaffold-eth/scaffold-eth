@@ -29,7 +29,7 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const NFTixBooth = await ethers.getContract("NFTixBooth", deployer);
 
   await NFTixBooth.transferOwnership(
-    "0x71E40Ba30D5F629Ee1Fdd598E89E4870b07B1c32"
+    "0xc67A4783d286eaB2002cddd6A3D51EF9ae690c41"
   );
 
   /*  await NFTixBooth.setPurpose("Hello");

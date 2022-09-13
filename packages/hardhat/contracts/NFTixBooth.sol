@@ -88,4 +88,10 @@ contract NFTixBooth is ERC721URIStorage, Ownable {
  function closeSale() public onlyOwner {
    saleIsActive =false;
  }
+
+  function confirmOwnership(address addy) public view returns (bool) {
+    return holderTokenIDs[addy].length > 0;
+  }
+
+
 }
