@@ -76,9 +76,12 @@ function YourNfts({
             let ready =
               ethers.BigNumber.from(localProvider._lastBlockNumber).gte(blockNumber.add(futureBlocks)) &&
               ethers.BigNumber.from(localProvider._lastBlockNumber).lt(blockNumber.add(futureBlocks + 256));
-            let readyData = { ready: ready };
+            let readyData = { ready: ready, missed: false };
             if (!ready) {
               readyData["blocks"] = blockNumber.add(futureBlocks).sub(ethers.BigNumber.from(localProvider._lastBlockNumber)).toString();
+            }
+            if (ethers.BigNumber.from(localProvider._lastBlockNumber).gte(blockNumber.add(futureBlocks + 256))) {
+              readyData["missed"] = true;
             }
             claims[tokenId] = readyData;
           }
@@ -171,9 +174,12 @@ function YourNfts({
           let ready =
             ethers.BigNumber.from(localProvider._lastBlockNumber).gte(blockNumber.add(futureBlocks)) &&
             ethers.BigNumber.from(localProvider._lastBlockNumber).lt(blockNumber.add(futureBlocks + 256));
-          let readyData = { ready: ready };
+          let readyData = { ready: ready, missed: false };
           if (!ready) {
             readyData["blocks"] = blockNumber.add(futureBlocks).sub(ethers.BigNumber.from(localProvider._lastBlockNumber)).toString();
+          }
+          if (ethers.BigNumber.from(localProvider._lastBlockNumber).gte(blockNumber.add(futureBlocks + 256))) {
+            readyData["missed"] = true;
           }
           claims[yourNfts[i].id] = readyData;
         }
@@ -244,7 +250,7 @@ function YourNfts({
 
             return (
               <List.Item key={"nft_" + id}>
-                {item.claimed ? (
+                {item.claimed || (readyToClaim[id] && readyToClaim[id].missed) ? (
                   <Card
                     style={{ width: 1150 }}
                     title={
