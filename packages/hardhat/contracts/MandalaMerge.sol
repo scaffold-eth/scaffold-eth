@@ -39,7 +39,7 @@ contract MandalaMerge is ERC721Enumerable, Ownable {
   uint256 public constant step = 0.0001 ether;
   uint256 public price = 0.01 ether;
 
-  uint256 public constant futureBlocks = 2;
+  uint256 public constant futureBlocks = 10;
 
   // tokenId -> mint block number
   mapping (uint256 => uint256) public blockNumbers;

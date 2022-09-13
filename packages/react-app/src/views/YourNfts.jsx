@@ -29,7 +29,7 @@ function YourNfts({
   if (DEBUG) console.log("🤗 totalSupply:", totalSupply);
   const mandalasLeft = 1111 - totalSupply;
 
-  const futureBlocks = 2;
+  const futureBlocks = 10;
 
   useEffect(() => {
     const updateBalances = async () => {
@@ -200,9 +200,9 @@ function YourNfts({
             Mint Steps:
             <ol style={{ textAlign: "left", fontSize: 20 }}>
               <li>Mint: you will create a new Mandala Merge NFT</li>
-              <li>Claim: after minting, you have to wait 10 Ethereum block (about 2 minutes) and then you can claim your Mandala Merge NFT.
+              <li>Claim: after minting, you have to wait 10 Ethereum blocks (about 2 minutes) and then you can claim your Mandala Merge NFT.
                 <ul>
-                  <li>This is to ensure that you get a unpredictable random Mandala using the new feature <a href="https://eips.ethereum.org/EIPS/eip-4399" target="_blank">RANDAO</a> as randomness source (available post merge on Ethereum Proof of Stake).</li>
+                  <li>This is to ensure you get an unpredictable random Mandala using the new feature <a href="https://eips.ethereum.org/EIPS/eip-4399" target="_blank">RANDAO</a> as randomness source (available post merge on Ethereum Proof of Stake).</li>
                   <li>This is the first NFT to use a fully on-chain unpredictable random generator.</li>
                   <li>You must claim your Mandala before the next 256 Ethereum blocks (about 50 minutes).</li>
                   <li>If you fail to claim your Mandala in this time window, your Mandala will not look finished.</li>
