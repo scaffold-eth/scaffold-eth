@@ -27,7 +27,8 @@ import externalContracts from "./contracts/external_contracts";
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor } from "./helpers";
 // import Hints from "./Hints";
-import { ExampleUI, Hints, Subgraph } from "./views";
+import { ExampleUI, Hints, Subgraph, YourNfts, Home } from "./views";
+import { useThemeSwitcher } from "react-css-theme-switcher";
 
 const { ethers } = require("ethers");
 /*
@@ -231,15 +232,9 @@ function App(props) {
   // If you want to make 🔐 write transactions to your contracts, use the userSigner:
   const writeContracts = useContractLoader(userSigner, contractConfig, localChainId);
 
-  // EXTERNAL CONTRACT EXAMPLE:
-  //
-  // If you want to bring in the mainnet DAI contract it would look like:
-  const mainnetContracts = useContractLoader(mainnetProvider, contractConfig);
+  const { switcher, currentTheme, status, themes } = useThemeSwitcher();
 
-  // If you want to call a function on a new block
-  useOnBlock(mainnetProvider, () => {
-    console.log(`⛓ A new mainnet block is here: ${mainnetProvider._lastBlockNumber}`);
-  });
+  switcher({ theme: themes.dark });
 
   //
   // 🧫 DEBUG 👨🏻‍🔬
@@ -253,8 +248,7 @@ function App(props) {
       yourLocalBalance &&
       yourMainnetBalance &&
       readContracts &&
-      writeContracts &&
-      mainnetContracts
+      writeContracts
     ) {
       console.log("_____________________________________ 🏗 scaffold-eth _____________________________________");
       console.log("🌎 mainnetProvider", mainnetProvider);
@@ -264,7 +258,6 @@ function App(props) {
       //console.log("💵 yourLocalBalance", yourLocalBalance ? ethers.utils.formatEther(yourLocalBalance) : "...");
       //console.log("💵 yourMainnetBalance", yourMainnetBalance ? ethers.utils.formatEther(yourMainnetBalance) : "...");
       console.log("📝 readContracts", readContracts);
-      //console.log("🌍 DAI contract on mainnet:", mainnetContracts);
       //console.log("💵 yourMainnetDAIBalance", myMainnetDAIBalance);
       console.log("🔐 writeContracts", writeContracts);
     }
@@ -276,7 +269,6 @@ function App(props) {
     yourMainnetBalance,
     readContracts,
     writeContracts,
-    mainnetContracts,
   ]);
 
   let networkDisplay = "";
@@ -426,191 +418,40 @@ function App(props) {
     );
   }
 
-  const winnerEvents = useEventListener(readContracts, "DiceGame", "Winner");
-  const rollEvents = useEventListener(readContracts, "DiceGame", "Roll");
-  const betEvents = useEventListener(readContracts, "DiceGame", "Bet");
-
-  const [number, setNumber] = useState();
-  const [blockNumber, setBlockNumber] = useState(0);
-  const [rollDisabled, setRollDisabled] = useState(true);
-
-  const futureBlocks = 2;
-
-  useOnBlock(localProvider, () => {
-    if (DEBUG) console.log(`⛓ A new local block is here: ${localProvider._lastBlockNumber}`);
-    if (DEBUG) console.log("blockNumber: ", blockNumber);
-    setRollDisabled(
-      blockNumber === 0 ||
-        ethers.BigNumber.from(localProvider._lastBlockNumber) < blockNumber.add(futureBlocks) ||
-        ethers.BigNumber.from(localProvider._lastBlockNumber) > blockNumber.add(futureBlocks + 256),
-    );
-  });
-
-  const bet = async () => {
-    if (!number) {
-      notification["warning"]({
-        message: "No number selected",
-        description: "Please choose a number between 0 and 15",
-      });
-      return;
-    }
-    try {
-      const txCur = await tx(
-        writeContracts.DiceGame.bet(number, { value: ethers.utils.parseEther("0.001"), gasLimit: 500000 }),
-      );
-      await txCur.wait();
-      const betData = await readContracts.DiceGame.bets(address);
-      if (DEBUG) console.log("betData: ", betData);
-      const betBlockNumber = betData[1];
-      if (DEBUG) console.log("betBlockNumber: ", betBlockNumber);
-      setBlockNumber(betBlockNumber);
-    } catch (e) {
-      console.log("Failed to bet", e);
-    }
-  };
-
-  const rollTheDice = async () => {
-    if (DEBUG) console.log("Roll the dice: ", blockNumber);
-
-    const futureBlockNumber = blockNumber.add(futureBlocks).toNumber();
-    if (DEBUG) console.log("futureBlockNumber: ", futureBlockNumber);
-
-    const blockData = await localProvider.send("eth_getBlockByNumber", [
-      ethers.utils.hexValue(futureBlockNumber),
-      true,
-    ]);
-    if (DEBUG) console.log("blockData: ", blockData);
-
-    let values = [];
-    values.push(blockData.parentHash);
-    values.push(blockData.sha3Uncles);
-    values.push(blockData.miner);
-    values.push(blockData.stateRoot);
-    values.push(blockData.transactionsRoot);
-    values.push(blockData.receiptsRoot);
-    values.push(blockData.logsBloom);
-    values.push(blockData.difficulty);
-    values.push(blockData.number);
-    values.push(blockData.gasLimit);
-    values.push(blockData.gasUsed);
-    values.push(blockData.timestamp);
-    values.push(blockData.extraData);
-    values.push(blockData.mixHash);
-    values.push(blockData.nonce);
-    if ("baseFeePerGas" in blockData) {
-      values.push(blockData.baseFeePerGas);
-    }
-
-    for (let i = 0; i < values.length; i++) {
-      if (values[i] === "0x0") {
-        values[i] = "0x";
-      }
-      if (values[i].length % 2) {
-        values[i] = "0x0" + values[i].substring(2);
-      }
-    }
-
-    if (DEBUG) console.log("blockData values: ", values);
-
-    const rlpEncoded = ethers.utils.RLP.encode(values);
-    if (DEBUG) console.log("blockData RLP: ", rlpEncoded);
-
-    const blockHash = ethers.utils.keccak256(rlpEncoded);
-    if (DEBUG) console.log("blockData hash: ", blockHash);
-
-    try {
-      const txCur = await tx(writeContracts.DiceGame.rollTheDice(rlpEncoded, { gasLimit: 500000 }));
-      await txCur.wait();
-      setBlockNumber(0);
-    } catch (e) {
-      console.log("Failed to roll the dice", e);
-    }
-  };
-
   return (
     <div className="App">
       {/* ✏️ Edit the header and change the title to your project name */}
       <Header />
       {networkDisplay}
       <BrowserRouter>
-        {console.log("bet events: ", betEvents)}
-        {console.log("roll events: ", rollEvents)}
-        {console.log("winner events: ", winnerEvents)}
         <Switch>
           <Route exact path="/">
-            <div style={{ display: "flex" }}>
-              <div style={{ width: 250, margin: "auto", marginTop: 64 }}>
-                <div>Bets:</div>
-                <List
-                  style={{ height: 750, overflow: "hidden" }}
-                  dataSource={betEvents}
-                  renderItem={item => {
-                    return (
-                      <List.Item key={"betEvents" + item.blockNumber}>
-                        <Address value={item.args[0]} ensProvider={mainnetProvider} fontSize={16} />
-                        &nbsp;Block:&nbsp;{item.args.blockNumber.toString()}
-                        &nbsp;Bet:&nbsp;{item.args.number}
-                      </List.Item>
-                    );
-                  }}
-                />
-              </div>
-              <div id="centerWrapper" style={{ padding: 16 }}>
-                <h2>Bet a number from 0 to 15 and then roll the dice when the button is enabled.</h2>
-                <h3>You can win Ξ0.015 if you guess the rolled number!</h3>
-                <InputNumber min="0" max="15" value={number} onChange={setNumber} />
-                <div style={{ padding: 16, format: "flex", flexDirection: "row" }}>
-                  <Button type="primary" disabled={blockNumber > 0} onClick={bet}>
-                    Bet Ξ0.001
-                  </Button>
-                  <div style={{ padding: 16 }}>
-                    <Button style={{ margin: 16 }} type="primary" disabled={rollDisabled} onClick={rollTheDice}>
-                      Roll the dice
-                    </Button>
-                    {rollDisabled && blockNumber > 0 && (
-                      <p>
-                        Bet on block: {blockNumber.toString()} - Roll the dice after block:
-                        {blockNumber.add(futureBlocks).toString()} - Current block: {localProvider._lastBlockNumber}
-                      </p>
-                    )}
-                  </div>
-                </div>
-                <div>Rolls:</div>
-                <List
-                  style={{ height: 500, overflow: "hidden" }}
-                  dataSource={rollEvents}
-                  renderItem={item => {
-                    return (
-                      <List.Item key={"rollEvents" + item.blockNumber}>
-                        <Address value={item.args[0]} ensProvider={mainnetProvider} fontSize={16} />
-                        &nbsp;Block:&nbsp;{item.args.blockNumber.toString()}
-                        &nbsp;Roll:&nbsp;{item.args.number}
-                      </List.Item>
-                    );
-                  }}
-                />
-              </div>
-              <div style={{ width: 250, margin: "auto", marginTop: 32 }}>
-                <div>Winners:</div>
-                <List
-                  style={{ height: 750, overflow: "hidden" }}
-                  dataSource={winnerEvents}
-                  renderItem={item => {
-                    return (
-                      <List.Item key={"winnerEvents" + item.blockNumber}>
-                        <Address value={item.args[0]} ensProvider={mainnetProvider} fontSize={16} />
-                        &nbsp;Block:&nbsp;{item.args.blockNumber.toString()}
-                        &nbsp;Number:&nbsp;{item.args.number}
-                      </List.Item>
-                    );
-                  }}
-                />
-              </div>
-            </div>
+            <Home
+              DEBUG={DEBUG}
+              readContracts={readContracts}
+              writeContracts={writeContracts}
+              tx={tx}
+              mainnetProvider={mainnetProvider}
+              blockExplorer={blockExplorer}
+              address={address}
+              localProvider={localProvider}
+            />
+          </Route>
+          <Route exact path="/yourNfts">
+            <YourNfts
+              DEBUG={DEBUG}
+              readContracts={readContracts}
+              writeContracts={writeContracts}
+              tx={tx}
+              mainnetProvider={mainnetProvider}
+              blockExplorer={blockExplorer}
+              address={address}
+              localProvider={localProvider}
+            />
           </Route>
           <Route exact path="/debug">
             <Contract
-              name="DiceGame"
+              name="MandalaMerge"
               price={price}
               signer={userSigner}
               provider={localProvider}
@@ -621,8 +462,6 @@ function App(props) {
           </Route>
         </Switch>
       </BrowserRouter>
-
-      <ThemeSwitch />
 
       {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
       <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>
@@ -638,46 +477,6 @@ function App(props) {
           blockExplorer={blockExplorer}
         />
         {faucetHint}
-      </div>
-
-      {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
-      <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
-        <Row align="middle" gutter={[4, 4]}>
-          <Col span={8}>
-            <Ramp price={price} address={address} networks={NETWORKS} />
-          </Col>
-
-          <Col span={8} style={{ textAlign: "center", opacity: 0.8 }}>
-            <GasGauge gasPrice={gasPrice} />
-          </Col>
-          <Col span={8} style={{ textAlign: "center", opacity: 1 }}>
-            <Button
-              onClick={() => {
-                window.open("https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA");
-              }}
-              size="large"
-              shape="round"
-            >
-              <span style={{ marginRight: 8 }} role="img" aria-label="support">
-                💬
-              </span>
-              Support
-            </Button>
-          </Col>
-        </Row>
-
-        <Row align="middle" gutter={[4, 4]}>
-          <Col span={24}>
-            {
-              /*  if the local provider has a signer, let's show the faucet:  */
-              faucetAvailable ? (
-                <Faucet localProvider={localProvider} price={price} ensProvider={mainnetProvider} />
-              ) : (
-                ""
-              )
-            }
-          </Col>
-        </Row>
       </div>
     </div>
   );

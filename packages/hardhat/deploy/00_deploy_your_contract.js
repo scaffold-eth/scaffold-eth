@@ -8,16 +8,16 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const { deployer } = await getNamedAccounts();
   const chainId = await getChainId();
 
-  await deploy("DiceGame", {
-    // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
+  const metadata = await deploy("MandalaMetadata", {
     from: deployer,
-    value: ethers.utils.parseEther(".05"),
     log: true,
   });
 
-  // Getting a previously deployed contract
-  const DiceGame = await ethers.getContract("DiceGame", deployer);
-
-
+  await deploy("MandalaMerge", {
+    // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
+    from: deployer,
+    libraries: { MandalaMetadata: metadata.address },
+    log: true,
+  });
 };
-module.exports.tags = ["DiceGame"];
+module.exports.tags = ["MandalaMerge"];

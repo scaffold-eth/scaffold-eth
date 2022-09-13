@@ -5,3 +5,75 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
+
+@font-face {
+  font-family: MsMadi-Regular;
+  src: url("MsMadi-Regular.ttf");
+}
+
+@font-face {
+  font-family: Combo-Regular;
+  src: url("Combo-Regular.ttf");
+}
+
+#root {
+  font-family: "Combo-Regular";
+}
+
+#root .ant-page-header-heading {
+  justify-content: space-around;
+}
+
+#root .ant-page-header-heading-title {
+  font-size: 60px;
+  line-height: 80px;
+  font-family: "MsMadi-Regular";
+  width: 500px;
+}
+
+.description {
+  font-size: 24px;
+}
+
+.description h2 {
+  font-size: 36px;
+}
+
+#root .description .go-to-mint-page, #root .mint-button {
+  font-size: 30px;
+  width: 300px;
+  height: 60px;
+  background-color: #8ab41f;
+  border-color: #8ab41f;
+}
+
+#root .mint-button {
+  width: 400px;
+  height: 80px;
+}
+
+#root .your-nfts {
+  width: 1200px;
+  margin: 0 auto;
+  padding-bottom: 20px;
+}
+
+#root .your-nfts .ant-list-bordered {
+  border: none;
+}
+
+#root .your-nfts .claim {
+  font-size: 30px;
+  width: 300px;
+  height: 60px;
+  background-color: #8ab41f;
+  border-color: #8ab41f;
+}
+
+body .ant-image-preview-mask {
+  background-color: rgba(0, 0, 0, 1);
+}
+
+#home .ant-card-body {
+  padding: 0;
+}
