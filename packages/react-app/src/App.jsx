@@ -53,7 +53,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const initialNetwork = NETWORKS.mainnet; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const initialNetwork = NETWORKS.optimism; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -290,16 +290,48 @@ function App(props) {
       <Switch>
         <Route exact path="/">
           <div>
-            <pre style={{ margin: 32 }}>
-              This lets you mint _many_ "ethereum-merge-fractals" (https://ethereum-merge-fractals.surge.sh)
-            </pre>
-          </div>
+            <h1>
+              🐼 Mint{" "}
+              <a
+                href="https://twitter.com/AlexPartyPanda/status/1569980247629770753?s=20&t=EWjxHwWJb4NQ3c9HDkWDwg"
+                target="_blank"
+                rel="noreferrer"
+              >
+                bears
+              </a>{" "}
+              in batches to support the{" "}
+              <a href="https://buidlguidl.com" target="_blank" rel="noreferrer">
+                BuidlGuidl
+              </a>{" "}
+              &&{" "}
+              <a
+                href="https://stateful.mirror.xyz/mEDvFXGCKdDhR-N320KRtsq60Y2OPk8rHcHBCFVryXY"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Protocol Guild
+              </a>{" "}
+              at the same time!!!
+            </h1>
 
+            <hr style={{ margin: 64 }} />
+
+            <h2 style={{ margin: 32 }}>🐻‍❄️ Consensus Layer Bears</h2>
+            <h3>
+              <a href="https://qx.app/collection/consensus-layer-bears" target="_blank" rel="noreferrer">
+                (view on quixotic)
+              </a>
+            </h3>
+          </div>
           <Button
             onClick={async () => {
-              let price = await readContracts.YourContract.price();
+              let price = ethers.utils.parseEther("0.00042");
               console.log("price", price);
-              let result = await tx(writeContracts.YourContract.mint(1, { value: price }));
+              let result = await tx(
+                writeContracts.YourContract.mint("0xfb3999711d4f309F6B71504268F79b3fD578DA6F", 1, {
+                  value: price.mul(2),
+                }),
+              );
               console.log("result", result);
             }}
           >
@@ -308,9 +340,13 @@ function App(props) {
 
           <Button
             onClick={async () => {
-              let price = await readContracts.YourContract.price();
+              let price = ethers.utils.parseEther("0.00042");
               console.log("price", price);
-              let result = await tx(writeContracts.YourContract.mint(2, { value: price.mul(2) }));
+              let result = await tx(
+                writeContracts.YourContract.mint("0xfb3999711d4f309F6B71504268F79b3fD578DA6F", 2, {
+                  value: price.mul(3),
+                }),
+              );
               console.log("result", result);
             }}
           >
@@ -319,9 +355,13 @@ function App(props) {
 
           <Button
             onClick={async () => {
-              let price = await readContracts.YourContract.price();
+              let price = ethers.utils.parseEther("0.00042");
               console.log("price", price);
-              let result = await tx(writeContracts.YourContract.mint(3, { value: price.mul(3) }));
+              let result = await tx(
+                writeContracts.YourContract.mint("0xfb3999711d4f309F6B71504268F79b3fD578DA6F", 3, {
+                  value: price.mul(4),
+                }),
+              );
               console.log("result", result);
             }}
           >
@@ -330,9 +370,13 @@ function App(props) {
 
           <Button
             onClick={async () => {
-              let price = await readContracts.YourContract.price();
+              let price = ethers.utils.parseEther("0.00042");
               console.log("price", price);
-              let result = await tx(writeContracts.YourContract.mint(5, { value: price.mul(5) }));
+              let result = await tx(
+                writeContracts.YourContract.mint("0xfb3999711d4f309F6B71504268F79b3fD578DA6F", 5, {
+                  value: price.mul(6),
+                }),
+              );
               console.log("result", result);
             }}
           >
@@ -341,9 +385,99 @@ function App(props) {
 
           <Button
             onClick={async () => {
-              let price = await readContracts.YourContract.price();
+              let price = ethers.utils.parseEther("0.00042");
               console.log("price", price);
-              let result = await tx(writeContracts.YourContract.mint(10, { value: price.mul(10) }));
+              let result = await tx(
+                writeContracts.YourContract.mint("0xfb3999711d4f309F6B71504268F79b3fD578DA6F", 10, {
+                  value: price.mul(11),
+                }),
+              );
+              console.log("result", result);
+            }}
+          >
+            Mint 10
+          </Button>
+
+          <hr style={{ margin: 64 }} />
+
+          <div>
+            <h2 style={{ margin: 32 }}>🐻 Execution Layer Bears</h2>
+            <h3>
+              <a href="https://qx.app/collection/execution-layer-bears" target="_blank" rel="noreferrer">
+                (view on quixotic)
+              </a>
+            </h3>
+          </div>
+
+          <Button
+            onClick={async () => {
+              let price = ethers.utils.parseEther("0.00042");
+              console.log("price", price);
+              let result = await tx(
+                writeContracts.YourContract.mint("0x22Cd0e2680f4B9aE140E3b9AbFA3463532e290Ff", 1, {
+                  value: price.mul(2),
+                }),
+              );
+              console.log("result", result);
+            }}
+          >
+            Mint 1
+          </Button>
+
+          <Button
+            onClick={async () => {
+              let price = ethers.utils.parseEther("0.00042");
+              console.log("price", price);
+              let result = await tx(
+                writeContracts.YourContract.mint("0x22Cd0e2680f4B9aE140E3b9AbFA3463532e290Ff", 2, {
+                  value: price.mul(3),
+                }),
+              );
+              console.log("result", result);
+            }}
+          >
+            Mint 2
+          </Button>
+
+          <Button
+            onClick={async () => {
+              let price = ethers.utils.parseEther("0.00042");
+              console.log("price", price);
+              let result = await tx(
+                writeContracts.YourContract.mint("0x22Cd0e2680f4B9aE140E3b9AbFA3463532e290Ff", 3, {
+                  value: price.mul(4),
+                }),
+              );
+              console.log("result", result);
+            }}
+          >
+            Mint 3
+          </Button>
+
+          <Button
+            onClick={async () => {
+              let price = ethers.utils.parseEther("0.00042");
+              console.log("price", price);
+              let result = await tx(
+                writeContracts.YourContract.mint("0x22Cd0e2680f4B9aE140E3b9AbFA3463532e290Ff", 5, {
+                  value: price.mul(6),
+                }),
+              );
+              console.log("result", result);
+            }}
+          >
+            Mint 5
+          </Button>
+
+          <Button
+            onClick={async () => {
+              let price = ethers.utils.parseEther("0.00042");
+              console.log("price", price);
+              let result = await tx(
+                writeContracts.YourContract.mint("0x22Cd0e2680f4B9aE140E3b9AbFA3463532e290Ff", 10, {
+                  value: price.mul(11),
+                }),
+              );
               console.log("result", result);
             }}
           >
