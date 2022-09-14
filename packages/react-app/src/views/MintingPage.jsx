@@ -5,36 +5,10 @@ import MintingPageCard from '../components/MintingPageCard'
 import MintingActions from 'components/MintingActions'
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
-import externalContracts from 'contracts/external_contracts'
 import { BadgeContext } from 'contexts/BadgeContext'
-
-const defaultState = {
-  chainId: '5',
-  contractRef: externalContracts['5'].contracts.REMIX_REWARD,
-}
-
-function appStateReducer(state, actionType) {
-  switch (actionType.type) {
-    case '10':
-      const optimism = {
-        chainid: '10',
-        contractRef: externalContracts['10'].contracts.REMIX_REWARD,
-      }
-      return optimism
-    case '5':
-      const goerli = {
-        chainid: '1',
-        contractRef: externalContracts['1'].contracts.REMIX_REWARD,
-      }
-      return goerli
-    default:
-      throw new Error('The network selected is not supported!')
-  }
-}
 
 export default function MintingPage() {
   // @ts-ignore
-  // const [appState, appDispatch] = useReducer(appStateReducer, defaultState)
   const { contractRef } = useContext(BadgeContext)
 
   const theme = useTheme()
