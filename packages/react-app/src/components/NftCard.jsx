@@ -31,6 +31,7 @@ export default function NftCard(props) {
   })
   const [open, setOpen] = useState(false)
   const [hoverActive, setHoverActive] = useReducer(previous => !previous, false)
+  const [shadowLevel, setShadowLevel] = useState(1)
   const handleTooltipClose = () => {
     setOpen(false)
   }
@@ -68,6 +69,11 @@ export default function NftCard(props) {
           padding: '2px',
           color: '#333333',
           borderRadius: 5,
+          boxShadow: '5px 5px 5px 5px #aaaaaa',
+          transition: 'transform 0.5s',
+          ':hover': {
+            transform: 'scale(1.1)',
+          },
         }}
         maxWidth={310}
       >
@@ -98,11 +104,7 @@ export default function NftCard(props) {
                 {state.title.length > 20
                   ? `${state.title.substring(0, 7)}...${state.title.substring(state.title.length - 7)}`
                   : state.title}
-                {hoverActive && (
-                  <Box component={'span'} ml={1}>
-                    <ContentCopyIcon fontSize="small" />
-                  </Box>
-                )}
+                <ContentCopyIcon fontSize="inherit" sx={{ marginLeft: 0.5 }} />
               </Typography>
             </CopyToClipboard>
             <Typography variant={'caption'} fontWeight={700} color={'#333333'}>

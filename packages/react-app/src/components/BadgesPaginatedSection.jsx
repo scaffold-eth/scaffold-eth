@@ -10,6 +10,7 @@ import Fab from '@mui/material/Fab'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { useCallback } from 'react'
 import AddressedCard from './AddressedCard'
+import { Skeleton } from 'antd'
 
 export default function BadgesPaginatedSection({
   badges,
@@ -123,7 +124,15 @@ export default function BadgesPaginatedSection({
                 </Grid>
               )
             })
-          ) : null}
+          ) : (
+            Array.from({ length: 10 }, () => Math.random() * 6).map(x => (
+              <>
+                <Box width={240}>
+                  <Skeleton round loading />
+                </Box>
+              </>
+            ))
+          )}
         </Grid>
         <Box display={'flex'} justifyContent={'right'} paddingRight={2}>
           <Fab
