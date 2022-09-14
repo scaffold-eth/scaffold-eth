@@ -60,7 +60,7 @@ contract MandalaMerge is ERC721Enumerable, Ownable {
         revert DoneMinting();
 
       if (msg.value < price)
-        revert MintNotEnough()
+        revert MintNotEnough();
 
       price = price + step;
 
