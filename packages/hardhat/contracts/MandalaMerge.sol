@@ -9,6 +9,8 @@ import './MandalaMetadata.sol';
 
 // GET LISTED ON OPENSEA: https://testnets.opensea.io/get-listed/step-two
 
+error DoneMinting();
+error MintNotEnough();
 error CouldNotSend();
 error CouldNotSendBuildGuidl();
 error NotExists();
@@ -54,8 +56,11 @@ contract MandalaMerge is ERC721Enumerable, Ownable {
       payable
       returns (uint256)
   {
-      require(_tokenIds.current() < limit, "DONE MINTING");
-      require(msg.value >= price, "NOT ENOUGH");
+      if (_tokenIds.current() >= limit)
+        revert DoneMinting();
+
+      if (msg.value < price)
+        revert MintNotEnough()
 
       price = price + step;
 
