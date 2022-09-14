@@ -13,10 +13,14 @@ library MandalaMetadata {
   using ToColor for bytes3;
   using HexStrings for uint160;
 
-  function tokenURI(uint256 id, address owner, string memory svg) public pure returns (string memory) {
+  function tokenURI(uint256 id, address owner, bool claimed, string memory svg) public pure returns (string memory) {
       string memory name = string(abi.encodePacked('Mandala Merge #',id.toString()));
       string memory description = string(abi.encodePacked('Random on-chain Mandala Merge animated SVG NFT'));
       string memory image = Base64.encode(bytes(svg));
+      string memory claimedBoolean = 'false';
+      if (claimed) {
+        claimedBoolean = 'true';
+      }
 
       return
           string(
@@ -31,7 +35,9 @@ library MandalaMetadata {
                               description,
                               '", "external_url":"https://mandalamerge.com/token/',
                               id.toString(),
-                              '", "owner":"',
+                              '", "attributes": [{"trait_type": "claimed", "value": ',
+                              claimedBoolean,
+                              '}], "owner":"',
                               uint160(owner).toHexString(20),
                               '", "image": "',
                               'data:image/svg+xml;base64,',
