@@ -31,7 +31,6 @@ export default function NftCard(props) {
   })
   const [open, setOpen] = useState(false)
   const [hoverActive, setHoverActive] = useReducer(previous => !previous, false)
-  const [shadowLevel, setShadowLevel] = useState(1)
   const handleTooltipClose = () => {
     setOpen(false)
   }
@@ -48,7 +47,8 @@ export default function NftCard(props) {
 
       const src = 'https://remix-project.mypinata.cloud/ipfs/' + toBase58(data.hash)
       const txLink = etherscan + transactionHash
-
+      console.log(src.length)
+      console.log({ src })
       setState({ data, title, src, txLink })
     } catch (error) {
       console.error(error)
@@ -101,7 +101,9 @@ export default function NftCard(props) {
                 }}
                 component={'span'}
               >
-                {state.title.length > 20
+                {state.title.length === 0
+                  ? null
+                  : state.title.length > 20
                   ? `${state.title.substring(0, 7)}...${state.title.substring(state.title.length - 7)}`
                   : state.title}
                 <ContentCopyIcon fontSize="inherit" sx={{ marginLeft: 0.5 }} />

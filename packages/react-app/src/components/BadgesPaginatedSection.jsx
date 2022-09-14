@@ -100,7 +100,6 @@ export default function BadgesPaginatedSection({
             })
           ) : eventBadges && eventBadges.length > 0 ? (
             eventBadges.map(event => {
-              let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
               return (
                 <Grid
                   item
@@ -124,15 +123,7 @@ export default function BadgesPaginatedSection({
                 </Grid>
               )
             })
-          ) : (
-            Array.from({ length: 10 }, () => Math.random() * 6).map(x => (
-              <>
-                <Box width={240}>
-                  <Skeleton round loading />
-                </Box>
-              </>
-            ))
-          )}
+          ) : null}
         </Grid>
         <Box display={'flex'} justifyContent={'right'} paddingRight={2}>
           <Fab
