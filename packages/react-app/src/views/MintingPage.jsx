@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react'
+import React, { useContext } from 'react'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import MintingPageCard from '../components/MintingPageCard'
@@ -6,6 +6,7 @@ import MintingActions from 'components/MintingActions'
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import externalContracts from 'contracts/external_contracts'
+import { BadgeContext } from 'contexts/BadgeContext'
 
 const defaultState = {
   chainId: '5',
@@ -33,7 +34,8 @@ function appStateReducer(state, actionType) {
 
 export default function MintingPage() {
   // @ts-ignore
-  const [appState, appDispatch] = useReducer(appStateReducer, defaultState)
+  // const [appState, appDispatch] = useReducer(appStateReducer, defaultState)
+  const { contractRef } = useContext(BadgeContext)
 
   const theme = useTheme()
   const mobile400 = useMediaQuery(theme.breakpoints.between('sm', 'md'))
@@ -92,7 +94,7 @@ export default function MintingPage() {
           <MintingPageCard
             top={mobile900 ? -15 : mobileResponsiveMatch ? -16 : mobile400 ? -25 : mobile240 ? -14 : -15}
           />
-          <MintingActions contractRef={appState.contractRef} />
+          <MintingActions contractRef={contractRef} />
         </Box>
       </Box>
     </>
