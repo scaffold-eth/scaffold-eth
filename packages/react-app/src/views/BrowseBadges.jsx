@@ -54,41 +54,79 @@ export default function BrowseBadges() {
 
   useEffect(() => {
     const run = async () => {
-      if (!contractRef) return setErrorMessage('chain not supported. ' + selectedChainId)
+      if (!contractRef) {
+        setErrorMessage('chain not supported. ' + selectedChainId)
+        return
+      }
       if (!address) {
         setBadges([])
         setErrorMessage('')
         return
       }
-      setErrorMessage('')
-      try {
-        let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
-        const balance = await contract.balanceOf(address)
-        const badges = []
-        for (let k = 0; k < balance; k++) {
-          try {
-            const tokenId = await contract.tokenOfOwnerByIndex(address, k)
-            const tId = tokenId.toHexString()
-            let data = await contract.tokensData(tokenId)
-            const found = eventBadges.find(x => ethers.utils.hexStripZeros(x.id) === ethers.utils.hexStripZeros(tId))
-            // eslint-disable-next-line no-undef
-            const badge = Object.assign({}, { transactionHash: found.transactionHash }, data, {
-              decodedIpfsHash: toBase58(data.hash),
-            })
-            // console.log({ badge })
-            badges.push(badge)
-          } catch (e) {
-            console.error(e)
-          }
+      let resolvedAddress
+      if (address.includes('.eth')) {
+        resolvedAddress = await mainnet.resolveName(address)
+        if (!resolvedAddress) {
+          setErrorMessage(`Could not resolve this address ${address}`)
+          return
         }
-        setBadges(badges)
         setErrorMessage('')
-      } catch (e) {
-        setErrorMessage(e.message)
+        try {
+          let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
+          const balance = await contract.balanceOf(resolvedAddress)
+          const badges = []
+          for (let k = 0; k < balance; k++) {
+            try {
+              const tokenId = await contract.tokenOfOwnerByIndex(resolvedAddress, k)
+              const tId = tokenId.toHexString()
+              let data = await contract.tokensData(tokenId)
+              const found = eventBadges.find(x => ethers.utils.hexStripZeros(x.id) === ethers.utils.hexStripZeros(tId))
+              // eslint-disable-next-line no-undef
+              const badge = Object.assign({}, { transactionHash: found.transactionHash }, data, {
+                decodedIpfsHash: toBase58(data.hash),
+              })
+              // console.log({ badge })
+              badges.push(badge)
+            } catch (e) {
+              console.error(e)
+            }
+          }
+          setBadges(badges)
+          setErrorMessage('')
+        } catch (e) {
+          setErrorMessage(e.message)
+        }
+      } else {
+        setErrorMessage('')
+        try {
+          let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
+          const balance = await contract.balanceOf(address)
+          const badges = []
+          for (let k = 0; k < balance; k++) {
+            try {
+              const tokenId = await contract.tokenOfOwnerByIndex(address, k)
+              const tId = tokenId.toHexString()
+              let data = await contract.tokensData(tokenId)
+              const found = eventBadges.find(x => ethers.utils.hexStripZeros(x.id) === ethers.utils.hexStripZeros(tId))
+              // eslint-disable-next-line no-undef
+              const badge = Object.assign({}, { transactionHash: found.transactionHash }, data, {
+                decodedIpfsHash: toBase58(data.hash),
+              })
+              // console.log({ badge })
+              badges.push(badge)
+            } catch (e) {
+              console.error(e)
+            }
+          }
+          setBadges(badges)
+          setErrorMessage('')
+        } catch (e) {
+          setErrorMessage(e.message)
+        }
       }
     }
     run()
-  }, [address, contractRef, eventBadges, localProvider, selectedChainId])
+  }, [address, contractRef, eventBadges, localProvider, mainnet, selectedChainId])
 
   const run = useCallback(async () => {
     if (address) {
