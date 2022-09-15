@@ -8,9 +8,6 @@ const createProvider = async url => {
     // console.log("n-p:Load ", p);
 
     let isReady = await p.ready;
-    // console.log("n-isReady: ", url, isReady);
-    // console.log("n-isReady: ", isReady);
-
     return p;
   } catch (error) {
     console.log("n-error: ", error);
@@ -56,7 +53,6 @@ export default function useStaticJsonRPC(localUrl, urlArray, isMainnet) {
       // const mainnetProvider = await p;
 
       // load an first rpc from array if it is not available try second and so on..
-
       if (isMainnet) {
         let provider = await loadMainnetProvider(urlArray);
         setProvider({ provider, mainnetProvider: null });
@@ -65,8 +61,6 @@ export default function useStaticJsonRPC(localUrl, urlArray, isMainnet) {
         let provider = await createProvider(localUrl);
         setProvider({ provider, mainnetProvider });
       }
-
-      // console.log("n-p:FINAL ", localProvider, mainnetProvider);
     } catch (error) {
       // todo: show notification error about provider issues
       console.log(error);
