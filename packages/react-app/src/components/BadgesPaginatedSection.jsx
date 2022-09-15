@@ -84,8 +84,8 @@ export default function BadgesPaginatedSection({
                   ml={'auto'}
                   mr={'auto'}
                   key={`${event.to}-${event.id}`}
-                  alignItems={'center'}
-                  justifyContent={'center'}
+                  alignItems={'left'}
+                  justifyContent={'left'}
                 >
                   <NftCard
                     etherscan={etherscanRef}
