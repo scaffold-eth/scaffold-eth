@@ -1,16 +1,13 @@
 import App from "./App";
 
 import "antd/dist/antd.css";
-import { useBalance, useContractLoader, useContractReader, useGasPrice, useUserProviderAndSigner } from "eth-hooks";
+import { useBalance, useGasPrice, useUserProviderAndSigner } from "eth-hooks";
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
 import React, { useCallback, useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
 import "./App.css";
 import { ALCHEMY_KEY, NETWORKS } from "./constants";
-import externalContracts from "./contracts/external_contracts";
 // contracts
-import deployedContracts from "./contracts/hardhat_contracts.json";
-import { Transactor, Web3ModalSetup } from "./helpers";
+import { Web3ModalSetup } from "./helpers";
 import { useStaticJsonRPC } from "./hooks";
 
 const { ethers } = require("ethers");
