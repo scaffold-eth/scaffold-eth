@@ -291,7 +291,7 @@ function App(props) {
             <Account
               useBurner={USE_BURNER_WALLET}
               address={address}
-              provider={provider}
+              localProvider={provider}
               userSigner={userSigner}
               mainnetProvider={mainnetProvider}
               price={price}
@@ -304,7 +304,7 @@ function App(props) {
         </div>
       </Header>
       {yourLocalBalance.lte(ethers.BigNumber.from("0")) && (
-        <FaucetHint provider={provider} targetNetwork={targetNetwork} address={address} />
+        <FaucetHint localProvider={provider} targetNetwork={targetNetwork} address={address} />
       )}
       <NetworkDisplay
         NETWORKCHECK={NETWORKCHECK}
@@ -370,7 +370,7 @@ function App(props) {
             address={address}
             userSigner={userSigner}
             mainnetProvider={mainnetProvider}
-            provider={provider}
+            localProvider={provider}
             yourLocalBalance={yourLocalBalance}
             price={price}
             tx={tx}
@@ -443,7 +443,7 @@ function App(props) {
           <Col span={24}>
             {
               /*  if the local provider has a signer, let's show the faucet:  */
-              faucetAvailable ? <Faucet provider={provider} price={price} ensProvider={mainnetProvider} /> : ""
+              faucetAvailable ? <Faucet localProvider={provider} price={price} ensProvider={mainnetProvider} /> : ""
             }
           </Col>
         </Row>
