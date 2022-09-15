@@ -1,13 +1,6 @@
 import { Button, Col, Menu, Row } from "antd";
 import "antd/dist/antd.css";
-import {
-  useBalance,
-  useContractLoader,
-  useContractReader,
-  useGasPrice,
-  useOnBlock,
-  useUserProviderAndSigner,
-} from "eth-hooks";
+import { useBalance, useContractLoader, useContractReader, useGasPrice, useUserProviderAndSigner } from "eth-hooks";
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
 import React, { useCallback, useEffect, useState } from "react";
 import { Link, Route, Switch, useLocation } from "react-router-dom";
@@ -16,21 +9,21 @@ import {
   Account,
   Contract,
   Faucet,
+  FaucetHint,
   GasGauge,
   Header,
+  NetworkDisplay,
+  NetworkSwitch,
   Ramp,
   ThemeSwitch,
-  NetworkDisplay,
-  FaucetHint,
-  NetworkSwitch,
 } from "./components";
-import { NETWORKS, ALCHEMY_KEY } from "./constants";
+import { ALCHEMY_KEY, NETWORKS } from "./constants";
 import externalContracts from "./contracts/external_contracts";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor, Web3ModalSetup } from "./helpers";
-import { Home, ExampleUI, Hints, Subgraph } from "./views";
 import { useStaticJsonRPC } from "./hooks";
+import { ExampleUI, Hints, Home, Subgraph } from "./views";
 
 const { ethers } = require("ethers");
 /*
