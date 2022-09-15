@@ -14,9 +14,9 @@ import {
   NetworkDisplay,
   NetworkSwitch,
   Ramp,
-  ThemeSwitch,
+  ThemeSwitch
 } from "./components";
-import { ALCHEMY_KEY, NETWORKS } from "./constants";
+import { NETWORKS } from "./constants";
 import externalContracts from "./contracts/external_contracts";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
@@ -44,23 +44,23 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const initialNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+// const initialNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
 const NETWORKCHECK = true;
 const USE_BURNER_WALLET = true; // toggle burner wallet feature
 const USE_NETWORK_SELECTOR = false;
-const POLL_TIME = 5000;
+// const POLL_TIME = 5000;
 
 // const web3Modal = Web3ModalSetup();
 
 // 🛰 providers
-const providers = [
-  `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}`,
-  "https://eth-mainnet.gateway.pokt.network/v1/lb/611156b4a585a20035148406",
-  "https://rpc.scaffoldeth.io:48544",
-];
+// const providers = [
+//   `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}`,
+//   "https://eth-mainnet.gateway.pokt.network/v1/lb/611156b4a585a20035148406",
+//   "https://rpc.scaffoldeth.io:48544",
+// ];
 
 function App({
   provider,
@@ -136,7 +136,6 @@ function App({
   //   isMainnetProvider ? provider : mainnetProvider,
   //   isLoaded ? POLL_TIME : 500,
   // );
-  // console.log("n-price: ", price);
 
   // /* 🔥 This hook will get the price of Gas from ⛽️ EtherGasStation */
   // const gasPrice = useGasPrice(targetNetwork, "fast", isLoaded ? POLL_TIME : 500);
