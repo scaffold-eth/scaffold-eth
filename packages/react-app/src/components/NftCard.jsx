@@ -47,8 +47,6 @@ export default function NftCard(props) {
 
       const src = 'https://remix-project.mypinata.cloud/ipfs/' + toBase58(data.hash)
       const txLink = etherscan + transactionHash
-      console.log(src.length)
-      console.log({ src })
       setState({ data, title, src, txLink })
     } catch (error) {
       console.error(error)
