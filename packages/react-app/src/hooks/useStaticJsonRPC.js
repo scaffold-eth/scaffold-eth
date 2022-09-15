@@ -34,6 +34,7 @@ const loadMainnetProvider = async urls => {
       }
     }
     if (loadedProvider !== null) {
+      console.log('n-loadedProvider:FINAL LOAD ', loadedProvider);
       resolve(loadedProvider);
     }
 

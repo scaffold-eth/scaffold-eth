@@ -177,13 +177,12 @@ function App({
   const selectedChainId =
     userSigner && userSigner.provider && userSigner.provider._network && userSigner.provider._network.chainId;
 
-  console.log("n-localChainId: ", localChainId);
-  console.log("n-selectedChainId: ", selectedChainId);
-
   // For more hooks, check out 🔗eth-hooks at: https://www.npmjs.com/package/eth-hooks
 
   // The transactor wraps transactions and provides notificiations
   const tx = Transactor(userSigner, gasPrice);
+
+
 
   // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
   // const yourLocalBalance = useBalance(provider, address, POLL_TIME);
@@ -198,6 +197,7 @@ function App({
 
   // Load in your local 📝 contract and read a value from it:
   const readContracts = useContractLoader(provider, contractConfig);
+
 
   // If you want to make 🔐 write transactions to your contracts, use the userSigner:
   const writeContracts = useContractLoader(userSigner, contractConfig, localChainId);
@@ -253,7 +253,6 @@ function App({
       console.log("🌍 DAI contract on mainnet:", mainnetContracts);
       console.log("💵 yourMainnetDAIBalance", myMainnetDAIBalance);
       console.log("🔐 writeContracts", writeContracts);
-
     }
   }, [
     mainnetProvider,
