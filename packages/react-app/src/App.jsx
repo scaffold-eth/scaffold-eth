@@ -66,8 +66,8 @@ const web3Modal = Web3ModalSetup();
 
 // 🛰 providers
 const providers = [
-  "https://eth-mainnet.gateway.pokt.network/v1/lb/611156b4a585a20035148406",
   `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}`,
+  "https://eth-mainnet.gateway.pokt.network/v1/lb/611156b4a585a20035148406",
   "https://rpc.scaffoldeth.io:48544",
 ];
 
@@ -87,18 +87,22 @@ function App(props) {
   // 🔭 block explorer URL
   const blockExplorer = targetNetwork.blockExplorer;
 
-  const { localProvider, mainnetProvider } = useStaticJsonRPC(
+  // check the current network name
+  const isMainnet = targetNetwork.name === "mainnet";
+  // if current network is mainnet then  provider will be mainnet provider and mainnetProvider will be null
+  const { provider, mainnetProvider } = useStaticJsonRPC(
     process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : targetNetwork.rpcUrl,
     providers,
+    isMainnet,
   );
 
+  const isMainnetProvider = mainnetProvider === null;
+
   useEffect(() => {
-    if (localProvider !== null && mainnetProvider !== null) {
+    if (provider !== null) {
       setIsLoaded(true);
     }
-  }, [localProvider, mainnetProvider]);
-
-  console.log("n-localProvider, mainnetProvider: ", localProvider, mainnetProvider);
+  }, [provider, mainnetProvider]);
 
   // load all your providers
   // const localProvider = useStaticJsonRPC([
@@ -127,13 +131,21 @@ function App(props) {
   // /* 💵 This hook will get the price of ETH from 🦄 Uniswap: */
   // console.log("n-isLoaded: ", isLoaded);
   // console.log("n-isLoaded ? 5000 : 500: ", isLoaded ? 5000 : 500);
-  const price = useExchangeEthPrice(targetNetwork, isLoaded && mainnetProvider, isLoaded ? POLL_TIME : 500);
+  const price = useExchangeEthPrice(
+    targetNetwork,
+    isMainnetProvider ? provider : mainnetProvider,
+    isLoaded ? POLL_TIME : 500,
+  );
   // console.log("n-price: ", price);
 
   // /* 🔥 This hook will get the price of Gas from ⛽️ EtherGasStation */
   const gasPrice = useGasPrice(targetNetwork, "fast", isLoaded ? POLL_TIME : 500);
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
-  const userProviderAndSigner = useUserProviderAndSigner(injectedProvider, localProvider, USE_BURNER_WALLET);
+  const userProviderAndSigner = useUserProviderAndSigner(
+    injectedProvider,
+    isMainnetProvider ? provider : mainnetProvider,
+    USE_BURNER_WALLET,
+  );
   const userSigner = userProviderAndSigner.signer;
 
   useEffect(() => {
@@ -147,7 +159,7 @@ function App(props) {
   }, [userSigner]);
 
   // You can warn the user if you would like them to be on a specific network
-  const localChainId = localProvider && localProvider._network && localProvider._network.chainId;
+  const localChainId = provider && provider._network && provider._network.chainId;
   const selectedChainId =
     userSigner && userSigner.provider && userSigner.provider._network && userSigner.provider._network.chainId;
 
@@ -157,10 +169,10 @@ function App(props) {
   const tx = Transactor(userSigner, gasPrice);
 
   // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
-  const yourLocalBalance = useBalance(localProvider, address, POLL_TIME);
+  const yourLocalBalance = useBalance(provider, address, POLL_TIME);
 
   // // Just plug in different 🛰 providers to get your balance on different chains:
-  const yourMainnetBalance = useBalance(mainnetProvider, address);
+  const yourMainnetBalance = useBalance(isMainnetProvider ? provider : mainnetProvider, address);
   // console.log("n-yourMainnetBalance: ", yourMainnetBalance.toString());
 
   // const contractConfig = useContractConfig();
@@ -168,7 +180,7 @@ function App(props) {
   const contractConfig = { deployedContracts: deployedContracts || {}, externalContracts: externalContracts || {} };
 
   // Load in your local 📝 contract and read a value from it:
-  const readContracts = useContractLoader(localProvider, contractConfig);
+  const readContracts = useContractLoader(provider, contractConfig);
 
   // If you want to make 🔐 write transactions to your contracts, use the userSigner:
   const writeContracts = useContractLoader(userSigner, contractConfig, localChainId);
@@ -176,12 +188,12 @@ function App(props) {
   // EXTERNAL CONTRACT EXAMPLE:
   //
   // If you want to bring in the mainnet DAI contract it would look like:
-  const mainnetContracts = useContractLoader(mainnetProvider, contractConfig);
+  const mainnetContracts = useContractLoader(isMainnetProvider ? provider : mainnetProvider, contractConfig);
 
   // If you want to call a function on a new block
-  useOnBlock(mainnetProvider, () => {
-    console.log(`⛓ A new mainnet block is here: ${mainnetProvider._lastBlockNumber}`);
-  });
+  // useOnBlock(mainnetProvider, () => {
+  //   console.log(`⛓ A new mainnet block is here: ${mainnetProvider._lastBlockNumber}`);
+  // });
 
   // Then read your DAI balance like:
   const myMainnetDAIBalance = useContractReader(mainnetContracts, "DAI", "balanceOf", [
@@ -201,15 +213,16 @@ function App(props) {
   //
   useEffect(() => {
     if (
-      DEBUG &&
-      mainnetProvider &&
-      address &&
-      selectedChainId &&
-      yourLocalBalance &&
-      yourMainnetBalance &&
-      readContracts &&
-      writeContracts &&
-      mainnetContracts
+      DEBUG && isMainnetProvider
+        ? provider
+        : mainnetProvider &&
+          address &&
+          selectedChainId &&
+          yourLocalBalance &&
+          yourMainnetBalance &&
+          readContracts &&
+          writeContracts &&
+          mainnetContracts
     ) {
       console.log("_____________________________________ 🏗 scaffold-eth _____________________________________");
       console.log("🌎 mainnetProvider", mainnetProvider);
@@ -264,7 +277,7 @@ function App(props) {
     }
   }, [loadWeb3Modal]);
 
-  const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
+  const faucetAvailable = provider && provider.connection && targetNetwork.name.indexOf("local") !== -1;
 
   return <div className="App">cool</div>;
 }

@@ -2,54 +2,76 @@ import { useCallback, useEffect, useState } from "react";
 import { ethers } from "ethers";
 
 const createProvider = async url => {
-  // console.log("n-url: ", url);
-  const p = new ethers.providers.StaticJsonRpcProvider(url);
+  try {
+    // console.log("n-url: ", url);
+    const p = new ethers.providers.StaticJsonRpcProvider(url);
+    // console.log("n-p:Load ", p);
 
-  let isReady = await p.ready;
-  // console.log("n-isReady: ", isReady);
+    let isReady = await p.ready;
+    // console.log("n-isReady: ", url, isReady);
+    // console.log("n-isReady: ", isReady);
 
-  return p;
+    return p;
+  } catch (error) {
+    console.log("n-error: ", error);
+  }
 };
 
 const loadMainnetProvider = async urls => {
-  console.log("n-urls: ", urls);
   return new Promise(async (resolve, reject) => {
-    let loadedUrl;
+    let loadedProvider = null;
     for (const url of urls) {
-      console.log("n-url: ", url);
-
       try {
         const provider = new ethers.providers.StaticJsonRpcProvider(url);
-        let isReady = await provider.ready;
-        loadedUrl = url;
-        break;
+        let network = await provider.detectNetwork();
+        if (network) {
+          loadedProvider = provider;
+          break;
+        } else {
+          continue;
+        }
       } catch (err) {
         console.log("n-err: ", err);
+        // reject(err);
+        continue;
       }
     }
-    console.log("n-loadedUrl: ", loadedUrl);
+    if (loadedProvider !== null) {
+      resolve(loadedProvider);
+    }
+
+    if (loadedProvider === null) {
+      reject(new Error("can't reach any rpc"));
+    }
   });
 };
 
-export default function useStaticJsonRPC(localUrl, urlArray) {
-  const [provider, setProvider] = useState({ localProvider: null, mainnetProvider: null });
+export default function useStaticJsonRPC(localUrl, urlArray, isMainnet) {
+  const [provider, setProvider] = useState({ provider: null, mainnetProvider: null });
 
   const handleProviders = useCallback(async () => {
     try {
-      // let mainnetProvider1 = await loadMainnetProvider(urlArray);
-      // console.log("n-mainnetProvider1: ", mainnetProvider1);
+      // old race condition logic which is calling all rcp's
+      // const p = await Promise.race(urlArray.map(createProvider));
+      // const mainnetProvider = await p;
 
-      const p = await Promise.race(urlArray.map(createProvider));
-      const mainnetProvider = await p;
-      let localProvider = await createProvider(localUrl);
+      // load an first rpc from array if it is not available try second and so on..
 
-      console.log("n-p:FINAL ", localProvider, mainnetProvider);
-      setProvider({ localProvider, mainnetProvider });
+      if (isMainnet) {
+        let provider = await loadMainnetProvider(urlArray);
+        setProvider({ provider, mainnetProvider: null });
+      } else {
+        let mainnetProvider = await loadMainnetProvider(urlArray);
+        let provider = await createProvider(localUrl);
+        setProvider({ provider, mainnetProvider });
+      }
+
+      // console.log("n-p:FINAL ", localProvider, mainnetProvider);
     } catch (error) {
       // todo: show notification error about provider issues
       console.log(error);
     }
-  }, [localUrl, JSON.stringify(urlArray)]);
+  }, [localUrl, JSON.stringify(urlArray), isMainnet]);
 
   useEffect(() => {
     handleProviders();
