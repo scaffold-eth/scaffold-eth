@@ -36,6 +36,7 @@ export default function BrowseBadges() {
   const [badges, setBadges] = useState([])
   const [eventBadges, setEventBadges] = useState([])
   const [error, setErrorMessage] = useState('')
+  const [showSpinner, setShowSpinner] = useState(false)
   const { localProvider, mainnet, address, setAddress, injectedProvider, selectedChainId, checkForWeb3Provider } =
     useContext(BadgeContext)
 
@@ -64,9 +65,11 @@ export default function BrowseBadges() {
         return
       }
       let resolvedAddress
+      setShowSpinner(true)
       if (address.includes('.eth')) {
         resolvedAddress = await mainnet.resolveName(address)
         if (!resolvedAddress) {
+          setShowSpinner(false)
           setErrorMessage(`Could not resolve this address ${address}`)
           return
         }
@@ -91,9 +94,16 @@ export default function BrowseBadges() {
               console.error(e)
             }
           }
+          if (badges.length === 0) {
+            setShowSpinner(false)
+            setErrorMessage('Sorry, reward for the current wallet address does not exist!')
+            return
+          }
           setBadges(badges)
+          setShowSpinner(false)
           setErrorMessage('')
         } catch (e) {
+          setShowSpinner(false)
           setErrorMessage(e.message)
         }
       } else {
@@ -118,9 +128,16 @@ export default function BrowseBadges() {
               console.error(e)
             }
           }
+          if (badges.length === 0) {
+            setShowSpinner(false)
+            setErrorMessage('Sorry, reward for the current wallet address does not exist!')
+            return
+          }
           setBadges(badges)
+          setShowSpinner(false)
           setErrorMessage('')
         } catch (e) {
+          setShowSpinner(false)
           setErrorMessage(e.message)
         }
       }
@@ -235,7 +252,7 @@ export default function BrowseBadges() {
                 }
               />
             </FormControl>
-            {address.length > 3 && badges.length === 0 ? (
+            {address.length > 3 && badges.length === 0 && showSpinner ? (
               <CircularProgress color="secondary" sx={{ marginLeft: 5 }} />
             ) : null}
           </Box>
