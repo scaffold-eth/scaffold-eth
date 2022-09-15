@@ -69,10 +69,10 @@ export default function NftCard(props) {
           padding: '2px',
           color: '#333333',
           borderRadius: 5,
-          boxShadow: '5px 5px 5px 5px #aaaaaa',
-          transition: 'transform 0.5s',
+          boxShadow: '1px 1px 4px 0px rgb(170,170,170)',
+          transition: 'transform 0.2s',
           ':hover': {
-            transform: 'scale(1.1)',
+            transform: 'scale(1.05)',
           },
         }}
         maxWidth={310}
