@@ -178,28 +178,6 @@ export default function BrowseBadges() {
     console.log('badges set and done')
   }
 
-  async function submitHandler(e) {
-    console.log('submitHandler for address search reached successfully@@!!')
-    try {
-      if (address) {
-        if (address.includes('.eth')) {
-          let resolvedAddress = await mainnet.resolveName(address)
-          if (!resolvedAddress) {
-            setErrorMessage(`Could not resolve this address ${address}`)
-          }
-          await processAddress(resolvedAddress)
-        } else {
-          await processAddress(address)
-        }
-      } else {
-        setEventBadges([])
-        setErrorMessage('')
-        return
-      }
-    } catch (error) {
-      setErrorMessage(error)
-    }
-  }
   return (
     <>
       <Box sx={{ paddingTop: '76px' }}>
