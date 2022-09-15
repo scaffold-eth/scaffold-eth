@@ -54,9 +54,10 @@ function AppLoaders({ subgraphUri }) {
   const [address, setAddress] = useState();
   const [isLoaded, setIsLoaded] = useState(false);
 
-  const [selectedNetwork, setSelectedNetwork] = useState(networkOptions[0]);
+  // const [selectedNetwork, setSelectedNetwork] = useState(networkOptions[0]);
+  let defaultNetwork = networkOptions[0];
 
-  const targetNetwork = NETWORKS[selectedNetwork];
+  const targetNetwork = NETWORKS[defaultNetwork];
 
   // check the current network name
   const isMainnet = targetNetwork.name === "mainnet";
@@ -151,18 +152,20 @@ function AppLoaders({ subgraphUri }) {
   return (
     <div className="">
       <App
+        subgraphUri={subgraphUri}
         provider={provider}
         mainnetProvider={mainnetProvider}
+        address={address}
+        web3Modal={web3Modal}
+        defaultNetwork={defaultNetwork}
+        networkOptions={networkOptions}
         price={price}
         gasPrice={gasPrice}
         userSigner={userSigner}
-        address={address}
         yourLocalBalance={yourLocalBalance}
         yourMainnetBalance={yourMainnetBalance}
-        web3Modal={web3Modal}
         loadWeb3Modal={loadWeb3Modal}
         logoutOfWeb3Modal={logoutOfWeb3Modal}
-        subgraphUri={subgraphUri}
       />
     </div>
   );

@@ -75,15 +75,16 @@ function App({
   web3Modal,
   loadWeb3Modal,
   logoutOfWeb3Modal,
+  defaultNetwork,
+  networkOptions,
 }) {
   // specify all the chains your app is available on. Eg: ['localhost', 'mainnet', ...otherNetworks ]
   // reference './constants.js' for other networks
-  const networkOptions = [initialNetwork.name, "mainnet", "goerli"];
+  // const networkOptions = [initialNetwork.name, "mainnet", "goerli"];
 
-  const [injectedProvider, setInjectedProvider] = useState();
+  // const [injectedProvider, setInjectedProvider] = useState();
   // const [address, setAddress] = useState();
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [selectedNetwork, setSelectedNetwork] = useState(networkOptions[0]);
+  const [selectedNetwork, setSelectedNetwork] = useState(defaultNetwork);
   const location = useLocation();
 
   const targetNetwork = NETWORKS[selectedNetwork];
@@ -102,12 +103,6 @@ function App({
   // );
 
   const isMainnetProvider = mainnetProvider === null;
-
-  useEffect(() => {
-    if (provider !== null) {
-      setIsLoaded(true);
-    }
-  }, [provider, mainnetProvider]);
 
   // load all your providers
   // const provider = useStaticJsonRPC([
