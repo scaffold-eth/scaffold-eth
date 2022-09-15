@@ -70,7 +70,7 @@ export default function useStaticJsonRPC(localUrl, urlArray, isMainnet) {
   useEffect(() => {
     handleProviders();
     // eslint-disable-next-line
-  }, [localUrl, JSON.stringify(urlArray)]);
+  }, [localUrl, JSON.stringify(urlArray), isMainnet]);
 
   return provider;
 }

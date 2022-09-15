@@ -71,13 +71,23 @@ const providers = [
   "https://rpc.scaffoldeth.io:48544",
 ];
 
-function App(props) {
+function App({
+  provider,
+  mainnetProvider,
+  price,
+  gasPrice,
+  userSigner,
+  address,
+  yourLocalBalance,
+  yourMainnetBalance,
+  subgraphUri,
+}) {
   // specify all the chains your app is available on. Eg: ['localhost', 'mainnet', ...otherNetworks ]
   // reference './constants.js' for other networks
   const networkOptions = [initialNetwork.name, "mainnet", "goerli"];
 
   const [injectedProvider, setInjectedProvider] = useState();
-  const [address, setAddress] = useState();
+  // const [address, setAddress] = useState();
   const [isLoaded, setIsLoaded] = useState(false);
   const [selectedNetwork, setSelectedNetwork] = useState(networkOptions[0]);
   const location = useLocation();
@@ -88,13 +98,14 @@ function App(props) {
   const blockExplorer = targetNetwork.blockExplorer;
 
   // check the current network name
-  const isMainnet = targetNetwork.name === "mainnet";
+  // const isMainnet = targetNetwork.name === "mainnet";
+
   // if current network is mainnet then  provider will be mainnet provider and mainnetProvider will be null
-  const { provider, mainnetProvider } = useStaticJsonRPC(
-    process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : targetNetwork.rpcUrl,
-    providers,
-    isMainnet,
-  );
+  // const { provider, mainnetProvider } = useStaticJsonRPC(
+  //   process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : targetNetwork.rpcUrl,
+  //   providers,
+  //   isMainnet,
+  // );
 
   const isMainnetProvider = mainnetProvider === null;
 
@@ -131,37 +142,40 @@ function App(props) {
   // /* 💵 This hook will get the price of ETH from 🦄 Uniswap: */
   // console.log("n-isLoaded: ", isLoaded);
   // console.log("n-isLoaded ? 5000 : 500: ", isLoaded ? 5000 : 500);
-  const price = useExchangeEthPrice(
-    targetNetwork,
-    isMainnetProvider ? provider : mainnetProvider,
-    isLoaded ? POLL_TIME : 500,
-  );
+  // const price = useExchangeEthPrice(
+  //   targetNetwork,
+  //   isMainnetProvider ? provider : mainnetProvider,
+  //   isLoaded ? POLL_TIME : 500,
+  // );
   // console.log("n-price: ", price);
 
   // /* 🔥 This hook will get the price of Gas from ⛽️ EtherGasStation */
-  const gasPrice = useGasPrice(targetNetwork, "fast", isLoaded ? POLL_TIME : 500);
+  // const gasPrice = useGasPrice(targetNetwork, "fast", isLoaded ? POLL_TIME : 500);
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
-  const userProviderAndSigner = useUserProviderAndSigner(
-    injectedProvider,
-    isMainnetProvider ? provider : mainnetProvider,
-    USE_BURNER_WALLET,
-  );
-  const userSigner = userProviderAndSigner.signer;
+  // const userProviderAndSigner = useUserProviderAndSigner(
+  //   injectedProvider,
+  //   isMainnetProvider ? provider : mainnetProvider,
+  //   USE_BURNER_WALLET,
+  // );
+  // const userSigner = userProviderAndSigner.signer;
 
-  useEffect(() => {
-    async function getAddress() {
-      if (userSigner) {
-        const newAddress = await userSigner.getAddress();
-        setAddress(newAddress);
-      }
-    }
-    getAddress();
-  }, [userSigner]);
+  // useEffect(() => {
+  //   async function getAddress() {
+  //     if (userSigner) {
+  //       const newAddress = await userSigner.getAddress();
+  //       setAddress(newAddress);
+  //     }
+  //   }
+  //   getAddress();
+  // }, [userSigner]);
 
   // You can warn the user if you would like them to be on a specific network
   const localChainId = provider && provider._network && provider._network.chainId;
   const selectedChainId =
     userSigner && userSigner.provider && userSigner.provider._network && userSigner.provider._network.chainId;
+
+  console.log("n-localChainId: ", localChainId);
+  console.log("n-selectedChainId: ", selectedChainId);
 
   // For more hooks, check out 🔗eth-hooks at: https://www.npmjs.com/package/eth-hooks
 
@@ -169,10 +183,10 @@ function App(props) {
   const tx = Transactor(userSigner, gasPrice);
 
   // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
-  const yourLocalBalance = useBalance(provider, address, POLL_TIME);
+  // const yourLocalBalance = useBalance(provider, address, POLL_TIME);
 
   // // Just plug in different 🛰 providers to get your balance on different chains:
-  const yourMainnetBalance = useBalance(isMainnetProvider ? provider : mainnetProvider, address);
+  // const yourMainnetBalance = useBalance(isMainnetProvider ? provider : mainnetProvider, address);
   // console.log("n-yourMainnetBalance: ", yourMainnetBalance.toString());
 
   // const contractConfig = useContractConfig();
@@ -211,6 +225,7 @@ function App(props) {
   //
   // 🧫 DEBUG 👨🏻‍🔬
   //
+
   useEffect(() => {
     if (
       DEBUG && isMainnetProvider
@@ -410,7 +425,7 @@ function App(props) {
         </Route>
         <Route path="/subgraph">
           <Subgraph
-            subgraphUri={props.subgraphUri}
+            subgraphUri={subgraphUri}
             tx={tx}
             writeContracts={writeContracts}
             mainnetProvider={mainnetProvider}
