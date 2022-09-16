@@ -1,6 +1,6 @@
 // @ts-ignore
 import React, { Fragment, useCallback, useEffect, useReducer, useState } from 'react'
-import { Box, Button, Card, CardActions, CardMedia, CardContent, Typography } from '@mui/material'
+import { Box, Button, Card, CardActions, CardMedia, CardContent, Typography, Skeleton } from '@mui/material'
 import InfoIcon from '@mui/icons-material/Info'
 import { ethers } from 'ethers'
 // @ts-ignore
@@ -76,7 +76,15 @@ export default function NftCard(props) {
         maxWidth={310}
       >
         <Card variant={'outlined'} sx={{ borderRadius: 5, zIndex: 10 }}>
-          <CardMedia component={'img'} width={200} image={state.src} alt={'nftimage'} />
+          {state.src.length < 55 ? (
+            <>
+              <Skeleton variant={'rectangular'} width={300} height={350}>
+                <CardMedia component={'img'} width={200} image={state.src} alt={'nftimage'} />
+              </Skeleton>
+            </>
+          ) : (
+            <CardMedia component={'img'} width={200} image={state.src} alt={'nftimage'} />
+          )}
           <CardContent
             sx={{
               background:
