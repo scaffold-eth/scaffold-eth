@@ -125,34 +125,36 @@ export default function BadgesPaginatedSection({
             })
           ) : null}
         </Grid>
-        <Box display={'flex'} justifyContent={'right'} paddingRight={2}>
-          <Fab
-            variant={'extended'}
-            size="large"
-            sx={{
-              position: 'sticky',
-              bottom: mobileResponsiveMatch ? 590 : 400,
-              top: mobileResponsiveMatch ? 805 : 400,
-              alignItems: 'right',
-              justifyContent: 'right',
-              alignSelf: 'end',
-              marginBottom: 5,
-              color: 'whitesmoke',
-              ':hover': {
-                backgroundColor: '#1565c0',
-              },
-              padding: 3,
-              backgroundColor: '#81a6f7',
-            }}
-            disabled={!eventBadges.length}
-            onClick={loadMore}
-          >
-            <DownloadingRoundedIcon sx={{ marginRight: 2, fontSize: 48 }} />
-            <Typography variant="button" fontWeight={'700'}>
-              Load More
-            </Typography>
-          </Fab>
-        </Box>
+        {eventBadges.length === 0 || !eventBadges.length ? null : (
+          <Box display={'flex'} justifyContent={'right'} paddingRight={2}>
+            <Fab
+              variant={'extended'}
+              size="large"
+              sx={{
+                position: 'sticky',
+                bottom: mobileResponsiveMatch ? 590 : 400,
+                top: mobileResponsiveMatch ? 805 : 400,
+                alignItems: 'right',
+                justifyContent: 'right',
+                alignSelf: 'end',
+                marginBottom: 5,
+                color: 'whitesmoke',
+                ':hover': {
+                  backgroundColor: '#1565c0',
+                },
+                padding: 3,
+                backgroundColor: '#81a6f7',
+              }}
+              disabled={!eventBadges.length}
+              onClick={loadMore}
+            >
+              <DownloadingRoundedIcon sx={{ marginRight: 2, fontSize: 48 }} />
+              <Typography variant="button" fontWeight={'700'}>
+                Load More
+              </Typography>
+            </Fab>
+          </Box>
+        )}
       </Box>
     </>
   )
