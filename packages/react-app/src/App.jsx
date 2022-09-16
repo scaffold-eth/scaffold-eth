@@ -53,13 +53,13 @@ const DEBUG = true;
 const NETWORKCHECK = true;
 const USE_BURNER_WALLET = true; // toggle burner wallet feature
 const USE_NETWORK_SELECTOR = false;
-const POLL_TIME = 5000;
+const RPC_POLL_TIME = 5000;
 
 const web3Modal = Web3ModalSetup();
 
 // 🛰 providers
 const providers = [
-  `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}`,
+  `https://eth-mainnet.alchemyapi.io/v2/${ ALCHEMY_KEY }`,
   "https://eth-mainnet.gateway.pokt.network/v1/lb/611156b4a585a20035148406",
   "https://rpc.scaffoldeth.io:48544",
 ];
@@ -71,7 +71,6 @@ function App(props) {
 
   const [injectedProvider, setInjectedProvider] = useState();
   const [address, setAddress] = useState();
-  const [isLoaded, setIsLoaded] = useState(false);
   const [selectedNetwork, setSelectedNetwork] = useState(networkOptions[0]);
   const location = useLocation();
 
@@ -91,22 +90,7 @@ function App(props) {
 
   const isMainnetProvider = mainnetProvider === null;
 
-  useEffect(() => {
-    if (provider !== null) {
-      setIsLoaded(true);
-    }
-  }, [provider, mainnetProvider]);
-
-  // load all your providers
-  // const provider = useStaticJsonRPC([
-  //   process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : targetNetwork.rpcUrl,
-  // ]);
-
-  // console.log("n-provider: ", provider);
-  // const mainnetProvider = useStaticJsonRPC(providers);
-  // console.log("n-mainnetProvider: ", mainnetProvider);
-
-  if (DEBUG) console.log(`Using ${selectedNetwork} network`);
+  if (DEBUG) console.log(`Using ${ selectedNetwork } network`);
 
   // // // 🛰 providers
   if (DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
@@ -122,17 +106,11 @@ function App(props) {
   };
 
   // /* 💵 This hook will get the price of ETH from 🦄 Uniswap: */
-  // console.log("n-isLoaded: ", isLoaded);
-  // console.log("n-isLoaded ? 5000 : 500: ", isLoaded ? 5000 : 500);
-  const price = useExchangeEthPrice(
-    targetNetwork,
-    isMainnetProvider ? provider : mainnetProvider,
-    isLoaded ? POLL_TIME : 500,
-  );
+  const price = useExchangeEthPrice(targetNetwork, isMainnetProvider ? provider : mainnetProvider, RPC_POLL_TIME);
   // console.log("n-price: ", price);
 
   // /* 🔥 This hook will get the price of Gas from ⛽️ EtherGasStation */
-  const gasPrice = useGasPrice(targetNetwork, "fast", isLoaded ? POLL_TIME : 500);
+  const gasPrice = useGasPrice(targetNetwork, "fast", RPC_POLL_TIME);
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
   const userProviderAndSigner = useUserProviderAndSigner(
     injectedProvider,
@@ -162,7 +140,7 @@ function App(props) {
   const tx = Transactor(userSigner, gasPrice);
 
   // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
-  const yourLocalBalance = useBalance(provider, address, POLL_TIME);
+  const yourLocalBalance = useBalance(provider, address, RPC_POLL_TIME);
 
   // // Just plug in different 🛰 providers to get your balance on different chains:
   const yourMainnetBalance = useBalance(isMainnetProvider ? provider : mainnetProvider, address);
@@ -209,13 +187,13 @@ function App(props) {
       DEBUG && isMainnetProvider
         ? provider
         : mainnetProvider &&
-          address &&
-          selectedChainId &&
-          yourLocalBalance &&
-          yourMainnetBalance &&
-          readContracts &&
-          writeContracts &&
-          mainnetContracts
+        address &&
+        selectedChainId &&
+        yourLocalBalance &&
+        yourMainnetBalance &&
+        readContracts &&
+        writeContracts &&
+        mainnetContracts
     ) {
       console.log("_____________________________________ 🏗 scaffold-eth _____________________________________");
       console.log("🌎 mainnetProvider", mainnetProvider);
@@ -247,7 +225,7 @@ function App(props) {
     setInjectedProvider(new ethers.providers.Web3Provider(provider));
 
     provider.on("chainChanged", chainId => {
-      console.log(`chain changed to ${chainId}! updating providers`);
+      console.log(`chain changed to ${ chainId }! updating providers`);
       setInjectedProvider(new ethers.providers.Web3Provider(provider));
     });
 
