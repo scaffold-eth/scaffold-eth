@@ -2,75 +2,46 @@ import { useCallback, useEffect, useState } from "react";
 import { ethers } from "ethers";
 
 const createProvider = async url => {
-  try {
-    // console.log("n-url: ", url);
-    const p = new ethers.providers.StaticJsonRpcProvider(url);
-    // console.log("n-p:Load ", p);
+  const p = new ethers.providers.StaticJsonRpcProvider(url);
 
-    let isReady = await p.ready;
-    return p;
-  } catch (error) {
-    console.log("n-error: ", error);
-  }
+  await p.ready;
+
+  return p;
 };
 
-const loadMainnetProvider = async urls => {
-  return new Promise(async (resolve, reject) => {
-    let loadedProvider = null;
-    for (const url of urls) {
-      try {
-        const provider = new ethers.providers.StaticJsonRpcProvider(url);
-        let network = await provider.detectNetwork();
-        if (network) {
-          loadedProvider = provider;
-          break;
-        } else {
-          continue;
-        }
-      } catch (err) {
-        console.log("n-err: ", err);
-        // reject(err);
-        continue;
-      }
-    }
-    if (loadedProvider !== null) {
-      resolve(loadedProvider);
-    }
-
-    if (loadedProvider === null) {
-      reject(new Error("can't reach any rpc"));
-    }
-  });
-};
-
-export default function useStaticJsonRPC(localUrl, urlArray, isMainnet) {
-  const [provider, setProvider] = useState({ provider: null, mainnetProvider: null });
+export default function useStaticJsonRPC(urlArray, localProvider = null) {
+  const [provider, setProvider] = useState(null);
 
   const handleProviders = useCallback(async () => {
     try {
-      // old race condition logic which is calling all rcp's
-      // const p = await Promise.race(urlArray.map(createProvider));
-      // const mainnetProvider = await p;
+      const p = await Promise.race(urlArray.map(createProvider));
+      const _p = await p;
 
-      // load an first rpc from array if it is not available try second and so on..
-      if (isMainnet) {
-        let provider = await loadMainnetProvider(urlArray);
-        setProvider({ provider, mainnetProvider: null });
-      } else {
-        let mainnetProvider = await loadMainnetProvider(urlArray);
-        let provider = await createProvider(localUrl);
-        setProvider({ provider, mainnetProvider });
-      }
+      setProvider(_p);
     } catch (error) {
       // todo: show notification error about provider issues
       console.log(error);
     }
-  }, [localUrl, JSON.stringify(urlArray), isMainnet]);
+  }, [urlArray]);
 
   useEffect(() => {
-    handleProviders();
+    //  localProvider is null  and urlArray's first index is localhost then load localprovider
+    if (localProvider === null && urlArray[0].includes("localhost")) {
+      handleProviders();
+    }
+
+    //  localProvider is not  null check chain id if it is mainnet id  then set provider
+    if (localProvider !== null && localProvider?._network.chainId === 1) {
+      setProvider(provider);
+    }
+
+    //  localProvider is not  null and chain id is not 1 then load mainnet provider
+    if (localProvider !== null && localProvider?._network.chainId !== 1) {
+      handleProviders();
+    }
+
     // eslint-disable-next-line
-  }, [localUrl, JSON.stringify(urlArray)]);
+  }, [JSON.stringify(urlArray), localProvider]);
 
   return provider;
 }

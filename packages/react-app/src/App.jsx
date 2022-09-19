@@ -1,6 +1,13 @@
 import { Button, Col, Menu, Row } from "antd";
 import "antd/dist/antd.css";
-import { useBalance, useContractLoader, useContractReader, useGasPrice, useUserProviderAndSigner } from "eth-hooks";
+import {
+  useBalance,
+  useContractLoader,
+  useContractReader,
+  useGasPrice,
+  // useOnBlock,
+  useUserProviderAndSigner,
+} from "eth-hooks";
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
 import React, { useCallback, useEffect, useState } from "react";
 import { Link, Route, Switch, useLocation } from "react-router-dom";
@@ -9,21 +16,21 @@ import {
   Account,
   Contract,
   Faucet,
-  FaucetHint,
   GasGauge,
   Header,
-  NetworkDisplay,
-  NetworkSwitch,
   Ramp,
   ThemeSwitch,
+  NetworkDisplay,
+  FaucetHint,
+  NetworkSwitch,
 } from "./components";
-import { ALCHEMY_KEY, NETWORKS } from "./constants";
+import { NETWORKS, ALCHEMY_KEY } from "./constants";
 import externalContracts from "./contracts/external_contracts";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor, Web3ModalSetup } from "./helpers";
+import { Home, ExampleUI, Hints, Subgraph } from "./views";
 import { useStaticJsonRPC } from "./hooks";
-import { ExampleUI, Hints, Home, Subgraph } from "./views";
 
 const { ethers } = require("ethers");
 /*
@@ -53,15 +60,15 @@ const DEBUG = true;
 const NETWORKCHECK = true;
 const USE_BURNER_WALLET = true; // toggle burner wallet feature
 const USE_NETWORK_SELECTOR = false;
-const RPC_POLL_TIME = 5000;
 
 const web3Modal = Web3ModalSetup();
+const RPC_POLL_TIME = 6000000;
 
 // 🛰 providers
 const providers = [
-  `https://eth-mainnet.alchemyapi.io/v2/${ ALCHEMY_KEY }`,
-  "https://eth-mainnet.gateway.pokt.network/v1/lb/611156b4a585a20035148406",
-  "https://rpc.scaffoldeth.io:48544",
+  // "https://eth-mainnet.gateway.pokt.network/v1/lb/611156b4a585a20035148406",
+  `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}`,
+  // "https://rpc.scaffoldeth.io:48544",
 ];
 
 function App(props) {
@@ -79,20 +86,16 @@ function App(props) {
   // 🔭 block explorer URL
   const blockExplorer = targetNetwork.blockExplorer;
 
-  // check the current network name
-  const isMainnet = targetNetwork.name === "mainnet";
-  // if current network is mainnet then  provider will be mainnet provider and mainnetProvider will be null
-  const { provider, mainnetProvider } = useStaticJsonRPC(
+  // load all your providers
+  const localProvider = useStaticJsonRPC([
     process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : targetNetwork.rpcUrl,
-    providers,
-    isMainnet,
-  );
+  ]);
 
-  const isMainnetProvider = mainnetProvider === null;
+  const mainnetProvider = useStaticJsonRPC(providers, localProvider);
 
-  if (DEBUG) console.log(`Using ${ selectedNetwork } network`);
+  if (DEBUG) console.log(`Using ${selectedNetwork} network`);
 
-  // // // 🛰 providers
+  // 🛰 providers
   if (DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
 
   const logoutOfWeb3Modal = async () => {
@@ -105,18 +108,13 @@ function App(props) {
     }, 1);
   };
 
-  // /* 💵 This hook will get the price of ETH from 🦄 Uniswap: */
-  const price = useExchangeEthPrice(targetNetwork, isMainnetProvider ? provider : mainnetProvider, RPC_POLL_TIME);
-  // console.log("n-price: ", price);
+  /* 💵 This hook will get the price of ETH from 🦄 Uniswap: */
+  const price = useExchangeEthPrice(targetNetwork, mainnetProvider);
 
-  // /* 🔥 This hook will get the price of Gas from ⛽️ EtherGasStation */
-  const gasPrice = useGasPrice(targetNetwork, "fast", RPC_POLL_TIME);
+  /* 🔥 This hook will get the price of Gas from ⛽️ EtherGasStation */
+  const gasPrice = useGasPrice(targetNetwork, "fast");
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
-  const userProviderAndSigner = useUserProviderAndSigner(
-    injectedProvider,
-    isMainnetProvider ? provider : mainnetProvider,
-    USE_BURNER_WALLET,
-  );
+  const userProviderAndSigner = useUserProviderAndSigner(injectedProvider, localProvider, USE_BURNER_WALLET);
   const userSigner = userProviderAndSigner.signer;
 
   useEffect(() => {
@@ -130,7 +128,7 @@ function App(props) {
   }, [userSigner]);
 
   // You can warn the user if you would like them to be on a specific network
-  const localChainId = provider && provider._network && provider._network.chainId;
+  const localChainId = localProvider && localProvider._network && localProvider._network.chainId;
   const selectedChainId =
     userSigner && userSigner.provider && userSigner.provider._network && userSigner.provider._network.chainId;
 
@@ -140,18 +138,17 @@ function App(props) {
   const tx = Transactor(userSigner, gasPrice);
 
   // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
-  const yourLocalBalance = useBalance(provider, address, RPC_POLL_TIME);
+  const yourLocalBalance = useBalance(localProvider, address, RPC_POLL_TIME);
 
-  // // Just plug in different 🛰 providers to get your balance on different chains:
-  const yourMainnetBalance = useBalance(isMainnetProvider ? provider : mainnetProvider, address);
-  // console.log("n-yourMainnetBalance: ", yourMainnetBalance.toString());
+  // Just plug in different 🛰 providers to get your balance on different chains:
+  const yourMainnetBalance = useBalance(mainnetProvider, address, RPC_POLL_TIME);
 
   // const contractConfig = useContractConfig();
 
   const contractConfig = { deployedContracts: deployedContracts || {}, externalContracts: externalContracts || {} };
 
   // Load in your local 📝 contract and read a value from it:
-  const readContracts = useContractLoader(provider, contractConfig);
+  const readContracts = useContractLoader(localProvider, contractConfig);
 
   // If you want to make 🔐 write transactions to your contracts, use the userSigner:
   const writeContracts = useContractLoader(userSigner, contractConfig, localChainId);
@@ -159,7 +156,7 @@ function App(props) {
   // EXTERNAL CONTRACT EXAMPLE:
   //
   // If you want to bring in the mainnet DAI contract it would look like:
-  const mainnetContracts = useContractLoader(isMainnetProvider ? provider : mainnetProvider, contractConfig);
+  const mainnetContracts = useContractLoader(mainnetProvider, contractConfig);
 
   // If you want to call a function on a new block
   // useOnBlock(mainnetProvider, () => {
@@ -167,12 +164,16 @@ function App(props) {
   // });
 
   // Then read your DAI balance like:
-  const myMainnetDAIBalance = useContractReader(mainnetContracts, "DAI", "balanceOf", [
-    "0x34aA3F359A9D614239015126635CE7732c18fDF3",
-  ]);
+  const myMainnetDAIBalance = useContractReader(
+    mainnetContracts,
+    "DAI",
+    "balanceOf",
+    ["0x34aA3F359A9D614239015126635CE7732c18fDF3"],
+    RPC_POLL_TIME,
+  );
 
   // keep track of a variable from the contract in the local React state:
-  const purpose = useContractReader(readContracts, "YourContract", "purpose");
+  const purpose = useContractReader(readContracts, "YourContract", "purpose", [], RPC_POLL_TIME);
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -184,16 +185,15 @@ function App(props) {
   //
   useEffect(() => {
     if (
-      DEBUG && isMainnetProvider
-        ? provider
-        : mainnetProvider &&
-        address &&
-        selectedChainId &&
-        yourLocalBalance &&
-        yourMainnetBalance &&
-        readContracts &&
-        writeContracts &&
-        mainnetContracts
+      DEBUG &&
+      mainnetProvider &&
+      address &&
+      selectedChainId &&
+      yourLocalBalance &&
+      yourMainnetBalance &&
+      readContracts &&
+      writeContracts &&
+      mainnetContracts
     ) {
       console.log("_____________________________________ 🏗 scaffold-eth _____________________________________");
       console.log("🌎 mainnetProvider", mainnetProvider);
@@ -225,7 +225,7 @@ function App(props) {
     setInjectedProvider(new ethers.providers.Web3Provider(provider));
 
     provider.on("chainChanged", chainId => {
-      console.log(`chain changed to ${ chainId }! updating providers`);
+      console.log(`chain changed to ${chainId}! updating providers`);
       setInjectedProvider(new ethers.providers.Web3Provider(provider));
     });
 
@@ -248,7 +248,7 @@ function App(props) {
     }
   }, [loadWeb3Modal]);
 
-  const faucetAvailable = provider && provider.connection && targetNetwork.name.indexOf("local") !== -1;
+  const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
 
   return (
     <div className="App">
@@ -269,7 +269,7 @@ function App(props) {
             <Account
               useBurner={USE_BURNER_WALLET}
               address={address}
-              localProvider={provider}
+              localProvider={localProvider}
               userSigner={userSigner}
               mainnetProvider={mainnetProvider}
               price={price}
@@ -282,7 +282,7 @@ function App(props) {
         </div>
       </Header>
       {yourLocalBalance.lte(ethers.BigNumber.from("0")) && (
-        <FaucetHint localProvider={provider} targetNetwork={targetNetwork} address={address} />
+        <FaucetHint localProvider={localProvider} targetNetwork={targetNetwork} address={address} />
       )}
       <NetworkDisplay
         NETWORKCHECK={NETWORKCHECK}
@@ -329,7 +329,7 @@ function App(props) {
             name="YourContract"
             price={price}
             signer={userSigner}
-            provider={provider}
+            provider={localProvider}
             address={address}
             blockExplorer={blockExplorer}
             contractConfig={contractConfig}
@@ -348,7 +348,7 @@ function App(props) {
             address={address}
             userSigner={userSigner}
             mainnetProvider={mainnetProvider}
-            localProvider={provider}
+            localProvider={localProvider}
             yourLocalBalance={yourLocalBalance}
             price={price}
             tx={tx}
@@ -421,7 +421,11 @@ function App(props) {
           <Col span={24}>
             {
               /*  if the local provider has a signer, let's show the faucet:  */
-              faucetAvailable ? <Faucet localProvider={provider} price={price} ensProvider={mainnetProvider} /> : ""
+              faucetAvailable ? (
+                <Faucet localProvider={localProvider} price={price} ensProvider={mainnetProvider} />
+              ) : (
+                ""
+              )
             }
           </Col>
         </Row>
