@@ -25,8 +25,8 @@ export default function useStaticJsonRPC(urlArray, localProvider = null) {
   }, [urlArray]);
 
   useEffect(() => {
-    //  localProvider is null  and urlArray's first index is localhost then load localprovider
-    if (localProvider === null && urlArray[0].includes("localhost")) {
+    //  localProvider is null  and urlArray's length is 1 then load a first  localProvider
+    if (localProvider === null && urlArray.length === 1) {
       handleProviders();
     }
 
