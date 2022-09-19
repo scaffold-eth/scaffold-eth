@@ -62,7 +62,7 @@ const USE_BURNER_WALLET = true; // toggle burner wallet feature
 const USE_NETWORK_SELECTOR = false;
 
 const web3Modal = Web3ModalSetup();
-const RPC_POLL_TIME = 6000000;
+const RPC_POLL_TIME = 5000;
 
 // 🛰 providers
 const providers = [
