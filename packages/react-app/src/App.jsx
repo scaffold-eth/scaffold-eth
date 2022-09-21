@@ -488,6 +488,10 @@ function App(props) {
         />
         {faucetHint}
       </div>
+      <div style={{ paddingBottom: 20 }}>
+        <p>Built by <a href="https://twitter.com/damianmarti" target="_blank">damianmarti</a> with <a href="https://github.com/scaffold-eth/scaffold-eth" target="_blank">🏗 Scaffold-ETH</a></p>
+        <p>Verified Contract at <a href="https://etherscan.io/address/0x696b701eadcaa8cd35c719d766d0e98a203306d4#code" target="_blank">https://etherscan.io/address/0x696b701eadcaa8cd35c719d766d0e98a203306d4#code</a></p>
+      </div>
     </div>
   );
 }

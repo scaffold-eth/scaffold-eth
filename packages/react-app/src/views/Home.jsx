@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { Button, Card, List, Image } from "antd";
-import { Address, AddressInput } from "../components";
+import { Address } from "../components";
 import { ethers } from "ethers";
 import { useHistory } from "react-router-dom";
 import { useContractReader } from "eth-hooks";
@@ -72,7 +71,7 @@ function Home({
           You get a new random Mandala Merge from this <strong>unpredictable random</strong> generator.
         </p>
         <p>
-          The Mandala Merge NFT is a animated SVG fully saved <strong>forever on-chain</strong>.
+          The commemorative Mandala Merge NFT is an animated SVG fully saved <strong>forever on-chain</strong>.
         </p>
         <Button
           className="go-to-mint-page"

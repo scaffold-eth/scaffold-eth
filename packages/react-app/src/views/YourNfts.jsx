@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { Button, Card, List } from "antd";
-import { Address, AddressInput } from "../components";
+import { Address } from "../components";
 import { ethers } from "ethers";
 import { useOnBlock, useContractReader } from "eth-hooks";
 
@@ -59,18 +58,7 @@ function YourNfts({
           const claimed = await readContracts.MandalaMerge.claimed(tokenId);
           if (DEBUG) console.log("claimed: ", claimed);
           let nftObject = { id: tokenId, claimed: claimed, owner: address };
-          if (claimed) {
-            const tokenURI = await readContracts.MandalaMerge.tokenURI(tokenId);
-            if (DEBUG) console.log("tokenURI: ", tokenURI);
-            const jsonManifestString = atob(tokenURI.substring(29));
-
-            try {
-              const jsonManifest = JSON.parse(jsonManifestString);
-              nftObject = { ...nftObject, uri: tokenURI, ...jsonManifest };
-            } catch (e) {
-              console.log(e);
-            }
-          } else {
+          if (!claimed) {
             const blockNumber = await readContracts.MandalaMerge.blockNumbers(tokenId);
             nftObject = { ...nftObject, blockNumber: blockNumber };
             let ready =
@@ -84,6 +72,18 @@ function YourNfts({
               readyData["missed"] = true;
             }
             claims[tokenId] = readyData;
+          }
+          if (claimed || (claims[tokenId] && claims[tokenId].missed)) {
+            const tokenURI = await readContracts.MandalaMerge.tokenURI(tokenId);
+            if (DEBUG) console.log("tokenURI: ", tokenURI);
+            const jsonManifestString = atob(tokenURI.substring(29));
+
+            try {
+              const jsonManifest = JSON.parse(jsonManifestString);
+              nftObject = { ...nftObject, uri: tokenURI, ...jsonManifest };
+            } catch (e) {
+              console.log(e);
+            }
           }
           nftUpdate.push(nftObject);
         } catch (e) {
@@ -99,7 +99,7 @@ function YourNfts({
     updateYourCollectibles();
   }, [address, yourNftBalance, updateBalances]);
 
-  const claim = async (tokenId) => {
+  const claim = async tokenId => {
     if (DEBUG) console.log("Claiming...");
 
     const blockNumberFromToken = await readContracts.MandalaMerge.blockNumbers(tokenId);
@@ -155,7 +155,7 @@ function YourNfts({
     if (DEBUG) console.log("blockData hash: ", blockHash);
 
     try {
-      const txCur = await tx(writeContracts.MandalaMerge.claim(tokenId, rlpEncoded, { gasLimit: 500000 }));
+      const txCur = await tx(writeContracts.MandalaMerge.claim(tokenId, rlpEncoded, { gasLimit: 110000 }));
       await txCur.wait();
       setUpdateBalances(updateBalances + 1);
     } catch (e) {
@@ -225,7 +225,7 @@ function YourNfts({
           onClick={async () => {
             const priceRightNow = await readContracts.MandalaMerge.price();
             try {
-              const txCur = await tx(writeContracts.MandalaMerge.mintItem({ value: priceRightNow }));
+              const txCur = await tx(writeContracts.MandalaMerge.mintItem({ value: priceRightNow, gasLimit: 250000 }));
               await txCur.wait();
               setUpdateBalances(updateBalances + 1);
             } catch (e) {
@@ -235,9 +235,7 @@ function YourNfts({
         >
           MINT for {priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(4)} ETH
         </Button>
-        <p style={{ fontWeight: "bold", fontSize: 24 }}>
-          { mandalasLeft } left
-        </p>
+        <p style={{ fontWeight: "bold", fontSize: 24 }}>{mandalasLeft} left</p>
       </div>
       <div className="your-nfts">
         <List
@@ -271,7 +269,11 @@ function YourNfts({
                     }
                   >
                     <p style={{ marginTop: 450, fontSize: 24 }}>NFT not claimed yet</p>
-                    <Button className="claim" onClick={async () => await claim(id)} disabled={!readyToClaim[id] || !readyToClaim[id].ready}>
+                    <Button
+                      className="claim"
+                      onClick={async () => await claim(id)}
+                      disabled={!readyToClaim[id] || !readyToClaim[id].ready}
+                    >
                       Claim
                     </Button>
                     {readyToClaim[id] && readyToClaim[id].ready ? <p>Ready to Claim</p> : readyToClaim[id] && <p>Not ready to claim. You have to wait {readyToClaim[id].blocks} blocks</p>}
