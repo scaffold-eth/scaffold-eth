@@ -2,6 +2,8 @@
   "short_name": "🏗 Scaffold-Eth App",
   "start_url": ".",
   "name": "🏗 Scaffold-Eth App",
+  "description": "Set the purpose of life",
+  "iconPath": "logo512.png",
   "icons": [
     {
       "src": "favicon.ico",
