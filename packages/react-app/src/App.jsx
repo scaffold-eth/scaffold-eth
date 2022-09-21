@@ -27,7 +27,7 @@ import externalContracts from "./contracts/external_contracts";
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor } from "./helpers";
 // import Hints from "./Hints";
-import { ExampleUI, Hints, Subgraph, YourNfts, Home } from "./views";
+import { ExampleUI, Hints, Subgraph, YourNfts, Home, Token } from "./views";
 import { useThemeSwitcher } from "react-css-theme-switcher";
 
 const { ethers } = require("ethers");
@@ -443,6 +443,16 @@ function App(props) {
               readContracts={readContracts}
               writeContracts={writeContracts}
               tx={tx}
+              mainnetProvider={mainnetProvider}
+              blockExplorer={blockExplorer}
+              address={address}
+              localProvider={localProvider}
+            />
+          </Route>
+          <Route path="/token/:id">
+            <Token
+              DEBUG={DEBUG}
+              readContracts={readContracts}
               mainnetProvider={mainnetProvider}
               blockExplorer={blockExplorer}
               address={address}
