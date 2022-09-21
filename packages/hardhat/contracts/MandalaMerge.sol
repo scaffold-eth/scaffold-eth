@@ -20,6 +20,7 @@ error FutureBlockNotReached();
 error MissedClaimWindow();
 error ClaimWrongBlock();
 error ClaimWrongBlockHeader();
+error OnlyMintPostMerge();
 
 contract MandalaMerge is ERC721Enumerable, Ownable {
 
@@ -56,6 +57,9 @@ contract MandalaMerge is ERC721Enumerable, Ownable {
       payable
       returns (uint256)
   {
+      if (!mergeHasOccured())
+        revert OnlyMintPostMerge();
+
       if (_tokenIds.current() >= limit)
         revert DoneMinting();
 
@@ -83,6 +87,17 @@ contract MandalaMerge is ERC721Enumerable, Ownable {
         revert CouldNotSend();
 
       return id;
+  }
+
+  /**
+   * @notice Determine whether we're running in Proof of Work or Proof of Stake
+   * @dev Post-merge, the DIFFICULTY opcode gets renamed to PREVRANDAO,
+   * and stores the prevRandao field from the beacon chain state if EIP-4399 is finalized.
+   * If not, the difficulty number must be 0 according to EIP-3675, so both possibilities are
+   * checked here.
+   */
+  function mergeHasOccured() public view returns (bool) {
+      return block.difficulty > 2**64 || block.difficulty == 0;
   }
 
   function claim(uint256 id, bytes memory rlpBytes) external {
