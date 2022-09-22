@@ -10,7 +10,6 @@ import Fab from '@mui/material/Fab'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { useCallback } from 'react'
 import AddressedCard from './AddressedCard'
-import { Skeleton } from 'antd'
 
 export default function BadgesPaginatedSection({
   badges,
@@ -125,7 +124,7 @@ export default function BadgesPaginatedSection({
             })
           ) : null}
         </Grid>
-        {eventBadges.length === 0 || !eventBadges.length ? null : (
+        {eventBadges.length % 10 === 0 || !eventBadges.length ? null : (
           <Box display={'flex'} justifyContent={'right'} paddingRight={2}>
             <Fab
               variant={'extended'}
