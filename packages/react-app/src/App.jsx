@@ -67,7 +67,7 @@ const RPC_POLL_TIME = 5000;
 // 🛰 providers
 const providers = [
   "https://eth-mainnet.gateway.pokt.network/v1/lb/611156b4a585a20035148406",
-  `https://eth-mainnet.alchemyapi.io/v2/${ ALCHEMY_KEY }`,
+  `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}`,
   "https://rpc.scaffoldeth.io:48544",
 ];
 
@@ -93,7 +93,7 @@ function App(props) {
 
   const mainnetProvider = useStaticJsonRPC(providers, localProvider);
 
-  if (DEBUG) console.log(`Using ${ selectedNetwork } network`);
+  if (DEBUG) console.log(`Using ${selectedNetwork} network`);
 
   // 🛰 providers
   if (DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
@@ -225,7 +225,7 @@ function App(props) {
     setInjectedProvider(new ethers.providers.Web3Provider(provider));
 
     provider.on("chainChanged", chainId => {
-      console.log(`chain changed to ${ chainId }! updating providers`);
+      console.log(`chain changed to ${chainId}! updating providers`);
       setInjectedProvider(new ethers.providers.Web3Provider(provider));
     });
 
