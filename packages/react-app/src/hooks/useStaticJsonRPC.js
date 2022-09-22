@@ -18,7 +18,7 @@ export default function useStaticJsonRPC(urlArray, localProvider = null) {
       const _p = await p;
 
       // set localProviders internal polling interval
-      // _p.pollingInterval = 50000;
+      _p.pollingInterval = 50000;
 
       setProvider(_p);
     } catch (error) {
