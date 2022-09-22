@@ -49,7 +49,8 @@ export default function BadgesPaginatedSection({
       setPagedBadges([...new Set(getPaginationData(pageSize, pageNumber))])
     }
   }, [pagedBadges.length, getPaginationData, pageNumber, pageSize])
-
+  console.log({ pagedBadges })
+  console.log({ eventBadges })
   return (
     <>
       <Box
@@ -124,7 +125,8 @@ export default function BadgesPaginatedSection({
             })
           ) : null}
         </Grid>
-        {eventBadges.length % 10 === 0 || !eventBadges.length ? null : (
+
+        {pagedBadges.length === eventBadges.length ? null : (
           <Box display={'flex'} justifyContent={'right'} paddingRight={2}>
             <Fab
               variant={'extended'}
