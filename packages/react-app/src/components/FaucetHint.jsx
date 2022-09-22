@@ -4,12 +4,13 @@ import { ethers } from "ethers";
 import { useBalance, useGasPrice } from "eth-hooks";
 
 import { Transactor } from "../helpers";
+import { RPC_POLL_TIME } from "../constants";
 
 function FaucetHint({ localProvider, targetNetwork, address }) {
   const [faucetClicked, setFaucetClicked] = useState(false);
 
   // fetch local balance
-  const yourLocalBalance = useBalance(localProvider, address);
+  const yourLocalBalance = useBalance(localProvider, address, RPC_POLL_TIME);
 
   // get gas Price from network
   const gasPrice = useGasPrice(targetNetwork, "fast");

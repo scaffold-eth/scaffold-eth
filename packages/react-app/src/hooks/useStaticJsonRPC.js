@@ -17,6 +17,9 @@ export default function useStaticJsonRPC(urlArray, localProvider = null) {
       const p = await Promise.race(urlArray.map(createProvider));
       const _p = await p;
 
+      // set localProviders internal polling interval
+      // _p.pollingInterval = 50000;
+
       setProvider(_p);
     } catch (error) {
       // todo: show notification error about provider issues
@@ -32,7 +35,7 @@ export default function useStaticJsonRPC(urlArray, localProvider = null) {
 
     //  localProvider is not  null check chain id if it is mainnet id  then set provider
     if (localProvider !== null && localProvider?._network.chainId === 1) {
-      setProvider(provider);
+      setProvider(localProvider);
     }
 
     //  localProvider is not  null and chain id is not 1 then load mainnet provider
