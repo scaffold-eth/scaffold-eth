@@ -13,7 +13,7 @@ function FaucetHint({ localProvider, targetNetwork, address }) {
   const yourLocalBalance = useBalance(localProvider, address, RPC_POLL_TIME);
 
   // get gas Price from network
-  const gasPrice = useGasPrice(targetNetwork, "fast");
+  const gasPrice = useGasPrice(targetNetwork, "fast", RPC_POLL_TIME);
 
   // Faucet Tx can be used to send funds from the faucet
   const faucetTx = Transactor(localProvider, gasPrice);

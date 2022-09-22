@@ -28,20 +28,13 @@ export default function useStaticJsonRPC(urlArray, localProvider = null) {
   }, [urlArray]);
 
   useEffect(() => {
-    //  localProvider is null  and urlArray's length is 1 then load a first  localProvider
-    if (localProvider === null && urlArray.length === 1) {
-      handleProviders();
-    }
-
-    //  localProvider is not  null check chain id if it is mainnet id  then set provider
-    if (localProvider !== null && localProvider?._network.chainId === 1) {
+    // load mainnet provider if local provider is mainnet
+    if (localProvider && localProvider?._network.chainId === 1) {
       setProvider(localProvider);
+      return;
     }
 
-    //  localProvider is not  null and chain id is not 1 then load mainnet provider
-    if (localProvider !== null && localProvider?._network.chainId !== 1) {
-      handleProviders();
-    }
+    handleProviders();
 
     // eslint-disable-next-line
   }, [JSON.stringify(urlArray), localProvider]);
