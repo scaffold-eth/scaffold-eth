@@ -16,6 +16,7 @@ import CreateWallet from './components/levels/CreateWallet'
 import SetupMetamask from './components/levels/SetupMetamask'
 import GamblingContract from './components/levels/GamblingContract'
 import GnosisSafe from './components/levels/GnosisSafe'
+import ExampleLevel from './components/levels/ExampleLevel'
 
 import CreateDAO from './components/levels/CreateDAO'
 import DAOHack from './components/levels/DAOHack'
@@ -130,7 +131,13 @@ export const routesList = [
     name: 'GnosisSafe',
     path: '/gnosis-safe',
     component: props => <GnosisSafe {...props} />
-  }
+  },
+  {
+    name: 'ExampleLevel',
+    path: '/ExampleLevel',
+    component: props => <ExampleLevel {...props} />
+  },
+
 ]
 
 const _routesMap = {}

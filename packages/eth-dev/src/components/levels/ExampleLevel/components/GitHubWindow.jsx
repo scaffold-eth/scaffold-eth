@@ -8,24 +8,24 @@ import {
 } from '../../../../helpers'
 import { LEVEL_ID } from '..'
 
-const ChallengeWindow = ({
+const GithubWindow = ({
   isOpen,
   continueDialog,
   setContractWindowVisibility,
-  setChallengeWindowVisibility
+  setGithubWindowVisibility
 }) => {
   const [currentStep, setCurrentStep] = useLocalStorage(`${LEVEL_ID}-currentStep`, 1)
 
-  const [challengeSections, setChallengeSections] = useState([])
+  const [GithubSections, setGithubSections] = useState([])
 
   useEffect(() => {
     getChallengeReadme(
-      'https://raw.githubusercontent.com/scaffold-eth/scaffold-eth-challenges/challenge-3-dice-game/README.md'
+      'https://raw.githubusercontent.com/scaffold-eth/scaffold-eth-challenges/challenge-0-simple-nft/README.md'
     )
       .then(text => {
         const parsed = parseGithubReadme(text)
         const sections = splitGithubReadmeIntoSections(parsed)
-        setChallengeSections(sections)
+        setGithubSections(sections)
       })
       .catch(e => console.error(e))
   }, [])
@@ -38,10 +38,10 @@ const ChallengeWindow = ({
       initWidth={window.innerWidth * 0.5}
       backgroundPath='./assets/items/window.png'
       dragAreaHeightPercent={12}
-      windowTitle='Dice Game Challenge'
+      windowTitle='Github Example'
       isOpen={isOpen}
       contentContainerStyle={{ paddingTop: 0 }}
-    > 
+    >
       <div
         className='content'
         style={{
@@ -53,13 +53,13 @@ const ChallengeWindow = ({
           lineHeight: 2.2
         }}
       >
-        {challengeSections.map((section, index) => {
+        {GithubSections.map((section, index) => {
           if (currentStep >= index) {
             return <MarkdownContainer>{section}</MarkdownContainer>
           }
         })}
 
-        {currentStep < challengeSections.length && (
+        {currentStep < GithubSections.length && (
           <Button
             style={{ marginTop: 20, marginBottom: 40 }}
             onClick={() => {
@@ -69,12 +69,12 @@ const ChallengeWindow = ({
             Continue
           </Button>
         )}
-        {currentStep >= challengeSections.length && (
+        {currentStep >= GithubSections.length && (
           <Button
             className='is-warning'
             onClick={() => {
               continueDialog()
-              setChallengeWindowVisibility(false)
+              setGithubWindowVisibility(false)
               setContractWindowVisibility(false)
             }}
           >
@@ -86,4 +86,4 @@ const ChallengeWindow = ({
   )
 }
 
-export default ChallengeWindow
+export default GithubWindow
