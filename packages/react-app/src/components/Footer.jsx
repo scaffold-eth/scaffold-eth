@@ -54,8 +54,8 @@ function Footer() {
   const useStyles = useMakeStyles(payload)
 
   return (
-    <Paper component={'footer'} sx={{ marginTop: 5 }}>
-      <Grid container spacing={0.5} pl={mobileResponsiveMatch ? 10 : 1}>
+    <Paper component={'footer'} sx={{ marginTop: 5, display: 'flex', flexDirection: 'column' }}>
+      <Grid container spacing={0.5} pl={mobileResponsiveMatch ? 6 : 1}>
         <Grid item xs={12} md={3} lg={3} sx={{ marginBottom: mobileResponsiveMatch ? 3 : 0 }}>
           <Logo useStyles={useStyles} textLeftMargin={5} />
         </Grid>
@@ -77,34 +77,22 @@ function Footer() {
             </Box>
           </Grid>
         ))}
-        <Grid item xs={6}>
-          <Box mr={2} display={'flex'} flexWrap={'wrap'}>
-            <IconButton size={'small'} href={'mailto: remix@ethereum.org'} target={'_blank'} rel={'noreferrer'}>
-              <EmailIcon sx={{ color: '#4F4F4F', marginRight: 5, fontSize: 24 }} />
-            </IconButton>
-            <IconButton
-              size={'small'}
-              href={'https://github.com/ethereum/remix-project'}
-              target={'_blank'}
-              rel={'noreferrer'}
-            >
-              <GitHubIcon sx={{ color: '#4F4F4F', marginRight: 5, fontSize: 24 }} />
-            </IconButton>
-            <IconButton size={'small'} href={'https://twitter.com/EthereumRemix'} target={'_blank'} rel={'noreferrer'}>
-              <TwitterIcon sx={{ color: '#4f4f4f', marginRight: 7, fontSize: 24 }} />
-            </IconButton>
-            <IconButton size={'small'} href={'https://medium.com/remix-ide'} target={'_blank'} rel={'noreferrer'}>
-              <MediumIcon />
-            </IconButton>
-            <IconButton
-              size={'small'}
-              href={'https://www.linkedin.com/company/ethereum-remix/'}
-              target={'_blank'}
-              rel={'noreferrer'}
-            >
-              <LinkedInIcon sx={{ color: '#4f4f4f', marginLeft: 5, fontSize: 24 }} />
-            </IconButton>
-          </Box>
+        <Grid item xs={4} lg={2}>
+          <a href={'mailto: remix@ethereum.org'} target={'_blank'} rel={'noreferrer'}>
+            <EmailIcon sx={{ color: '#4F4F4F', marginRight: mobileResponsiveMatch ? 4 : 1, fontSize: 24 }} />
+          </a>
+          <a href={'https://github.com/ethereum/remix-project'} target={'_blank'} rel={'noreferrer'}>
+            <GitHubIcon sx={{ color: '#4F4F4F', marginRight: mobileResponsiveMatch ? 5 : 1, fontSize: 24 }} />
+          </a>
+          <a href={'https://twitter.com/EthereumRemix'} target={'_blank'} rel={'noreferrer'}>
+            <TwitterIcon sx={{ color: '#4f4f4f', marginRight: mobileResponsiveMatch ? 5 : 1, fontSize: 24 }} />
+          </a>
+          <a href={'https://medium.com/remix-ide'} target={'_blank'} rel={'noreferrer'}>
+            <MediumIcon mobileResponsiveMatch={mobileResponsiveMatch} />
+          </a>
+          <a href={'https://www.linkedin.com/company/ethereum-remix/'} target={'_blank'} rel={'noreferrer'}>
+            <LinkedInIcon sx={{ color: '#4f4f4f', marginLeft: mobileResponsiveMatch ? 5 : 0, fontSize: 24 }} />
+          </a>
         </Grid>
       </Grid>
       <Box
@@ -114,9 +102,7 @@ function Footer() {
         p={5}
         justifyContent={'center'}
         alignItems={'center'}
-        flexWrap={'nowrap'}
       >
-        <Box width={80}></Box>
         <Typography variant={'subtitle2'}>&copy; 2022 Remix. All rights reserved.</Typography>
       </Box>
     </Paper>
