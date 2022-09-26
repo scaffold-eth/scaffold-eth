@@ -1,6 +1,6 @@
 // @ts-ignore
 import React, { Fragment, useCallback, useEffect, useReducer, useState } from 'react'
-import { Box, Button, Card, CardActions, CardMedia, CardContent, Typography } from '@mui/material'
+import { Box, Button, Card, CardActions, CardMedia, CardContent, Typography, Skeleton } from '@mui/material'
 import InfoIcon from '@mui/icons-material/Info'
 import { ethers } from 'ethers'
 // @ts-ignore
@@ -47,7 +47,6 @@ export default function NftCard(props) {
 
       const src = 'https://remix-project.mypinata.cloud/ipfs/' + toBase58(data.hash)
       const txLink = etherscan + transactionHash
-
       setState({ data, title, src, txLink })
     } catch (error) {
       console.error(error)
@@ -68,11 +67,24 @@ export default function NftCard(props) {
           padding: '2px',
           color: '#333333',
           borderRadius: 5,
+          boxShadow: '1px 1px 4px 0px rgb(170,170,170)',
+          transition: 'transform 0.2s',
+          ':hover': {
+            transform: 'scale(1.05)',
+          },
         }}
         maxWidth={310}
       >
         <Card variant={'outlined'} sx={{ borderRadius: 5, zIndex: 10 }}>
-          <CardMedia component={'img'} width={200} image={state.src} alt={'nftimage'} />
+          {state.src.length < 55 ? (
+            <>
+              <Skeleton variant={'rectangular'} width={300} height={350}>
+                <CardMedia component={'img'} width={200} image={state.src} alt={'nftimage'} />
+              </Skeleton>
+            </>
+          ) : (
+            <CardMedia component={'img'} width={200} image={state.src} alt={'nftimage'} />
+          )}
           <CardContent
             sx={{
               background:
@@ -95,14 +107,12 @@ export default function NftCard(props) {
                 }}
                 component={'span'}
               >
-                {state.title.length > 20
+                {state.title.length === 0
+                  ? null
+                  : state.title.length > 20
                   ? `${state.title.substring(0, 7)}...${state.title.substring(state.title.length - 7)}`
                   : state.title}
-                {hoverActive && (
-                  <Box component={'span'} ml={1}>
-                    <ContentCopyIcon fontSize="small" />
-                  </Box>
-                )}
+                <ContentCopyIcon fontSize="inherit" sx={{ marginLeft: 0.5 }} />
               </Typography>
             </CopyToClipboard>
             <Typography variant={'caption'} fontWeight={700} color={'#333333'}>

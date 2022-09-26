@@ -10,24 +10,26 @@ import makeStyles from '@mui/styles/makeStyles'
 import IconButton from '@mui/material/IconButton'
 import Grid from '@mui/material/Grid'
 import useMediaQuery from '@mui/material/useMediaQuery'
+import MediumIcon from './MediumIcon'
 
 const footerCategories = {
   PRODUCTS: [
-    { text: 'Online IDE', url: 'https://remix.ethereum.org/' },
-    { text: 'Desktop App', url: 'https://github.com/ethereum/remix-desktop/releases' },
-    { text: 'RemixD', url: 'https://github.com/ethereum/remix-project#readme' },
+    { text: 'Remix Online IDE', url: 'https://remix.ethereum.org/' },
+    { text: 'Remix Desktop IDE', url: 'https://github.com/ethereum/remix-desktop/releases' },
+    { text: 'Ethereum Remix', url: 'https://marketplace.visualstudio.com/items?itemName=RemixProject.ethereum-remix' },
+    { text: 'RemixD', url: 'https://github.com/ethereum/remix-project/tree/master/libs/remixd' },
   ],
   DOCUMENTATION: [
+    { text: 'Solidity        ', url: 'https://docs.soliditylang.org/en/v0.6.1/' },
     { text: 'Remix       ', url: 'https://remix-ide.readthedocs.io/en/latest/' },
-    { text: 'Solidity        ', url: 'https://docs.soliditylang.org/' },
-    { text: 'Plugins     ', url: 'https://github.com/ethereum/remix-plugin#readme' },
+    { text: 'Plugins     ', url: 'https://remix-plugin-docs.readthedocs.io/en/latest/plugin/README.html#plugin' },
   ],
   GITHUB: [
-    { text: 'Remix Project', url: 'https://github.com/ethereum/remix-project' },
-    { text: 'Plugins Project', url: 'https://remix-plugins-directory.readthedocs.io/en/latest/index.html' },
-    { text: 'Libraries', url: 'https://github.com/ethereum/remix-project/blob/master/libs/remixd/README.md' },
+    { text: 'Remix', url: 'https://github.com/ethereum/remix' },
+    { text: 'Remix IDE', url: 'https://github.com/ethereum/remix-ide' },
+    { text: 'Plugins', url: 'https://github.com/ethereum/remix-plugin/tree/master/examples/example/plugin' },
+    { text: 'Libraries', url: 'https://github.com/ethereum/remix-project/tree/master/libs#readme' },
   ],
-  COMPANY: [{ text: 'About Us', url: 'https://remix-project.org' }],
 }
 
 const useMakeStyles = props => {
@@ -52,8 +54,8 @@ function Footer() {
   const useStyles = useMakeStyles(payload)
 
   return (
-    <Paper component={'footer'} sx={{ marginTop: 5 }}>
-      <Grid container spacing={0.5} pl={mobileResponsiveMatch ? 10 : 1}>
+    <Paper component={'footer'} sx={{ marginTop: 5, display: 'flex', flexDirection: 'column' }}>
+      <Grid container spacing={0.5} pl={mobileResponsiveMatch ? 6 : 1}>
         <Grid item xs={12} md={3} lg={3} sx={{ marginBottom: mobileResponsiveMatch ? 3 : 0 }}>
           <Logo useStyles={useStyles} textLeftMargin={5} />
         </Grid>
@@ -75,45 +77,33 @@ function Footer() {
             </Box>
           </Grid>
         ))}
+        <Grid item xs={4} lg={2}>
+          <a href={'mailto: remix@ethereum.org'} target={'_blank'} rel={'noreferrer'}>
+            <EmailIcon sx={{ color: '#4F4F4F', marginRight: mobileResponsiveMatch ? 4 : 1, fontSize: 24 }} />
+          </a>
+          <a href={'https://github.com/ethereum/remix-project'} target={'_blank'} rel={'noreferrer'}>
+            <GitHubIcon sx={{ color: '#4F4F4F', marginRight: mobileResponsiveMatch ? 5 : 1, fontSize: 24 }} />
+          </a>
+          <a href={'https://twitter.com/EthereumRemix'} target={'_blank'} rel={'noreferrer'}>
+            <TwitterIcon sx={{ color: '#4f4f4f', marginRight: mobileResponsiveMatch ? 5 : 1, fontSize: 24 }} />
+          </a>
+          <a href={'https://medium.com/remix-ide'} target={'_blank'} rel={'noreferrer'}>
+            <MediumIcon mobileResponsiveMatch={mobileResponsiveMatch} />
+          </a>
+          <a href={'https://www.linkedin.com/company/ethereum-remix/'} target={'_blank'} rel={'noreferrer'}>
+            <LinkedInIcon sx={{ color: '#4f4f4f', marginLeft: mobileResponsiveMatch ? 5 : 0, fontSize: 24 }} />
+          </a>
+        </Grid>
       </Grid>
       <Box
         borderTop={'1px solid #EAEAEA'}
         display={'flex'}
         sx={{ marginTop: 5, height: 66 }}
         p={5}
-        justifyContent={'space-between'}
+        justifyContent={'center'}
         alignItems={'center'}
-        flexWrap={'nowrap'}
       >
-        <Box width={80}></Box>
         <Typography variant={'subtitle2'}>&copy; 2022 Remix. All rights reserved.</Typography>
-        <Box mr={5} sx={{ float: 'right' }}>
-          <IconButton size={'small'} href={'mailto: remix@ethereum.org'} target={'_blank'} rel={'noreferrer'}>
-            <EmailIcon sx={{ color: '#4F4F4F', marginRight: 3, fontSize: 24 }} />
-          </IconButton>
-          <IconButton
-            size={'small'}
-            href={'https://github.com/ethereum/remix-project'}
-            target={'_blank'}
-            rel={'noreferrer'}
-          >
-            <GitHubIcon sx={{ color: '#4F4F4F', marginRight: 3, fontSize: 24 }} />
-          </IconButton>
-          <IconButton size={'small'} href={'https://twitter.com/EthereumRemix'} target={'_blank'} rel={'noreferrer'}>
-            <TwitterIcon sx={{ color: '#4f4f4f', marginRight: 3, fontSize: 24 }} />
-          </IconButton>
-          <IconButton
-            size={'small'}
-            href={'https://www.linkedin.com/company/ethereum-remix/'}
-            target={'_blank'}
-            rel={'noreferrer'}
-          >
-            <LinkedInIcon sx={{ color: '#4f4f4f', marginRight: 3, fontSize: 24 }} />
-          </IconButton>
-          <IconButton size={'small'} href={'https://medium.com/remix-ide'} target={'_blank'} rel={'noreferrer'}>
-            M
-          </IconButton>
-        </Box>
       </Box>
     </Paper>
   )

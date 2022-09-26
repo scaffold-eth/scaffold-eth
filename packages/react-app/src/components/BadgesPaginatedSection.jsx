@@ -49,7 +49,8 @@ export default function BadgesPaginatedSection({
       setPagedBadges([...new Set(getPaginationData(pageSize, pageNumber))])
     }
   }, [pagedBadges.length, getPaginationData, pageNumber, pageSize])
-
+  console.log({ pagedBadges })
+  console.log({ eventBadges })
   return (
     <>
       <Box
@@ -83,8 +84,8 @@ export default function BadgesPaginatedSection({
                   ml={'auto'}
                   mr={'auto'}
                   key={`${event.to}-${event.id}`}
-                  alignItems={'center'}
-                  justifyContent={'center'}
+                  alignItems={'left'}
+                  justifyContent={'left'}
                 >
                   <NftCard
                     etherscan={etherscanRef}
@@ -99,7 +100,6 @@ export default function BadgesPaginatedSection({
             })
           ) : eventBadges && eventBadges.length > 0 ? (
             eventBadges.map(event => {
-              let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
               return (
                 <Grid
                   item
@@ -125,34 +125,37 @@ export default function BadgesPaginatedSection({
             })
           ) : null}
         </Grid>
-        <Box display={'flex'} justifyContent={'right'} paddingRight={2}>
-          <Fab
-            variant={'extended'}
-            size="large"
-            sx={{
-              position: 'sticky',
-              bottom: mobileResponsiveMatch ? 590 : 400,
-              top: mobileResponsiveMatch ? 805 : 400,
-              alignItems: 'right',
-              justifyContent: 'right',
-              alignSelf: 'end',
-              marginBottom: 5,
-              color: 'whitesmoke',
-              ':hover': {
-                backgroundColor: '#1565c0',
-              },
-              padding: 3,
-              backgroundColor: '#81a6f7',
-            }}
-            disabled={!eventBadges.length}
-            onClick={loadMore}
-          >
-            <DownloadingRoundedIcon sx={{ marginRight: 2, fontSize: 48 }} />
-            <Typography variant="button" fontWeight={'700'}>
-              Load More
-            </Typography>
-          </Fab>
-        </Box>
+
+        {pagedBadges.length === eventBadges.length ? null : (
+          <Box display={'flex'} justifyContent={'right'} paddingRight={2}>
+            <Fab
+              variant={'extended'}
+              size="large"
+              sx={{
+                position: 'sticky',
+                bottom: mobileResponsiveMatch ? 590 : 400,
+                top: mobileResponsiveMatch ? 805 : 400,
+                alignItems: 'right',
+                justifyContent: 'right',
+                alignSelf: 'end',
+                marginBottom: 5,
+                color: 'whitesmoke',
+                ':hover': {
+                  backgroundColor: '#1565c0',
+                },
+                padding: 3,
+                backgroundColor: '#81a6f7',
+              }}
+              disabled={!eventBadges.length}
+              onClick={loadMore}
+            >
+              <DownloadingRoundedIcon sx={{ marginRight: 2, fontSize: 48 }} />
+              <Typography variant="button" fontWeight={'700'}>
+                Load More
+              </Typography>
+            </Fab>
+          </Box>
+        )}
       </Box>
     </>
   )

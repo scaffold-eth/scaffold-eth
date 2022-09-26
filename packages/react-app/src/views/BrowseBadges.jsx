@@ -36,6 +36,7 @@ export default function BrowseBadges() {
   const [badges, setBadges] = useState([])
   const [eventBadges, setEventBadges] = useState([])
   const [error, setErrorMessage] = useState('')
+  const [showSpinner, setShowSpinner] = useState(false)
   const { localProvider, mainnet, address, setAddress, injectedProvider, selectedChainId, checkForWeb3Provider } =
     useContext(BadgeContext)
 
@@ -54,41 +55,95 @@ export default function BrowseBadges() {
 
   useEffect(() => {
     const run = async () => {
-      if (!contractRef) return setErrorMessage('chain not supported. ' + selectedChainId)
+      if (!contractRef) {
+        setErrorMessage('chain not supported. ' + selectedChainId)
+        return
+      }
       if (!address) {
         setBadges([])
         setErrorMessage('')
         return
       }
-      setErrorMessage('')
-      try {
-        let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
-        const balance = await contract.balanceOf(address)
-        const badges = []
-        for (let k = 0; k < balance; k++) {
-          try {
-            const tokenId = await contract.tokenOfOwnerByIndex(address, k)
-            const tId = tokenId.toHexString()
-            let data = await contract.tokensData(tokenId)
-            const found = eventBadges.find(x => ethers.utils.hexStripZeros(x.id) === ethers.utils.hexStripZeros(tId))
-            // eslint-disable-next-line no-undef
-            const badge = Object.assign({}, { transactionHash: found.transactionHash }, data, {
-              decodedIpfsHash: toBase58(data.hash),
-            })
-            // console.log({ badge })
-            badges.push(badge)
-          } catch (e) {
-            console.error(e)
-          }
+      let resolvedAddress
+      setShowSpinner(true)
+      if (address.includes('.eth')) {
+        resolvedAddress = await mainnet.resolveName(address)
+        if (!resolvedAddress) {
+          setShowSpinner(false)
+          setErrorMessage(`Could not resolve this address ${address}`)
+          return
         }
-        setBadges(badges)
         setErrorMessage('')
-      } catch (e) {
-        setErrorMessage(e.message)
+        try {
+          let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
+          const balance = await contract.balanceOf(resolvedAddress)
+          const badges = []
+          for (let k = 0; k < balance; k++) {
+            try {
+              const tokenId = await contract.tokenOfOwnerByIndex(resolvedAddress, k)
+              const tId = tokenId.toHexString()
+              let data = await contract.tokensData(tokenId)
+              const found = eventBadges.find(x => ethers.utils.hexStripZeros(x.id) === ethers.utils.hexStripZeros(tId))
+              // eslint-disable-next-line no-undef
+              const badge = Object.assign({}, { transactionHash: found.transactionHash }, data, {
+                decodedIpfsHash: toBase58(data.hash),
+              })
+              // console.log({ badge })
+              badges.push(badge)
+            } catch (e) {
+              console.error(e)
+            }
+          }
+          if (badges.length === 0) {
+            setShowSpinner(false)
+            setErrorMessage('Sorry, reward for the current wallet address does not exist!')
+            return
+          }
+          setBadges(badges)
+          setShowSpinner(false)
+          setErrorMessage('')
+        } catch (e) {
+          setShowSpinner(false)
+          setErrorMessage(e.message)
+        }
+      } else {
+        setErrorMessage('')
+        try {
+          let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
+          const balance = await contract.balanceOf(address)
+          const badges = []
+          for (let k = 0; k < balance; k++) {
+            try {
+              const tokenId = await contract.tokenOfOwnerByIndex(address, k)
+              const tId = tokenId.toHexString()
+              let data = await contract.tokensData(tokenId)
+              const found = eventBadges.find(x => ethers.utils.hexStripZeros(x.id) === ethers.utils.hexStripZeros(tId))
+              // eslint-disable-next-line no-undef
+              const badge = Object.assign({}, { transactionHash: found.transactionHash }, data, {
+                decodedIpfsHash: toBase58(data.hash),
+              })
+              // console.log({ badge })
+              badges.push(badge)
+            } catch (e) {
+              console.error(e)
+            }
+          }
+          if (badges.length === 0) {
+            setShowSpinner(false)
+            setErrorMessage('Sorry, reward for the current wallet address does not exist!')
+            return
+          }
+          setBadges(badges)
+          setShowSpinner(false)
+          setErrorMessage('')
+        } catch (e) {
+          setShowSpinner(false)
+          setErrorMessage(e.message)
+        }
       }
     }
     run()
-  }, [address, contractRef, eventBadges, localProvider, selectedChainId])
+  }, [address, contractRef, eventBadges, localProvider, mainnet, selectedChainId])
 
   const run = useCallback(async () => {
     if (address) {
@@ -140,28 +195,6 @@ export default function BrowseBadges() {
     console.log('badges set and done')
   }
 
-  async function submitHandler(e) {
-    console.log('submitHandler for address search reached successfully@@!!')
-    try {
-      if (address) {
-        if (address.includes('.eth')) {
-          let resolvedAddress = await mainnet.resolveName(address)
-          if (!resolvedAddress) {
-            setErrorMessage(`Could not resolve this address ${address}`)
-          }
-          await processAddress(resolvedAddress)
-        } else {
-          await processAddress(address)
-        }
-      } else {
-        setEventBadges([])
-        setErrorMessage('')
-        return
-      }
-    } catch (error) {
-      setErrorMessage(error)
-    }
-  }
   return (
     <>
       <Box sx={{ paddingTop: '76px' }}>
@@ -219,7 +252,7 @@ export default function BrowseBadges() {
                 }
               />
             </FormControl>
-            {address.length > 3 && badges.length === 0 ? (
+            {address.length > 3 && badges.length === 0 && showSpinner ? (
               <CircularProgress color="secondary" sx={{ marginLeft: 5 }} />
             ) : null}
           </Box>
