@@ -36,7 +36,7 @@ It is important that you respect upper and lower cases!
 
 📽 [Watch Soren demonstrate level building](https://www.youtube.com/watch?v=31jb97uxEQ8&t=99s)
 
-Check out the ExempleLevel for a quickstart on the basic eth.dev functionality!
+Check out the ExempleLevel(http://localhost:3000/examplelevel) for a quickstart on the basic eth.dev functionality!
 
 ## Build & surge
 
