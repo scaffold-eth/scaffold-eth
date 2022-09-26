@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useBalance } from "eth-hooks";
+import { RPC_POLL_TIME } from "../constants";
 
 const { utils } = require("ethers");
 
@@ -32,7 +33,7 @@ const { utils } = require("ethers");
 export default function Balance(props) {
   const [dollarMode, setDollarMode] = useState(true);
 
-  const balance = useBalance(props.provider, props.address);
+  const balance = useBalance(props.provider, props.address, RPC_POLL_TIME);
   let floatBalance = parseFloat("0.00");
   let usingBalance = balance;
 
