@@ -36,6 +36,8 @@ It is important that you respect upper and lower cases!
 
 📽 [Watch Soren demonstrate level building](https://www.youtube.com/watch?v=31jb97uxEQ8&t=99s)
 
+Check out the ExempleLevel for a quickstart on the basic eth.dev functionality!
+
 ## Build & surge
 
 After creating a `build` you need to do a small hack to get `react-router` routes to work.
