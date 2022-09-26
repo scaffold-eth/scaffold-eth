@@ -16,8 +16,9 @@ const ExampleTerminal = ({
 
   return (
     <WindowModal
-      initTop={20}
+      //initTop={20}
       initLeft={window.innerWidth * 0.3} 
+      initTop={window.innerHeight * 0.3}
       initHeight={ 344 }
       initWidth={ 380 }
       backgroundPath='./assets/items/terminal_small.png'
@@ -54,7 +55,7 @@ const ExampleTerminal = ({
           <Button
             className='is-warning'
             onClick={() => {
-              setExampleWindowVisibility(false)
+              //setExampleWindowVisibility(false)
               setExampleTerminalVisibility(false)
               continueDialog()
             }}

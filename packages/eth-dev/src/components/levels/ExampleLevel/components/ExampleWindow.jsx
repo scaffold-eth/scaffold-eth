@@ -14,7 +14,7 @@ const ExampleWindow = ({
   return (
     <WindowModal
       initTop={20}
-      initLeft={window.innerWidth * 0.1}
+      initLeft={window.innerWidth * 0.3}
       initHeight={window.innerHeight * 0.95}
       initWidth={window.innerWidth * 0.5}
       backgroundPath='./assets/items/window.png'
