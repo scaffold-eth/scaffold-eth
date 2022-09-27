@@ -1,5 +1,5 @@
 import { Button, Col, Menu, Row } from "antd";
-import { RPC_POLL_TIME } from "./constants";
+import { LOCAL_RPC_POLL_TIME, MAINNET_RPC_POLL_TIME } from "./constants";
 
 import "antd/dist/antd.css";
 import {
@@ -84,6 +84,8 @@ function App(props) {
 
   const targetNetwork = NETWORKS[selectedNetwork];
 
+  const RPC_POLL_TIME = targetNetwork.rpcUrl === NETWORKS.localhost.rpcUrl ? 0 : LOCAL_RPC_POLL_TIME;
+
   // 🔭 block explorer URL
   const blockExplorer = targetNetwork.blockExplorer;
 
@@ -113,7 +115,7 @@ function App(props) {
   const price = useExchangeEthPrice(targetNetwork, mainnetProvider, 1000);
 
   /* 🔥 This hook will get the price of Gas from ⛽️ EtherGasStation */
-  const gasPrice = useGasPrice(targetNetwork, "fast", RPC_POLL_TIME);
+  const gasPrice = useGasPrice(targetNetwork, "fast", LOCAL_RPC_POLL_TIME);
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
   const userProviderAndSigner = useUserProviderAndSigner(injectedProvider, localProvider, USE_BURNER_WALLET);
   const userSigner = userProviderAndSigner.signer;
@@ -142,7 +144,7 @@ function App(props) {
   const yourLocalBalance = useBalance(localProvider, address, RPC_POLL_TIME);
 
   // Just plug in different 🛰 providers to get your balance on different chains:
-  const yourMainnetBalance = useBalance(mainnetProvider, address, RPC_POLL_TIME);
+  const yourMainnetBalance = useBalance(mainnetProvider, address, MAINNET_RPC_POLL_TIME);
 
   // const contractConfig = useContractConfig();
 
@@ -170,7 +172,7 @@ function App(props) {
     "DAI",
     "balanceOf",
     ["0x34aA3F359A9D614239015126635CE7732c18fDF3"],
-    RPC_POLL_TIME,
+    MAINNET_RPC_POLL_TIME,
   );
 
   // keep track of a variable from the contract in the local React state:

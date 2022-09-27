@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { ethers } from "ethers";
+import { NETWORKS } from "../constants";
 
 const createProvider = async url => {
   const p = new ethers.providers.StaticJsonRpcProvider(url);
@@ -17,8 +18,10 @@ export default function useStaticJsonRPC(urlArray, localProvider = null) {
       const p = await Promise.race(urlArray.map(createProvider));
       const _p = await p;
 
-      // set localProviders internal polling interval
-      _p.pollingInterval = 50000;
+      if (urlArray[0] !== NETWORKS.localhost.rpcUrl) {
+        // set localProviders internal polling interval, if its not localhost
+        _p.pollingInterval = 50000;
+      }
 
       setProvider(_p);
     } catch (error) {
