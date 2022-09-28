@@ -1,5 +1,5 @@
 import { Button, Col, Menu, Row } from "antd";
-import { RPC_POLL_TIME } from "./constants";
+import { LOCAL_RPC_POLL_TIME, MAINNET_RPC_POLL_TIME } from "./constants";
 
 import "antd/dist/antd.css";
 import {
@@ -30,7 +30,7 @@ import { NETWORKS, ALCHEMY_KEY } from "./constants";
 import externalContracts from "./contracts/external_contracts";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
-import { Transactor, Web3ModalSetup } from "./helpers";
+import { getRPCPollTime, Transactor, Web3ModalSetup } from "./helpers";
 import { Home, ExampleUI, Hints, Subgraph } from "./views";
 import { useStaticJsonRPC } from "./hooks";
 
@@ -94,6 +94,9 @@ function App(props) {
 
   const mainnetProvider = useStaticJsonRPC(providers, localProvider);
 
+  /* Can be passed to hooks which takes in pollTime, function `getRPCPollTime` gives you sensible pollTime depending on the provider you are using to decrease the number of rpc calls, checkout `getRPCPollTime` for more description. */
+  const RPC_POLL_TIME = getRPCPollTime(localProvider);
+
   if (DEBUG) console.log(`Using ${selectedNetwork} network`);
 
   // 🛰 providers
@@ -113,7 +116,7 @@ function App(props) {
   const price = useExchangeEthPrice(targetNetwork, mainnetProvider, 1000);
 
   /* 🔥 This hook will get the price of Gas from ⛽️ EtherGasStation */
-  const gasPrice = useGasPrice(targetNetwork, "fast", RPC_POLL_TIME);
+  const gasPrice = useGasPrice(targetNetwork, "fast", LOCAL_RPC_POLL_TIME);
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
   const userProviderAndSigner = useUserProviderAndSigner(injectedProvider, localProvider, USE_BURNER_WALLET);
   const userSigner = userProviderAndSigner.signer;
@@ -142,7 +145,7 @@ function App(props) {
   const yourLocalBalance = useBalance(localProvider, address, RPC_POLL_TIME);
 
   // Just plug in different 🛰 providers to get your balance on different chains:
-  const yourMainnetBalance = useBalance(mainnetProvider, address, RPC_POLL_TIME);
+  const yourMainnetBalance = useBalance(mainnetProvider, address, MAINNET_RPC_POLL_TIME);
 
   // const contractConfig = useContractConfig();
 
@@ -170,7 +173,7 @@ function App(props) {
     "DAI",
     "balanceOf",
     ["0x34aA3F359A9D614239015126635CE7732c18fDF3"],
-    RPC_POLL_TIME,
+    MAINNET_RPC_POLL_TIME,
   );
 
   // keep track of a variable from the contract in the local React state:

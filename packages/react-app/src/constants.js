@@ -9,8 +9,15 @@ export const BLOCKNATIVE_DAPPID = "0b58206a-f3c0-4701-a62f-73c7243e8c77";
 
 export const ALCHEMY_KEY = "oKxs-03sij-U_N0iOlrSsZFr29-IqbuF";
 
-// RPC_POLL_TIME as 5 seconds to slower the rpc calls at start
-export const RPC_POLL_TIME = 5000;
+/* To decrease the number of RPC calls `LOCAL_RPC_POLL_TIME` is set to `5000ms` which can be passed to hooks which has pollTime like (useContractReader, useBalance etc) .
+
+NOTE : If you are not using local-hardhat chain and pass poolTime as 0 to hooks which uses pollTime they defaults to use `onBlock`. Checkout `src/hooks/useStaticJsonRPC.js` where provider pollingInterval is set to 30000ms i.e it will be checking for blocks after 30secs
+
+*/
+export const LOCAL_RPC_POLL_TIME = 5000;
+
+// Similar to `LOCAL_RPC_POLL_TIME`, `MAINNET_RPC_POLL_TIME` can be used when you need to read value from ETH-Mainnet (eg reading mainnetBalance or MainnetDAIBalance)
+export const MAINNET_RPC_POLL_TIME = 30000;
 
 const localRpcUrl = process.env.REACT_APP_CODESPACES
   ? `https://${window.location.hostname.replace("3000", "8545")}`
