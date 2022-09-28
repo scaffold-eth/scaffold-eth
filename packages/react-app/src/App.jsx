@@ -30,7 +30,7 @@ import { NETWORKS, ALCHEMY_KEY } from "./constants";
 import externalContracts from "./contracts/external_contracts";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
-import { Transactor, Web3ModalSetup } from "./helpers";
+import { getRPCPollTime, Transactor, Web3ModalSetup } from "./helpers";
 import { Home, ExampleUI, Hints, Subgraph } from "./views";
 import { useStaticJsonRPC } from "./hooks";
 
@@ -84,8 +84,6 @@ function App(props) {
 
   const targetNetwork = NETWORKS[selectedNetwork];
 
-  const RPC_POLL_TIME = targetNetwork.rpcUrl === NETWORKS.localhost.rpcUrl ? 0 : LOCAL_RPC_POLL_TIME;
-
   // 🔭 block explorer URL
   const blockExplorer = targetNetwork.blockExplorer;
 
@@ -95,6 +93,9 @@ function App(props) {
   ]);
 
   const mainnetProvider = useStaticJsonRPC(providers, localProvider);
+
+  /* Can be passed to hooks which takes in pollTime, function `getRPCPollTime` gives you sensible pollTime depending on the provider you are using to decrease the number of rpc calls, checkout `getRPCPollTime` for more description. */
+  const RPC_POLL_TIME = getRPCPollTime(localProvider);
 
   if (DEBUG) console.log(`Using ${selectedNetwork} network`);
 

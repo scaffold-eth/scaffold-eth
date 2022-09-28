@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useBalance } from "eth-hooks";
-import { LOCAL_RPC_POLL_TIME } from "../constants";
+import { getRPCPollTime } from "../helpers";
 
 const { utils } = require("ethers");
 
@@ -33,11 +33,7 @@ const { utils } = require("ethers");
 export default function Balance(props) {
   const [dollarMode, setDollarMode] = useState(true);
 
-  let RPC_POLL_TIME = LOCAL_RPC_POLL_TIME;
-
-  if (props.provider && props?.provider._network.chainId === 31337) {
-    RPC_POLL_TIME = 0;
-  }
+  let RPC_POLL_TIME = getRPCPollTime(props.provider);
 
   const balance = useBalance(props.provider, props.address, RPC_POLL_TIME);
   let floatBalance = parseFloat("0.00");

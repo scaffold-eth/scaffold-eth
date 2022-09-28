@@ -20,7 +20,7 @@ export default function useStaticJsonRPC(urlArray, localProvider = null) {
 
       if (urlArray[0] !== NETWORKS.localhost.rpcUrl) {
         // set localProviders internal polling interval, if its not localhost
-        _p.pollingInterval = 50000;
+        _p.pollingInterval = 30000;
       }
 
       setProvider(_p);

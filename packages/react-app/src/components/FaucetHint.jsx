@@ -3,13 +3,12 @@ import React, { useState } from "react";
 import { ethers } from "ethers";
 import { useBalance, useGasPrice } from "eth-hooks";
 
-import { Transactor } from "../helpers";
-import { LOCAL_RPC_POLL_TIME } from "../constants";
+import { getRPCPollTime, Transactor } from "../helpers";
 
 function FaucetHint({ localProvider, targetNetwork, address }) {
   const [faucetClicked, setFaucetClicked] = useState(false);
 
-  const RPC_POLL_TIME = localProvider && localProvider?._network.chainId === 31337 ? 0 : LOCAL_RPC_POLL_TIME;
+  const RPC_POLL_TIME = getRPCPollTime(localProvider);
 
   // fetch local balance
   const yourLocalBalance = useBalance(localProvider, address, RPC_POLL_TIME);
