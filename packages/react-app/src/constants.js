@@ -16,6 +16,7 @@ NOTE : If you are not using local-hardhat chain and pass poolTime as 0 to hooks 
 */
 export const LOCAL_RPC_POLL_TIME = 5000;
 
+// Similar to `LOCAL_RPC_POLL_TIME`, `MAINNET_RPC_POLL_TIME` can be used when you need to read value from ETH-Mainnet (eg reading mainnetBalance or MainnetDAIBalance)
 export const MAINNET_RPC_POLL_TIME = 30000;
 
 const localRpcUrl = process.env.REACT_APP_CODESPACES
