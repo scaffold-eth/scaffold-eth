@@ -1036,7 +1036,7 @@
     "@babel/helper-create-regexp-features-plugin" "^7.18.6"
     "@babel/helper-plugin-utils" "^7.18.6"
 
-"@babel/preset-env@^7.16.4", "@babel/preset-env@^7.8.4", "@babel/preset-env@^7.9.5":
+"@babel/preset-env@^7.16.4", "@babel/preset-env@^7.19.3", "@babel/preset-env@^7.8.4", "@babel/preset-env@^7.9.5":
   version "7.19.3"
   resolved "https://registry.yarnpkg.com/@babel/preset-env/-/preset-env-7.19.3.tgz#52cd19abaecb3f176a4ff9cc5e15b7bf06bec754"
   integrity sha512-ziye1OTc9dGFOAXSWKUqQblYHNlBOaDl8wzqf2iKXJAltYiR3hKHUKmkt+S9PppW7RQpq4fFCrwwpIDj/f5P4w==
@@ -1340,9 +1340,9 @@
     "@ethereumjs/common" "^2.6.4"
     ethereumjs-util "^7.1.5"
 
-"@ethersphere/bee-js@git+https://github.com/fairDataSociety/bee-js.git":
+"@ethersphere/bee-js@https://github.com/fairDataSociety/bee-js.git":
   version "5.0.0"
-  resolved "git+https://github.com/fairDataSociety/bee-js.git#047a1b90be6b87bc94b73bbd24fb8d3de179979b"
+  resolved "https://github.com/fairDataSociety/bee-js.git#047a1b90be6b87bc94b73bbd24fb8d3de179979b"
   dependencies:
     "@ethersphere/swarm-cid" "^0.1.0"
     "@types/readable-stream" "^2.3.13"
@@ -10297,9 +10297,9 @@ glogg@^1.0.0:
   dependencies:
     sparkles "^1.0.0"
 
-"gluegun@git+https://github.com/edgeandnode/gluegun.git#v4.3.1-pin-colors-dep":
+"gluegun@https://github.com/edgeandnode/gluegun#v4.3.1-pin-colors-dep":
   version "4.3.1"
-  resolved "git+https://github.com/edgeandnode/gluegun.git#b34b9003d7bf556836da41b57ef36eb21570620a"
+  resolved "https://github.com/edgeandnode/gluegun#b34b9003d7bf556836da41b57ef36eb21570620a"
   dependencies:
     apisauce "^1.0.1"
     app-module-path "^2.2.0"

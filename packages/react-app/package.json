@@ -19,6 +19,7 @@
     "@apollo/client": "^3.3.21",
     "@apollo/react-hooks": "^4.0.0",
     "@arbitrum/sdk": "^2.0.0",
+    "@babel/preset-env": "^7.19.3",
     "@eth-optimism/sdk": "^1.0.0",
     "@fairdatasociety/bee-js": "^5.0.0",
     "@fairdatasociety/fdp-storage": "^0.5.2-beta.1",
