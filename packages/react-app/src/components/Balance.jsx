@@ -4,7 +4,7 @@ import { getRPCPollTime } from "../helpers";
 
 const { utils } = require("ethers");
 
-/** 
+/**
   ~ What it does? ~
 
   Displays a balance of given address in ether & dollar
@@ -33,9 +33,9 @@ const { utils } = require("ethers");
 export default function Balance(props) {
   const [dollarMode, setDollarMode] = useState(true);
 
-  let RPC_POLL_TIME = getRPCPollTime(props.provider);
+  let localProviderPollingTime = getRPCPollTime(props.provider);
 
-  const balance = useBalance(props.provider, props.address, RPC_POLL_TIME);
+  const balance = useBalance(props.provider, props.address, localProviderPollingTime);
   let floatBalance = parseFloat("0.00");
   let usingBalance = balance;
 

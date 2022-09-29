@@ -19,7 +19,9 @@ export default function useStaticJsonRPC(urlArray, localProvider = null) {
       const _p = await p;
 
       if (urlArray[0] !== NETWORKS.localhost.rpcUrl) {
-        // set localProviders internal polling interval, if its not localhost
+        // Increase the default ethers provider polling interval (4000)
+        // to avoid unnecessary `eth_blockNumber` RPC calls.
+        // You might want to reduce this value when using useEventListener.
         _p.pollingInterval = 30000;
       }
 
@@ -31,7 +33,7 @@ export default function useStaticJsonRPC(urlArray, localProvider = null) {
   }, [urlArray]);
 
   useEffect(() => {
-    // load mainnet provider if local provider is mainnet
+    // Re-use the localProvider if it's mainnet (to use only one instance of it)
     if (localProvider && localProvider?._network.chainId === 1) {
       setProvider(localProvider);
       return;

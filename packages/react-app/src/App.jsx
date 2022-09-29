@@ -94,8 +94,8 @@ function App(props) {
 
   const mainnetProvider = useStaticJsonRPC(providers, localProvider);
 
-  /* Can be passed to hooks which takes in pollTime, function `getRPCPollTime` gives you sensible pollTime depending on the provider you are using to decrease the number of rpc calls, checkout `getRPCPollTime` for more description. */
-  const RPC_POLL_TIME = getRPCPollTime(localProvider);
+  // Sensible pollTimes depending on the provider you are using
+  const localProviderPollingTime = getRPCPollTime(localProvider);
 
   if (DEBUG) console.log(`Using ${selectedNetwork} network`);
 
@@ -142,7 +142,7 @@ function App(props) {
   const tx = Transactor(userSigner, gasPrice);
 
   // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
-  const yourLocalBalance = useBalance(localProvider, address, RPC_POLL_TIME);
+  const yourLocalBalance = useBalance(localProvider, address, localProviderPollingTime);
 
   // Just plug in different 🛰 providers to get your balance on different chains:
   const yourMainnetBalance = useBalance(mainnetProvider, address, MAINNET_RPC_POLL_TIME);
@@ -177,11 +177,11 @@ function App(props) {
   );
 
   // keep track of a variable from the contract in the local React state:
-  const purpose = useContractReader(readContracts, "YourContract", "purpose", [], RPC_POLL_TIME);
+  const purpose = useContractReader(readContracts, "YourContract", "purpose", [], localProviderPollingTime);
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
-  console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
+  console.log("🏷 Resolved austingriffith.eth as:", addressFromENS)
   */
 
   //
