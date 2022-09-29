@@ -20,6 +20,8 @@
     "@apollo/react-hooks": "^4.0.0",
     "@arbitrum/sdk": "^2.0.0",
     "@eth-optimism/sdk": "^1.0.0",
+    "@fairdatasociety/bee-js": "^5.0.0",
+    "@fairdatasociety/fdp-storage": "^0.5.2-beta.1",
     "@portis/web3": "^4.0.5",
     "@ramp-network/ramp-instant-sdk": "^2.2.0",
     "@testing-library/jest-dom": "^5.11.4",
