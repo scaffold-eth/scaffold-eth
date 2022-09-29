@@ -2,5 +2,3 @@
 . "$(dirname "$0")/_/husky.sh"
 
 "🏗 Don't forgot to do 'yarn install' !"
-
-exit code 1
