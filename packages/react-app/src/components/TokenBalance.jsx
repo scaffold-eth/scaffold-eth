@@ -2,13 +2,13 @@ import { useTokenBalance } from "eth-hooks/erc/erc-20/useTokenBalance";
 import React, { useState } from "react";
 
 import { utils } from "ethers";
-import { LOCAL_RPC_POLL_TIME } from "../constants";
+import { RPC_POLL_TIME } from "../constants";
 
 export default function TokenBalance(props) {
   const [dollarMode, setDollarMode] = useState(true);
 
   const tokenContract = props.contracts && props.contracts[props.name];
-  const balance = useTokenBalance(tokenContract, props.address, LOCAL_RPC_POLL_TIME);
+  const balance = useTokenBalance(tokenContract, props.address, RPC_POLL_TIME);
 
   let floatBalance = parseFloat("0.00");
 

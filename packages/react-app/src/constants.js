@@ -10,19 +10,15 @@ export const BLOCKNATIVE_DAPPID = "0b58206a-f3c0-4701-a62f-73c7243e8c77";
 export const ALCHEMY_KEY = "oKxs-03sij-U_N0iOlrSsZFr29-IqbuF";
 
 /*
-Decrease the number of RPC calls using this polling time for the localProvider.
-This value can be passed to hooks with pollTime like useContractReader, useBalance, etc.
+Decrease the number of RPC calls. This value is being passed to the provider
+internal polling time (it'll look for new blocks after this time) and hooks
+with pollTime like useContractReader, useBalance, etc.
 
-Set it to 0 if you want to make RPC calls "onBlock".
+Set it to 0 to disable it and make RPC calls "onBlock".
 
-NOTE: Check `src/hooks/useStaticJsonRPC.js` where provider pollingInterval is set to 30000ms
-(it will be checking for new blocks after 30secs). This reduces `eth_blockNumber` calls.
+Note: this is not used when you are in the local hardhat chain.
 */
-export const LOCAL_RPC_POLL_TIME = 5000;
-
-// Similar to `LOCAL_RPC_POLL_TIME`, `MAINNET_RPC_POLL_TIME` can be used when you
-// need to read Mainnet values (e.g. reading mainnetBalance or MainnetDAIBalance)
-export const MAINNET_RPC_POLL_TIME = 30000;
+export const RPC_POLL_TIME = 30000;
 
 const localRpcUrl = process.env.REACT_APP_CODESPACES
   ? `https://${window.location.hostname.replace("3000", "8545")}`

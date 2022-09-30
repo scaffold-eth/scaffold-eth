@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { ethers } from "ethers";
-import { NETWORKS } from "../constants";
+import { NETWORKS, RPC_POLL_TIME } from "../constants";
 
 const createProvider = async url => {
   const p = new ethers.providers.StaticJsonRpcProvider(url);
@@ -18,11 +18,11 @@ export default function useStaticJsonRPC(urlArray, localProvider = null) {
       const p = await Promise.race(urlArray.map(createProvider));
       const _p = await p;
 
-      if (urlArray[0] !== NETWORKS.localhost.rpcUrl) {
+      if (urlArray[0] !== NETWORKS.localhost.rpcUrl && RPC_POLL_TIME > 4000) {
         // Increase the default ethers provider polling interval (4000)
         // to avoid unnecessary `eth_blockNumber` RPC calls.
         // You might want to reduce this value when using useEventListener.
-        _p.pollingInterval = 30000;
+        _p.pollingInterval = RPC_POLL_TIME;
       }
 
       setProvider(_p);
