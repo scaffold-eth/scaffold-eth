@@ -32,6 +32,8 @@ import { Transactor, Web3ModalSetup } from "./helpers";
 import { Home, ExampleUI, Hints, Subgraph } from "./views";
 import { useStaticJsonRPC } from "./hooks";
 import FDPLogin from "./FDP/FDPLogin";
+import FDPCalendar from "./FDP/FDPCalendar";
+import FDPAgenda from "./FDP/FDPAgenda";
 
 const { ethers } = require("ethers");
 /*
@@ -289,9 +291,16 @@ function App(props) {
       />
       <Menu style={{ textAlign: "center", marginTop: 20 }} selectedKeys={[location.pathname]} mode="horizontal">
         <Menu.Item key="/">
-          <Link to="/">App Home</Link>
+          <Link to="/">Home</Link>
         </Menu.Item>
-        <Menu.Item key="/debug">
+        <Menu.Item key="/schedule">
+          <Link to="/schedule">Schedule</Link>
+        </Menu.Item>
+        <Menu.Item key="/agenda">
+          <Link to="/agenda">Agenda</Link>
+        </Menu.Item>
+
+        {/* <Menu.Item key="/debug">
           <Link to="/debug">Debug Contracts</Link>
         </Menu.Item>
         <Menu.Item key="/hints">
@@ -302,17 +311,25 @@ function App(props) {
         </Menu.Item>
         <Menu.Item key="/mainnetdai">
           <Link to="/mainnetdai">Mainnet DAI</Link>
-        </Menu.Item>
+        </Menu.Item> 
         <Menu.Item key="/subgraph">
           <Link to="/subgraph">Subgraph</Link>
-        </Menu.Item>
+        </Menu.Item> 
+        */}
       </Menu>
 
       <Switch>
         <Route exact path="/">
           {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
           <FDPLogin address={address} userSigner={userSigner} />
-          <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} />
+
+          {/* <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} /> */}
+        </Route>
+        <Route path="/schedule">
+          <FDPCalendar />
+        </Route>
+        <Route path="/agenda">
+          <FDPAgenda />
         </Route>
         <Route exact path="/debug">
           {/*

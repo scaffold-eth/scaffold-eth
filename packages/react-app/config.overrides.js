@@ -20,7 +20,7 @@ module.exports = function override(config, env) {
 
   config.module.rules = [
     {
-      test: /node_modules\/monaco-editor/,
+      // test: /node_modules\/monaco-editor/,
       use: {
         loader: "babel-loader",
         // if you include your babel config here,

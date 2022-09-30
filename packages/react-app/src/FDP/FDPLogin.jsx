@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Input, Form } from "antd";
 import { Transactor } from "../helpers";
+import { Link, Route, Switch, useLocation } from "react-router-dom";
 
 import { FdpStorage } from "@fairdatasociety/fdp-storage";
 //import { FdpStorage } from "../fdp-storage/fdp-storage.ts";
@@ -11,6 +12,11 @@ export default function FDPLogin({ address, userSigner }) {
   const [form] = Form.useForm();
 
   const tx = Transactor(userSigner);
+
+  //var fdp = new FdpStorage({ options: ensOptions });
+  //fdp.ens = new mainnetENSproxy(address);
+  //fdp.createAccount(username, password);
+  //fdp.connection.bee = new Bee(newUrl);
 
   async function onFinish(values) {
     console.log(values);
@@ -55,6 +61,8 @@ export default function FDPLogin({ address, userSigner }) {
 
   return (
     <div>
+      <br />
+      <h1>Fair Data Society Login</h1>
       <Form
         {...formItemLayout}
         form={form}
@@ -69,6 +77,12 @@ export default function FDPLogin({ address, userSigner }) {
           <Input placeholder={password} />
         </Form.Item>
       </Form>
+
+      <br />
+      <h3>Don't have account ?</h3>
+      <Link to={{ pathname: "https://create.dev.fairdatasociety.org" }} target="_blank" rel="noopener noreferrer">
+        Create Account
+      </Link>
     </div>
   );
 }
