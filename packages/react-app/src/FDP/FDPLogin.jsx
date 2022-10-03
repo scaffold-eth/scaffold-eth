@@ -3,7 +3,7 @@ import { Input, Form } from "antd";
 import { Transactor } from "../helpers";
 import { Link, Route, Switch, useLocation } from "react-router-dom";
 
-import { FdpStorage } from "@fairdatasociety/fdp-storage";
+//import { FdpStorage } from "@fairdatasociety/fdp-storage";
 //import { FdpStorage } from "../fdp-storage/fdp-storage.ts";
 
 export default function FDPLogin({ address, userSigner }) {
