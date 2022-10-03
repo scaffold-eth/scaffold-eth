@@ -10,9 +10,8 @@ export const BLOCKNATIVE_DAPPID = "0b58206a-f3c0-4701-a62f-73c7243e8c77";
 export const ALCHEMY_KEY = "oKxs-03sij-U_N0iOlrSsZFr29-IqbuF";
 
 /*
-Decrease the number of RPC calls. This value is being passed to the provider
-internal polling time (it'll look for new blocks after this time) and hooks
-with pollTime like useContractReader, useBalance, etc.
+Decrease the number of RPC calls by passing this value to hooks
+with pollTime (useContractReader, useBalance, etc.)
 
 Set it to 0 to disable it and make RPC calls "onBlock".
 
