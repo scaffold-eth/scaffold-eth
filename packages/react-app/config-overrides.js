@@ -21,17 +21,15 @@ module.exports = function override(config, env) {
 
   config.module.rules = [
     {
-      exclude: /node_modules/, 
+      //exclude: /node_modules/, 
+      //exclude: [/\.(js|mjs|jsx|ts|tsx)$/, /\.html$/, /\.json$/, /node_modules/],
+      exclude: [/\.html$/, /\.json$/],
       use: {
         loader: "babel-loader",
         // if you include your babel config here,
         // you don’t need the `babel.config.json` file
         //options: { presets: ["@babel/preset-env"] },
         query: { compact: false },
-      },
-      {
-        test: /\.html$/,
-        loader: 'html-loader'
       }
     },
     ...config.module.rules,
