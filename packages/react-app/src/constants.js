@@ -95,12 +95,12 @@ export const NETWORKS = {
     blockExplorer: "https://optimistic.etherscan.io/",
     rpcUrl: `https://mainnet.optimism.io`,
   },
-  rinkebyArbitrum: {
-    name: "rinkebyArbitrum",
+  goerliArbitrum: {
+    name: "goerliArbitrum",
     color: "#28a0f0",
-    chainId: 421611,
-    blockExplorer: "https://testnet.arbiscan.io/",
-    rpcUrl: "https://rinkeby.arbitrum.io/rpc",
+    chainId: 421613,
+    blockExplorer: "https://goerli-rollup-explorer.arbitrum.io",
+    rpcUrl: "https://goerli-rollup.arbitrum.io/rpc/",
   },
   arbitrum: {
     name: "arbitrum",
