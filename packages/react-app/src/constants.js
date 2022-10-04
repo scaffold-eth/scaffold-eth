@@ -28,30 +28,6 @@ export const NETWORKS = {
     rpcUrl: `https://mainnet.infura.io/v3/${INFURA_ID}`,
     blockExplorer: "https://etherscan.io/",
   },
-  kovan: {
-    name: "kovan",
-    color: "#7003DD",
-    chainId: 42,
-    rpcUrl: `https://kovan.infura.io/v3/${INFURA_ID}`,
-    blockExplorer: "https://kovan.etherscan.io/",
-    faucet: "https://gitter.im/kovan-testnet/faucet", // https://faucet.kovan.network/
-  },
-  rinkeby: {
-    name: "rinkeby",
-    color: "#e0d068",
-    chainId: 4,
-    rpcUrl: `https://rinkeby.infura.io/v3/${INFURA_ID}`,
-    faucet: "https://faucet.rinkeby.io/",
-    blockExplorer: "https://rinkeby.etherscan.io/",
-  },
-  ropsten: {
-    name: "ropsten",
-    color: "#F60D09",
-    chainId: 3,
-    faucet: "https://faucet.ropsten.be/",
-    blockExplorer: "https://ropsten.etherscan.io/",
-    rpcUrl: `https://ropsten.infura.io/v3/${INFURA_ID}`,
-  },
   goerli: {
     name: "goerli",
     color: "#0975F6",
@@ -104,12 +80,12 @@ export const NETWORKS = {
     rpcUrl: "http://" + (global.window ? window.location.hostname : "localhost") + ":8545",
     gasPrice: 0,
   },
-  kovanOptimism: {
-    name: "kovanOptimism",
+  goerliOptimism: {
+    name: "goerliOptimism",
     color: "#f01a37",
-    chainId: 69,
-    blockExplorer: "https://kovan-optimistic.etherscan.io/",
-    rpcUrl: `https://kovan.optimism.io`,
+    chainId: 420,
+    blockExplorer: "https://optimism.io",
+    rpcUrl: `https://goerli.optimism.io/`,
     gasPrice: 0,
   },
   optimism: {
@@ -225,6 +201,31 @@ export const NETWORKS = {
     chainId: 1281,
     blockExplorer: "https://moonbeam-explorer.netlify.app/",
     rpcUrl: "http://127.0.0.1:9933",
+  },
+//   WARNING: The networks below are deperecated!  
+  kovan: {
+    name: "kovan",
+    color: "#7003DD",
+    chainId: 42,
+    rpcUrl: `https://kovan.infura.io/v3/${INFURA_ID}`,
+    blockExplorer: "https://kovan.etherscan.io/",
+    faucet: "https://gitter.im/kovan-testnet/faucet", // https://faucet.kovan.network/
+  },
+  rinkeby: {
+    name: "rinkeby",
+    color: "#e0d068",
+    chainId: 4,
+    rpcUrl: `https://rinkeby.infura.io/v3/${INFURA_ID}`,
+    faucet: "https://faucet.rinkeby.io/",
+    blockExplorer: "https://rinkeby.etherscan.io/",
+  },
+  ropsten: {
+    name: "ropsten",
+    color: "#F60D09",
+    chainId: 3,
+    faucet: "https://faucet.ropsten.be/",
+    blockExplorer: "https://ropsten.etherscan.io/",
+    rpcUrl: `https://ropsten.infura.io/v3/${INFURA_ID}`,
   },
 };
 
