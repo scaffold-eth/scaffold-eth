@@ -245,6 +245,19 @@ function App(props) {
     }
   }, [loadWeb3Modal]);
 
+  const [schedule, setSchedule] = useState({ schedule: { version: "0.0" } });
+  const [agenda, setAgenda] = useState({ startDate: "2023-12-08", events: [] });
+
+  // useEffect(() => {
+  //   async function fetchSchedule() {
+  //     console.log("fetching schedule");
+  //     const result = await (await fetch("schedule.json")).json();
+  //     setSchedule(result);
+  //     console.log("schedule fetched", result);
+  //   }
+  //   fetchSchedule();
+  // }, [writeContracts]);
+
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
 
   return (
@@ -326,10 +339,10 @@ function App(props) {
           {/* <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} /> */}
         </Route>
         <Route path="/schedule">
-          <FDPCalendar />
+          <FDPCalendar setAgenda={setAgenda} />
         </Route>
         <Route path="/agenda">
-          <FDPAgenda />
+          <FDPAgenda schedule={schedule} agenda={agenda} />
         </Route>
         <Route exact path="/debug">
           {/*

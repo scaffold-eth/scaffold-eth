@@ -46,3 +46,9 @@ a {
   text-align: center;
   padding-left: calc(100vw - 100%);
 }
+
+
+.calendar_default_colheader_inner:hover {
+  background-color: var(--color-accents-grey-pastel);
+  cursor: pointer;
+}
