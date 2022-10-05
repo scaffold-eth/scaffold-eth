@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Input, Form } from "antd";
+import { Input, Form, Button } from "antd";
 import { Transactor } from "../helpers";
 import { Link, Route, Switch, useLocation } from "react-router-dom";
 
-import { FdpStorage } from "@fairdatasociety/fdp-storage";
+//import { FdpStorage } from "@fairdatasociety/fdp-storage";
 //import { FdpStorage } from "../fdp-storage/fdp-storage.ts";
 //const FDP = require("@fairdatasociety/fdp-storage");
 
@@ -20,7 +20,7 @@ export default function FDPLogin({ address, userSigner }) {
   //fdp.connection.bee = new Bee(newUrl);
 
   async function onFinish(values) {
-    console.log(values);
+    console.log("login", values);
     /*let newTx;
     try {
       newTx = await tx(
@@ -76,6 +76,12 @@ export default function FDPLogin({ address, userSigner }) {
         </Form.Item>
         <Form.Item label="Password" name="password">
           <Input placeholder={password} />
+        </Form.Item>
+
+        <Form.Item {...tailFormItemLayout}>
+          <Button type="primary" htmlType="submit">
+            {"Login"}
+          </Button>
         </Form.Item>
       </Form>
 
