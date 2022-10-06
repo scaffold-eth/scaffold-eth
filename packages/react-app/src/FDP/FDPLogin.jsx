@@ -66,60 +66,20 @@ const DocIndexJson = "/doc/indexjson";
 
 const host = "https://fairos.dev.fairdatasociety.org/";
 
-export default function FDPLogin({ address, userSigner, setLogin, setUser, user, loggedIn }) {
+export default function FDPLogin({ address, userSigner, setLogin, setUser, user, loggedIn, pods, setPods }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [userData, setUserData] = useState({});
-  //const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [pods, setPods] = useState([]);
 
   const [data, setData] = useState({ hits: [] });
   const [form] = Form.useForm();
 
   const tx = Transactor(userSigner);
-  /*
-  var ws = new WebSocket("wss://fairos.dev.fairdatasociety.org/ws/v1/");
-
-  ws.onopen = () => {
-    console.log("open ws");
-  };
-  ws.onclose = function () {
-    console.log("closed ws");
-  };
-  ws.onmessage = function (evt) {
-    var received_msg = evt.data;
-    console.log("onmessage", evt);
-    if (evt.data instanceof Blob) {
-      const a = document.createElement("a");
-      a.href = window.URL.createObjectURL(evt.data);
-      a.download = "file";
-      a.click();
-      return;
-    }
-
-    var data = JSON.parse(received_msg);
-    if (data.event == FileDownload && data.params["content_length"] != null) {
-      console.log("Download file size", data.params["content_length"]);
-    }
-    console.log(data);
-  };
-  */
-
-  //var fdp = new FdpStorage({ options: ensOptions });
-  //fdp.ens = new mainnetENSproxy(address);
-  //fdp.createAccount(username, password);
-  //fdp.connection.bee = new Bee(newUrl);
 
   async function onFinish(values) {
     //console.log("login", values);
     setPassword(values.password);
     setUsername(values.username);
-
-    /*try {
-      await wsUserLogin();
-    } catch (error) {
-      console.log("wsUserLogin", error);
-    }*/
 
     try {
       var user = await (await userLogin(values.username, values.password)).json();
@@ -225,13 +185,6 @@ export default function FDPLogin({ address, userSigner, setLogin, setUser, user,
     });
     //setLogin(isLoggedIn);
   }
-
-  /*useEffect(() => {
-    fetchPods();
-  }, [isLoggedIn]);*/
-
-  //useEffect(() => {}, [pods]);
-
   const formItemLayout = {
     labelCol: {
       xs: { span: 24 },
@@ -254,7 +207,7 @@ export default function FDPLogin({ address, userSigner, setLogin, setUser, user,
       },
     },
   };
-  if (loggedIn === true /*&& pods !== undefined*/) {
+  if (loggedIn === true && user != null /*&& pods !== undefined*/) {
     return (
       <div>
         <h1>Logged in</h1>
