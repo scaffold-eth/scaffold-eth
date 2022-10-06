@@ -59,7 +59,7 @@ const { ethers } = require("ethers");
 const initialNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, goerli, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
-const DEBUG = true;
+const DEBUG = false;
 const NETWORKCHECK = true;
 const USE_BURNER_WALLET = true; // toggle burner wallet feature
 const USE_NETWORK_SELECTOR = false;
@@ -245,8 +245,11 @@ function App(props) {
     }
   }, [loadWeb3Modal]);
 
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userData, setUserData] = useState(null);
   const [schedule, setSchedule] = useState({ schedule: { version: "0.0" } });
   const [agenda, setAgenda] = useState({ startDate: "2023-12-08", events: [] });
+  useEffect(() => {}, [isLoggedIn, userData, schedule, agenda]);
 
   // useEffect(() => {
   //   async function fetchSchedule() {
@@ -291,6 +294,15 @@ function App(props) {
           </div>
         </div>
       </Header>
+      <div>
+        {userData && (
+          <>
+            {userData.address}
+            {userData.name_hash}
+            {userData.public_key}
+          </>
+        )}
+      </div>
       {yourLocalBalance.lte(ethers.BigNumber.from("0")) && (
         <FaucetHint localProvider={localProvider} targetNetwork={targetNetwork} address={address} />
       )}
@@ -306,12 +318,16 @@ function App(props) {
         <Menu.Item key="/">
           <Link to="/">Home</Link>
         </Menu.Item>
-        <Menu.Item key="/schedule">
-          <Link to="/schedule">Schedule</Link>
-        </Menu.Item>
-        <Menu.Item key="/agenda">
-          <Link to="/agenda">Agenda</Link>
-        </Menu.Item>
+        {isLoggedIn === true && (
+          <>
+            <Menu.Item key="/schedule">
+              <Link to="/schedule">Schedule</Link>
+            </Menu.Item>
+            <Menu.Item key="/agenda">
+              <Link to="/agenda">Agenda</Link>
+            </Menu.Item>
+          </>
+        )}
 
         {/* <Menu.Item key="/debug">
           <Link to="/debug">Debug Contracts</Link>
@@ -334,16 +350,27 @@ function App(props) {
       <Switch>
         <Route exact path="/">
           {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
-          <FDPLogin address={address} userSigner={userSigner} />
+          <FDPLogin
+            address={address}
+            userSigner={userSigner}
+            setLogin={setIsLoggedIn}
+            setUser={setUserData}
+            user={userData}
+            loggedIn={isLoggedIn}
+          />
 
           {/* <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} /> */}
         </Route>
-        <Route path="/schedule">
-          <FDPCalendar setAgenda={setAgenda} />
-        </Route>
-        <Route path="/agenda">
-          <FDPAgenda schedule={schedule} agenda={agenda} />
-        </Route>
+        {isLoggedIn === true && (
+          <>
+            <Route path="/schedule">
+              <FDPCalendar setAgenda={setAgenda} />
+            </Route>
+            <Route path="/agenda">
+              <FDPAgenda schedule={schedule} agenda={agenda} />
+            </Route>
+          </>
+        )}
         <Route exact path="/debug">
           {/*
                 🎛 this scaffolding is full of commonly used components

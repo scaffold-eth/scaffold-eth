@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { Input, Form, Button } from "antd";
+import { Input, Form, Button, notification } from "antd";
 import { Transactor } from "../helpers";
 import { Link, Route, Switch, useLocation } from "react-router-dom";
 import { useEffect } from "react";
+import FDPCalendar from "./FDPCalendar";
 
 const UserSignup = "/user/signup";
 const UserLogin = "/user/login";
@@ -65,14 +66,19 @@ const DocIndexJson = "/doc/indexjson";
 
 const host = "https://fairos.dev.fairdatasociety.org/";
 
-export default function FDPLogin({ address, userSigner }) {
+export default function FDPLogin({ address, userSigner, setLogin, setUser, user, loggedIn }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [userData, setUserData] = useState({});
+  //const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [pods, setPods] = useState([]);
+
   const [data, setData] = useState({ hits: [] });
   const [form] = Form.useForm();
 
   const tx = Transactor(userSigner);
-  var ws = new WebSocket("ws://fairos.dev.fairdatasociety.org/ws/v1/");
+  /*
+  var ws = new WebSocket("wss://fairos.dev.fairdatasociety.org/ws/v1/");
 
   ws.onopen = () => {
     console.log("open ws");
@@ -97,42 +103,42 @@ export default function FDPLogin({ address, userSigner }) {
     }
     console.log(data);
   };
+  */
 
   //var fdp = new FdpStorage({ options: ensOptions });
   //fdp.ens = new mainnetENSproxy(address);
   //fdp.createAccount(username, password);
   //fdp.connection.bee = new Bee(newUrl);
 
-  //use effect and fetch from https://devconagenda.bzz.link/schedule/export/schedule.json to get the data
-  useEffect(() => {
-    // async function fetchSchedule() {
-    //   console.log("fetching schedule");
-    //   const result = await (await fetch("schedule.json")).json();
-    //   //setSchedule(result);
-    //   console.log("schedule fetched", result);
-    // }
-    // fetchSchedule();
-  }, []);
-
   async function onFinish(values) {
-    console.log("login", values);
+    //console.log("login", values);
     setPassword(values.password);
     setUsername(values.username);
 
-    try {
+    /*try {
       await wsUserLogin();
     } catch (error) {
       console.log("wsUserLogin", error);
-    }
+    }*/
 
     try {
-      var user = await userLogin();
-      //wsUserLogin(user);
+      var user = await (await userLogin(values.username, values.password)).json();
       console.log("user", user);
+      setUserData(user);
+      notification.open({
+        message: user.message,
+        description: ``,
+      });
+      setUser(user);
+      await isUserLoggedIn();
     } catch (error) {
-      console.log("userLogin", error);
+      notification.error({
+        message: "Error",
+        description: `Error: ${error.message}`,
+      });
     }
   }
+  /*
   async function wsUserLogin() {
     var data = {
       event: UserLogin,
@@ -142,28 +148,36 @@ export default function FDPLogin({ address, userSigner }) {
       },
     };
     ws.send(JSON.stringify(data));
-  }
+  }*/
 
-  async function userLogin() {
+  async function userLogin(user, pass) {
     var data = {
-      user_name: username,
-      password: password,
+      user_name: user,
+      password: pass,
     };
     return await fetch(host + "v2/user/login", {
       method: "POST",
+      //mode: "no-cors",
+      mode: "cors",
       headers: {
         "Content-Type": "application/json",
+        // "Access-Control-Allow-Origin": "*",
+        // "Access-Control-Allow-Origin": "http://glup.fairdatasociety.org:3000/",
+        // "Access-Control-Allow-Credentials": "true",
+        // "Access-Control-Allow-Headers": "Content-Type",
+        // "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
+        // Origin: "http://glup.fairdatasocety.org:3000/",
       },
       body: JSON.stringify(data),
       credentials: "include",
     });
     //ws.send(JSON.stringify(data));
   }
-  async function userLoggedin() {
+  async function userLoggedIn() {
     var data = {
       user_name: username,
     };
-    return await fetch(host + "/user/isloggedin" + "?" + new URLSearchParams(data), {
+    return await fetch(host + "v1/user/isloggedin" + "?" + new URLSearchParams(data), {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -171,6 +185,47 @@ export default function FDPLogin({ address, userSigner }) {
       credentials: "include",
     });
   }
+  async function podLs() {
+    var data = {
+      pod_name: "",
+      password: password,
+    };
+    return fetch(host + "v1/pod/ls" + "?" + new URLSearchParams(data), {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+  }
+
+  async function isUserLoggedIn() {
+    var isLoggedIn = (await (await userLoggedIn()).json()).loggedin;
+    console.log("isLoggedIn", isLoggedIn);
+    //setIsLoggedIn(isLoggedIn);
+    setLogin(isLoggedIn);
+    notification.open({
+      message: "logged in",
+      description: isLoggedIn,
+    });
+    await fetchPods();
+  }
+  async function fetchPods() {
+    var podls = await (await podLs()).json();
+    console.log("pods", podls);
+    setPods(podls);
+    notification.open({
+      message: "pods fetched:",
+      description: podls.pod_name.length,
+    });
+    //setLogin(isLoggedIn);
+  }
+
+  /*useEffect(() => {
+    fetchPods();
+  }, [isLoggedIn]);*/
+
+  //useEffect(() => {}, [pods]);
 
   const formItemLayout = {
     labelCol: {
@@ -194,10 +249,29 @@ export default function FDPLogin({ address, userSigner }) {
       },
     },
   };
+  if (loggedIn === true /*&& pods !== undefined*/) {
+    return (
+      <div>
+        <h1>Logged in</h1>
+        <h2>Pods</h2>
+        <ul>
+          {pods.pod_name.map(pod => (
+            <li key={pod}>{pod}</li>
+          ))}
+        </ul>
+      </div>
+    );
+  }
 
   return (
     <div>
       <br />
+      {loggedIn && (
+        <>
+          <h1>Fair Data Society Calendar</h1>
+          <FDPCalendar />
+        </>
+      )}
 
       <Form
         {...formItemLayout}
