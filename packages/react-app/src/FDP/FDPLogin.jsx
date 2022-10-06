@@ -125,12 +125,18 @@ export default function FDPLogin({ address, userSigner, setLogin, setUser, user,
       var user = await (await userLogin(values.username, values.password)).json();
       console.log("user", user);
       setUserData(user);
+      setUser(user);
+
       notification.open({
         message: user.message,
         description: ``,
       });
-      setUser(user);
-      await isUserLoggedIn();
+
+      if (user.public_key) {
+        await fetchPods();
+        await setLogin(true);
+        await isUserLoggedIn();
+      }
     } catch (error) {
       notification.error({
         message: "Error",
@@ -202,13 +208,12 @@ export default function FDPLogin({ address, userSigner, setLogin, setUser, user,
   async function isUserLoggedIn() {
     var isLoggedIn = (await (await userLoggedIn()).json()).loggedin;
     console.log("isLoggedIn", isLoggedIn);
-    //setIsLoggedIn(isLoggedIn);
-    setLogin(isLoggedIn);
     notification.open({
       message: "logged in",
       description: isLoggedIn,
     });
-    await fetchPods();
+
+    if (isLoggedIn !== undefined) setLogin(isLoggedIn);
   }
   async function fetchPods() {
     var podls = await (await podLs()).json();

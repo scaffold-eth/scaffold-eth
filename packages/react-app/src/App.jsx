@@ -245,11 +245,11 @@ function App(props) {
     }
   }, [loadWeb3Modal]);
 
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState("false");
   const [userData, setUserData] = useState(null);
   const [schedule, setSchedule] = useState({ schedule: { version: "0.0" } });
   const [agenda, setAgenda] = useState({ startDate: "2023-12-08", events: [] });
-  useEffect(() => {}, [isLoggedIn, userData, schedule, agenda]);
+  //useEffect(() => {}, [isLoggedIn, userData, schedule, agenda]);
 
   // useEffect(() => {
   //   async function fetchSchedule() {
@@ -294,15 +294,6 @@ function App(props) {
           </div>
         </div>
       </Header>
-      <div>
-        {userData && (
-          <>
-            {userData.address}
-            {userData.name_hash}
-            {userData.public_key}
-          </>
-        )}
-      </div>
       {yourLocalBalance.lte(ethers.BigNumber.from("0")) && (
         <FaucetHint localProvider={localProvider} targetNetwork={targetNetwork} address={address} />
       )}
@@ -346,6 +337,17 @@ function App(props) {
         </Menu.Item> 
         */}
       </Menu>
+
+      <div>
+        <h1>LoggedIn: {isLoggedIn === true ? "true" : "false"}</h1>
+        {userData && (
+          <>
+            {userData.address}
+            {userData.name_hash}
+            {userData.public_key}
+          </>
+        )}
+      </div>
 
       <Switch>
         <Route exact path="/">
