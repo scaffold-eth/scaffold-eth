@@ -52,3 +52,9 @@ a {
   background-color: var(--color-accents-grey-pastel);
   cursor: pointer;
 }
+
+.flexible-card .ant-card-body {
+  flex-grow: 1;
+  min-width: "300px";
+  max-width: "350px";
+}

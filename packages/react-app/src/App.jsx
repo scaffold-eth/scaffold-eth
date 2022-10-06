@@ -250,6 +250,7 @@ function App(props) {
   const [schedule, setSchedule] = useState({ schedule: { version: "0.0" } });
   const [agenda, setAgenda] = useState({ startDate: "2023-12-08", events: [] });
   const [pods, setPods] = useState({ pod_name: [] });
+  const [files, setFiles] = useState({ files: [] });
   //useEffect(() => {}, [isLoggedIn, userData, schedule, agenda]);
 
   // useEffect(() => {
@@ -351,6 +352,8 @@ function App(props) {
             loggedIn={isLoggedIn}
             pods={pods}
             setPods={setPods}
+            files={files}
+            setFiles={setFiles}
           />
 
           {/* <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} /> */}
@@ -479,9 +482,10 @@ function App(props) {
         <Row>
           <Col span={24}>
             <small>
-              <span>LoggedIn: {isLoggedIn === true ? "true" : "false"}</span>
               {userData && (
                 <>
+                  {userData.username}&nbsp;
+                  {isLoggedIn === true ? " Logged In " : " Please login "}
                   {userData.address}&nbsp;
                   {/* {userData.name_hash}&nbsp; */}
                   {/* {userData.public_key}&nbsp; */}

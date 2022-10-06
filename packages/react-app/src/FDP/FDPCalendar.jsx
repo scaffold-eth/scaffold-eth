@@ -33,6 +33,47 @@ class FDPCalendar extends Component {
       tracks: [],
       persons: [],
       columns: [],
+      contextMenu: new DayPilot.Menu({
+        items: [
+          {
+            text: "Attend",
+            color: "#38ff6433",
+            onClick: args => {
+              const e = args.source;
+              //this.calendar.events.remove(e);
+              this.updateColor(args.source, args.item.color);
+            },
+          },
+          {
+            text: "-",
+          },
+          {
+            text: "Delete",
+            onClick: args => {
+              const e = args.source;
+              this.calendar.events.remove(e);
+            },
+          },
+          {
+            text: "-",
+          },
+          {
+            text: "Transparent",
+            color: null,
+            onClick: args => this.updateColor(args.source, args.item.color),
+          },
+          {
+            text: "Lavender",
+            color: "#a6b7ff55",
+            onClick: args => this.updateColor(args.source, args.item.color),
+          },
+          {
+            text: "Grass",
+            color: "#7fc18a55",
+            onClick: args => this.updateColor(args.source, args.item.color),
+          },
+        ],
+      }),
       events: [
         {
           id: 99991,
@@ -140,6 +181,11 @@ class FDPCalendar extends Component {
   get datePicker() {
     return this.datePickerRef.current.control;
   }
+  updateColor(e, color) {
+    e.data.backColor = color;
+    this.calendar.events.update(e);
+  }
+
   loadGroups() {
     const data = [
       {
@@ -252,7 +298,9 @@ class FDPCalendar extends Component {
     });
 
     console.log("columns", columns);
-    console.log("events", tracks);
+    console.log("tracks", tracks);
+    console.log("types", types);
+    console.log("persons", persons);
     console.log("events", events);
     //this.setState({ columns: columns });
     this.setState({ columns: columns, events: events, tracks: tracks, persons: persons });
