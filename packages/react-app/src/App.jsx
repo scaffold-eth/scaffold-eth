@@ -462,22 +462,22 @@ function App(props) {
         </Route> */}
       </Switch>
 
-      <ThemeSwitch />
+      {/* <ThemeSwitch /> */}
 
       {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
-      <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
+      <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 0, padding: 0, width: "100%" }}>
         <Row align="middle" gutter={[4, 4]}>
-          <Col span={8}>
+          <Col span={4}>
             <Ramp price={price} address={address} networks={NETWORKS} />
           </Col>
 
-          <Col span={8} style={{ textAlign: "center", opacity: 0.8 }}>
+          <Col span={4} style={{ textAlign: "center", opacity: 0.8 }}>
             <GasGauge gasPrice={gasPrice} />
           </Col>
-          <Col span={8} style={{ textAlign: "center", opacity: 1 }}>
+          <Col span={4} style={{ textAlign: "center", opacity: 1 }}>
             <Button
               onClick={() => {
-                window.open("https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA");
+                window.open("https://discord.gg/vnd7ZECj");
               }}
               size="large"
               shape="round"
@@ -488,6 +488,28 @@ function App(props) {
               Support
             </Button>
           </Col>
+          {userData && (
+            <>
+              <Col span={4}>
+                {userData.username}&nbsp;
+                <br />
+                {isLoggedIn === true ? " Logged In " : " Please login "}
+                {/* {userData.address}&nbsp; */}
+              </Col>
+              <Col>
+                <Account
+                  address={userData.address}
+                  localProvider={localProvider}
+                  userSigner={userSigner}
+                  mainnetProvider={mainnetProvider}
+                  price={price}
+                  ensProvider={mainnetProvider}
+                />
+              </Col>
+              {/* {userData.name_hash}&nbsp; */}
+              {/* {userData.public_key}&nbsp; */}
+            </>
+          )}
         </Row>
 
         <Row align="middle" gutter={[4, 4]}>
@@ -502,29 +524,7 @@ function App(props) {
             }
           </Col>
         </Row>
-        <Row>
-          <Col span={24}>
-            <small>
-              {userData && (
-                <>
-                  {userData.username}&nbsp;
-                  {isLoggedIn === true ? " Logged In " : " Please login "}
-                  {/* {userData.address}&nbsp; */}
-                  <Account
-                    address={userData.address}
-                    localProvider={localProvider}
-                    userSigner={userSigner}
-                    mainnetProvider={mainnetProvider}
-                    price={price}
-                    ensProvider={mainnetProvider}
-                  />
-                  {/* {userData.name_hash}&nbsp; */}
-                  {/* {userData.public_key}&nbsp; */}
-                </>
-              )}
-            </small>
-          </Col>
-        </Row>
+        <Row></Row>
       </div>
     </div>
   );
