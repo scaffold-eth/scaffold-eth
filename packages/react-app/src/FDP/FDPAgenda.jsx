@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { DayPilot, DayPilotCalendar } from "@daypilot/daypilot-lite-react";
-import { SignEthereumTransactionResponse } from "walletlink/dist/relay/Web3Response";
+import { notification } from "antd";
+import * as FairOS from "./FairOS.js";
 
 class FDPAgenda extends Component {
   constructor(props) {
@@ -9,7 +10,7 @@ class FDPAgenda extends Component {
     this.calendarRef = React.createRef();
 
     this.state = {
-      startDate: "2022-06-11T09:30:00", //DayPilot.Date.today(),
+      startDate: DayPilot.Date.today(), // "2022-06-11T09:30:00",
       eventHeight: 30,
       headerHeight: 30,
       cellHeaderHeight: 20,
@@ -105,7 +106,7 @@ class FDPAgenda extends Component {
     this.calendar.events.update(e);
   }
 
-  loadEventsData() {
+  /*loadEventsData() {
     console.log(this.state.schedule);
     var columns = [];
     var events = [];
@@ -118,13 +119,53 @@ class FDPAgenda extends Component {
     console.log("columns", columns);
     console.log("events", events);
     this.calendar.update({ startDate: this.state.startDate, columns, events: this.state.events });
+  }*/
+
+  async downloadEvents() {
+    var columns = [];
+    try {
+      var response = await FairOS.downloadFile(FairOS.fairOShost, "agenda", "/", "events.0.json");
+      var json = await response.json();
+      console.log("from events file", json);
+      this.calendar.update({ startDate: this.state.startDate, columns, events: json.events });
+
+      notification.success({
+        message: json.events.length + " Events",
+        description: "Loaded from storage",
+      });
+    } catch (err) {
+      notification.error({
+        message: "Error",
+        description: err,
+      });
+    }
+  }
+  async uploadEvents() {
+    var columns = [];
+    try {
+      var response = await FairOS.downloadFile(FairOS.fairOShost, "agenda", "/", "events.0.json");
+      var json = await response.json();
+      console.log("from events file", json);
+      this.calendar.update({ startDate: this.state.startDate, columns, events: json.events });
+
+      notification.success({
+        message: json.events.length + " Events",
+        description: "Loaded from storage",
+      });
+    } catch (err) {
+      notification.error({
+        message: "Error",
+        description: err,
+      });
+    }
   }
 
   async componentDidMount() {
     const result = await (await fetch("schedule.json")).json();
     this.setState({ schedule: result.schedule });
 
-    this.loadEventsData();
+    //this.loadEventsData();
+    await this.downloadEvents();
   }
 
   render() {

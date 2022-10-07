@@ -1,3 +1,12 @@
+/* 
+    FairOS is a decentralized storage system that allows users to store data on their own.
+    This functions allows users to communicate with a FairOS host.
+    The FairOS host is a server that runs the FairOS software.
+    Written by: TexData for Fair Data Society
+    MIT License
+*/
+export const fairOShost = "https://fairos.dev.fairdatasociety.org/";
+
 export async function userLogin(host, user, pass) {
   var data = {
     user_name: user,

@@ -11,7 +11,6 @@ import * as FairOS from "./FairOS.js";
 //import { FdpStorage } from "../fdp-storage/fdp-storage.ts";
 //const FDP = require("@fairdatasociety/fdp-storage");
 
-const host = "https://fairos.dev.fairdatasociety.org/";
 const PODNAME = "agenda";
 
 export default function FDPLogin({
@@ -46,7 +45,7 @@ export default function FDPLogin({
 
   async function doLogin(values) {
     try {
-      var user = await (await FairOS.userLogin(host, username, password)).json();
+      var user = await (await FairOS.userLogin(FairOS.fairOShost, username, password)).json();
       console.log("user", user);
       user.username = username;
       user.password = password; // we will need this later
@@ -78,7 +77,7 @@ export default function FDPLogin({
       message: "downloading...",
       description: podName + " " + dirPath + filename,
     });
-    var res = FairOS.downloadFile(host, podName, dirPath, filename);
+    var res = await FairOS.downloadFile(FairOS.fairOShost, podName, dirPath, filename);
     await handleResponse(res, filename); // will download the file in browser
   }
   async function handleResponse(response, filename) {
@@ -116,7 +115,7 @@ export default function FDPLogin({
       description: podName + " " + dirPath + " " + filename,
     });
 
-    var res = await FairOS.uploadObjectAsFile(host, podName, dirPath, filename, object);
+    var res = await FairOS.uploadObjectAsFile(FairOS.fairOShost, podName, dirPath, filename, object);
     var response = await res.json();
 
     try {
@@ -134,7 +133,7 @@ export default function FDPLogin({
   }
 
   async function isUserLoggedIn() {
-    var isLoggedIn = (await (await FairOS.userLoggedIn(host, username)).json()).loggedin;
+    var isLoggedIn = (await (await FairOS.userLoggedIn(FairOS.fairOShost, username)).json()).loggedin;
     notification.success({
       message: "logged in",
       description: isLoggedIn,
@@ -148,11 +147,11 @@ export default function FDPLogin({
       description: "please wait",
     });
 
-    var podls = await (await FairOS.podLs(host, user.password)).json();
+    var podls = await (await FairOS.podLs(FairOS.fairOShost, user.password)).json();
     console.log("pods", podls);
     var hasPod = podls.pod_name.find(str => str === PODNAME);
     if (hasPod === undefined) {
-      await FairOS.podNew(host, PODNAME, user.password);
+      await FairOS.podNew(FairOS.fairOShost, PODNAME, user.password);
       await fetchPods();
       return;
     }
@@ -175,15 +174,15 @@ export default function FDPLogin({
     setFiles({ files: [] });
     setIsBusy(true);
 
-    var res = await (await FairOS.podOpen(host, podName, user.password)).json();
+    var res = await (await FairOS.podOpen(FairOS.fairOShost, podName, user.password)).json();
     console.log("open pod", res);
     if (res.message === "pod open: pod does not exist") {
       notification.warning({
         message: "'" + podName + "' not found",
         description: "Creating new pod " + podName,
       });
-      await FairOS.podNew(host, podName, user.password);
-      await FairOS.podOpen(host, podName, user.password);
+      await FairOS.podNew(FairOS.fairOShost, podName, user.password);
+      await FairOS.podOpen(FairOS.fairOShost, podName, user.password);
       await fetchPods();
     } else {
       notification.success({
@@ -206,7 +205,7 @@ export default function FDPLogin({
       description: podName + " " + dirpath,
     });
 
-    var res = await (await FairOS.dirLs(host, podName, dirpath)).json();
+    var res = await (await FairOS.dirLs(FairOS.fairOShost, podName, dirpath)).json();
     console.log("dirLs", res);
     if (res.message === "ls: pod not open") {
       await fetchOpenPod(podName);
@@ -262,7 +261,7 @@ export default function FDPLogin({
       <div>
         {podExists === null && (
           <>
-            <Button onClick={async () => await FairOS.podNew(host, PODNAME, user.password)}>
+            <Button onClick={async () => await FairOS.podNew(FairOS.fairOShost, PODNAME, user.password)}>
               Create pod {PODNAME}
             </Button>
             <br />
