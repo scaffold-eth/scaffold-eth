@@ -47,6 +47,7 @@ class FDPCalendar extends Component {
               this.updateColor(args.source, args.item.color);
               console.log("attend", args.source.data);
               //this.uploadEvents([...this.state.yourEvents, args.source.data]);
+              // TODO: add to your events
             },
           },
           {
