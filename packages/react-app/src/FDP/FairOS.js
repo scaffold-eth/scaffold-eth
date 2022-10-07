@@ -88,3 +88,40 @@ export async function podNew(host, podName, password) {
   console.log(await res.json(), data);
   return res;
 }
+
+export async function downloadFile(host, podName, dirPath, filename) {
+  var data = {
+    file_path: dirPath + filename, // "/index.json"
+    pod_name: podName,
+  };
+
+  return await fetch(host + "v1/file/download" + "?" + new URLSearchParams(data), {
+    method: "POST",
+    mode: "cors",
+    body: JSON.stringify(data),
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+}
+
+export async function uploadObjectAsFile(host, podName, dirPath, filename, object) {
+  const formData = new FormData();
+
+  const stringify = JSON.stringify(object);
+  const blob = new Blob([stringify], { type: "application/json" });
+  const file = new File([blob], filename);
+
+  formData.append("files", file);
+  formData.set("pod_name", podName);
+  formData.append("file_name", filename); //"index.json");
+  formData.set("dir_path", dirPath); // "/");
+  formData.set("block_size", "1Mb");
+
+  return await fetch(host + "v1/file/upload", {
+    method: "POST",
+    body: formData,
+    credentials: "include",
+  });
+}
