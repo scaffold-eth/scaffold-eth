@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Input, Form, Button, notification, Card, Row } from "antd";
+import { Input, Form, Button, notification, Card, Row, Spin } from "antd";
 import { SettingOutlined, EditOutlined, EllipsisOutlined, DownloadOutlined, DeleteOutlined } from "@ant-design/icons";
 import { Transactor } from "../helpers";
 import { Link } from "react-router-dom";
@@ -30,6 +30,8 @@ export default function FDPLogin({
   const [podExists, setPodExists] = useState(false);
   const [pod, setPod] = useState(null);
   const [dir, setDir] = useState("/");
+  const [numItems, setNumItems] = useState(0);
+  const [isBusy, setIsBusy] = useState(false);
   const [userData, setUserData] = useState({});
 
   const [data, setData] = useState({ hits: [] });
@@ -48,6 +50,7 @@ export default function FDPLogin({
       var user = await (await userLogin(username, password)).json();
       console.log("user", user);
       user.username = username;
+      user.password = password; // we will need this later
       setUserData(user);
       setUser(user);
 
@@ -261,6 +264,7 @@ export default function FDPLogin({
     if (isLoggedIn !== undefined) setLogin(isLoggedIn);
   }
   async function fetchPods() {
+    //setIsBusy(true);
     notification.info({
       message: "Getting pods",
       description: "please wait",
@@ -289,6 +293,7 @@ export default function FDPLogin({
     await setPodExists(hasPod);
     await fetchOpenPod(PODNAME, hasPod === PODNAME); // open agenda
     //}
+    // setIsBusy(false);
   }
 
   async function fetchOpenPod(podName, refreshDirLs) {
@@ -297,6 +302,7 @@ export default function FDPLogin({
       description: podName,
     });
     setFiles({ files: [] });
+    setIsBusy(true);
 
     var res = await (await podOpen(podName)).json();
     console.log("open pod", res);
@@ -323,9 +329,11 @@ export default function FDPLogin({
 
       if (refreshDirLs === true) await fetchDirLs(podName, dir);
     }
+    setIsBusy(false);
   }
 
   async function fetchDirLs(podName, dirpath) {
+    setIsBusy(true);
     setFiles({ files: [] });
     notification.info({
       message: "listing...",
@@ -348,6 +356,8 @@ export default function FDPLogin({
     });
     setPod(podName);
     setFiles(res.files);
+    setNumItems(res.files.length);
+    setIsBusy(false);
   }
 
   const formItemLayout = {
@@ -394,7 +404,7 @@ export default function FDPLogin({
         )}
         <div style={{ display: "flex", margin: "20px" }}>
           <div style={{ textAlign: "left", width: "20%" }}>
-            <h2>Pods</h2>
+            <h2>Pods {isBusy && <Spin size="small" />}</h2>
             {pods.pod_name.map(p => (
               <>
                 <span key={p} style={{ cursor: "pointer" }}>
@@ -423,7 +433,7 @@ export default function FDPLogin({
             ))}
           </div>
           <div style={{ textAlign: "left", width: "80%" }}>
-            <h2>{dir}</h2>
+            <h2>{dir} &nbsp;</h2>
             <Row>
               {areFilesValid &&
                 files.map(f => (
@@ -435,7 +445,7 @@ export default function FDPLogin({
                       // <SettingOutlined key="setting" />,
                       // <EditOutlined key="edit" />,
                       // <EllipsisOutlined key="ellipsis" />,
-                      <DeleteOutlined />,
+                      // <DeleteOutlined />,
                       <DownloadOutlined
                         key="download"
                         onClick={async () => {
@@ -453,7 +463,9 @@ export default function FDPLogin({
                   //   </span>
                   // </Card>
                 ))}
+              {isBusy && <Spin size="large" />}
             </Row>
+            <Row>{numItems} Items</Row>
             <span
               onClick={async () => await uploadFile(pod, dir, "events.0.json", { events: [] })}
               style={{ cursor: "pointer" }}
@@ -503,6 +515,35 @@ export default function FDPLogin({
       <Link to={{ pathname: "https://create.dev.fairdatasociety.org" }} target="_blank" rel="noopener noreferrer">
         Create Account
       </Link>
+
+      <div>
+        <br />
+        <br />
+        <span>Running on the testnet.</span>
+        <br />
+        <br />
+        Developed by&nbsp;
+        <Link to={{ pathname: "https://datafund.io" }} target="_blank" rel="noopener noreferrer">
+          Datafund.io
+        </Link>
+        &nbsp;for&nbsp;
+        <Link to={{ pathname: "https://github.com/fairDataSociety/" }} target="_blank" rel="noopener noreferrer">
+          Fair Data Society
+        </Link>
+        .<br />
+        Powered by{" "}
+        <Link to={{ pathname: "https://http://fairdataprotocol.bzz.link/" }} target="_blank" rel="noopener noreferrer">
+          Fair Data Protocol
+        </Link>
+      </div>
     </div>
   );
+
+  // TODO: add disclaimer from create account page data will be lost
+  // developed by datafund.io for fairdatasociety.org
+  // link na datafund
+  // link na fairdatasociety
+  // link na github
+  // header link na github
+  // powered by fairdataprotocol.bzz.link
 }
