@@ -45,6 +45,8 @@ class FDPCalendar extends Component {
               const e = args.source;
               //this.calendar.events.remove(e);
               this.updateColor(args.source, args.item.color);
+              console.log("attend", args.source.data);
+              //this.uploadEvents([...this.state.yourEvents, args.source.data]);
             },
           },
           {
@@ -113,12 +115,14 @@ class FDPCalendar extends Component {
           id: DayPilot.guid(),
           text: modal.result,
           resource: args.resource,
+          tags: {},
         };
         dp.events.add(event);
         this.setState({ events: dp.events.list });
         this.setState(prevState => ({ yourEvents: [...prevState.yourEvents, event] }));
+        this.uploadEvents([...this.state.yourEvents, event]);
       },
-      /*onEventClick: async args => {
+      onEventClick: async args => {
         const dp = this.calendar;
         const modal = await DayPilot.Modal.prompt("Update <b>event</b> text", args.e.text());
         if (!modal.result) {
@@ -127,7 +131,7 @@ class FDPCalendar extends Component {
         const e = args.e;
         e.data.text = modal.result;
         dp.events.update(e);
-      },*/
+      },
       onBeforeEventRender: args => {
         args.data.areas = [
           {
@@ -331,7 +335,12 @@ class FDPCalendar extends Component {
       var json = await response.json();
       console.log("from events file", json);
       this.setState({ yourEvents: json.events });
-      this.calendar.update({ startDate: this.state.startDate, columns, events: json.events });
+      //this.calendar.events.list.concat(json.events);
+      var dp = this.calendar;
+      json.events.forEach((e, i) => {
+        dp.events.add(e);
+      });
+      //this.calendar.update({ startDate: this.state.startDate, columns, events: json.events });
 
       notification.success({
         message: json.events.length + " Events",
