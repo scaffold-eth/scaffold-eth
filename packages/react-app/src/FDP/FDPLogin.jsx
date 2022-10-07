@@ -519,7 +519,7 @@ export default function FDPLogin({
       <div>
         <br />
         <br />
-        <span>Running on the testnet.</span>
+        <span>Running on the testnet. Data will be lost.</span>
         <br />
         <br />
         Developed by&nbsp;
