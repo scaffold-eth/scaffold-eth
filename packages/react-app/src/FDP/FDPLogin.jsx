@@ -78,21 +78,7 @@ export default function FDPLogin({
       message: "downloading...",
       description: podName + " " + dirPath + filename,
     });
-    var data = {
-      file_path: dirPath + filename, // "/index.json"
-      pod_name: podName,
-    };
-
-    var res = await fetch(host + "v1/file/download" + "?" + new URLSearchParams(data), {
-      method: "POST",
-      mode: "cors",
-      body: JSON.stringify(data),
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    //console.log("download", res);
+    var res = FairOS.downloadFile(host, podName, dirPath, filename);
     await handleResponse(res, filename); // will download the file in browser
   }
   async function handleResponse(response, filename) {
@@ -130,24 +116,7 @@ export default function FDPLogin({
       description: podName + " " + dirPath + " " + filename,
     });
 
-    const formData = new FormData();
-
-    const stringify = JSON.stringify(object);
-    const blob = new Blob([stringify], { type: "application/json" });
-    const file = new File([blob], filename);
-
-    formData.append("files", file);
-    formData.set("pod_name", podName);
-    formData.append("file_name", filename); //"index.json");
-    formData.set("dir_path", dirPath); // "/");
-    formData.set("block_size", "1Mb");
-
-    var res = await fetch(host + "v1/file/upload", {
-      method: "POST",
-      body: formData,
-      credentials: "include",
-    });
-
+    var res = await FairOS.uploadObjectAsFile(host, podName, dirPath, filename, object);
     var response = await res.json();
 
     try {
@@ -155,10 +124,10 @@ export default function FDPLogin({
         message: response.Responses[0].message,
         description: podName + " " + dirPath + " " + filename,
       });
-      console.log("uploaded", await res.json());
+      //console.log("uploaded", await res.json());
     } catch (error) {
       notification.error({
-        message: "Error",
+        message: "Error uploading failed",
         description: "uploading failed",
       });
     }
@@ -166,7 +135,6 @@ export default function FDPLogin({
 
   async function isUserLoggedIn() {
     var isLoggedIn = (await (await FairOS.userLoggedIn(host, username)).json()).loggedin;
-    console.log("isLoggedIn", isLoggedIn);
     notification.success({
       message: "logged in",
       description: isLoggedIn,
@@ -183,9 +151,7 @@ export default function FDPLogin({
     var podls = await (await FairOS.podLs(host, user.password)).json();
     console.log("pods", podls);
     var hasPod = podls.pod_name.find(str => str === PODNAME);
-    //console.log("res", hasPod);
     if (hasPod === undefined) {
-      // has no pod PODNAME
       await FairOS.podNew(host, PODNAME, user.password);
       await fetchPods();
       return;
@@ -211,12 +177,7 @@ export default function FDPLogin({
 
     var res = await (await FairOS.podOpen(host, podName, user.password)).json();
     console.log("open pod", res);
-    // notification.info({
-    //   message: "opening..." + podName,
-    //   description: res.message,
-    // });
     if (res.message === "pod open: pod does not exist") {
-      //"pod opened successfully" && res.message !== "pod open: pod already open") {
       notification.warning({
         message: "'" + podName + "' not found",
         description: "Creating new pod " + podName,
@@ -291,12 +252,10 @@ export default function FDPLogin({
   try {
     var areFilesValid = false;
     if (Object.prototype.toString.call(files) === "[object Array]") {
-      //console.log("Array!");
       areFilesValid = true;
     }
-    //console.log("files", files);
   } catch (error) {
-    //console.log(error);
+    console.error(error);
   }
   if (loggedIn === true && user != null /*&& pods !== undefined*/) {
     return (
