@@ -164,7 +164,7 @@ class FDPAgenda extends Component {
     } catch (err) {
       notification.error({
         message: "Error",
-        description: err,
+        description: err.message,
       });
     }
     this.setState({ isBusy: false });

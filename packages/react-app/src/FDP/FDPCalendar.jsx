@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import { DayPilot, DayPilotCalendar, DayPilotNavigator, DayPilotScheduler } from "@daypilot/daypilot-lite-react";
 import { ResourceGroups } from "./ResourceGroups";
+import { notification } from "antd";
+import * as FairOS from "./FairOS.js";
+
 var stringToColor = function (str) {
   var hash = 0;
   for (var i = 0; i < str.length; i++) {
@@ -86,6 +89,8 @@ class FDPCalendar extends Component {
         },
       ],
 
+      yourEvents: [],
+
       onHeaderClick: async args => {
         const modal = await DayPilot.Modal.prompt("Resource name:", args.column.name);
         if (!modal.result) {
@@ -96,22 +101,24 @@ class FDPCalendar extends Component {
       },
       onTimeRangeSelected: async args => {
         const dp = this.calendar;
-        const modal = await DayPilot.Modal.prompt("Create a new event:", "Event 1");
+        const modal = await DayPilot.Modal.prompt("Create a new event:", "Event " + this.state.yourEvents.length);
         console.log(dp.events, args);
         dp.clearSelection();
         if (!modal.result) {
           return;
         }
-        dp.events.add({
+        var event = {
           start: args.start,
           end: args.end,
           id: DayPilot.guid(),
           text: modal.result,
           resource: args.resource,
-        });
+        };
+        dp.events.add(event);
         this.setState({ events: dp.events.list });
+        this.setState(prevState => ({ yourEvents: [...prevState.yourEvents, event] }));
       },
-      onEventClick: async args => {
+      /*onEventClick: async args => {
         const dp = this.calendar;
         const modal = await DayPilot.Modal.prompt("Update <b>event</b> text", args.e.text());
         if (!modal.result) {
@@ -120,7 +127,7 @@ class FDPCalendar extends Component {
         const e = args.e;
         e.data.text = modal.result;
         dp.events.update(e);
-      },
+      },*/
       onBeforeEventRender: args => {
         args.data.areas = [
           {
@@ -134,11 +141,6 @@ class FDPCalendar extends Component {
         ];
       },
       onBeforeEventRender: args => {
-        /*args.data.backColor = "#93c47d";
-        args.data.barHidden = true;
-        args.data.fontColor = "white";
-        args.data.borderColor = "darker";*/
-
         args.data.areas = [
           {
             right: 6,
@@ -184,6 +186,9 @@ class FDPCalendar extends Component {
   updateColor(e, color) {
     e.data.backColor = color;
     this.calendar.events.update(e);
+  }
+  showDetails(e) {
+    console.log(e);
   }
 
   loadGroups() {
@@ -312,6 +317,59 @@ class FDPCalendar extends Component {
     this.setState({ schedule: result.schedule });
 
     this.loadEventsData();
+    this.downloadEvents();
+  }
+  async downloadEvents() {
+    var columns = [];
+    this.setState({ isBusy: true });
+    notification.info({
+      message: "Events",
+      description: "Loading...",
+    });
+    try {
+      var response = await FairOS.downloadFile(FairOS.fairOShost, "agenda", "/", "events.0.json");
+      var json = await response.json();
+      console.log("from events file", json);
+      this.setState({ yourEvents: json.events });
+      this.calendar.update({ startDate: this.state.startDate, columns, events: json.events });
+
+      notification.success({
+        message: json.events.length + " Events",
+        description: "Loaded from storage",
+      });
+    } catch (err) {
+      notification.error({
+        message: "Error",
+        description: err.message,
+      });
+    }
+    this.setState({ isBusy: false });
+  }
+  async uploadEvents(events) {
+    var columns = [];
+    var eventsObject = { events: events };
+    this.setState({ isBusy: true });
+    notification.info({
+      message: "Saving",
+      description: "Please wait ...",
+    });
+    try {
+      var res = await FairOS.uploadObjectAsFile(FairOS.fairOShost, "agenda", "/", "events.0.json", eventsObject);
+      var response = await res.json();
+      console.log("uploaded events file", response);
+      //this.calendar.update({ startDate: this.state.startDate, columns, events: json.events });
+      notification.success({
+        message: response.Responses[0].message,
+        description: "Stored as " + response.Responses[0].file_name,
+      });
+    } catch (err) {
+      console.error(err);
+      notification.error({
+        message: "Error",
+        description: err.message,
+      });
+    }
+    this.setState({ isBusy: false });
   }
 
   render() {
