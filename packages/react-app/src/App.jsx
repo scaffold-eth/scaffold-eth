@@ -250,8 +250,11 @@ function App(props) {
   const [userData, setUserData] = useState(null);
   const [schedule, setSchedule] = useState({ schedule: { version: "0.0" } });
   const [agenda, setAgenda] = useState({ startDate: "2023-12-08", events: [] });
+  const [events, setEvents] = useState({ events: [] });
   const [pods, setPods] = useState({ pod_name: [] });
   const [files, setFiles] = useState({ files: [] });
+  const [pod, setPod] = useState("");
+  const [dir, setDir] = useState("/");
   //useEffect(() => {}, [isLoggedIn, userData, schedule, agenda]);
 
   // useEffect(() => {
@@ -355,6 +358,11 @@ function App(props) {
             setPods={setPods}
             files={files}
             setFiles={setFiles}
+            pod={pod}
+            setPod={setPod}
+            dir={dir}
+            setDir={setDir}
+            setEvents={setEvents}
           />
 
           {/* <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} /> */}
@@ -362,20 +370,34 @@ function App(props) {
         {isLoggedIn === true && (
           <>
             <Route path="/schedule">
-              <FDPCalendar setAgenda={setAgenda} />
+              <FDPCalendar
+                schedule={schedule}
+                agenda={agenda}
+                setSchedule={setSchedule}
+                setAgenda={setAgenda}
+                events={events}
+                setEvents={setEvents}
+              />
             </Route>
             <Route path="/agenda">
-              <FDPAgenda schedule={schedule} agenda={agenda} />
+              <FDPAgenda
+                schedule={schedule}
+                agenda={agenda}
+                setSchedule={setSchedule}
+                setAgenda={setAgenda}
+                events={events}
+                setEvents={setEvents}
+              />
             </Route>
           </>
         )}
-        <Route exact path="/debug">
-          {/*
+        {/*
                 🎛 this scaffolding is full of commonly used components
                 this <Contract/> component will automatically parse your ABI
                 and give you a form to interact with it locally
             */}
-
+        {/*             
+        <Route exact path="/debug">
           <Contract
             name="YourContract"
             price={price}
@@ -418,8 +440,8 @@ function App(props) {
             blockExplorer="https://etherscan.io/"
             contractConfig={contractConfig}
             chainId={1}
-          />
-          {/*
+          /> */}
+        {/*
             <Contract
               name="UNI"
               customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.UNI}
@@ -429,15 +451,15 @@ function App(props) {
               blockExplorer="https://etherscan.io/"
             />
             */}
-        </Route>
-        <Route path="/subgraph">
+        {/* </Route> */}
+        {/* <Route path="/subgraph">
           <Subgraph
             subgraphUri={props.subgraphUri}
             tx={tx}
             writeContracts={writeContracts}
             mainnetProvider={mainnetProvider}
           />
-        </Route>
+        </Route> */}
       </Switch>
 
       <ThemeSwitch />

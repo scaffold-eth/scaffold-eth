@@ -5,6 +5,7 @@ import { Transactor } from "../helpers";
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
 import FDPCalendar from "./FDPCalendar";
+import * as FairOS from "./FairOS.js";
 
 //import { FdpStorage } from "@fairdatasociety/fdp-storage";
 //import { FdpStorage } from "../fdp-storage/fdp-storage.ts";
@@ -24,34 +25,31 @@ export default function FDPLogin({
   setPods,
   files,
   setFiles,
+  pod,
+  setPod,
+  dir,
+  setDir,
 }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [podExists, setPodExists] = useState(false);
-  const [pod, setPod] = useState(PODNAME);
-  const [dir, setDir] = useState("/");
   const [numItems, setNumItems] = useState(0);
   const [isBusy, setIsBusy] = useState(false);
-  const [userData, setUserData] = useState({});
-
-  const [data, setData] = useState({ hits: [] });
   const [form] = Form.useForm();
 
-  const tx = Transactor(userSigner);
+  //const tx = Transactor(userSigner);
 
   async function onFinish(values) {
-    //console.log("login", values);
     setPassword(values.password);
     setUsername(values.username);
   }
 
   async function doLogin(values) {
     try {
-      var user = await (await userLogin(username, password)).json();
+      var user = await (await FairOS.userLogin(host, username, password)).json();
       console.log("user", user);
       user.username = username;
       user.password = password; // we will need this later
-      setUserData(user);
       setUser(user);
 
       if (user.public_key) {
@@ -74,104 +72,7 @@ export default function FDPLogin({
   useEffect(() => {
     doLogin();
   }, [username, password]);
-  /*
-  async function wsUserLogin() {
-    var data = {
-      event: UserLogin,
-      params: {
-        user_name: username,
-        password: password,
-      },
-    };
-    ws.send(JSON.stringify(data));
-  }*/
 
-  async function userLogin(user, pass) {
-    var data = {
-      user_name: user,
-      password: pass,
-    };
-    return await fetch(host + "v2/user/login", {
-      method: "POST",
-      //mode: "no-cors",
-      mode: "cors",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-      credentials: "include",
-    });
-    //ws.send(JSON.stringify(data));
-  }
-  async function userLoggedIn() {
-    var data = {
-      user_name: username,
-    };
-    return await fetch(host + "v1/user/isloggedin" + "?" + new URLSearchParams(data), {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-    });
-  }
-  async function podLs() {
-    var data = {
-      pod_name: "",
-      password: password,
-    };
-    return fetch(host + "v1/pod/ls" + "?" + new URLSearchParams(data), {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-    });
-  }
-  async function podOpen(podName) {
-    var data = {
-      pod_name: podName,
-      password: password,
-    };
-    return fetch(host + "v1/pod/open" + "?" + new URLSearchParams(data), {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-      credentials: "include",
-    });
-  }
-  async function podNew(podName) {
-    var data = {
-      pod_name: podName,
-      password: password,
-    };
-    var res = await fetch(host + "v1/pod/new", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-      credentials: "include",
-    });
-
-    console.log(await res.json(), data);
-    return res;
-  }
-  async function dirLs(podName, dirpath) {
-    var data = {
-      pod_name: podName,
-      dir_path: dirpath, // "/"
-    };
-    return fetch(host + "v1/dir/ls" + "?" + new URLSearchParams(data), {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-    });
-  }
   async function downloadFile(podName, dirPath, filename) {
     notification.info({
       message: "downloading...",
@@ -264,7 +165,7 @@ export default function FDPLogin({
   }
 
   async function isUserLoggedIn() {
-    var isLoggedIn = (await (await userLoggedIn()).json()).loggedin;
+    var isLoggedIn = (await (await FairOS.userLoggedIn(host, username)).json()).loggedin;
     console.log("isLoggedIn", isLoggedIn);
     notification.success({
       message: "logged in",
@@ -274,21 +175,18 @@ export default function FDPLogin({
     if (isLoggedIn !== undefined) setLogin(isLoggedIn);
   }
   async function fetchPods() {
-    //setIsBusy(true);
     notification.info({
       message: "Getting pods",
       description: "please wait",
     });
 
-    var podls = await (await podLs()).json();
+    var podls = await (await FairOS.podLs(host, user.password)).json();
     console.log("pods", podls);
-    //for(var i = 0; i < podls.length; i++) {
-    //  {}
     var hasPod = podls.pod_name.find(str => str === PODNAME);
-    console.log("res", hasPod);
+    //console.log("res", hasPod);
     if (hasPod === undefined) {
       // has no pod PODNAME
-      await podNew(PODNAME);
+      await FairOS.podNew(host, PODNAME, user.password);
       await fetchPods();
       return;
     }
@@ -299,11 +197,8 @@ export default function FDPLogin({
       description: podls.pod_name.length + " pods fetched",
     });
 
-    //if (hasPod !== undefined) {
     await setPodExists(hasPod);
     await fetchOpenPod(PODNAME, hasPod === PODNAME); // open agenda
-    //}
-    // setIsBusy(false);
   }
 
   async function fetchOpenPod(podName, refreshDirLs) {
@@ -314,7 +209,7 @@ export default function FDPLogin({
     setFiles({ files: [] });
     setIsBusy(true);
 
-    var res = await (await podOpen(podName)).json();
+    var res = await (await FairOS.podOpen(host, podName, user.password)).json();
     console.log("open pod", res);
     // notification.info({
     //   message: "opening..." + podName,
@@ -326,8 +221,8 @@ export default function FDPLogin({
         message: "'" + podName + "' not found",
         description: "Creating new pod " + podName,
       });
-      await podNew(podName);
-      await podOpen(podName);
+      await FairOS.podNew(host, podName, user.password);
+      await FairOS.podOpen(host, podName, user.password);
       await fetchPods();
     } else {
       notification.success({
@@ -350,7 +245,7 @@ export default function FDPLogin({
       description: podName + " " + dirpath,
     });
 
-    var res = await (await dirLs(podName, dirpath)).json();
+    var res = await (await FairOS.dirLs(host, podName, dirpath)).json();
     console.log("dirLs", res);
     if (res.message === "ls: pod not open") {
       await fetchOpenPod(podName);
@@ -408,7 +303,9 @@ export default function FDPLogin({
       <div>
         {podExists === null && (
           <>
-            <Button onClick={async () => await podNew(PODNAME)}>Create pod {PODNAME}</Button>
+            <Button onClick={async () => await FairOS.podNew(host, PODNAME, user.password)}>
+              Create pod {PODNAME}
+            </Button>
             <br />
           </>
         )}
