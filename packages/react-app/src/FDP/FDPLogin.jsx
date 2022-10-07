@@ -28,7 +28,7 @@ export default function FDPLogin({
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [podExists, setPodExists] = useState(false);
-  const [pod, setPod] = useState(null);
+  const [pod, setPod] = useState(PODNAME);
   const [dir, setDir] = useState("/");
   const [numItems, setNumItems] = useState(0);
   const [isBusy, setIsBusy] = useState(false);
@@ -178,21 +178,31 @@ export default function FDPLogin({
       description: podName + " " + dirPath + filename,
     });
     var data = {
-      pod_name: podName,
       file_path: dirPath + filename, // "/index.json"
+      pod_name: podName,
     };
-    //debugger;
-    var res = await fetch(host + "v1/file/download", {
+
+    var res = await fetch(host + "v1/file/download" + "?" + new URLSearchParams(data), {
       method: "POST",
+      mode: "cors",
       body: JSON.stringify(data),
       credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
-    console.log("download", res);
-    await handleResponse(res);
+    //console.log("download", res);
+    await handleResponse(res, filename); // will download the file in browser
   }
-  async function handleResponse(response) {
+  async function handleResponse(response, filename) {
     console.log(response);
-    response.text().then(received_msg => {
+    var arrayBuffer = await response.arrayBuffer();
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([arrayBuffer]));
+    a.download = filename;
+    a.click();
+    /*
+    response.arrayBuffer().then(received_msg => {
       if (response.data instanceof Blob) {
         const a = document.createElement("a");
         a.href = window.URL.createObjectURL(response.data);
@@ -202,7 +212,7 @@ export default function FDPLogin({
       }
 
       var data = JSON.parse(received_msg);
-      if (data.event == "/file/download" && data.params["content_length"] != null) {
+      if (data.params["content_length"] != null) {
         console.log("Download file size", data.params["content_length"]);
       }
       console.log(data);
@@ -210,7 +220,7 @@ export default function FDPLogin({
         message: "downloading...",
         description: data.message,
       });
-    });
+    }); */
   }
 
   async function uploadFile(podName, dirPath, filename, object) {
@@ -495,7 +505,7 @@ export default function FDPLogin({
         onFinish={onFinish}
         initialValues={{ username: "", password: "" }}
       >
-        <h1>Fair Data Society Login</h1>
+        <h1>Log in Fair Data Society Account</h1>
         <Form.Item label="Username" name="username">
           <Input placeholder={username} />
         </Form.Item>

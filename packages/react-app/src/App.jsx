@@ -56,7 +56,8 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const initialNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, goerli, xdai, mainnet)
+//const initialNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, goerli, xdai, mainnet)
+const initialNetwork = NETWORKS.goerli;
 
 // 😬 Sorry for all the console logging
 const DEBUG = false;
@@ -486,7 +487,15 @@ function App(props) {
                 <>
                   {userData.username}&nbsp;
                   {isLoggedIn === true ? " Logged In " : " Please login "}
-                  {userData.address}&nbsp;
+                  {/* {userData.address}&nbsp; */}
+                  <Account
+                    address={userData.address}
+                    localProvider={localProvider}
+                    userSigner={userSigner}
+                    mainnetProvider={mainnetProvider}
+                    price={price}
+                    ensProvider={mainnetProvider}
+                  />
                   {/* {userData.name_hash}&nbsp; */}
                   {/* {userData.public_key}&nbsp; */}
                 </>
