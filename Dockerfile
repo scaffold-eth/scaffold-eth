@@ -9,11 +9,8 @@ ARG REACT_APP_FAIROSHOST
 ENV REACT_APP_FAIROSHOST=$REACT_APP_FAIROSHOST
 
 WORKDIR /base
-COPY yarn.lock .
-COPY *json ./
-RUN npm install -g husky react-app-rewired
-RUN npm install
 COPY . .
+RUN npm install
 SHELL ["/bin/bash", "-eo", "pipefail", "-c"]
 RUN bash -e -o pipefail -c 'env |grep REACT >> .env'
 
