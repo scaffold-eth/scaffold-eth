@@ -37,7 +37,7 @@
     "bl": "^5.0.0",
     "bnc-notify": "^1.5.0",
     "dotenv": "^8.2.0",
-    "eth-hooks": "2.3.18",
+    "eth-hooks": "2.3.19",
     "ethers": "^5.4.1",
     "fortmatic": "^2.2.1",
     "graphiql": "^1.4.7",

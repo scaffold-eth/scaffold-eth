@@ -9407,10 +9407,10 @@ eth-gas-reporter@^0.2.20:
     sha1 "^1.1.1"
     sync-request "^6.0.0"
 
-eth-hooks@2.3.18:
-  version "2.3.18"
-  resolved "https://registry.yarnpkg.com/eth-hooks/-/eth-hooks-2.3.18.tgz#c830ffb918d89142d4b9b9171c2f24cbda4d2306"
-  integrity sha512-jAXc25gylvAmmhLyyOsMeWaBelAUDaXt0TDsGObUrMMiYRgD/1DBV5O3BLxuaVjmugG8592F7HvIVz3dwmcM2g==
+eth-hooks@2.3.19:
+  version "2.3.19"
+  resolved "https://registry.yarnpkg.com/eth-hooks/-/eth-hooks-2.3.19.tgz#f181cb8108d7c9d64e4d1c2493445a7a56e90150"
+  integrity sha512-6joofp23+Pc2m+HgSyD4uSGEACq1wnffBQsgECk5KkDdyCRKTgTI5rJSZuvyuDk6a2PbatPk29iAcOPA75TqlQ==
   dependencies:
     "@ethersproject/address" "^5.4.0"
     "@ethersproject/bignumber" "^5.4.0"
