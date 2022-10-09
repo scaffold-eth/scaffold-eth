@@ -3,8 +3,7 @@ import React, { useCallback, useState } from "react";
 import { ethers } from "ethers";
 import { CameraOutlined, QrcodeOutlined } from "@ant-design/icons";
 import { useLookupAddress } from "eth-hooks/dapps/ens";
-import { QrReader } from "react-qr-reader";
-
+import QrReader from "react-qr-reader";
 
 import Blockie from "./Blockie";
 
