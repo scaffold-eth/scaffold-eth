@@ -5,7 +5,10 @@
     Written by: TexData for Fair Data Society
     MIT License
 */
-export const fairOShost = process.env.REACT_APP_FAIROSHOST;
+export const fairOShost =
+  process.env.REACT_APP_FAIROSHOST === undefined
+    ? "https://fairos.dev.fairdatasociety.org/"
+    : process.env.REACT_APP_FAIROSHOST;
 
 export async function userLogin(host, user, pass) {
   var data = {
