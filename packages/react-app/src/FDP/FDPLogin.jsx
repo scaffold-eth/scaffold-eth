@@ -141,6 +141,7 @@ export default function FDPLogin({
 
     if (isLoggedIn !== undefined) setLogin(isLoggedIn);
   }
+  const delay = ms => new Promise(res => setTimeout(res, ms));
   async function fetchPods() {
     notification.info({
       message: "Getting pods",
@@ -152,6 +153,7 @@ export default function FDPLogin({
     var hasPod = podls.pod_name.find(str => str === PODNAME);
     if (hasPod === undefined) {
       await FairOS.podNew(FairOS.fairOShost, PODNAME, user.password);
+      await delay(10000); // wait 10s
       await fetchPods();
       return;
     }
