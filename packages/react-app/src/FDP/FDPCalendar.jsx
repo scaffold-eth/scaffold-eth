@@ -5,6 +5,7 @@ import { notification } from "antd";
 import * as FairOS from "./FairOS.js";
 
 var stringToColor = function (str) {
+  return "#886699";
   var hash = 0;
   for (var i = 0; i < str.length; i++) {
     hash = str.charCodeAt(i) + ((hash << 5) - hash);
@@ -232,6 +233,11 @@ class FDPCalendar extends Component {
 
     this.calendar.update({ columns, events });
   }
+  addHours(numOfHours, date = new Date()) {
+    date.setTime(date.getTime() + numOfHours * 60 * 60 * 1000);
+
+    return date;
+  }
 
   loadEventsData() {
     var columns = [];
@@ -245,21 +251,25 @@ class FDPCalendar extends Component {
       //console.log(day.rooms);
       for (const roomName in day.rooms) {
         console.log(roomName, day.rooms[roomName]);
-        const resourceIndex = columns.findIndex(o => o.name === roomName);
         var personIndex = -1;
         var tracksIndex = -1;
         var typesIndex = -1;
+        var resourceIndex = columns.findIndex(o => o.name === roomName);
 
         if (resourceIndex === -1) {
           columns.push({ name: roomName, id: columns.length });
+          //resourceIndex = 1;
         }
 
         var ev = day.rooms[roomName];
+        resourceIndex = columns.findIndex(o => o.name === roomName);
         // add event to schedule
         ev.forEach((et, ei) => {
           var startDate = new Date(et.date);
           var endDate = new Date(et.date);
           var durSplit = et.duration.split(":");
+
+          startDate = this.addHours(-5, startDate);
 
           //startDate.addHours(startSplit[0], startSplit[1], 0);
           endDate.setHours(startDate.getHours() + parseInt(durSplit[0]));
@@ -279,7 +289,7 @@ class FDPCalendar extends Component {
             toolTip: et.description,
             clickDisabled: true,
             borderColor: "#7b61ff",
-            bubbleHtml: "Static 'Event 1' details specified using event <b>data object</b>.",
+            bubbleHtml: "", // <b></b>.
           };
           events.push(newEvent);
 
