@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { DayPilot, DayPilotCalendar, DayPilotNavigator, DayPilotScheduler } from "@daypilot/daypilot-lite-react";
 import { ResourceGroups } from "./ResourceGroups";
-import { notification, Button } from "antd";
+import { notification, Button, Modal } from "antd";
 import * as FairOS from "./FairOS.js";
 
 var stringToColor = function (str) {
@@ -30,6 +30,8 @@ class FDPCalendar extends Component {
     this.dateRef = React.createRef();
 
     this.state = {
+      open: false,
+      modalEvent: null,
       //viewType: "Week",
       startDate: "2022-08-11",
       selectionDay: "2022-08-11",
@@ -128,39 +130,41 @@ class FDPCalendar extends Component {
         this.uploadEvents([...this.state.yourEvents, event]);
       },
       onEventClick: async args => {
-        const dp = this.calendar;
+        /*const dp = this.calendar;
         const modal = await DayPilot.Modal.prompt("Update <b>event</b> text", args.e.text());
         if (!modal.result) {
           return;
         }
         const e = args.e;
         e.data.text = modal.result;
-        dp.events.update(e);
+        dp.events.update(e); */
+
+        this.showDetails(args.e.data);
       },
-      onBeforeEventRender: args => {
-        args.data.areas = [
-          {
-            right: 6,
-            top: 6,
-            width: 17,
-            height: 17,
-            image: "info-17-inverted-rounded-semi.svg",
-            onClick: args => this.showDetails(args.source),
-          },
-        ];
-      },
-      onBeforeEventRender: args => {
-        args.data.areas = [
-          {
-            right: 6,
-            top: 6,
-            width: 17,
-            height: 17,
-            image: "info-17-inverted-rounded-semi.svg",
-            onClick: args => this.showDetails(args.source),
-          },
-        ];
-      },
+      // onBeforeEventRender: args => {
+      //   args.data.areas = [
+      //     {
+      //       right: 6,
+      //       top: 6,
+      //       width: 17,
+      //       height: 17,
+      //       image: "info-17-inverted-rounded-semi.svg",
+      //       onClick: args => this.showDetails(args.source),
+      //     },
+      //   ];
+      // },
+      // onBeforeEventRender: args => {
+      //   args.data.areas = [
+      //     {
+      //       right: 6,
+      //       top: 6,
+      //       width: 17,
+      //       height: 17,
+      //       image: "info-17-inverted-rounded-semi.svg",
+      //       onClick: args => this.showDetails(args.source),
+      //     },
+      //   ];
+      // },
       onBeforeEventDomAdd: args => {
         args.element = (
           <div>
@@ -197,8 +201,11 @@ class FDPCalendar extends Component {
     e.data.backColor = color;
     this.calendar.events.update(e);
   }
-  showDetails(e) {
-    console.log(e);
+  showDetails(event) {
+    console.log(event);
+    this.setState({ open: true });
+    this.setState({ modalEvent: event });
+    console.log("view event", event);
   }
 
   loadGroups() {
@@ -424,12 +431,47 @@ class FDPCalendar extends Component {
 
   render() {
     const { ...config } = this.state;
+    var me = null;
+    try {
+      me = this.state.modalEvent.tags;
+    } catch (err) {
+      me = { links: [], persons: [] };
+    }
     return (
       <>
-        {/* <div className={"toolbar"}>
-          
-          <Button onClick={()=> FairOS.podDelete(FairOS.fairOShost, "agenda", user.password)}>Delete Pod</Button>
-        </div>  */}
+        <Modal
+          visible={this.state.open}
+          title={<div>{me.title}</div>}
+          onOk={() => {
+            this.setState({ open: !this.state.open });
+          }}
+          onCancel={() => {
+            this.setState({ open: !this.state.open });
+          }}
+          footer={
+            <>
+              <Button>Attend</Button>
+            </>
+          }
+        >
+          {me.description}
+          <br />
+          Room: <strong>{me.room}</strong>
+          <br />
+          Track: <strong>{me.track}</strong>
+          <br />
+          Date: <strong>{me.date}</strong>
+          <br />
+          Start: <strong>{me.start}</strong>
+          <br />
+          Duration: <strong>{me.duration}</strong>
+          <br />
+          Type: <strong>{me.type}</strong>
+          <br />
+          {me.persons.map((p, i) => {
+            <>{p.public_name}&nbsp;</>;
+          })}
+        </Modal>
 
         <div style={{ display: "flex" }}>
           <DayPilotCalendar {...config} ref={this.calendarRef} viewType={this.state.viewType} />
