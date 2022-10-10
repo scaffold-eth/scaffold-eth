@@ -264,7 +264,7 @@ export default function FDPLogin({
       message: "deleting " + podName,
     });
     await FairOS.podDelete(FairOS.fairOShost, podName, user.password);
-    //await delay(10000); // wait 10s
+    await delay(10000); // wait 10s
     await fetchPods();
   }
 

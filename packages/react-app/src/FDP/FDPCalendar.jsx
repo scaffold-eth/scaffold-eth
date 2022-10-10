@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { DayPilot, DayPilotCalendar, DayPilotNavigator, DayPilotScheduler } from "@daypilot/daypilot-lite-react";
 import { ResourceGroups } from "./ResourceGroups";
-import { notification, Button, Modal } from "antd";
+import { notification, Button, Modal, Spin } from "antd";
 import * as FairOS from "./FairOS.js";
 
 var stringToColor = function (str) {
@@ -31,6 +31,8 @@ class FDPCalendar extends Component {
 
     this.state = {
       open: false,
+      isDirty: false,
+      isBusy: false,
       modalEvent: null,
       //viewType: "Week",
       startDate: "2022-08-11",
@@ -51,6 +53,7 @@ class FDPCalendar extends Component {
               //this.calendar.events.remove(e);
               this.updateColor(args.source, args.item.color);
               console.log("attend", args.source.data);
+              //this.setState
               //this.uploadEvents([...this.state.yourEvents, args.source.data]);
               // TODO: add to your events
             },
@@ -99,14 +102,14 @@ class FDPCalendar extends Component {
 
       yourEvents: [],
 
-      onHeaderClick: async args => {
-        const modal = await DayPilot.Modal.prompt("Resource name:", args.column.name);
-        if (!modal.result) {
-          return;
-        }
-        args.column.data.name = modal.result;
-        this.calendar.update();
-      },
+      // onHeaderClick: async args => {
+      //   const modal = await DayPilot.Modal.prompt("Resource name:", args.column.name);
+      //   if (!modal.result) {
+      //     return;
+      //   }
+      //   args.column.data.name = modal.result;
+      //   this.calendar.update();
+      // },
       onTimeRangeSelected: async args => {
         const dp = this.calendar;
         var eventNum = this.state.yourEvents === undefined ? 0 : this.state.yourEvents.length;
@@ -122,12 +125,13 @@ class FDPCalendar extends Component {
           id: DayPilot.guid(),
           text: modal.result,
           resource: args.resource,
-          tags: {},
+          tags: { persons: [], links: [], title: modal.result },
         };
         dp.events.add(event);
         this.setState({ events: dp.events.list });
-        this.setState(prevState => ({ yourEvents: [...prevState.yourEvents, event] }));
-        this.uploadEvents([...this.state.yourEvents, event]);
+        this.attendEvent(event);
+        //this.setState(prevState => ({ yourEvents: [...prevState.yourEvents, event] }));
+        //this.uploadEvents([...this.state.yourEvents, event]);
       },
       onEventClick: async args => {
         /*const dp = this.calendar;
@@ -165,19 +169,19 @@ class FDPCalendar extends Component {
       //     },
       //   ];
       // },
-      onBeforeEventDomAdd: args => {
-        args.element = (
-          <div>
-            {args.e.data.text}
-            <div
-              style={{ position: "absolute", right: "25px", top: "5px", height: "17px", width: "17px" }}
-              onClick={() => this.showDetails(args.e)}
-            >
-              <img src={"info-17-semi.svg"} alt={"Info icon"} />
-            </div>
-          </div>
-        );
-      },
+      // onBeforeEventDomAdd: args => {
+      //   args.element = (
+      //     <div>
+      //       {args.e.data.text}
+      //       <div
+      //         style={{ position: "absolute", right: "25px", top: "5px", height: "17px", width: "17px" }}
+      //         onClick={() => this.showDetails(args.e)}
+      //       >
+      //         <img src={"info-17-semi.svg"} alt={"Info icon"} />
+      //       </div>
+      //     </div>
+      //   );
+      // },
 
       // bubble: new DayPilot.Bubble({
       //   onLoad: async args => {
@@ -424,9 +428,16 @@ class FDPCalendar extends Component {
       });
     }
     this.setState({ isBusy: false });
+    this.setState({ isDirty: false });
   }
   changeDate() {
     this.datePicker.show();
+  }
+  async attendEvent(event) {
+    //this.setState({ yourEvents: this.state.yourEvents.concat(event) });
+    this.setState(prevState => ({ yourEvents: [...prevState.yourEvents, event] }));
+    this.setState({ isDirty: true });
+    this.setState({ open: !this.state.open });
   }
 
   render() {
@@ -439,6 +450,12 @@ class FDPCalendar extends Component {
     }
     return (
       <>
+        {this.state.isBusy && <Spin />}
+        {this.state.isDirty && this.state.isBusy === false && (
+          <>
+            <Button onClick={async () => await this.uploadEvents(this.state.yourEvents)}>Save</Button>
+          </>
+        )}
         <Modal
           visible={this.state.open}
           title={<div>{me.title}</div>}
@@ -450,6 +467,7 @@ class FDPCalendar extends Component {
           }}
           footer={
             <>
+              {/* <Button onClick={()=>this.attendEvent(me)}>Attend</Button> */}
               <Button>Attend</Button>
             </>
           }
@@ -468,9 +486,10 @@ class FDPCalendar extends Component {
           <br />
           Type: <strong>{me.type}</strong>
           <br />
-          {me.persons.map((p, i) => {
-            <>{p.public_name}&nbsp;</>;
-          })}
+          {me.persons &&
+            me.persons.map((p, i) => {
+              <>{p.public_name}&nbsp;</>;
+            })}
         </Modal>
 
         <div style={{ display: "flex" }}>

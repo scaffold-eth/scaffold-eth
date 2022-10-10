@@ -32,6 +32,7 @@ class FDPAgenda extends Component {
           resource: args.resource,
           tags: { status: "new" },
         });
+        console.log("all event", dp.events.list);
         this.setState({ events: dp.events.list });
         //await this.uploadEvents(dp.events.list);
         this.setState({ isDirty: true });
