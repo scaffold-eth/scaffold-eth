@@ -142,6 +142,7 @@ export default function FDPLogin({
     if (isLoggedIn !== undefined) setLogin(isLoggedIn);
   }
   const delay = ms => new Promise(res => setTimeout(res, ms));
+
   async function fetchPods() {
     notification.info({
       message: "Getting pods",
@@ -152,12 +153,19 @@ export default function FDPLogin({
     console.log("pods", podls);
     var hasPod = podls.pod_name.find(str => str === PODNAME);
     if (hasPod === undefined) {
-      await FairOS.podNew(FairOS.fairOShost, PODNAME, user.password);
-      await delay(30000); // wait 10s
-      podls = await (await FairOS.podLs(FairOS.fairOShost, user.password)).json();
-      hasPod = podls.pod_name.find(str => str === PODNAME); // retry to get, not best solution but avoids endless loop
+      //await FairOS.podNew(FairOS.fairOShost, PODNAME, user.password);
+      //await delay(30000); // wait 10s
+      //podls = await (await FairOS.podLs(FairOS.fairOShost, user.password)).json();
+      //hasPod = podls.pod_name.find(str => str === PODNAME); // retry to get, not best solution but avoids endless loop
       //await fetchPods();
       //return;
+      notification.info({
+        message: "Agenda",
+        description: "does not exist, create it",
+      });
+      setPodExists(null);
+      setPods(podls);
+      return;
     }
 
     setPods(podls);
@@ -183,7 +191,7 @@ export default function FDPLogin({
     if (res.message === "pod open: pod does not exist") {
       notification.warning({
         message: "'" + podName + "' not found",
-        description: "Creating new pod " + podName,
+        description: "Create pod " + podName,
       });
       //await FairOS.podNew(FairOS.fairOShost, podName, user.password);
       //await FairOS.podOpen(FairOS.fairOShost, podName, user.password);
@@ -217,12 +225,14 @@ export default function FDPLogin({
         message: podName + " " + dirpath,
         description: "ls: pod not open",
       });
+      setIsBusy(false);
       return;
     }
     notification.success({
       message: podName + " " + dirpath,
       description: "Contains " + (res.files === undefined ? "0" : res.files.length) + " items",
     });
+
     setPod(podName);
     if (res.files === undefined) {
       res.files = [];
@@ -231,6 +241,20 @@ export default function FDPLogin({
     setFiles(res.files);
     setNumItems(res.files.length);
     setIsBusy(false);
+  }
+  async function createAgendaPod() {
+    await FairOS.podNew(FairOS.fairOShost, PODNAME, user.password);
+    await delay(1000); // wait 10s
+    await fetchPods();
+  }
+
+  async function deletePod(podName) {
+    notification.info({
+      message: "deleting " + podName,
+    });
+    await FairOS.podDelete(FairOS.fairOShost, podName, user.password);
+    //await delay(10000); // wait 10s
+    await fetchPods();
   }
 
   const formItemLayout = {
@@ -267,14 +291,6 @@ export default function FDPLogin({
   if (loggedIn === true && user != null /*&& pods !== undefined*/) {
     return (
       <div>
-        {podExists === null && (
-          <>
-            <Button onClick={async () => await FairOS.podNew(FairOS.fairOShost, PODNAME, user.password)}>
-              Create pod {PODNAME}
-            </Button>
-            <br />
-          </>
-        )}
         <div style={{ display: "flex", margin: "20px" }}>
           <div style={{ textAlign: "left", width: "20%" }}>
             <h2>Pods {isBusy && <Spin size="small" />}</h2>
@@ -304,6 +320,20 @@ export default function FDPLogin({
                 <br />
               </>
             ))}
+            <br />
+
+            <div className={"toolbar"}>
+              {podExists === null && (
+                <>
+                  <Button onClick={async () => await createAgendaPod()}>Create {PODNAME}</Button>
+                </>
+              )}
+              {pod && (
+                <>
+                  <Button onClick={async () => await deletePod(pod)}>Delete {pod}</Button>
+                </>
+              )}
+            </div>
           </div>
           <div style={{ textAlign: "left", width: "80%" }}>
             <h2>{dir} &nbsp;</h2>

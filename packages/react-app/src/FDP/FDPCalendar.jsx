@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { DayPilot, DayPilotCalendar, DayPilotNavigator, DayPilotScheduler } from "@daypilot/daypilot-lite-react";
 import { ResourceGroups } from "./ResourceGroups";
-import { notification } from "antd";
+import { notification, Button } from "antd";
 import * as FairOS from "./FairOS.js";
 
 var stringToColor = function (str) {
@@ -427,8 +427,9 @@ class FDPCalendar extends Component {
     return (
       <>
         {/* <div className={"toolbar"}>
-          <span ref={this.dateRef}></span> <button onClick={ev => this.changeDate()}>Change date</button>
-        </div> */}
+          
+          <Button onClick={()=> FairOS.podDelete(FairOS.fairOShost, "agenda", user.password)}>Delete Pod</Button>
+        </div>  */}
 
         <div style={{ display: "flex" }}>
           <DayPilotCalendar {...config} ref={this.calendarRef} viewType={this.state.viewType} />

@@ -83,6 +83,21 @@ export async function podOpen(host, podName, password) {
   });
 }
 
+export async function podDelete(host, podName, password) {
+  var data = {
+    pod_name: podName,
+    password: password,
+  };
+  return fetch(host + "v1/pod/delete" + "?" + new URLSearchParams(data), {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+    credentials: "include",
+  });
+}
+
 export async function podNew(host, podName, password) {
   var data = {
     pod_name: podName,

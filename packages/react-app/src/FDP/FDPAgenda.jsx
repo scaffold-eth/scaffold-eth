@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { DayPilot, DayPilotCalendar } from "@daypilot/daypilot-lite-react";
-import { notification, Spin } from "antd";
+import { notification, Spin, Button } from "antd";
 import * as FairOS from "./FairOS.js";
 
 class FDPAgenda extends Component {
@@ -10,6 +10,7 @@ class FDPAgenda extends Component {
     this.calendarRef = React.createRef();
 
     this.state = {
+      isDirty: false,
       isBusy: false,
       startDate: DayPilot.Date.today(), // "2022-06-11T09:30:00",
       eventHeight: 30,
@@ -18,7 +19,7 @@ class FDPAgenda extends Component {
       onTimeRangeSelected: async args => {
         const dp = this.calendar;
         const modal = await DayPilot.Modal.prompt("Create a new event:", "Event " + dp.events.list.length);
-        console.log(dp.events.list, args);
+        //console.log(dp.events.list, args);
         dp.clearSelection();
         if (!modal.result) {
           return;
@@ -32,7 +33,8 @@ class FDPAgenda extends Component {
           tags: { status: "new" },
         });
         this.setState({ events: dp.events.list });
-        await this.uploadEvents(dp.events.list);
+        //await this.uploadEvents(dp.events.list);
+        this.setState({ isDirty: true });
       },
       onBeforeEventRender: args => {
         args.data.borderColor = "darker";
@@ -84,7 +86,9 @@ class FDPAgenda extends Component {
             onClick: args => {
               const e = args.source;
               this.calendar.events.remove(e);
-              this.uploadEvents(this.calendar.events.list);
+              this.setState({ events: this.calendar.events.list });
+              //this.uploadEvents(this.calendar.events.list);
+              this.setState({ isDirty: true });
             },
           },
         ],
@@ -126,6 +130,8 @@ class FDPAgenda extends Component {
   updateColor(e, color) {
     e.data.backColor = color;
     this.calendar.events.update(e);
+    this.setState({ events: this.calendar.events.list });
+    this.setState({ isDirty: true });
   }
 
   /*loadEventsData() {
@@ -203,6 +209,7 @@ class FDPAgenda extends Component {
       });
     }
     this.setState({ isBusy: false });
+    this.setState({ isDirty: false });
   }
 
   async componentDidMount() {
@@ -217,6 +224,12 @@ class FDPAgenda extends Component {
     return (
       <>
         {this.state.isBusy && <Spin />}
+        {this.state.isDirty && this.state.isBusy === false && (
+          <>
+            <Button onClick={async () => await this.uploadEvents(this.state.events)}>Save</Button>
+          </>
+        )}
+
         <div style={{ margin: "2%", maxHeight: "60vh" }}>
           <DayPilotCalendar {...this.state} ref={this.calendarRef} />;
         </div>
