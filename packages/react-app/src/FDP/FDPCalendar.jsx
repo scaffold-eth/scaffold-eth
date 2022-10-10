@@ -27,6 +27,8 @@ class FDPCalendar extends Component {
     super(props);
     this.calendarRef = React.createRef();
     this.datePickerRef = React.createRef();
+    this.dateRef = React.createRef();
+
     this.state = {
       //viewType: "Week",
       startDate: "2022-08-11",
@@ -105,7 +107,8 @@ class FDPCalendar extends Component {
       },
       onTimeRangeSelected: async args => {
         const dp = this.calendar;
-        const modal = await DayPilot.Modal.prompt("Create a new event:", "Event " + this.state.yourEvents.length);
+        var eventNum = this.state.yourEvents === undefined ? 0 : this.state.yourEvents.length;
+        const modal = await DayPilot.Modal.prompt("Create a new event:", "Event " + eventNum);
         console.log(dp.events, args);
         dp.clearSelection();
         if (!modal.result) {
@@ -189,6 +192,7 @@ class FDPCalendar extends Component {
   get datePicker() {
     return this.datePickerRef.current.control;
   }
+
   updateColor(e, color) {
     e.data.backColor = color;
     this.calendar.events.update(e);
@@ -257,7 +261,7 @@ class FDPCalendar extends Component {
         var resourceIndex = columns.findIndex(o => o.name === roomName);
 
         if (resourceIndex === -1) {
-          columns.push({ name: roomName, id: columns.length });
+          columns.push({ name: roomName, id: columns.length, width: 200 });
           //resourceIndex = 1;
         }
 
@@ -325,11 +329,26 @@ class FDPCalendar extends Component {
     //this.setState({ columns: columns });
     this.setState({ columns: columns, events: events, tracks: tracks, persons: persons });
     this.calendar.update({ startDate: this.state.startDate, columns, events });
+
+    //this.calendar.columnWidth = 200;
+    //columnWidthSpec: "Auto",
   }
 
   async componentDidMount() {
     const result = await (await fetch("schedule.json")).json();
     this.setState({ schedule: result.schedule });
+
+    /*
+    this.datePicker = new DayPilot.DatePicker({
+      target: this.dateRef.current,
+      pattern: 'MMMM d, yyyy',
+      date: "2022-09-07",
+      onTimeRangeSelected: (args) => {
+        this.setState({
+          startDate: args.start
+        });
+      }
+    });*/
 
     this.loadEventsData();
     this.downloadEvents();
@@ -348,6 +367,14 @@ class FDPCalendar extends Component {
       this.setState({ yourEvents: json.events });
       //this.calendar.events.list.concat(json.events);
       var dp = this.calendar;
+      if (json.events === undefined) {
+        /*notification.warning({
+          message: "No events",
+          description: "There are no events loaded",
+        });*/
+        this.setState({ isBusy: false });
+        return;
+      }
       json.events.forEach((e, i) => {
         dp.events.add(e);
       });
@@ -391,19 +418,26 @@ class FDPCalendar extends Component {
     }
     this.setState({ isBusy: false });
   }
+  changeDate() {
+    this.datePicker.show();
+  }
 
   render() {
     const { ...config } = this.state;
     return (
       <>
+        <div className={"toolbar"}>
+          <span ref={this.dateRef}></span> <button onClick={ev => this.changeDate()}>Change date</button>
+        </div>
+
         <div style={{ display: "flex" }}>
           <DayPilotCalendar {...config} ref={this.calendarRef} viewType={this.state.viewType} />
 
           <div>
-            <ResourceGroups
+            {/* <ResourceGroups
               onChange={args => this.groupChanged(args.selected)}
               items={this.loadGroups()}
-            ></ResourceGroups>
+            ></ResourceGroups> */}
             <DayPilotNavigator
               selectMode={"Day"}
               showMonths={2}

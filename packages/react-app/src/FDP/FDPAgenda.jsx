@@ -157,6 +157,15 @@ class FDPAgenda extends Component {
       this.setState({ events: json.events });
       this.calendar.update({ startDate: this.state.startDate, columns, events: json.events });
 
+      if (json.events === undefined) {
+        /*notification.warning({
+          message: "No events",
+          description: "There are no events loaded",
+        });*/
+        this.setState({ isBusy: false });
+        return;
+      }
+
       notification.success({
         message: json.events.length + " Events",
         description: "Loaded from storage",

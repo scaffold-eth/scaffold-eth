@@ -224,6 +224,10 @@ export default function FDPLogin({
       description: "Contains " + (res.files === undefined ? "0" : res.files.length) + " items",
     });
     setPod(podName);
+    if (res.files === undefined) {
+      res.files = [];
+    }
+
     setFiles(res.files);
     setNumItems(res.files.length);
     setIsBusy(false);
