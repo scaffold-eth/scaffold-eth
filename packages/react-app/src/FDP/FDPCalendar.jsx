@@ -426,9 +426,9 @@ class FDPCalendar extends Component {
     const { ...config } = this.state;
     return (
       <>
-        <div className={"toolbar"}>
+        {/* <div className={"toolbar"}>
           <span ref={this.dateRef}></span> <button onClick={ev => this.changeDate()}>Change date</button>
-        </div>
+        </div> */}
 
         <div style={{ display: "flex" }}>
           <DayPilotCalendar {...config} ref={this.calendarRef} viewType={this.state.viewType} />
