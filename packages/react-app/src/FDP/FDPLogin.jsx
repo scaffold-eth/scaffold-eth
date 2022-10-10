@@ -29,8 +29,8 @@ export default function FDPLogin({
   dir,
   setDir,
 }) {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState(null);
+  const [password, setPassword] = useState(null);
   const [podExists, setPodExists] = useState(false);
   const [numItems, setNumItems] = useState(0);
   const [isBusy, setIsBusy] = useState(false);
@@ -43,10 +43,13 @@ export default function FDPLogin({
     setUsername(values.username);
   }
 
-  async function doLogin(values) {
+  async function doLogin() {
     try {
+      //console.log("doLogin", username, password, user);
+      if (username === null || password === null || username === undefined || password === undefined) return;
       var user = await (await FairOS.userLogin(FairOS.fairOShost, username, password)).json();
       console.log("user", user);
+
       user.username = username;
       user.password = password; // we will need this later
       setUser(user);
@@ -60,8 +63,14 @@ export default function FDPLogin({
         await setLogin(true);
         await isUserLoggedIn();
         await fetchPods();
+      } else {
+        notification.error({
+          message: user.message,
+          description: `xxx`,
+        });
       }
     } catch (error) {
+      console.error(error);
       notification.error({
         message: "Error",
         description: `Error: ${error.message}`,
@@ -134,22 +143,23 @@ export default function FDPLogin({
 
   async function isUserLoggedIn() {
     var isLoggedIn = (await (await FairOS.userLoggedIn(FairOS.fairOShost, username)).json()).loggedin;
-    notification.success({
+    /*notification.success({
       message: "logged in",
       description: isLoggedIn,
-    });
+    });*/
 
     if (isLoggedIn !== undefined) setLogin(isLoggedIn);
   }
   const delay = ms => new Promise(res => setTimeout(res, ms));
 
   async function fetchPods() {
-    notification.info({
-      message: "Getting pods",
-      description: "please wait",
-    });
+    // notification.info({
+    //   message: "Getting pods",
+    //   description: "please wait",
+    // });
+    var pass = user === null ? password : user.password;
 
-    var podls = await (await FairOS.podLs(FairOS.fairOShost, user.password)).json();
+    var podls = await (await FairOS.podLs(FairOS.fairOShost, pass)).json();
     console.log("pods", podls);
     var hasPod = podls.pod_name.find(str => str === PODNAME);
     if (hasPod === undefined) {
@@ -186,7 +196,8 @@ export default function FDPLogin({
     setFiles({ files: [] });
     setIsBusy(true);
 
-    var res = await (await FairOS.podOpen(FairOS.fairOShost, podName, user.password)).json();
+    var pass = user === null ? password : user.password;
+    var res = await (await FairOS.podOpen(FairOS.fairOShost, podName, pass)).json();
     console.log("open pod", res);
     if (res.message === "pod open: pod does not exist") {
       notification.warning({
@@ -295,8 +306,8 @@ export default function FDPLogin({
           <div style={{ textAlign: "left", width: "20%" }}>
             <h2>Pods {isBusy && <Spin size="small" />}</h2>
             {pods.pod_name.map(p => (
-              <>
-                <span key={p} style={{ cursor: "pointer" }}>
+              <span key={p}>
+                <span style={{ cursor: "pointer" }}>
                   {pod === p ? (
                     <strong
                       onClick={async () => {
@@ -318,7 +329,7 @@ export default function FDPLogin({
                   )}
                 </span>
                 <br />
-              </>
+              </span>
             ))}
             <br />
 
@@ -341,7 +352,7 @@ export default function FDPLogin({
               {areFilesValid &&
                 files.map(f => (
                   <Card
-                    key={f.name}
+                    key={f}
                     className="flexible-card"
                     style={{ display: "flex", flexDirection: "column" }}
                     actions={[
