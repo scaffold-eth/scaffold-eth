@@ -215,7 +215,7 @@ export default function FDPLogin({
       await setPod(podName);
       await setDir("/");
 
-      if (refreshDirLs === true) await fetchDirLs(podName, dir);
+      if (refreshDirLs === true) await fetchDirLs(podName, dir); // this is so wrong
     }
     setIsBusy(false);
   }
