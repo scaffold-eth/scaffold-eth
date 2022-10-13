@@ -13248,6 +13248,8 @@ tr.ant-table-expanded-row .ant-descriptions-view table {
   background-color: transparent;
   border: 0;
   box-shadow: none;
+  display: block;
+  top: 30px;
 }
 .ant-input-lg {
   padding: 6.5px 11px;
