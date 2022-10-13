@@ -1,7 +1,7 @@
 tasks:
   - name: App
     init: >
-      yarn &&
+      yarn && yarn prepare &&
       gp sync-done install
     command: REACT_APP_PROVIDER=$(gp url 8545) yarn start
   - name: Chain
