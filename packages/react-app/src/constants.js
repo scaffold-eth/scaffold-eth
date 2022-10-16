@@ -9,6 +9,16 @@ export const BLOCKNATIVE_DAPPID = "0b58206a-f3c0-4701-a62f-73c7243e8c77";
 
 export const ALCHEMY_KEY = "oKxs-03sij-U_N0iOlrSsZFr29-IqbuF";
 
+/*
+Decrease the number of RPC calls by passing this value to hooks
+with pollTime (useContractReader, useBalance, etc.)
+
+Set it to 0 to disable it and make RPC calls "onBlock".
+
+Note: this is not used when you are in the local hardhat chain.
+*/
+export const RPC_POLL_TIME = 30000;
+
 const localRpcUrl = process.env.REACT_APP_CODESPACES
   ? `https://${window.location.hostname.replace("3000", "8545")}`
   : "http://" + (global.window ? window.location.hostname : "localhost") + ":8545";
