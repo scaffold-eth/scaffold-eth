@@ -18,12 +18,19 @@ contract YourContract {
 
   Testy[] public testies;
 
+  mapping(address => Testy)public testyMap;
+
   constructor() payable {
     // what should we do on deploy?
     testies.push(Testy({
       name: "Testy Number 1",
       bal: 10 ether
     }));
+
+    testyMap[msg.sender] = Testy({
+      name: "Testy For Deployer",
+      bal: 12 ether
+    });
   }
 
   function setPurpose(string memory newPurpose) public payable {

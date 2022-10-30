@@ -182,6 +182,16 @@ function App(props) {
   const firstTesty = useContractReader(readContracts, "YourContract", "testies", [0], localProviderPollingTime);
 
   console.log("firstTesty", firstTesty);
+
+  const deployerTesty = useContractReader(
+    readContracts,
+    "YourContract",
+    "testyMap",
+    ["0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"],
+    localProviderPollingTime,
+  );
+
+  console.log("deployerTesty", deployerTesty);
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
   console.log("🏷 Resolved austingriffith.eth as:", addressFromENS)
