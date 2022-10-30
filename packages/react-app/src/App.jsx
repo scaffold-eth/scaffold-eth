@@ -179,6 +179,9 @@ function App(props) {
   // keep track of a variable from the contract in the local React state:
   const purpose = useContractReader(readContracts, "YourContract", "purpose", [], localProviderPollingTime);
 
+  const firstTesty = useContractReader(readContracts, "YourContract", "testies", [0], localProviderPollingTime);
+
+  console.log("firstTesty", firstTesty);
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
   console.log("🏷 Resolved austingriffith.eth as:", addressFromENS)
