@@ -27,29 +27,14 @@ function YourLoogies({
   const [yourLoogiesApproved, setYourLoogiesApproved] = useState({});
   const [transferToAddresses, setTransferToAddresses] = useState({});
   const [loadingOptimisticLoogies, setLoadingOptimisticLoogies] = useState(true);
-  const [priceToMint, setPriceToMint] = useState(0);
   const [loogiesLeft, setLoogiesLeft] = useState(0);
   const history = useHistory();
 
   useEffect(() => {
-    const updatePrice = async () => {
-      if (DEBUG) console.log("Updating price...");
-      if (readContracts.Roboto) {
-        const newPriceToMint = await readContracts.Roboto.price();
-        if (DEBUG) console.log("newPriceToMint: ", newPriceToMint);
-        setPriceToMint(newPriceToMint);
-      } else {
-        if (DEBUG) console.log("Contracts not defined yet.");
-      }
-    };
-    updatePrice();
-  }, [address, readContracts.Roboto]);
-
-  useEffect(() => {
     const updateSupply = async () => {
       if (DEBUG) console.log("Updating supply...");
-      if (readContracts.Roboto) {
-        const newTotalSupply = await readContracts.Roboto.totalSupply();
+      if (readContracts.Emotilon) {
+        const newTotalSupply = await readContracts.Emotilon.totalSupply();
         if (DEBUG) console.log("newTotalSupply: ", newTotalSupply);
         setLoogiesLeft(1000 - newTotalSupply);
       } else {
@@ -57,13 +42,13 @@ function YourLoogies({
       }
     };
     updateSupply();
-  }, [address, readContracts.Roboto, updateBalances]);
+  }, [address, readContracts.Emotilon, updateBalances]);
 
   useEffect(() => {
     const updateBalances = async () => {
       if (DEBUG) console.log("Updating balances...");
-      if (readContracts.Roboto) {
-        const loogieNewBalance = await readContracts.Roboto.balanceOf(address);
+      if (readContracts.Emotilon) {
+        const loogieNewBalance = await readContracts.Emotilon.balanceOf(address);
         const yourLoogieNewBalance = loogieNewBalance && loogieNewBalance.toNumber && loogieNewBalance.toNumber();
         if (DEBUG) console.log("NFT: Loogie - Balance: ", loogieNewBalance);
         setLoogieBalance(loogieNewBalance);
@@ -73,7 +58,7 @@ function YourLoogies({
       }
     };
     updateBalances();
-  }, [address, readContracts.Roboto, updateBalances]);
+  }, [address, readContracts.Emotilon, updateBalances]);
 
   useEffect(() => {
     const updateYourCollectibles = async () => {
@@ -83,10 +68,10 @@ function YourLoogies({
       const fancyLoogiesNftsUpdate = {};
       for (let tokenIndex = 0; tokenIndex < yourLoogieBalance; tokenIndex++) {
         try {
-          const tokenId = await readContracts.Roboto.tokenOfOwnerByIndex(address, tokenIndex);
+          const tokenId = await readContracts.Emotilon.tokenOfOwnerByIndex(address, tokenIndex);
           if (DEBUG) console.log("Getting Loogie tokenId: ", tokenId);
           if (DEBUG) console.log("Getting FancyLoogie tokenId: ", tokenId.toNumber());
-          const tokenURI = await readContracts.Roboto.tokenURI(tokenId);
+          const tokenURI = await readContracts.Emotilon.tokenURI(tokenId);
           if (DEBUG) console.log("tokenURI: ", tokenURI);
           const jsonManifestString = atob(tokenURI.substring(29));
 
@@ -95,19 +80,19 @@ function YourLoogies({
             loogieUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
 
             // TODO: sacar
-            let approved = await readContracts.Roboto.getApproved(tokenId);
+            let approved = await readContracts.Emotilon.getApproved(tokenId);
             loogieApproved[tokenId] = approved;
 
             fancyLoogiesNftsUpdate[tokenId] = {};
-            const antennasId = await readContracts.Roboto.nftId(readContracts.Antennas.address, tokenId);
+            const antennasId = await readContracts.Emotilon.nftId(readContracts.Antennas.address, tokenId);
             fancyLoogiesNftsUpdate[tokenId][readContracts.Antennas.address] = antennasId.toString();
-            const earsId = await readContracts.Roboto.nftId(readContracts.Ears.address, tokenId);
+            const earsId = await readContracts.Emotilon.nftId(readContracts.Ears.address, tokenId);
             fancyLoogiesNftsUpdate[tokenId][readContracts.Ears.address] = earsId.toString();
-            const glassesId = await readContracts.Roboto.nftId(readContracts.Glasses.address, tokenId);
+            const glassesId = await readContracts.Emotilon.nftId(readContracts.Glasses.address, tokenId);
             fancyLoogiesNftsUpdate[tokenId][readContracts.Glasses.address] = glassesId.toString();
 
-            const batteryStatus = await readContracts.Roboto.batteryStatus(tokenId);
-            fancyLoogiesNftsUpdate[tokenId][readContracts.RobotoBattery.address] = batteryStatus;
+            const batteryStatus = await readContracts.Emotilon.batteryStatus(tokenId);
+            fancyLoogiesNftsUpdate[tokenId][readContracts.EmotilonBattery.address] = batteryStatus;
           } catch (e) {
             console.log(e);
           }
@@ -131,7 +116,7 @@ function YourLoogies({
           type="primary"
           onClick={async () => {
             try {
-              tx(writeContracts.Roboto.mintItem({ value: priceToMint, gasLimit: 400000 }), function (transaction) {
+              tx(writeContracts.Emotilon.mintItem({ gasLimit: 400000 }), function (transaction) {
                 setUpdateBalances(updateBalances + 1);
               });
             } catch (e) {
@@ -139,7 +124,7 @@ function YourLoogies({
             }
           }}
         >
-          MINT for {priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(0)} MATIC
+          MINT
         </Button>
         <p style={{ fontWeight: "bold" }}>
           { loogiesLeft } left
@@ -166,16 +151,17 @@ function YourLoogies({
                 <Card
                   title={
                     <div>
-                      <Popover content={item.description} title="Roboto Description">
+                      <Popover content={item.description} title="Emotilon Description">
                         <span style={{ fontSize: 18, marginRight: 8 }}>{item.name}</span>
                       </Popover>
                     </div>
                   }
-                  className={selectedFancyLoogie != id ? "nonselected-roboto" : "selected-roboto"}
+                  className={selectedFancyLoogie != id ? "nonselected-emotilon" : "selected-emotilon"}
                 >
                   {selectedFancyLoogie != id ? (
                     <img
-                      class="select-roboto"
+                      width="200"
+                      class="select-emotilon"
                       src={item.image}
                       title="Select to wear"
                       onClick={() => {

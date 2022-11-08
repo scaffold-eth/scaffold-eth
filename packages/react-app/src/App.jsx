@@ -495,7 +495,7 @@ function App(props) {
               <Address value={readContracts && readContracts.FancyLoogie && readContracts.FancyLoogie.address} />
             </div>
             <Contract
-              name="Roboto"
+              name="Emotilon"
               price={price}
               signer={userSigner}
               provider={localProvider}

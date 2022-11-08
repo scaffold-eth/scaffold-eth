@@ -14,31 +14,29 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
     log: true,
   });
 
-  const antennas = await deploy("Antennas", {
+  const renderEyes = await deploy("EmotilonRenderEyes", {
     from: deployer,
     log: true,
   });
 
-  const ears = await deploy("Ears", {
+  const renderMouth = await deploy("EmotilonRenderMouth", {
     from: deployer,
     log: true,
   });
 
-  const glasses = await deploy("Glasses", {
+  const metadata = await deploy("EmotilonMetadata", {
     from: deployer,
+    libraries: {
+      EmotilonRenderEyes: renderEyes.address,
+      EmotilonRenderMouth: renderMouth.address,
+    },
     log: true,
   });
 
-  const metadata = await deploy("RobotoMetadata", {
+  const emotilon = await deploy("Emotilon", {
     from: deployer,
-    log: true,
-  });
-
-
-  const roboto = await deploy("Roboto", {
-    from: deployer,
-    args: [battery.address, antennas.address, ears.address, glasses.address],
-    libraries: { RobotoMetadata: metadata.address },
+    args: [battery.address],
+    libraries: { EmotilonMetadata: metadata.address },
     log: true,
   });
 
