@@ -49,8 +49,6 @@ export default function BadgesPaginatedSection({
       setPagedBadges([...new Set(getPaginationData(pageSize, pageNumber))])
     }
   }, [pagedBadges.length, getPaginationData, pageNumber, pageSize])
-  console.log({ pagedBadges })
-  console.log({ eventBadges })
   return (
     <>
       <Box
