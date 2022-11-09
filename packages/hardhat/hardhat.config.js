@@ -259,19 +259,18 @@ module.exports = {
       },
     },
     bscTestnet: {
-      name: "Binance Smart Chain-Testnet",
-      color: "#F4C23F",
       chainId: 97,
-      blockExplorer: "https://testnet.bscscan.com/",
-      rpcUrl: "https://data-seed-prebsc-1-s1.binance.org:8545",
-      faucet: "https://testnet.binance.org/faucet-smart",
+      url: "https://data-seed-prebsc-1-s1.binance.org:8545",
+      accounts: {
+        mnemonic: mnemonic(),
+      },
     },
     bscMainnet: {
-      name: "Binance smart chain",
-      color: "#F4C23F",
       chainId: 56,
-      blockExplorer: "https://bscscan.com/",
-      rpcUrl: "https://bsc-dataseed.binance.org/",
+      url: "https://bsc-dataseed.binance.org/",
+      accounts: {
+        mnemonic: mnemonic(),
+      },
     },
     godwoken: {
       url: "https://godwoken-testnet-v1.ckbapp.dev",
