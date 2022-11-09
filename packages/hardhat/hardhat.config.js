@@ -272,6 +272,20 @@ module.exports = {
         mnemonic: mnemonic(),
       },
     },
+    alfajores: {
+      chainId: 44787,
+      url: "https://alfajores-forno.celo-testnet.org",
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
+    celo: {
+      chainId: 42220,
+      url: "https://forno.celo.org",
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
     godwoken: {
       url: "https://godwoken-testnet-v1.ckbapp.dev",
       chainId: 71401,

@@ -220,6 +220,21 @@ export const NETWORKS = {
     blockExplorer: "https://bscscan.com/",
     rpcUrl: "https://bsc-dataseed.binance.org/",
   },
+  alfajores: {
+    name: "alfajores",
+    color: "#35D07F",
+    chainId: 44787,
+    blockExplorer: "https://alfajores.celoscan.io",
+    rpcUrl: "https://alfajores-forno.celo-testnet.org",
+    faucet:"https://celo.org/developers/faucet"
+  },
+  celo: {
+    name: "celo",
+    color:"#35D07F",
+    chainId: 42220,
+    blockExplorer: "https://celoscan.io",
+    rpcUrl: "https://forno.celo.org",
+  },
 };
 
 export const NETWORK = chainId => {
