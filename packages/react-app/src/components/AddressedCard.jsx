@@ -43,6 +43,7 @@ export default function AddressedCard({ badges, etherscanRef }) {
                   borderRadius: 5,
                 }}
                 maxWidth={310}
+                key={src}
               >
                 <Card key={badge.decodedIpfsHash} sx={{ zIndex: 10, borderRadius: 5 }} variant={'outlined'}>
                   <CardMedia component={'img'} width={200} image={src} alt={'nftimage'} />
