@@ -231,35 +231,50 @@ module.exports = {
       },
     },
     moonbeam: {
-      url: 'https://rpc.api.moonbeam.network',
+      url: "https://rpc.api.moonbeam.network",
       chainId: 1284,
       accounts: {
         mnemonic: mnemonic(),
       },
     },
     moonriver: {
-      url: 'https://rpc.api.moonriver.moonbeam.network',
+      url: "https://rpc.api.moonriver.moonbeam.network",
       chainId: 1285,
       accounts: {
         mnemonic: mnemonic(),
       },
     },
     moonbaseAlpha: {
-      url: 'https://rpc.api.moonbase.moonbeam.network',
+      url: "https://rpc.api.moonbase.moonbeam.network",
       chainId: 1287,
       accounts: {
         mnemonic: mnemonic(),
       },
     },
     moonbeamDevNode: {
-      url: 'http://127.0.0.1:9933',
+      url: "http://127.0.0.1:9933",
       chainId: 1281,
       accounts: {
         mnemonic: mnemonic(),
       },
     },
+    bscTestnet: {
+      name: "Binance Smart Chain-Testnet",
+      color: "#F4C23F",
+      chainId: 97,
+      blockExplorer: "https://testnet.bscscan.com/",
+      rpcUrl: "https://data-seed-prebsc-1-s1.binance.org:8545",
+      faucet: "https://testnet.binance.org/faucet-smart",
+    },
+    bscMainnet: {
+      name: "Binance smart chain",
+      color: "#F4C23F",
+      chainId: 56,
+      blockExplorer: "https://bscscan.com/",
+      rpcUrl: "https://bsc-dataseed.binance.org/",
+    },
     godwoken: {
-      url: 'https://godwoken-testnet-v1.ckbapp.dev',
+      url: "https://godwoken-testnet-v1.ckbapp.dev",
       chainId: 71401,
       accounts: {
         mnemonic: mnemonic(),
