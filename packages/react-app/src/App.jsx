@@ -24,7 +24,8 @@ function App() {
   const [tabValue, setTabValue] = useState(0)
   const [showToast, setShowToast] = useState(false)
   const [showWrongNetworkToast, setShowWrongNetworkToast] = useState(false)
-  const [selectedChainId, setSelectedChainId] = useState(10)
+  const [selectedChainId, setSelectedChainId] = useState(5)
+  const [contract, setContract] = useState(null)
   const contractConfig = { deployedContracts: {}, externalContracts: externalContracts || {} }
 
   const targetNetwork = NETWORKS['optimism']
@@ -41,7 +42,6 @@ function App() {
   } else {
     console.log('kosi externalContract')
   }
-
   const closeToast = () => {
     setShowToast(false)
   }
@@ -59,11 +59,12 @@ function App() {
     const run = async () => {
       const local = new ethers.providers.StaticJsonRpcProvider(providerRef)
       await local.ready
+      setContract(new ethers.Contract(contractRef.address, contractRef.abi, local))
       setLocalProvider(local)
       setLoaded(true)
     }
     run()
-  }, [providerRef])
+  }, [contractRef.abi, contractRef.address, providerRef])
 
   const snackBarAction = (
     <>
@@ -93,6 +94,7 @@ function App() {
     displayToast,
     externalContracts,
     contractRef,
+    contract,
     setShowToast,
     closeWrongNetworkToast,
     showWrongNetworkToast,

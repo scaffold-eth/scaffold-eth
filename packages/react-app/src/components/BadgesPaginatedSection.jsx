@@ -49,6 +49,8 @@ export default function BadgesPaginatedSection({
       setPagedBadges([...new Set(getPaginationData(pageSize, pageNumber))])
     }
   }, [pagedBadges.length, getPaginationData, pageNumber, pageSize])
+  let count = 0
+  let len = badges.length
   return (
     <>
       <Box
@@ -71,7 +73,18 @@ export default function BadgesPaginatedSection({
           columnSpacing={{ xs: 1, sm: 1.3, md: 2 }}
         >
           {checkeventBagesAndBadges(badges) ? (
-            <AddressedCard badges={badges} etherscanRef={etherscanRef} />
+            <Grid
+              item
+              mt={-12}
+              mb={15}
+              ml={'auto'}
+              mr={'auto'}
+              key={`AddressedCard-${badges && count !== len ? count++ : count++}`}
+              alignItems={'left'}
+              justifyContent={'left'}
+            >
+              <AddressedCard badges={badges} etherscanRef={etherscanRef} />
+            </Grid>
           ) : pagedBadges && pagedBadges.length > 0 ? (
             pagedBadges.map(event => {
               return (

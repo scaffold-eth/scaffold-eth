@@ -37,8 +37,16 @@ export default function BrowseBadges() {
   const [eventBadges, setEventBadges] = useState([])
   const [error, setErrorMessage] = useState('')
   const [showSpinner, setShowSpinner] = useState(false)
-  const { localProvider, mainnet, address, setAddress, injectedProvider, selectedChainId, checkForWeb3Provider } =
-    useContext(BadgeContext)
+  const {
+    localProvider,
+    mainnet,
+    address,
+    setAddress,
+    injectedProvider,
+    selectedChainId,
+    checkForWeb3Provider,
+    contract,
+  } = useContext(BadgeContext)
 
   let contractRef
   let providerRef
@@ -116,6 +124,7 @@ export default function BrowseBadges() {
         try {
           const balance = await contract.balanceOf(address)
           const badges = []
+
           for (let k = 0; k < balance; k++) {
             try {
               const tokenId = await contract.tokenOfOwnerByIndex(address, k)
@@ -156,14 +165,44 @@ export default function BrowseBadges() {
     run()
   }, [address, contractRef, error, eventBadges, localProvider, mainnet, selectedChainId])
 
+  // const test = async addy => {
+  //   const tempBadges = []
+  //   const balance = await contract.balanceOf(addy)
+  //   console.log({ balance, addy })
+  //   for (let k = 0; k < balance; k++) {
+  //     try {
+  //       const tokenId = await contract.tokenOfOwnerByIndex(address, k)
+  //       console.log('tokenId', { tokenId })
+  //       const tId = tokenId.toHexString()
+  //       console.log({ tId })
+  //       console.log({ contract })
+  //       let data = await contract.tokensData(tokenId)
+  //       console.log('normal address path hit')
+  //       console.log({ data })
+  //       console.log({ eventBadges })
+  //       const found = eventBadges.find(x => ethers.utils.hexStripZeros(x.id) === ethers.utils.hexStripZeros(tId))
+  //       console.log({ found })
+  //       // eslint-disable-next-line no-undef
+  //       const badge = Object.assign({}, { transactionHash: found.transactionHash }, data, {
+  //         decodedIpfsHash: toBase58(data.hash),
+  //         addy,
+  //       })
+  //       console.log({ badge })
+  //       tempBadges.push(badge)
+  //       return tempBadges
+  //     } catch (e) {
+  //       console.error(e)
+  //     }
+  //   }
+  // }
   const run = useCallback(async () => {
     if (address) {
       setEventBadges([])
       return
     }
-    let runBadges = await getAllRewards(contractRef.address, providerRef)
-    console.log({ runBadges })
-    runBadges = runBadges.map(badge => {
+    let getBadges = await getAllRewards(contractRef.address, providerRef)
+    console.log({ getBadges })
+    let runBadges = getBadges.map(badge => {
       return {
         id: ethers.utils.hexStripZeros(badge.topics[3]),
         to: ethers.utils.hexZeroPad(ethers.utils.hexStripZeros(badge.topics[2]), 20), // userwalletaddress
@@ -171,7 +210,43 @@ export default function BrowseBadges() {
       }
     })
     setEventBadges(runBadges)
-  }, [address, contractRef, providerRef])
+    console.log({ eventBadges })
+    // const test = getBadges.map(async badge => {
+    //   let address
+    //   let addresses = []
+    //   const newone = ethers.utils.hexZeroPad(ethers.utils.hexStripZeros(badge.topics[2]), 20)
+    //   console.log({ newone })
+    //   addresses.push(newone)
+    //   try {
+    //     address = await localProvider.lookupAddress(
+    //       ethers.utils.hexZeroPad(ethers.utils.hexStripZeros(badge.topics[2]), 20),
+    //     )
+    //     console.log({ address })
+    // } catch (error) {
+    //     address = await localProvider.resolveName(
+    //       ethers.utils.hexZeroPad(ethers.utils.hexStripZeros(badge.topics[2]), 20),
+    //     )
+    //     console.log({ address })
+    //   }
+    // })
+    // const result = getBadges.map(badge => {
+    //   let address
+    //   let final
+    //   try {
+    //     address = ethers.utils.hexZeroPad(ethers.utils.hexStripZeros(badge.topics[2]), 20)
+    //   } catch (error) {
+    //     address = mainnet.resolveName((ethers.utils.hexStripZeros(badge.topics[2]), 20))
+    //   }
+    //   // console.log({ address })
+    //   try {
+    //     final = test(address)
+    //   } catch (e) {
+    //     console.log(e)
+    //   }
+    //   return final
+    // })
+    // console.log({ result })
+  }, [address, contractRef.address, providerRef])
 
   useEffect(() => {
     if (address.length > 0) return
