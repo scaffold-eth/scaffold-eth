@@ -17,6 +17,7 @@ export default function BadgesPaginatedSection({
   checkForWeb3Provider,
   etherscanRef,
   eventBadges,
+  groupedBadges,
   setBadges,
 }) {
   const pageSize = 10
@@ -25,6 +26,7 @@ export default function BadgesPaginatedSection({
   const contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
   const [pageNumber, setPageNumber] = useState(1)
   const [pagedBadges, setPagedBadges] = useState([])
+  const [pagedGroups, setPagedGroups] = useState(groupedBadges)
   const mobileResponsiveMatch = useMediaQuery('(min-width:600px)')
   const getPaginationData = useCallback(
     (pgSize, pgNumber) => {
@@ -35,6 +37,23 @@ export default function BadgesPaginatedSection({
     },
     [eventBadges],
   )
+  // const getGroupedPaginatedData = useCallback(
+  //   (pgSize, pgNumber) => {
+  //     const startIndex = pgNumber * pgSize - pgSize
+  //     const endIndex = startIndex + pgSize
+  //     const result = groupedBadges.slice(startIndex, endIndex)
+  //     return result
+  //   },
+  //   [groupedBadges],
+  // )
+
+  const loadMoreGroups = async () => {
+    setPageNumber(prev => prev + 1)
+    setPagedGroups(prevArray => {
+      const result = [...new Set([...prevArray, ...groupedBadges])]
+      return result
+    })
+  }
 
   const loadMore = async () => {
     setPageNumber(prev => prev + 1)
@@ -48,7 +67,14 @@ export default function BadgesPaginatedSection({
     if (pagedBadges.length === 0) {
       setPagedBadges([...new Set(getPaginationData(pageSize, pageNumber))])
     }
-  }, [pagedBadges.length, getPaginationData, pageNumber, pageSize])
+  }, [pagedBadges.length, getPaginationData, pageNumber, pageSize, groupedBadges])
+
+  // useEffect(() => {
+  //   if (pagedGroups.length === 0) {
+  //     setPagedGroups([...new Set(getGroupedPaginatedData(pageSize, pageNumber))])
+  //   }
+  // }, [pageNumber, pageSize, pagedGroups.length, getGroupedPaginatedData])
+
   let count = 0
   let len = badges.length
   return (

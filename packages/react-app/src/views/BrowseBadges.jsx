@@ -35,6 +35,7 @@ export const isHexadecimal = value => {
 export default function BrowseBadges() {
   const [badges, setBadges] = useState([])
   const [eventBadges, setEventBadges] = useState([])
+  const [groupedBadges, setGroupedBadges] = useState([])
   const [error, setErrorMessage] = useState('')
   const [showSpinner, setShowSpinner] = useState(false)
   const { localProvider, mainnet, address, setAddress, injectedProvider, selectedChainId, checkForWeb3Provider } =
@@ -164,7 +165,7 @@ export default function BrowseBadges() {
     }
     let getBadges = await getAllRewards(contractRef.address, providerRef)
     let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
-    console.log({ getBadges })
+    // console.log({ getBadges })
     let runBadges = getBadges.map(badge => {
       return {
         id: ethers.utils.hexStripZeros(badge.topics[3]),
@@ -172,32 +173,45 @@ export default function BrowseBadges() {
         transactionHash: badge.transactionHash,
       }
     })
+    /**
+     * @type {Array<{ hash: string, id: string, payload: string, to: string, tokenType: string, transactionHash: string}>} result
+     */
+    const result = []
     runBadges.forEach(async badge => {
       if (badge.id === '0x') {
         badge.id = '0x0'
       }
+      let temp = { ...badge }
       let data = await contract.tokensData(badge.id)
       for (let index = 0; index < data.length; index++) {
-        if (data[index].length > 15) badge.hash = data[index]
-        if (data[index].length < 15) badge.tokenType = data[index]
-        if (index === 0) badge.payload = data[index]
+        if (data[index].length > 15) temp.hash = data[index]
+        if (data[index].length < 15) temp.tokenType = data[index]
+        if (index === 0) temp.payload = data[index]
       }
+      result.push(temp)
     })
-    console.log({ runBadges })
-    const grouped = {
-    }
-
-    for (let index = 0; index < runBadges.length; index++) {
-      if (runBadges[index].hash !== runBadges[index + 1])
-    }
-    setEventBadges(runBadges)
+    // console.log({ result })
+    setEventBadges(result)
   }, [address, contractRef.abi, contractRef.address, localProvider, providerRef])
 
   useEffect(() => {
     if (address.length > 0) return
     run()
-  }, [address, run])
+  }, [address, eventBadges, run])
 
+  useEffect(() => {
+    let effectResult
+
+    effectResult = eventBadges.reduce((reducedCopy, badge) => {
+      let tempCopy = reducedCopy[badge.hash] || []
+      tempCopy.push(badge)
+      reducedCopy[badge.hash] = tempCopy
+      return reducedCopy
+    }, {})
+    console.log({ effectResult })
+    setGroupedBadges(effectResult)
+  }, [eventBadges])
+  console.log({ groupedBadges })
   function checkeventBagesAndBadges(badges) {
     return badges && badges.length > 0
   }
@@ -286,6 +300,7 @@ export default function BrowseBadges() {
         injectedProvider={injectedProvider}
         setBadges={setBadges}
         checkForWeb3Provider={checkForWeb3Provider}
+        groupedBadges={groupedBadges}
       />
     </>
   )

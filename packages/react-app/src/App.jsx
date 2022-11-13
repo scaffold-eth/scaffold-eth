@@ -24,7 +24,7 @@ function App() {
   const [tabValue, setTabValue] = useState(0)
   const [showToast, setShowToast] = useState(false)
   const [showWrongNetworkToast, setShowWrongNetworkToast] = useState(false)
-  const [selectedChainId, setSelectedChainId] = useState(10)
+  const [selectedChainId, setSelectedChainId] = useState(5)
   const [contract, setContract] = useState(null)
   const contractConfig = { deployedContracts: {}, externalContracts: externalContracts || {} }
 
