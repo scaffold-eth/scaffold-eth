@@ -30,6 +30,7 @@ export default function BadgesPaginatedSection({
   const mobileResponsiveMatch = useMediaQuery('(min-width:600px)')
   const getPaginationData = useCallback(
     (pgSize, pgNumber) => {
+      console.log({ eventBadges })
       const startIndex = pgNumber * pgSize - pgSize
       const endIndex = startIndex + pgSize
       const result = eventBadges.slice(startIndex, endIndex)
