@@ -1,12 +1,5 @@
-// @ts-nocheck
 // import { initializeAlchemy, getNftsForCollection, Network } from '@alch/alchemy-sdk'
 
-/**
- * 
- * @param {any} contractAddress
- * @param {string} provider
- * @returns {Promise<Array<string, string, string>>}
- */
 export async function getAllRewards(contractAddress, provider) {
   let result = await fetch(provider, {
     method: 'POST', // *GET, POST, PUT, DELETE, etc.

@@ -13,6 +13,7 @@ const { ethers } = require('ethers')
 const temmainnet = new ethers.providers.StaticJsonRpcProvider(
   'https://mainnet.infura.io/v3/1b3241e53c8d422aab3c7c0e4101de9c',
 )
+
 function App() {
   // @ts-ignore
   const [localProvider, setLocalProvider] = useState(null)
@@ -24,8 +25,7 @@ function App() {
   const [tabValue, setTabValue] = useState(0)
   const [showToast, setShowToast] = useState(false)
   const [showWrongNetworkToast, setShowWrongNetworkToast] = useState(false)
-  const [selectedChainId, setSelectedChainId] = useState(5)
-  const [contract, setContract] = useState(null)
+  const [selectedChainId, setSelectedChainId] = useState(10)
   const contractConfig = { deployedContracts: {}, externalContracts: externalContracts || {} }
 
   const targetNetwork = NETWORKS['optimism']
@@ -59,12 +59,11 @@ function App() {
     const run = async () => {
       const local = new ethers.providers.StaticJsonRpcProvider(providerRef)
       await local.ready
-      setContract(new ethers.Contract(contractRef.address, contractRef.abi, local))
       setLocalProvider(local)
       setLoaded(true)
     }
     run()
-  }, [contractRef.abi, contractRef.address, providerRef])
+  }, [providerRef])
 
   const snackBarAction = (
     <>
@@ -94,7 +93,6 @@ function App() {
     displayToast,
     externalContracts,
     contractRef,
-    contract,
     setShowToast,
     closeWrongNetworkToast,
     showWrongNetworkToast,

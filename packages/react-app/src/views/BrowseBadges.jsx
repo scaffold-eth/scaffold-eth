@@ -35,7 +35,6 @@ export const isHexadecimal = value => {
 export default function BrowseBadges() {
   const [badges, setBadges] = useState([])
   const [eventBadges, setEventBadges] = useState([])
-  const [groupedBadges, setGroupedBadges] = useState([])
   const [error, setErrorMessage] = useState('')
   const [showSpinner, setShowSpinner] = useState(false)
   const { localProvider, mainnet, address, setAddress, injectedProvider, selectedChainId, checkForWeb3Provider } =
@@ -56,11 +55,11 @@ export default function BrowseBadges() {
 
   useEffect(() => {
     const run = async () => {
+      let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
       if (!contractRef) {
         setErrorMessage('chain not supported. ' + selectedChainId)
         return
       }
-      let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
       if (!address) {
         setBadges([])
         setErrorMessage('')
@@ -75,26 +74,22 @@ export default function BrowseBadges() {
           setErrorMessage(`Could not resolve this address ${address}`)
           return
         }
-        if (error && error.length > 0) setErrorMessage('')
+        setErrorMessage('')
         try {
           const balance = await contract.balanceOf(resolvedAddress)
           const badges = []
           for (let k = 0; k < balance; k++) {
             try {
               const tokenId = await contract.tokenOfOwnerByIndex(resolvedAddress, k)
-              console.log('tokenId', { tokenId })
               const tId = tokenId.toHexString()
               let data = await contract.tokensData(tokenId)
               console.log('ens path hit')
               console.log({ data })
-              console.log({ eventBadges })
               const found = eventBadges.find(x => ethers.utils.hexStripZeros(x.id) === ethers.utils.hexStripZeros(tId))
-              console.log({ found })
               // eslint-disable-next-line no-undef
               const badge = Object.assign({}, { transactionHash: found.transactionHash }, data, {
                 decodedIpfsHash: toBase58(data.hash),
               })
-              console.log({ badge })
               badges.push(badge)
             } catch (e) {
               console.error(e)
@@ -117,25 +112,18 @@ export default function BrowseBadges() {
         try {
           const balance = await contract.balanceOf(address)
           const badges = []
-
           for (let k = 0; k < balance; k++) {
             try {
               const tokenId = await contract.tokenOfOwnerByIndex(address, k)
-              console.log('tokenId', { tokenId })
               const tId = tokenId.toHexString()
-              console.log({ tId })
-              console.log({ contract })
               let data = await contract.tokensData(tokenId)
               console.log('normal address path hit')
               console.log({ data })
-              console.log({ eventBadges })
               const found = eventBadges.find(x => ethers.utils.hexStripZeros(x.id) === ethers.utils.hexStripZeros(tId))
-              console.log({ found })
               // eslint-disable-next-line no-undef
               const badge = Object.assign({}, { transactionHash: found.transactionHash }, data, {
                 decodedIpfsHash: toBase58(data.hash),
               })
-              console.log({ badge })
               badges.push(badge)
             } catch (e) {
               console.error(e)
@@ -156,64 +144,56 @@ export default function BrowseBadges() {
       }
     }
     run()
-  }, [address, contractRef, error, eventBadges, localProvider, mainnet, selectedChainId])
+  }, [address, contractRef, eventBadges, localProvider, mainnet, selectedChainId])
 
   const run = useCallback(async () => {
     if (address) {
-      setEventBadges([])
-      return
+      return setEventBadges([])
     }
-    let getBadges = await getAllRewards(contractRef.address, providerRef)
-    let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
-    // console.log({ getBadges })
-    let runBadges = getBadges.map(badge => {
+    let badges = await getAllRewards(contractRef.address, providerRef)
+    console.log({ badges })
+    badges = badges.map(badge => {
       return {
         id: ethers.utils.hexStripZeros(badge.topics[3]),
-        to: ethers.utils.hexZeroPad(ethers.utils.hexStripZeros(badge.topics[2]), 20), // userwalletaddress
+        to: ethers.utils.hexZeroPad(ethers.utils.hexStripZeros(badge.topics[2]), 20),
         transactionHash: badge.transactionHash,
       }
     })
-    /**
-     * @type {Array<{ hash: string, id: string, payload: string, to: string, tokenType: string, transactionHash: string}>} result
-     */
-    const result = []
-    runBadges.forEach(async badge => {
-      if (badge.id === '0x') {
-        badge.id = '0x0'
-      }
-      let temp = { ...badge }
-      let data = await contract.tokensData(badge.id)
-      for (let index = 0; index < data.length; index++) {
-        if (data[index].length > 15) temp.hash = data[index]
-        if (data[index].length < 15) temp.tokenType = data[index]
-        if (index === 0) temp.payload = data[index]
-      }
-      result.push(temp)
-    })
-    // console.log({ result })
-    setEventBadges(result)
-  }, [address, contractRef.abi, contractRef.address, localProvider, providerRef])
+    setEventBadges(badges)
+  }, [address, contractRef.address, providerRef])
 
   useEffect(() => {
     if (address.length > 0) return
     run()
-  }, [address, eventBadges, run])
+  }, [address, run])
 
-  useEffect(() => {
-    let effectResult
-
-    effectResult = eventBadges.reduce((reducedCopy, badge) => {
-      let tempCopy = reducedCopy[badge.hash] || []
-      tempCopy.push(badge)
-      reducedCopy[badge.hash] = tempCopy
-      return reducedCopy
-    }, {})
-    console.log({ effectResult })
-    setGroupedBadges(effectResult)
-  }, [eventBadges])
-  console.log({ groupedBadges })
   function checkeventBagesAndBadges(badges) {
     return badges && badges.length > 0
+  }
+
+  async function processAddress(address) {
+    setEventBadges([])
+    let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
+    console.log({ contract }, 'contract created')
+    const balance = await contract.balanceOf(address)
+    console.log({ balance }, 'balance created')
+    const badges = []
+    console.log('badgesCreated')
+    try {
+      for (let k = 0; k < balance; k++) {
+        const tokenId = await contract.tokenOfOwnerByIndex(address, k)
+        badges.push({
+          id: tokenId,
+          to: ethers.utils.hexZeroPad(ethers.utils.hexStripZeros(address), 20),
+          transactionHash: '',
+        })
+      }
+    } catch (error) {
+      console.log(error)
+    }
+    console.log('forEach finished. badges going to be set')
+    setEventBadges(badges)
+    console.log('badges set and done')
   }
 
   return (
@@ -300,7 +280,6 @@ export default function BrowseBadges() {
         injectedProvider={injectedProvider}
         setBadges={setBadges}
         checkForWeb3Provider={checkForWeb3Provider}
-        groupedBadges={groupedBadges}
       />
     </>
   )
