@@ -1,9 +1,23 @@
 // @ts-ignore
 import React, { Fragment, useCallback, useEffect, useReducer, useState } from 'react'
-import { Box, Button, Card, CardActions, CardMedia, CardContent, Typography, Skeleton } from '@mui/material'
+import {
+  Box,
+  Button,
+  Card,
+  CardActions,
+  CardMedia,
+  CardContent,
+  Typography,
+  Skeleton,
+  AccordionSummary,
+  AccordionDetails,
+  List,
+  ListItem,
+  ListItemText,
+} from '@mui/material'
+import Accordion from '@mui/material/Accordion'
 import InfoIcon from '@mui/icons-material/Info'
 import { ethers } from 'ethers'
-// @ts-ignore
 import multihash from 'multihashes'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import Snackbar from '@mui/material/Snackbar'
@@ -22,14 +36,15 @@ const Notification = React.forwardRef(function Alert(props, ref) {
 })
 
 export default function RewardGroupCard(props) {
-  const { contract, mainnet, to, id, transactionHash, etherscan } = props
   const [state, setState] = useState({
-    data: {},
     title: '',
     src: '',
-    txLink: '',
+    rewardCount: 0,
+    tokenType: '',
+    payload: '',
   })
   const [open, setOpen] = useState(false)
+  // @ts-ignore
   const [hoverActive, setHoverActive] = useReducer(previous => !previous, false)
   const handleTooltipClose = () => {
     setOpen(false)
@@ -38,20 +53,23 @@ export default function RewardGroupCard(props) {
   const handleTooltipOpen = () => {
     setOpen(true)
   }
+
   const run = useCallback(async () => {
     try {
-      let data = await contract.tokensData(ethers.BigNumber.from(id === '0x' ? '0x0' : id))
-      let toFormatted = ethers.utils.hexZeroPad(ethers.utils.hexStripZeros(to), 20)
-      const name = await mainnet.lookupAddress(toFormatted)
-      let title = name ? name : toFormatted
-
-      const src = 'https://remix-project.mypinata.cloud/ipfs/' + toBase58(data.hash)
-      const txLink = etherscan + transactionHash
-      setState({ data, title, src, txLink })
+      const tos = []
+      props.event.forEach(x => {
+        tos.push(ethers.utils.hexZeroPad(ethers.utils.hexStripZeros(x.to), 20))
+      })
+      let title = props.event[0].tokenType
+      const tokenType = props.event[0].tokenType
+      const payload = props.event[0].payload
+      const src = 'https://remix-project.mypinata.cloud/ipfs/' + toBase58(props.event[0].hash)
+      const rewardCount = props.event.length
+      setState({ title, src, rewardCount, tokenType, payload })
     } catch (error) {
       console.error(error)
     }
-  }, [contract, etherscan, id, mainnet, to, transactionHash])
+  }, [props])
   useEffect(() => {
     try {
       run()
@@ -91,55 +109,44 @@ export default function RewardGroupCard(props) {
                 'linear-gradient(90deg, #d4def4, #d9dff6, #dee1f7, #e3e2f9, #e8e4fa, #ede5fb, #f1e6fb, #f6e8fc)',
             }}
           >
-            <CopyToClipboard text={state.title} onCopy={handleTooltipOpen}>
-              <Typography
-                variant={'body2'}
-                noWrap={false}
-                fontWeight={400}
-                color={'#333333'}
-                onMouseOver={() => setHoverActive()}
-                onMouseOut={() => setHoverActive()}
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  ':hover': { cursor: 'pointer' },
-                }}
-                component={'span'}
-              >
-                {state.title.length === 0
-                  ? null
-                  : state.title.length > 20
-                    ? `${state.title.substring(0, 7)}...${state.title.substring(state.title.length - 7)}`
-                    : state.title}
-                <ContentCopyIcon fontSize="inherit" sx={{ marginLeft: 0.5 }} />
-              </Typography>
-            </CopyToClipboard>
-            <Typography variant={'caption'} fontWeight={700} color={'#333333'}>
-              {state.data.tokenType} {state.data.payload}
-            </Typography>
+            <Accordion>
+              <AccordionSummary>
+                <Typography> {props.event[0].tokenType}</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <List>
+                  {props.event.map(x => (
+                    <ListItem key={x.transactionHash}>
+                      <CopyToClipboard text={x.to} onCopy={handleTooltipOpen}>
+                        <Typography
+                          variant={'body2'}
+                          noWrap={false}
+                          fontWeight={400}
+                          color={'#333333'}
+                          onMouseOver={() => setHoverActive()}
+                          onMouseOut={() => setHoverActive()}
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            ':hover': { cursor: 'pointer' },
+                          }}
+                          component={'span'}
+                        >
+                          {x.to.length === 0
+                            ? null
+                            : x.to.length > 20
+                            ? `${x.to.substring(0, 7)}...${x.to.substring(x.to.length - 7)}`
+                            : state.title}
+                          <ContentCopyIcon fontSize="inherit" sx={{ marginLeft: 0.5 }} />
+                        </Typography>
+                      </CopyToClipboard>
+                    </ListItem>
+                  ))}
+                </List>
+              </AccordionDetails>
+            </Accordion>
           </CardContent>
-          <CardActions
-            disableSpacing
-            sx={{
-              background:
-                'linear-gradient(90deg, #d4def4, #d9dff6, #dee1f7, #e3e2f9, #e8e4fa, #ede5fb, #f1e6fb, #f6e8fc)',
-            }}
-          >
-            <Button
-              variant={'contained'}
-              startIcon={<InfoIcon />}
-              fullWidth
-              href={state.txLink}
-              target="_blank"
-              rel="noreferrer"
-              sx={{ background: '#81a6f7', ':hover': { background: '#1976d2', color: '#fff' } }}
-            >
-              <Typography variant={'button'} fontWeight={'bolder'}>
-                View Transaction
-              </Typography>
-            </Button>
-          </CardActions>
         </Card>
       </Box>
       <Snackbar open={open} autoHideDuration={1200} onClose={handleTooltipClose}>
@@ -153,3 +160,19 @@ export default function RewardGroupCard(props) {
     </>
   )
 }
+
+// RewardGroupCard.propTypes = {
+//   // @ts-ignore
+//   event: PropTypes.objectOf(
+//     PropTypes.arrayOf(
+//       PropTypes.shape({
+//         hash: PropTypes.string,
+//         id: PropTypes.string,
+//         payload: PropTypes.string,
+//         to: PropTypes.string,
+//         tokenType: PropTypes.string,
+//         transactionHash: PropTypes.string,
+//       }),
+//     ),
+//   ),
+// }

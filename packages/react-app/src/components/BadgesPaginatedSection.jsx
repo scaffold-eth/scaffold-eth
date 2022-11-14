@@ -10,6 +10,7 @@ import Fab from '@mui/material/Fab'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { useCallback } from 'react'
 import AddressedCard from './AddressedCard'
+import RewardGroupCard from './RewardGroupCard'
 
 export default function BadgesPaginatedSection({
   badges,
@@ -17,7 +18,7 @@ export default function BadgesPaginatedSection({
   checkForWeb3Provider,
   etherscanRef,
   eventBadges,
-  groupedBadges,
+  groupedRewards,
   setBadges,
 }) {
   const pageSize = 10
@@ -38,23 +39,6 @@ export default function BadgesPaginatedSection({
     },
     [eventBadges],
   )
-  // const getGroupedPaginatedData = useCallback(
-  //   (pgSize, pgNumber) => {
-  //     const startIndex = pgNumber * pgSize - pgSize
-  //     const endIndex = startIndex + pgSize
-  //     const result = groupedBadges.slice(startIndex, endIndex)
-  //     return result
-  //   },
-  //   [groupedBadges],
-  // )
-
-  const loadMoreGroups = async () => {
-    setPageNumber(prev => prev + 1)
-    setPagedGroups(prevArray => {
-      const result = [...new Set([...prevArray, ...groupedBadges])]
-      return result
-    })
-  }
 
   const loadMore = async () => {
     setPageNumber(prev => prev + 1)
@@ -68,16 +52,11 @@ export default function BadgesPaginatedSection({
     if (pagedBadges.length === 0) {
       setPagedBadges([...new Set(getPaginationData(pageSize, pageNumber))])
     }
-  }, [pagedBadges.length, getPaginationData, pageNumber, pageSize, groupedBadges])
-
-  // useEffect(() => {
-  //   if (pagedGroups.length === 0) {
-  //     setPagedGroups([...new Set(getGroupedPaginatedData(pageSize, pageNumber))])
-  //   }
-  // }, [pageNumber, pageSize, pagedGroups.length, getGroupedPaginatedData])
+  }, [pagedBadges.length, getPaginationData, pageNumber, pageSize])
 
   let count = 0
   let len = badges.length
+
   return (
     <>
       <Box
@@ -112,8 +91,8 @@ export default function BadgesPaginatedSection({
             >
               <AddressedCard badges={badges} etherscanRef={etherscanRef} />
             </Grid>
-          ) : pagedBadges && pagedBadges.length > 0 ? (
-            pagedBadges.map(event => {
+          ) : groupedRewards && groupedRewards.length > 0 ? (
+            groupedRewards.map(event => {
               return (
                 <Grid
                   item
@@ -136,8 +115,8 @@ export default function BadgesPaginatedSection({
                 </Grid>
               )
             })
-          ) : eventBadges && eventBadges.length > 0 ? (
-            eventBadges.map(event => {
+          ) : groupedRewards && Object.keys(groupedRewards).length > 0 ? (
+            Object.keys(groupedRewards).map(event => {
               return (
                 <Grid
                   item
@@ -145,19 +124,11 @@ export default function BadgesPaginatedSection({
                   mb={15}
                   ml={'auto'}
                   mr={'auto'}
-                  key={`${event.to}-${event.id}`}
+                  key={`${event}`}
                   alignItems={'center'}
                   justifyContent={'center'}
                 >
-                  <NftCard
-                    etherscan={etherscanRef}
-                    to={event.to}
-                    id={event.id}
-                    transactionHash={event.transactionHash}
-                    contract={contract}
-                    mainnet={mainnet}
-                    checkForWeb3Provider={checkForWeb3Provider}
-                  />
+                  <RewardGroupCard event={groupedRewards[event]} />
                 </Grid>
               )
             })

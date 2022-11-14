@@ -45,7 +45,7 @@ function groupRewards(eventBadges) {
 export default function BrowseBadges() {
   const [badges, setBadges] = useState([])
   const [eventBadges, setEventBadges] = useState([])
-  const [groupedBadges, setPagedGroupedBadges] = useState([])
+  const [groupedBadges, setPagedGroupedBadges] = useState({})
   const [error, setErrorMessage] = useState('')
   const [showSpinner, setShowSpinner] = useState(false)
   const { localProvider, mainnet, address, setAddress, injectedProvider, selectedChainId, checkForWeb3Provider } =
@@ -200,6 +200,7 @@ export default function BrowseBadges() {
     }, {})
     console.log({ effectResult })
     setEventBadges(badges)
+    setPagedGroupedBadges(effectResult)
   }, [address, contractRef.address, providerRef])
 
   useEffect(() => {
@@ -320,6 +321,7 @@ export default function BrowseBadges() {
         injectedProvider={injectedProvider}
         setBadges={setBadges}
         checkForWeb3Provider={checkForWeb3Provider}
+        groupedRewards={groupedBadges}
       />
     </>
   )
