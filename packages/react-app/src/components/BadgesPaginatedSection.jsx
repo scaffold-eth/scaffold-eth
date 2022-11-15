@@ -135,7 +135,7 @@ export default function BadgesPaginatedSection({
           ) : null}
         </Grid>
 
-        {pagedBadges.length === eventBadges.length ? null : (
+        {pagedBadges.length === Object.keys(groupedRewards).length ? null : (
           <Box display={'flex'} justifyContent={'right'} paddingRight={2}>
             <Fab
               variant={'extended'}

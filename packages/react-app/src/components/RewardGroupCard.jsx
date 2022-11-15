@@ -60,10 +60,11 @@ export default function RewardGroupCard(props) {
       props.event.forEach(x => {
         tos.push(ethers.utils.hexZeroPad(ethers.utils.hexStripZeros(x.to), 20))
       })
-      let title = props.event[0].tokenType
+      const title = props.event[0].tokenType
       const tokenType = props.event[0].tokenType
       const payload = props.event[0].payload
       const src = 'https://remix-project.mypinata.cloud/ipfs/' + toBase58(props.event[0].hash)
+
       const rewardCount = props.event.length
       setState({ title, src, rewardCount, tokenType, payload })
     } catch (error) {
@@ -111,7 +112,11 @@ export default function RewardGroupCard(props) {
           >
             <Accordion>
               <AccordionSummary>
-                <Typography> {props.event[0].tokenType}</Typography>
+                <Typography>
+                  {!props.event[0].payload.includes('Release Manager')
+                    ? `${props.event[0].tokenType} ${props.event[0].payload}`
+                    : `${props.event[0].payload}`}
+                </Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <List>
@@ -160,19 +165,3 @@ export default function RewardGroupCard(props) {
     </>
   )
 }
-
-// RewardGroupCard.propTypes = {
-//   // @ts-ignore
-//   event: PropTypes.objectOf(
-//     PropTypes.arrayOf(
-//       PropTypes.shape({
-//         hash: PropTypes.string,
-//         id: PropTypes.string,
-//         payload: PropTypes.string,
-//         to: PropTypes.string,
-//         tokenType: PropTypes.string,
-//         transactionHash: PropTypes.string,
-//       }),
-//     ),
-//   ),
-// }

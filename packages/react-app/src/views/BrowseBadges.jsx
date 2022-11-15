@@ -32,16 +32,6 @@ export const isHexadecimal = value => {
   return /^[0-9a-fA-F]+$/.test(value) && value.length % 2 === 0
 }
 
-function groupRewards(eventBadges) {
-  const result = eventBadges.reduce((reducedCopy, badge) => {
-    let tempCopy = reducedCopy[badge.hash] || []
-    tempCopy.push(badge)
-    reducedCopy[badge.hash] = tempCopy
-    return reducedCopy
-  }, {})
-  return result
-}
-
 export default function BrowseBadges() {
   const [badges, setBadges] = useState([])
   const [eventBadges, setEventBadges] = useState([])
@@ -175,17 +165,27 @@ export default function BrowseBadges() {
         transactionHash: badge.transactionHash,
       }
     })
-
+    let dataArray = []
     const result = badges.map(async badge => {
       if (badge.id === '0x') {
         badge.id = '0x0'
       }
       let temp = { ...badge }
+
       let data = await contract.current.tokensData(badge.id)
+      dataArray.push(data)
       for (let index = 0; index < data.length; index++) {
-        if (data[index].length > 15) temp.hash = data[index]
-        if (data[index].length < 15) temp.tokenType = data[index]
+        if (data[index].length > 20) {
+          temp.hash = data[index]
+        }
+        if (data[index].length <= 15) {
+          temp.tokenType = data[index]
+        }
         if (index === 0) temp.payload = data[index]
+      }
+
+      if (temp.tokenType === 'Release Manager') {
+        temp.payload = `${temp.tokenType} ${temp.payload}`
       }
       return temp
     }) // array of Promises
@@ -193,12 +193,12 @@ export default function BrowseBadges() {
     test = await unwrap(result) // Unwrap Promises
 
     const effectResult = test.reduce((reducedCopy, badge) => {
-      let tempCopy = reducedCopy[badge.hash] || []
+      let tempCopy = reducedCopy[badge.payload] || reducedCopy[badge.tokenType] || []
       tempCopy.push(badge)
-      reducedCopy[badge.hash] = tempCopy
+      reducedCopy[badge.payload] = tempCopy
       return reducedCopy
     }, {})
-    console.log({ effectResult })
+
     setEventBadges(badges)
     setPagedGroupedBadges(effectResult)
   }, [address, contractRef.address, providerRef])
@@ -210,31 +210,6 @@ export default function BrowseBadges() {
 
   function checkeventBagesAndBadges(badges) {
     return badges && badges.length > 0
-  }
-
-  async function processAddress(address) {
-    setEventBadges([])
-    let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
-    console.log({ contract }, 'contract created')
-    const balance = await contract.balanceOf(address)
-    console.log({ balance }, 'balance created')
-    const badges = []
-    console.log('badgesCreated')
-    try {
-      for (let k = 0; k < balance; k++) {
-        const tokenId = await contract.tokenOfOwnerByIndex(address, k)
-        badges.push({
-          id: tokenId,
-          to: ethers.utils.hexZeroPad(ethers.utils.hexStripZeros(address), 20),
-          transactionHash: '',
-        })
-      }
-    } catch (error) {
-      console.log(error)
-    }
-    console.log('forEach finished. badges going to be set')
-    setEventBadges(badges)
-    console.log('badges set and done')
   }
 
   return (
