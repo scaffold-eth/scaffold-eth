@@ -32,6 +32,14 @@ export const isHexadecimal = value => {
   return /^[0-9a-fA-F]+$/.test(value) && value.length % 2 === 0
 }
 
+export const unwrap = async arr => {
+  const resolved = []
+  for (const badge of arr) {
+    resolved.push(await badge)
+  }
+  return resolved
+}
+
 export default function BrowseBadges() {
   const [badges, setBadges] = useState([])
   const [eventBadges, setEventBadges] = useState([])
@@ -145,14 +153,6 @@ export default function BrowseBadges() {
     run()
   }, [address, contractRef, eventBadges, localProvider, mainnet, selectedChainId])
 
-  const unwrap = async arr => {
-    const resolved = []
-    for (const badge of arr) {
-      resolved.push(await badge)
-    }
-    return resolved
-  }
-
   const run = useCallback(async () => {
     if (address) {
       return setEventBadges([])
@@ -173,6 +173,7 @@ export default function BrowseBadges() {
       let temp = { ...badge }
 
       let data = await contract.current.tokensData(badge.id)
+      temp.resolvedName = await mainnet.lookupAddress(temp.to)
       dataArray.push(data)
       for (let index = 0; index < data.length; index++) {
         if (data[index].length > 20) {
@@ -199,9 +200,10 @@ export default function BrowseBadges() {
       return reducedCopy
     }, {})
 
+    console.log({ effectResult })
     setEventBadges(badges)
     setPagedGroupedBadges(effectResult)
-  }, [address, contractRef.address, providerRef])
+  }, [address, contractRef.address, mainnet, providerRef])
 
   useEffect(() => {
     if (address.length > 0) return

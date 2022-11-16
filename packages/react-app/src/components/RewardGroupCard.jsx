@@ -1,10 +1,8 @@
 // @ts-ignore
-import React, { Fragment, useCallback, useEffect, useReducer, useState } from 'react'
+import React, { useCallback, useEffect, useReducer, useState } from 'react'
 import {
   Box,
-  Button,
   Card,
-  CardActions,
   CardMedia,
   CardContent,
   Typography,
@@ -13,11 +11,8 @@ import {
   AccordionDetails,
   List,
   ListItem,
-  ListItemText,
 } from '@mui/material'
 import Accordion from '@mui/material/Accordion'
-import InfoIcon from '@mui/icons-material/Info'
-import { ethers } from 'ethers'
 import multihash from 'multihashes'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import Snackbar from '@mui/material/Snackbar'
@@ -56,10 +51,16 @@ export default function RewardGroupCard(props) {
 
   const run = useCallback(async () => {
     try {
-      const tos = []
-      props.event.forEach(x => {
-        tos.push(ethers.utils.hexZeroPad(ethers.utils.hexStripZeros(x.to), 20))
-      })
+      // const addresses = props.event.map(async x => {
+      //   const artifact = {}
+      //   artifact.resolvedName = await props.mainnet.lookupAddress(x.to)
+      //   artifact.transactionHash = x.transactionHash
+      //   artifact.hash = x.hash
+      //   return artifact
+      // })
+      // console.log({ addresses })
+      // const tos = await unwrap(addresses)
+      // console.log({ tos })
       const title = props.event[0].tokenType
       const tokenType = props.event[0].tokenType
       const payload = props.event[0].payload
@@ -138,7 +139,9 @@ export default function RewardGroupCard(props) {
                           }}
                           component={'span'}
                         >
-                          {x.to.length === 0
+                          {x.resolvedName !== null
+                            ? x.resolvedName
+                            : x.to.length === 0
                             ? null
                             : x.to.length > 20
                             ? `${x.to.substring(0, 7)}...${x.to.substring(x.to.length - 7)}`

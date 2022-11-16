@@ -128,7 +128,7 @@ export default function BadgesPaginatedSection({
                   alignItems={'center'}
                   justifyContent={'center'}
                 >
-                  <RewardGroupCard event={groupedRewards[event]} />
+                  <RewardGroupCard event={groupedRewards[event]} mainnet={mainnet} />
                 </Grid>
               )
             })
