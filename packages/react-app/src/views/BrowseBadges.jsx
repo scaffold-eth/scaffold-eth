@@ -185,18 +185,18 @@ export default function BrowseBadges() {
         if (index === 0) temp.payload = data[index]
       }
 
-      if (temp.tokenType === 'Release Manager') {
-        temp.payload = `${temp.tokenType} ${temp.payload}`
-      }
+      // if (temp.tokenType === 'Release Manager') {
+      //   temp.payload = `${temp.tokenType} ${temp.payload}`
+      // }
       return temp
     }) // array of Promises
     let test = []
     test = await unwrap(result) // Unwrap Promises
 
     const effectResult = test.reduce((reducedCopy, badge) => {
-      let tempCopy = reducedCopy[badge.payload] || reducedCopy[badge.tokenType] || []
+      let tempCopy = reducedCopy[`${badge.tokenType} ${badge.payload}`] || []
       tempCopy.push(badge)
-      reducedCopy[badge.payload] = tempCopy
+      reducedCopy[`${badge.tokenType} ${badge.payload}`] = tempCopy
       return reducedCopy
     }, {})
 
