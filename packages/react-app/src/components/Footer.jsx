@@ -60,7 +60,7 @@ function Footer() {
           <Logo useStyles={useStyles} textLeftMargin={5} />
         </Grid>
         {Object.keys(footerCategories).map(category => (
-          <Grid item sx={{ textAlign: 'left' }} xs={6} lg={2}>
+          <Grid item sx={{ textAlign: 'left' }} xs={6} lg={2} key={`${category}`}>
             <Typography variant={'h6'} color={'#666666'}>
               {category}
             </Typography>

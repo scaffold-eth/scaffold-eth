@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react'
-// import { useUserProviderAndSigner } from 'eth-hooks'
 import { NETWORKS } from './constants'
 import { Layout } from './components'
 import { BrowseBadges } from './views'
@@ -13,6 +12,7 @@ const { ethers } = require('ethers')
 const temmainnet = new ethers.providers.StaticJsonRpcProvider(
   'https://mainnet.infura.io/v3/1b3241e53c8d422aab3c7c0e4101de9c',
 )
+
 function App() {
   // @ts-ignore
   const [localProvider, setLocalProvider] = useState(null)
@@ -38,10 +38,7 @@ function App() {
   ) {
     contractRef = externalContracts[selectedChainId].contracts.REMIX_REWARD
     providerRef = externalContracts[selectedChainId].provider
-  } else {
-    console.log('kosi externalContract')
   }
-
   const closeToast = () => {
     setShowToast(false)
   }

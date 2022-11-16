@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import externalContracts from '../contracts/external_contracts'
 import { getAllRewards } from '../helpers/getAllRewards'
 
@@ -32,9 +32,18 @@ export const isHexadecimal = value => {
   return /^[0-9a-fA-F]+$/.test(value) && value.length % 2 === 0
 }
 
+export const unwrap = async arr => {
+  const resolved = []
+  for (const badge of arr) {
+    resolved.push(await badge)
+  }
+  return resolved
+}
+
 export default function BrowseBadges() {
   const [badges, setBadges] = useState([])
   const [eventBadges, setEventBadges] = useState([])
+  const [groupedBadges, setPagedGroupedBadges] = useState({})
   const [error, setErrorMessage] = useState('')
   const [showSpinner, setShowSpinner] = useState(false)
   const { localProvider, mainnet, address, setAddress, injectedProvider, selectedChainId, checkForWeb3Provider } =
@@ -52,6 +61,7 @@ export default function BrowseBadges() {
     providerRef = externalContracts[selectedChainId].provider
     etherscanRef = externalContracts[selectedChainId].etherscan
   }
+  const contract = useRef(new ethers.Contract(contractRef.address, contractRef.abi, localProvider))
 
   useEffect(() => {
     const run = async () => {
@@ -75,20 +85,19 @@ export default function BrowseBadges() {
         }
         setErrorMessage('')
         try {
-          let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
-          const balance = await contract.balanceOf(resolvedAddress)
+          const balance = await contract.current.balanceOf(resolvedAddress)
           const badges = []
           for (let k = 0; k < balance; k++) {
             try {
-              const tokenId = await contract.tokenOfOwnerByIndex(resolvedAddress, k)
+              const tokenId = await contract.current.tokenOfOwnerByIndex(resolvedAddress, k)
               const tId = tokenId.toHexString()
-              let data = await contract.tokensData(tokenId)
+              let data = await contract.current.tokensData(tokenId)
+
               const found = eventBadges.find(x => ethers.utils.hexStripZeros(x.id) === ethers.utils.hexStripZeros(tId))
               // eslint-disable-next-line no-undef
               const badge = Object.assign({}, { transactionHash: found.transactionHash }, data, {
                 decodedIpfsHash: toBase58(data.hash),
               })
-              // console.log({ badge })
               badges.push(badge)
             } catch (e) {
               console.error(e)
@@ -109,20 +118,19 @@ export default function BrowseBadges() {
       } else {
         setErrorMessage('')
         try {
-          let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
-          const balance = await contract.balanceOf(address)
+          const balance = await contract.current.balanceOf(address)
           const badges = []
           for (let k = 0; k < balance; k++) {
             try {
-              const tokenId = await contract.tokenOfOwnerByIndex(address, k)
+              const tokenId = await contract.current.tokenOfOwnerByIndex(address, k)
               const tId = tokenId.toHexString()
-              let data = await contract.tokensData(tokenId)
+              let data = await contract.current.tokensData(tokenId)
+
               const found = eventBadges.find(x => ethers.utils.hexStripZeros(x.id) === ethers.utils.hexStripZeros(tId))
               // eslint-disable-next-line no-undef
               const badge = Object.assign({}, { transactionHash: found.transactionHash }, data, {
                 decodedIpfsHash: toBase58(data.hash),
               })
-              // console.log({ badge })
               badges.push(badge)
             } catch (e) {
               console.error(e)
@@ -147,10 +155,10 @@ export default function BrowseBadges() {
 
   const run = useCallback(async () => {
     if (address) {
-      return setEventBadges([])
+      setEventBadges([])
+      return
     }
     let badges = await getAllRewards(contractRef.address, providerRef)
-    // console.log({ badges })
     badges = badges.map(badge => {
       return {
         id: ethers.utils.hexStripZeros(badge.topics[3]),
@@ -158,8 +166,36 @@ export default function BrowseBadges() {
         transactionHash: badge.transactionHash,
       }
     })
+    let dataArray = []
+    const result = badges.map(async badge => {
+      if (badge.id === '0x') {
+        badge.id = '0x0'
+      }
+      let temp = { ...badge }
+
+      let data = await contract.current.tokensData(badge.id)
+      temp.resolvedName = await mainnet.lookupAddress(temp.to)
+      dataArray.push(data)
+
+      temp.payload = data[0]
+      temp.tokenType = data[1]
+      temp.hash = data[2]
+
+      return temp
+    }) // array of Promises
+    let unwrapResult = []
+    unwrapResult = await unwrap(result) // Unwrap Promises
+
+    const effectResult = unwrapResult.reduce((reducedCopy, badge) => {
+      let tempCopy = reducedCopy[`${badge.tokenType} ${badge.payload}`] || []
+      tempCopy.push(badge)
+      reducedCopy[`${badge.tokenType} ${badge.payload}`] = tempCopy
+      return reducedCopy
+    }, {})
+
     setEventBadges(badges)
-  }, [address, contractRef.address, providerRef])
+    setPagedGroupedBadges(effectResult)
+  }, [address, contractRef.address, mainnet, providerRef])
 
   useEffect(() => {
     if (address.length > 0) return
@@ -170,37 +206,9 @@ export default function BrowseBadges() {
     return badges && badges.length > 0
   }
 
-  async function processAddress(address) {
-    setEventBadges([])
-    let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
-    console.log({ contract }, 'contract created')
-    const balance = await contract.balanceOf(address)
-    console.log({ balance }, 'balance created')
-    const badges = []
-    console.log('badgesCreated')
-    try {
-      for (let k = 0; k < balance; k++) {
-        const tokenId = await contract.tokenOfOwnerByIndex(address, k)
-        badges.push({
-          id: tokenId,
-          to: ethers.utils.hexZeroPad(ethers.utils.hexStripZeros(address), 20),
-          transactionHash: '',
-        })
-      }
-    } catch (error) {
-      console.log(error)
-    }
-    console.log('forEach finished. badges going to be set')
-    setEventBadges(badges)
-    console.log('badges set and done')
-  }
-
   return (
     <>
       <Box sx={{ paddingTop: '76px' }}>
-        {/*
-        ⚙️ Here is an example UI that displays and sets the purpose in your smart contract:
-      */}
         <Box sx={{ textAlign: 'left', padding: '10px', color: '#007aa6', marginLeft: 5 }}>
           <Typography variant={'h3'} fontWeight={700} sx={{ marginBottom: 5 }} color={'black'} fontFamily={'Noah'}>
             Remix Rewards
@@ -279,6 +287,7 @@ export default function BrowseBadges() {
         injectedProvider={injectedProvider}
         setBadges={setBadges}
         checkForWeb3Provider={checkForWeb3Provider}
+        groupedRewards={groupedBadges}
       />
     </>
   )
