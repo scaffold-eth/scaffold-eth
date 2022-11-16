@@ -188,10 +188,10 @@ export default function BrowseBadges() {
 
       return temp
     }) // array of Promises
-    let test = []
-    test = await unwrap(result) // Unwrap Promises
+    let unwrapResult = []
+    unwrapResult = await unwrap(result) // Unwrap Promises
 
-    const effectResult = test.reduce((reducedCopy, badge) => {
+    const effectResult = unwrapResult.reduce((reducedCopy, badge) => {
       let tempCopy = reducedCopy[`${badge.tokenType} ${badge.payload}`] || []
       tempCopy.push(badge)
       reducedCopy[`${badge.tokenType} ${badge.payload}`] = tempCopy
