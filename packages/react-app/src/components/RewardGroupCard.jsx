@@ -40,7 +40,6 @@ export default function RewardGroupCard(props) {
     rewardCount: 0,
     tokenType: '',
     payload: '',
-    txLink: '',
   })
   const [open, setOpen] = useState(false)
   // @ts-ignore
@@ -59,10 +58,9 @@ export default function RewardGroupCard(props) {
       const tokenType = props.event[0].tokenType
       const payload = props.event[0].payload
       const src = 'https://remix-project.mypinata.cloud/ipfs/' + toBase58(props.event[0].hash)
-      const txLink = props.etherscan + props.event[0].transactionHash
 
       const rewardCount = props.event.length
-      setState({ title, src, rewardCount, tokenType, payload, txLink })
+      setState({ title, src, rewardCount, tokenType, payload })
     } catch (error) {
       console.error(error)
     }
