@@ -108,11 +108,7 @@ export default function RewardGroupCard(props) {
           >
             <Accordion>
               <AccordionSummary>
-                <Typography>
-                  {!props.event[0].payload.includes('Release Manager')
-                    ? `${props.event[0].tokenType} ${props.event[0].payload}`
-                    : `${props.event[0].payload}`}
-                </Typography>
+                <Typography>{`${props.event[0].tokenType} ${props.event[0].payload}`}</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <List>

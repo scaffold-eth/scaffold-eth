@@ -197,6 +197,7 @@ export default function BrowseBadges() {
       return reducedCopy
     }, {})
 
+    console.log({ effectResult })
     setEventBadges(badges)
     setPagedGroupedBadges(effectResult)
   }, [address, contractRef.address, mainnet, providerRef])
