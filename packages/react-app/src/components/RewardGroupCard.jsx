@@ -51,16 +51,6 @@ export default function RewardGroupCard(props) {
 
   const run = useCallback(async () => {
     try {
-      // const addresses = props.event.map(async x => {
-      //   const artifact = {}
-      //   artifact.resolvedName = await props.mainnet.lookupAddress(x.to)
-      //   artifact.transactionHash = x.transactionHash
-      //   artifact.hash = x.hash
-      //   return artifact
-      // })
-      // console.log({ addresses })
-      // const tos = await unwrap(addresses)
-      // console.log({ tos })
       const title = props.event[0].tokenType
       const tokenType = props.event[0].tokenType
       const payload = props.event[0].payload
