@@ -176,15 +176,10 @@ export default function BrowseBadges() {
       let data = await contract.current.tokensData(badge.id)
       temp.resolvedName = await mainnet.lookupAddress(temp.to)
       dataArray.push(data)
-      for (let index = 0; index < data.length; index++) {
-        if (data[index].length > 20) {
-          temp.hash = data[index]
-        }
-        if (data[index].length <= 15) {
-          temp.tokenType = data[index]
-        }
-        if (index === 0) temp.payload = data[index]
-      }
+
+      temp.payload = data[0]
+      temp.tokenType = data[1]
+      temp.hash = data[2]
 
       return temp
     }) // array of Promises
