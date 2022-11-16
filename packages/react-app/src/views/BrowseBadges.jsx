@@ -155,7 +155,8 @@ export default function BrowseBadges() {
 
   const run = useCallback(async () => {
     if (address) {
-      return setEventBadges([])
+      setEventBadges([])
+      return
     }
     let badges = await getAllRewards(contractRef.address, providerRef)
     badges = badges.map(badge => {
@@ -197,7 +198,6 @@ export default function BrowseBadges() {
       return reducedCopy
     }, {})
 
-    console.log({ effectResult })
     setEventBadges(badges)
     setPagedGroupedBadges(effectResult)
   }, [address, contractRef.address, mainnet, providerRef])
