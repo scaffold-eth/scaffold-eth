@@ -185,9 +185,6 @@ export default function BrowseBadges() {
         if (index === 0) temp.payload = data[index]
       }
 
-      // if (temp.tokenType === 'Release Manager') {
-      //   temp.payload = `${temp.tokenType} ${temp.payload}`
-      // }
       return temp
     }) // array of Promises
     let test = []
@@ -216,9 +213,6 @@ export default function BrowseBadges() {
   return (
     <>
       <Box sx={{ paddingTop: '76px' }}>
-        {/*
-        ⚙️ Here is an example UI that displays and sets the purpose in your smart contract:
-      */}
         <Box sx={{ textAlign: 'left', padding: '10px', color: '#007aa6', marginLeft: 5 }}>
           <Typography variant={'h3'} fontWeight={700} sx={{ marginBottom: 5 }} color={'black'} fontFamily={'Noah'}>
             Remix Rewards
