@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react'
-// import { useUserProviderAndSigner } from 'eth-hooks'
 import { NETWORKS } from './constants'
 import { Layout } from './components'
 import { BrowseBadges } from './views'
@@ -39,8 +38,6 @@ function App() {
   ) {
     contractRef = externalContracts[selectedChainId].contracts.REMIX_REWARD
     providerRef = externalContracts[selectedChainId].provider
-  } else {
-    console.log('kosi externalContract')
   }
   const closeToast = () => {
     setShowToast(false)
