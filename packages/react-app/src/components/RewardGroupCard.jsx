@@ -12,6 +12,9 @@ import {
   List,
   ListItem,
 } from '@mui/material'
+import IconButton from '@mui/material/IconButton'
+import SearchIcon from '@mui/icons-material/Search'
+import Tooltip from '@mui/material/Tooltip'
 import Accordion from '@mui/material/Accordion'
 import multihash from 'multihashes'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
@@ -37,6 +40,7 @@ export default function RewardGroupCard(props) {
     rewardCount: 0,
     tokenType: '',
     payload: '',
+    txLink: '',
   })
   const [open, setOpen] = useState(false)
   // @ts-ignore
@@ -55,9 +59,10 @@ export default function RewardGroupCard(props) {
       const tokenType = props.event[0].tokenType
       const payload = props.event[0].payload
       const src = 'https://remix-project.mypinata.cloud/ipfs/' + toBase58(props.event[0].hash)
+      const txLink = props.etherscan + props.event[0].transactionHash
 
       const rewardCount = props.event.length
-      setState({ title, src, rewardCount, tokenType, payload })
+      setState({ title, src, rewardCount, tokenType, payload, txLink })
     } catch (error) {
       console.error(error)
     }
@@ -112,7 +117,30 @@ export default function RewardGroupCard(props) {
               <AccordionDetails>
                 <List>
                   {props.event.map(x => (
-                    <ListItem key={x.transactionHash}>
+                    <ListItem
+                      key={x.transactionHash}
+                      sx={{
+                        marginBottom: 2,
+                      }}
+                      secondaryAction={
+                        <Tooltip title="view transaction" placement={'top-start'}>
+                          <IconButton
+                            edge="end"
+                            size="small"
+                            href={`${props.etherscan}${x.transactionHash}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            sx={{
+                              background: '#81a6f7',
+                              color: '#fff',
+                              ':hover': { background: '#1976d2', color: '#fff' },
+                            }}
+                          >
+                            <SearchIcon />
+                          </IconButton>
+                        </Tooltip>
+                      }
+                    >
                       <CopyToClipboard text={x.to} onCopy={handleTooltipOpen}>
                         <Typography
                           variant={'body2'}
