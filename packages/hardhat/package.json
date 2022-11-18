@@ -11,6 +11,7 @@
     "eslint-plugin-prettier": "^3.4.0"
   },
   "dependencies": {
+    "@chainlink/contracts": "^0.5.1",
     "@nomicfoundation/hardhat-chai-matchers": "^1.0.3",
     "@nomicfoundation/hardhat-network-helpers": "^1.0.0",
     "@nomicfoundation/hardhat-toolbox": "^1.0.2",
