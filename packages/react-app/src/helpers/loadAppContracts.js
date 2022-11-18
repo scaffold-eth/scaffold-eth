@@ -1,10 +1,10 @@
-const contractListPromise = import("../contracts/hardhat_contracts.json");
+import contractList from "../contracts/hardhat_contracts.json";
 // @ts-ignore
-const externalContractsPromise = import("../contracts/external_contracts");
+import externalContracts from "../contracts/external_contracts";
 
 export const loadAppContracts = async () => {
   const config = {};
-  config.deployedContracts = (await contractListPromise).default ?? {};
-  config.externalContracts = (await externalContractsPromise).default ?? {};
+  config.deployedContracts = contractList;
+  config.externalContracts = externalContracts;
   return config;
 };

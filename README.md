@@ -36,9 +36,9 @@ yarn deploy --network NETWORK_OF_CHOICE (localhost, kovan, rinkeby, mainnet)
 ![nft1](https://user-images.githubusercontent.com/526558/124386962-37e5dd00-dcb3-11eb-911e-0afce760d7ee.png)
 
 
-> ✏️ Edit both `packages/hardhat/scripts/mint.js` and `packages/react-app/src/App.jsx` with your Infura project id and project secrets
+> ✏️ Edit `packages/react-app/src/storage/constants.js` to configure storage. You can either use [IPFS](https://ipfs.io/) or [Arweave](https://www.arweave.org/) (via [Akord](https://akord.com/)) by changing the `backend` variable. Set your Infura project id and project secret for IPFS or your Akord email, password, and optionally the vault name for Arweave.
 
-<img width="510" alt="image" src="https://user-images.githubusercontent.com/1975314/187358177-b9fc9c39-9e11-4384-aad8-6399b4f1e3dc.png">
+<img width="510" alt="image" src="https://user-images.githubusercontent.com/3890085/204426424-b2a357ed-27bb-4a31-bcfa-b22108104923.png">
 
 
 > in a terminal window run the mint script:

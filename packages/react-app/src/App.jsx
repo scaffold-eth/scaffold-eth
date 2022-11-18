@@ -27,21 +27,6 @@ import {
 } from "eth-hooks/dapps/dex";
 // import Hints from "./Hints";
 
-const { BufferList } = require("bl");
-// https://www.npmjs.com/package/ipfs-http-client
-const ipfsAPI = require("ipfs-http-client");
-const projectId = 'YOUR INFURA PROJECT ID';
-const projectSecret = 'YOUR INFURA PROJECT SECRET';
-const auth = 'Basic ' + Buffer.from(projectId + ':' + projectSecret).toString('base64');
-const ipfs = ipfsAPI({ 
-  host: "ipfs.infura.io", 
-  port: "5001", 
-  protocol: "https",
-  headers: {
-    authorization: auth,
-  },
- });
-
 
 import { useContractConfig } from "./hooks"
 import Portis from "@portis/web3";
@@ -94,20 +79,9 @@ const STARTING_JSON = {
   ],
 };
 
-// helper function to "Get" from IPFS
-// you usually go content.toString() after this...
-const getFromIPFS = async hashToGet => {
-  for await (const file of ipfs.get(hashToGet)) {
-    console.log(file.path);
-    if (!file.content) continue;
-    const content = new BufferList();
-    for await (const chunk of file.content) {
-      content.append(chunk);
-    }
-    console.log(content);
-    return content;
-  }
-};
+const { createStorage, IPFSStorage } = require("./storage");
+const storage = createStorage({ readOnly: true });
+const ipfsStorage = IPFSStorage.create();
 
 // 🛰 providers
 if (DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
@@ -296,7 +270,12 @@ function App(props) {
   ]);
 
   // keep track of a variable from the contract in the local React state:
-  const balance = useContractReader(readContracts, "YourCollectible", "balanceOf", [address]);
+  const [balance, setBalance] = useState(0);
+  useEffect(async () => {
+    if (!(readContracts && readContracts.YourCollectible && address)) return;
+    setBalance(await readContracts.YourCollectible.balanceOf(address));
+  }, [address, readContracts]);
+
   console.log("🤗 balance:", balance);
 
   // 📟 Listen for broadcast events
@@ -312,22 +291,15 @@ function App(props) {
   useEffect(() => {
     const updateYourCollectibles = async () => {
       const collectibleUpdate = [];
-      for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
+      for (let tokenIndex = 0; balance && balance.gt(tokenIndex); tokenIndex++) {
         try {
-          console.log("GEtting token index", tokenIndex);
           const tokenId = await readContracts.YourCollectible.tokenOfOwnerByIndex(address, tokenIndex);
-          console.log("tokenId", tokenId);
           const tokenURI = await readContracts.YourCollectible.tokenURI(tokenId);
-          console.log("tokenURI", tokenURI);
 
-          const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
-          console.log("ipfsHash", ipfsHash);
-
-          const jsonManifestBuffer = await getFromIPFS(ipfsHash);
+          const jsonManifestBuffer = await storage.getFileFromTokenURI(tokenURI);
 
           try {
             const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
-            console.log("jsonManifest", jsonManifest);
             collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
           } catch (e) {
             console.log(e);
@@ -711,7 +683,7 @@ function App(props) {
                 console.log("UPLOADING...", yourJSON);
                 setSending(true);
                 setIpfsHash();
-                const result = await ipfs.add(JSON.stringify(yourJSON)); // addToIPFS(JSON.stringify(yourJSON))
+                const result = await ipfsStorage.upload(JSON.stringify(yourJSON)); // addToIPFS(JSON.stringify(yourJSON))
                 if (result && result.path) {
                   setIpfsHash(result.path);
                 }
@@ -744,7 +716,7 @@ function App(props) {
                 console.log("DOWNLOADING...", ipfsDownHash);
                 setDownloading(true);
                 setIpfsContent();
-                const result = await getFromIPFS(ipfsDownHash); // addToIPFS(JSON.stringify(yourJSON))
+                const result = await storage.getFile(ipfsDownHash);
                 if (result && result.toString) {
                   setIpfsContent(result.toString());
                 }

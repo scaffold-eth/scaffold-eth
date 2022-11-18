@@ -4,23 +4,15 @@ const chalk = require("chalk");
 const { config, ethers } = require("hardhat");
 const { utils } = require("ethers");
 const R = require("ramda");
-const ipfsAPI = require('ipfs-http-client');
 
-const projectId = 'YOUR INFURA PROJECT ID';
-const projectSecret = 'YOUR INFURA PROJECT SECRET';
-const auth = 'Basic ' + Buffer.from(projectId + ':' + projectSecret).toString('base64');
-const ipfs = ipfsAPI({
-  host: 'ipfs.infura.io', 
-  port: '5001', 
-  protocol: 'https', 
-  headers: {
-    authorization: auth,
-  }, 
-});
+const { createStorage } = require("../../react-app/src/storage");
+
 
 const delayMS = 1000 //sometimes xDAI needs a 6000ms break lol 😅
 
 const main = async () => {
+  const storage = await createStorage()
+  const storageId = storage.name === "akord" ? "Arweave id" : "IPFS hash"
 
   // ADDRESS TO MINT TO:
   const toAddress = "0x34aA3F359A9D614239015126635CE7732c18fDF3"
@@ -51,9 +43,9 @@ const main = async () => {
     ]
   }
   console.log("Uploading buffalo...")
-  const uploaded = await ipfs.add(JSON.stringify(buffalo))
+  const uploaded = await storage.upload(JSON.stringify(buffalo), "buffalo.json")
 
-  console.log("Minting buffalo with IPFS hash ("+uploaded.path+")")
+  console.log(`Minting buffalo with ${storageId} (${uploaded.path})`)
   await yourCollectible.mintItem(toAddress,uploaded.path,{gasLimit:400000})
 
 
@@ -81,9 +73,9 @@ const main = async () => {
     ]
   }
   console.log("Uploading zebra...")
-  const uploadedzebra = await ipfs.add(JSON.stringify(zebra))
+  const uploadedzebra = await storage.upload(JSON.stringify(zebra), "zebra.json")
 
-  console.log("Minting zebra with IPFS hash ("+uploadedzebra.path+")")
+  console.log(`Minting zebra with ${storageId} (${uploadedzebra.path})`)
   await yourCollectible.mintItem(toAddress,uploadedzebra.path,{gasLimit:400000})
 
 
@@ -112,9 +104,9 @@ const main = async () => {
     ]
   }
   console.log("Uploading rhino...")
-  const uploadedrhino = await ipfs.add(JSON.stringify(rhino))
+  const uploadedrhino = await storage.upload(JSON.stringify(rhino), "rhino.json")
 
-  console.log("Minting rhino with IPFS hash ("+uploadedrhino.path+")")
+  console.log(`Minting rhino with ${storageId} (${uploadedrhino.path})`)
   await yourCollectible.mintItem(toAddress,uploadedrhino.path,{gasLimit:400000})
 
 
@@ -143,9 +135,9 @@ const main = async () => {
     ]
   }
   console.log("Uploading fish...")
-  const uploadedfish = await ipfs.add(JSON.stringify(fish))
+  const uploadedfish = await storage.upload(JSON.stringify(fish), "fish.json")
 
-  console.log("Minting fish with IPFS hash ("+uploadedfish.path+")")
+  console.log(`Minting fish with ${storageId} (${uploadedfish.path})`)
   await yourCollectible.mintItem(toAddress,uploadedfish.path,{gasLimit:400000})
 
 
@@ -174,9 +166,9 @@ const main = async () => {
     ]
   }
   console.log("Uploading flamingo...")
-  const uploadedflamingo = await ipfs.add(JSON.stringify(flamingo))
+  const uploadedflamingo = await storage.upload(JSON.stringify(flamingo), "flamingo.json")
 
-  console.log("Minting flamingo with IPFS hash ("+uploadedflamingo.path+")")
+  console.log(`Minting flamingo with ${storageId} (${uploadedflamingo.path})`)
   await yourCollectible.mintItem(toAddress,uploadedflamingo.path,{gasLimit:400000})
 
 
@@ -204,9 +196,9 @@ const main = async () => {
     ]
   }
   console.log("Uploading godzilla...")
-  const uploadedgodzilla = await ipfs.add(JSON.stringify(godzilla))
+  const uploadedgodzilla = await storage.upload(JSON.stringify(godzilla), "godzilla.json")
 
-  console.log("Minting godzilla with IPFS hash ("+uploadedgodzilla.path+")")
+  console.log(`Minting godzilla with ${storageId} (${uploadedgodzilla.path})`)
   await yourCollectible.mintItem(toAddress,uploadedgodzilla.path,{gasLimit:400000})
 
 
