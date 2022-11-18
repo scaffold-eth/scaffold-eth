@@ -1,4 +1,5 @@
 # 🎲 Scaffold-D&D
+![image (6)](https://user-images.githubusercontent.com/62179036/202815929-0556be95-67c1-4eb2-ac71-aaef506690e6.png)
 
 > Using Scaffold-ETH to accelerate my contract testing, unfortunately had to just use remix because this wasn't displaying my contracts. If you have a similar problem, just navigate to `packages/hardhat/contracts/VRFD22.sol` that's where the action is. 🚀
 
