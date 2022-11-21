@@ -130,7 +130,7 @@ function SignatorViewer({ injectedProvider, mainnetProvider, address, loadWeb3Mo
     const fetchFromIpfs = async () => {
       try {
         if (ipfsHash) {
-          const response = await fetch("https://cloudflare-ipfs.com/ipfs/" + ipfsHash);
+          const response = await fetch("https://pineapple.fyi/ipfs/" + ipfsHash);
           const _data = await response.json();
           console.log("ipfsData:", _data);
 
