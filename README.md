@@ -106,6 +106,8 @@ Check out all the [active branches](https://github.com/scaffold-eth/scaffold-eth
 
 📣 Make sure you update the `InfuraID` before you go to production. Huge thanks to [Infura](https://infura.io/) for our special account that fields 7m req/day!
 
+❤ You can free trail through Nodereal RPC key from https://nodereal.io/.Can use 3.5m Computing Units (CU) per month.
+
 # 🏃💨 Speedrun Ethereum
 Register as a builder [here](https://speedrunethereum.com) and start on some of the challenges and build a portfolio.
 
