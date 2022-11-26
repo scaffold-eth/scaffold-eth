@@ -225,6 +225,34 @@ module.exports = {
         mnemonic: mnemonic(),
       },
     },
+    bscTestnet: {
+      chainId: 97,
+      url: "https://data-seed-prebsc-1-s1.binance.org:8545",
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
+    bscMainnet: {
+      chainId: 56,
+      url: "https://bsc-dataseed.binance.org/",
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
+    alfajores: {
+      chainId: 44787,
+      url: "https://alfajores-forno.celo-testnet.org",
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
+    celo: {
+      chainId: 42220,
+      url: "https://forno.celo.org",
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
     godwoken: {
       url: "https://godwoken-testnet-v1.ckbapp.dev",
       chainId: 71401,

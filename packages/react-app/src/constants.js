@@ -212,6 +212,36 @@ export const NETWORKS = {
     blockExplorer: "https://moonbeam-explorer.netlify.app/",
     rpcUrl: "http://127.0.0.1:9933",
   },
+  bscTestnet: {
+    name: "Binance Smart Chain-Testnet",
+    color: "#F4C23F",
+    chainId: 97,
+    blockExplorer: "https://testnet.bscscan.com/",
+    rpcUrl: "https://data-seed-prebsc-1-s1.binance.org:8545",
+    faucet: "https://testnet.binance.org/faucet-smart",
+  },
+  bscMainnet: {
+    name: "Binance smart chain",
+    color: "#F4C23F",
+    chainId: 56,
+    blockExplorer: "https://bscscan.com/",
+    rpcUrl: "https://bsc-dataseed.binance.org/",
+  },
+  alfajores: {
+    name: "alfajores",
+    color: "#35D07F",
+    chainId: 44787,
+    blockExplorer: "https://alfajores.celoscan.io",
+    rpcUrl: "https://alfajores-forno.celo-testnet.org",
+    faucet:"https://celo.org/developers/faucet"
+  },
+  celo: {
+    name: "celo",
+    color:"#35D07F",
+    chainId: 42220,
+    blockExplorer: "https://celoscan.io",
+    rpcUrl: "https://forno.celo.org",
+  }
 };
 
 export const NETWORK = chainId => {
