@@ -1,11 +1,14 @@
-import React from "react";
-import { Typography } from "antd";
-
-const { Title, Text } = Typography;
-
+import React, { ReactNode } from "react";
 // displays a page header
 
-export default function Header({ link, title, subTitle, ...props }) {
+interface HeaderProps {
+  link: string
+  title: string
+  subTitle: string
+  children: ReactNode
+}
+
+export default function Header({ link, title, subTitle, ...props }: HeaderProps) {
   return (
     <div style={{ display: "flex", justifyContent: "space-between", padding: "1.2rem" }}>
       {props.children}

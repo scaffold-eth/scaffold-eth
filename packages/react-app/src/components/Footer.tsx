@@ -13,18 +13,18 @@ import useMediaQuery from '@mui/material/useMediaQuery'
 import MediumIcon from './MediumIcon'
 
 const footerCategories = {
-  PRODUCTS: [
+  'PRODUCTS': [
     { text: 'Remix Online IDE', url: 'https://remix.ethereum.org/' },
     { text: 'Remix Desktop IDE', url: 'https://github.com/ethereum/remix-desktop/releases' },
     { text: 'Ethereum Remix', url: 'https://marketplace.visualstudio.com/items?itemName=RemixProject.ethereum-remix' },
     { text: 'RemixD', url: 'https://github.com/ethereum/remix-project/tree/master/libs/remixd' },
   ],
-  DOCUMENTATION: [
+  'DOCUMENTATION': [
     { text: 'Solidity        ', url: 'https://docs.soliditylang.org/en/v0.6.1/' },
     { text: 'Remix       ', url: 'https://remix-ide.readthedocs.io/en/latest/' },
     { text: 'Plugins     ', url: 'https://remix-plugin-docs.readthedocs.io/en/latest/plugin/README.html#plugin' },
   ],
-  GITHUB: [
+  'GITHUB': [
     { text: 'Remix', url: 'https://github.com/ethereum/remix' },
     { text: 'Remix IDE', url: 'https://github.com/ethereum/remix-ide' },
     { text: 'Plugins', url: 'https://github.com/ethereum/remix-plugin/tree/master/examples/example/plugin' },
@@ -32,7 +32,9 @@ const footerCategories = {
   ],
 }
 
-const useMakeStyles = props => {
+type FooterCatgoryKeys = 'PRODUCTS' | 'DOCUMENTATION' | 'GITHUB'
+
+const useMakeStyles = (props: any) => {
   return makeStyles({
     logo: {
       fill: props.fill,
@@ -59,24 +61,26 @@ function Footer() {
         <Grid item xs={12} md={3} lg={3} sx={{ marginBottom: mobileResponsiveMatch ? 3 : 0 }}>
           <Logo useStyles={useStyles} textLeftMargin={5} />
         </Grid>
-        {Object.keys(footerCategories).map(category => (
-          <Grid item sx={{ textAlign: 'left' }} xs={6} lg={2} key={`${category}`}>
-            <Typography variant={'h6'} color={'#666666'}>
-              {category}
-            </Typography>
-            <Box component={'ul'} sx={{ paddingLeft: 0, justifyContent: 'left' }} minWidth={170} maxWidth={180}>
-              {footerCategories[category].map(chilrn => (
-                <li style={{ listStyle: 'none', padding: 0, margin: 0 }} key={`${chilrn.text}-${chilrn.url}`}>
-                  <a href={chilrn.url} style={{ padding: 0, margin: 0, textDecoration: 'none' }}>
-                    <Typography variant={'body1'} color={'#333333'} p={0}>
-                      {`${chilrn.text}`.charAt(0).toUpperCase() + chilrn.text.slice(1)}
-                    </Typography>
-                  </a>
-                </li>
-              ))}
-            </Box>
-          </Grid>
-        ))}
+        {Object.keys(footerCategories).map((category: string) => {
+          return (
+            <Grid item sx={{ textAlign: 'left' }} xs={6} lg={2} key={`${category}`}>
+              <Typography variant={'h6'} color={'#666666'}>
+                {category}
+              </Typography>
+              <Box component={'ul'} sx={{ paddingLeft: 0, justifyContent: 'left' }} minWidth={170} maxWidth={180}>
+                {footerCategories[category as FooterCatgoryKeys].map((chilrn: any) => (
+                  <li style={{ listStyle: 'none', padding: 0, margin: 0 }} key={`${chilrn.text}-${chilrn.url}`}>
+                    <a href={chilrn.url} style={{ padding: 0, margin: 0, textDecoration: 'none' }}>
+                      <Typography variant={'body1'} color={'#333333'} p={0}>
+                        {`${chilrn.text}`.charAt(0).toUpperCase() + chilrn.text.slice(1)}
+                      </Typography>
+                    </a>
+                  </li>
+                ))}
+              </Box>
+            </Grid>
+          )
+        })}
         <Grid item xs={4} lg={2}>
           <a href={'mailto: remix@ethereum.org'} target={'_blank'} rel={'noreferrer'}>
             <EmailIcon sx={{ color: '#4F4F4F', marginRight: mobileResponsiveMatch ? 4 : 1, fontSize: 24 }} />

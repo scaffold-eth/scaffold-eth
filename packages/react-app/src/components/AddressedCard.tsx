@@ -2,7 +2,7 @@ import React from 'react'
 import { Box, Button, Card, CardActions, CardContent, CardMedia, Grid, Skeleton, Typography } from '@mui/material'
 import InfoIcon from '@mui/icons-material/Info'
 
-export default function AddressedCard({ badges, etherscanRef }) {
+export default function AddressedCard({ badges, etherscanRef }: { badges: any[], etherscanRef: any}) {
   let track = 0
   return (
     <>

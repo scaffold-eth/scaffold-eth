@@ -1,9 +1,9 @@
 import Typography from '@mui/material/Typography'
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { ethers } from 'ethers'
-import { BadgeContext } from 'contexts/BadgeContext'
-import externalContracts from 'contracts/external_contracts'
-import { getCurrentChainId } from 'helpers/SwitchToOptimism'
+import { BadgeContext } from '../contexts/BadgeContext'
+import externalContracts from '../contracts/external_contracts'
+import { getCurrentChainId } from '../helpers/SwitchToOptimism'
 
 export default function AllowedMintCount() {
   // @ts-ignore
@@ -12,7 +12,7 @@ export default function AllowedMintCount() {
    * this returns the number of user badge that the selected account is allowed to mint.
    * this function throws an error if the current network selected in the injected provider (metamask) is not optimism (chain id of optimism is 10)
    */
-  const allowedMinting = useCallback(async (contractReference, provider, address) => {
+  const allowedMinting = useCallback(async (contractReference: any, provider: any, address: string) => {
     try {
       let contract = new ethers.Contract(contractReference.address, contractReference.abi, provider)
       return await contract.allowedMinting(address)
@@ -26,7 +26,7 @@ export default function AllowedMintCount() {
     if (window.ethereum === undefined) return
     const goerliContractReference = externalContracts['5'].contracts.REMIX_REWARD
     const optimismContractReference = externalContracts['10'].contracts.REMIX_REWARD
-    let result
+    let result: number = 0
     const chainInfo = await getCurrentChainId()
     try {
       if (chainInfo[0].chainId !== 5 || chainInfo[0].chainId !== 10) return

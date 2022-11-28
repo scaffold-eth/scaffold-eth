@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React, { Dispatch, Fragment, ReactNode, SetStateAction } from 'react'
 import Navbar from './Navbar'
 import { Container } from '@mui/material'
 import Footer from './Footer'
@@ -13,7 +13,13 @@ const useStyles = makeStyles({
   },
 })
 
-export default function Layout(props) {
+interface LayoutProps {
+  children: ReactNode
+  tabValue: number
+  setTabValue: Dispatch<SetStateAction<number>>
+}
+
+export default function Layout(props: LayoutProps) {
   const { children, tabValue, setTabValue } = props
   return (
     <Fragment>

@@ -17,24 +17,26 @@ import IconButton from '@mui/material/IconButton'
 import SearchIcon from '@mui/icons-material/Search'
 import Tooltip from '@mui/material/Tooltip'
 import Accordion from '@mui/material/Accordion'
+// @ts-ignore
 import multihash from 'multihashes'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import Snackbar from '@mui/material/Snackbar'
-import MuiAlert from '@mui/material/Alert'
+import MuiAlert, { AlertProps } from '@mui/material/Alert'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
+import { EventBadge } from '../types/rewardTypes'
 
-export const toBase58 = contentHash => {
+export const toBase58 = (contentHash: any) => {
   let hex = contentHash.substring(2)
   let buf = multihash.fromHexString(hex)
   return multihash.toB58String(buf)
 }
 
-const Notification = React.forwardRef(function Alert(props, ref) {
+const Notification = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) {
   // @ts-ignore
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
 })
 
-export default function RewardGroupCard(props) {
+export default function RewardGroupCard(props: any) {
   const [state, setState] = useState({
     title: '',
     src: '',
@@ -142,7 +144,7 @@ export default function RewardGroupCard(props) {
               </AccordionSummary>
               <AccordionDetails>
                 <List>
-                  {props.event.map(x => (
+                  {props.event.map((x: EventBadge) => (
                     <ListItem
                       key={x.transactionHash}
                       sx={{

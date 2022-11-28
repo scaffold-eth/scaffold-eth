@@ -35,6 +35,7 @@
     "@testing-library/user-event": "^12.1.8",
     "@types/node": "^18.11.9",
     "@types/react": "^18.0.25",
+    "@types/react-blockies": "^1.4.1",
     "@types/react-copy-to-clipboard": "^5.0.4",
     "@types/react-dom": "^18.0.9",
     "@types/react-router-dom": "^5.3.3",

@@ -5,6 +5,7 @@ export interface EventBadge
 {
   id: string,
   to: string,
+  resolvedName: string,
   transactionHash: string,
   tokenType: string,
   payload: string,
