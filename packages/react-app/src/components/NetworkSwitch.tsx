@@ -1,7 +1,7 @@
 import React from "react";
 import { Dropdown, Menu, Button } from "antd";
 
-function NetworkSwitch({ networkOptions, selectedNetwork, setSelectedNetwork }) {
+function NetworkSwitch({ networkOptions, selectedNetwork, setSelectedNetwork }: {networkOptions: any[], selectedNetwork: any, setSelectedNetwork: any}) {
   const menu = (
     <Menu>
       {networkOptions

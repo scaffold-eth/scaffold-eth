@@ -1,15 +1,16 @@
 import Typography from '@mui/material/Typography'
-import { getCurrentChainId } from 'helpers/SwitchToOptimism'
+import { getCurrentChainId } from '../helpers/SwitchToOptimism'
 import { useEffect } from 'react'
+import { NetInfoProps } from '../types/rewardTypes'
 
-export function NetInfo({ netInfo, setNetInfo, connectedAddress, checkForWeb3Provider, displayToast }) {
+export function NetInfo({ netInfo, setNetInfo, connectedAddress, checkForWeb3Provider, displayToast }: NetInfoProps) {
   useEffect(() => {
     if (checkForWeb3Provider() === 'Not Found') {
       console.log('Metamask is not installed!')
       // displayToast()
       return
     }
-    window.ethereum.on('chainChanged', async chainId => {
+    (window as any).ethereum.on('chainChanged', async (chainId: string | number | any) => {
       const chainInfo = await getCurrentChainId()
       setNetInfo(chainInfo)
     })
@@ -19,7 +20,7 @@ export function NetInfo({ netInfo, setNetInfo, connectedAddress, checkForWeb3Pro
         console.log('Metamask is not installed!')
         return
       }
-      window.ethereum.removeListener('chainChanged', () => console.log('removed chainChanged from NetInfo'))
+      (window as any).removeListener('chainChanged', () => console.log('removed chainChanged from NetInfo'))
     }
   }, [checkForWeb3Provider, displayToast, setNetInfo])
   return (

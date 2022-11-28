@@ -36,6 +36,14 @@ export interface TokensData {
   hash: string
 }
 
+export interface NetInfoProps { 
+  netInfo: any[]
+  setNetInfo: Dispatch<SetStateAction<any>>
+  connectedAddress: string
+  checkForWeb3Provider: () => "Not Found" | "Found"
+  displayToast: () => boolean
+}
+
 export interface BadgeContextProps 
 {
     localProvider: any,
