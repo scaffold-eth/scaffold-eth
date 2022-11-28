@@ -11,6 +11,7 @@ import {
   AccordionDetails,
   List,
   ListItem,
+  Badge,
 } from '@mui/material'
 import IconButton from '@mui/material/IconButton'
 import SearchIcon from '@mui/icons-material/Search'
@@ -104,9 +105,30 @@ export default function RewardGroupCard(props) {
                 'linear-gradient(90deg, #d4def4, #d9dff6, #dee1f7, #e3e2f9, #e8e4fa, #ede5fb, #f1e6fb, #f6e8fc)',
             }}
           >
-            <Accordion>
-              <AccordionSummary>
-                <Typography>{`${props.event[0].tokenType} ${props.event[0].payload}`}</Typography>
+            <div style={{ display: 'flex', justifyContent: 'right', alignItems: 'center' }}>
+              <Typography
+                color={'primary'}
+                ml={10}
+                width={30}
+                height={30}
+                sx={{
+                  borderRadius: '50%',
+                  backgroundColor: 'white',
+                  border: '1px solid primary',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                {state.rewardCount}
+              </Typography>
+            </div>
+            <Accordion sx={{ background: '#81a6f7', ':hover': { background: '#1976d2', color: '#fff' } }}>
+              <AccordionSummary sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <Typography
+                  fontWeight={'bold'}
+                  color={'white'}
+                >{`${props.event[0].tokenType} ${props.event[0].payload}`}</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <List>
