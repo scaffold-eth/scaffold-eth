@@ -4,8 +4,9 @@ import Button from '@mui/material/Button'
 import Logo from './Logo'
 import MenuItems from './MenuItems'
 import Account from './Account'
+import { NavbarProps } from '../types/rewardTypes'
 
-export default function Navbar(props) {
+export default function Navbar(props: NavbarProps) {
   const { tabValue, setTabValue } = props
   const [enableButton] = useState(false)
   return (

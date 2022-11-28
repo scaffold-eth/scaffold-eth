@@ -8,11 +8,11 @@ import { useContext, useState } from 'react'
 import TextField from '@mui/material/TextField'
 import CloseIcon from '@mui/icons-material/Close'
 import IconButton from '@mui/material/IconButton'
-import MuiAlert from '@mui/material/Alert'
+import MuiAlert, { AlertProps } from '@mui/material/Alert'
 import { styled } from '@mui/material'
 import Toast from './Toast'
 import React from 'react'
-import { BadgeContext } from 'contexts/BadgeContext'
+import { BadgeContext } from '../contexts/BadgeContext'
 
 const WalletAddressTextField = styled(TextField)(({ theme }) => ({
   '& .MuiInputBase-input': {
@@ -20,11 +20,11 @@ const WalletAddressTextField = styled(TextField)(({ theme }) => ({
   },
 }))
 
-const Alert = React.forwardRef(function Alert(props, ref) {
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
 })
 
-export default function MintingActions({ contractRef }) {
+export default function MintingActions({ contractRef }: { contractRef: any }) {
   const [message, setMessage] = useState('')
   // @ts-ignore
   const { injectedProvider } = useContext(BadgeContext)
@@ -33,7 +33,7 @@ export default function MintingActions({ contractRef }) {
   const [showToast, setShowToast] = useState(false)
   const [showFormErrorToast, setShowFormErrorToast] = useState(false)
 
-  function handleChange(e) {
+  function handleChange(e: any) {
     setWalletAddress(e.target.value)
   }
 
@@ -78,7 +78,7 @@ export default function MintingActions({ contractRef }) {
    *  - if the current network selected in the injected provider (metamask) is not optimism (chain id of optimism is 10)
    *  - if the current user doesn't have anymore a slot for minting a badge
    */
-  const mintBadge = async receiverAddress => {
+  const mintBadge = async (receiverAddress: string) => {
     if (window.ethereum === undefined) {
       displayToast()
       return
@@ -104,14 +104,14 @@ export default function MintingActions({ contractRef }) {
       console.log({ mintTx })
       await mintTx.wait()
       setMessage('Transaction validated')
-    } catch (e) {
+    } catch (e: any) {
       setMessage('error while sending the transaction. ' + e.message)
     }
     setTimeout(() => setMessage(''), 10000)
     // provider = null
   }
 
-  const ShowFormError = ({ showToast, closeToast, snackBarAction, message }) => {
+  const ShowFormError = ({ showToast, closeToast, snackBarAction, message }: { showToast: boolean, closeToast: () => void, snackBarAction: any, message: string }) => {
     return <Toast showToast={showToast} closeToast={closeToast} snackBarAction={snackBarAction} message={message} />
   }
 

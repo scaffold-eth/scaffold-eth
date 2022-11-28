@@ -1,3 +1,4 @@
+import { ClassNameMap } from "@mui/material"
 import { Dispatch, SetStateAction } from "react"
 
 export interface EventBadge 
@@ -34,6 +35,12 @@ export interface TokensData {
   payload: string
   tokenType: string
   hash: string
+}
+
+export interface NavbarProps {
+  useStyles: (props?: any) => ClassNameMap<"logo">
+  tabValue: number
+  setTabValue: Dispatch<SetStateAction<number>>
 }
 
 export interface NetInfoProps { 
