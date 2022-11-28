@@ -105,12 +105,22 @@ export default function RewardGroupCard(props) {
                 'linear-gradient(90deg, #d4def4, #d9dff6, #dee1f7, #e3e2f9, #e8e4fa, #ede5fb, #f1e6fb, #f6e8fc)',
             }}
           >
-            <div style={{ display: 'flex', justifyContent: 'right', alignItems: 'center' }}>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'right',
+                alignItems: 'start',
+                top: 20,
+                position: 'relative',
+                zIndex: 50,
+              }}
+            >
               <Typography
                 color={'primary'}
                 ml={10}
                 width={30}
                 height={30}
+                fontWeight={'bold'}
                 sx={{
                   borderRadius: '50%',
                   backgroundColor: 'white',
@@ -148,8 +158,13 @@ export default function RewardGroupCard(props) {
                             rel="noreferrer"
                             sx={{
                               background: '#81a6f7',
+                              border: '2px solid white',
                               color: '#fff',
-                              ':hover': { background: '#1976d2', color: '#fff' },
+                              ':hover': {
+                                background: '#1976d2',
+                                color: '#fff',
+                                border: '2px solid pink',
+                              },
                             }}
                           >
                             <SearchIcon />
@@ -162,7 +177,7 @@ export default function RewardGroupCard(props) {
                           variant={'body2'}
                           noWrap={false}
                           fontWeight={400}
-                          color={'#333333'}
+                          color={'white'}
                           onMouseOver={() => setHoverActive()}
                           onMouseOut={() => setHoverActive()}
                           sx={{

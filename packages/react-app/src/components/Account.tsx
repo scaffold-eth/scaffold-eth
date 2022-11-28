@@ -3,7 +3,7 @@ import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import Address from './Address'
 import Box from '@mui/material/Box'
-import Tooltip, { tooltipClasses } from '@mui/material/Tooltip'
+import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip'
 import { styled } from '@mui/material/styles'
 import { BadgeContext } from 'contexts/BadgeContext'
 import { getCurrentChainId, switchNetworkChain } from 'helpers/SwitchToOptimism'
@@ -50,7 +50,15 @@ import { NetInfo } from './NetInfo'
               (ex. by default "https://etherscan.io/" or for xdai "https://blockscout.com/poa/xdai/")
 **/
 
-const MetaMaskTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
+interface AccountsProps {
+  minimized: any
+}
+
+interface MetaMaskTooltipProps {
+  title: string
+}
+
+const MetaMaskTooltip = styled(({ className, title, ...props }: TooltipProps & MetaMaskTooltipProps) => <Tooltip title={title} classes={{ popper: className }} {...props} />)(
   ({ theme }) => ({
     [`& .${tooltipClasses.tooltip}`]: {
       // backgroundColor: '#f5f5f9',
@@ -95,7 +103,7 @@ const ConnectedButton = ({ handleConnection, connectedAddress, accountButtonInfo
   )
 }
 
-export default function Account({ minimized }) {
+export default function Account({ minimized }: AccountsProps) {
   const {
     // @ts-ignore
     mainnet,
@@ -207,7 +215,7 @@ export default function Account({ minimized }) {
       return
     }
     window.ethereum.on('chainChanged', async chainId => {
-      const accounts = await window.ethereum.request({
+      const accounts: any[] = await window.ethereum.request({
         method: 'eth_requestAccounts',
       })
       if (!netInfo && netInfo.length) setNetInfo(await getCurrentChainId())
