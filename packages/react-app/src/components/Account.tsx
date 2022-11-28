@@ -5,8 +5,8 @@ import Address from './Address'
 import Box from '@mui/material/Box'
 import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip'
 import { styled } from '@mui/material/styles'
-import { BadgeContext } from 'contexts/BadgeContext'
-import { getCurrentChainId, switchNetworkChain } from 'helpers/SwitchToOptimism'
+import { BadgeContext } from '../contexts/BadgeContext'
+import { getCurrentChainId, switchNetworkChain } from '../helpers/SwitchToOptimism'
 // @ts-ignore
 import { ethers } from 'ethers'
 import { deepOrange } from '@mui/material/colors'
@@ -71,7 +71,7 @@ const MetaMaskTooltip = styled(({ className, title, ...props }: TooltipProps & M
   }),
 )
 
-const ConnectedButton = ({ handleConnection, connectedAddress, accountButtonInfo }) => {
+const ConnectedButton = ({ handleConnection, connectedAddress, accountButtonInfo }: any) => {
   const hoveredGreen = deepOrange['800']
   return (
     <MetaMaskTooltip
@@ -131,7 +131,7 @@ export default function Account({ minimized }: AccountsProps) {
   let accountButtonInfo
   const accountButtonConnected = 'Connected'
   // eslint-disable-next-line no-unused-vars
-  const [netInfo, setNetInfo] = useState([])
+  const [netInfo, setNetInfo] = useState<Array<any>>([])
 
   const checkForWeb3Provider = useCallback(() => {
     return window.ethereum === undefined ? 'Not Found' : 'Found'
@@ -152,16 +152,16 @@ export default function Account({ minimized }: AccountsProps) {
       return
     }
     const provider = window.ethereum
-    setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
+    setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum as any))
 
-    provider.on('chainChanged', chainId => {
-      setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
+    provider?.on('chainChanged', chainId => {
+      setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum as any))
     })
-    provider.on('accountsChanged', accounts => {
-      setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum))
+    provider?.on('accountsChanged', accounts => {
+      setInjectedProvider(new ethers.providers.Web3Provider(window.ethereum as any))
     })
     // Subscribe to session disconnection
-    provider.on('disconnect', (code, reason) => {
+    provider?.on('disconnect', (code, reason) => {
       console.log(code, reason)
     })
 
@@ -192,7 +192,7 @@ export default function Account({ minimized }: AccountsProps) {
     if (chainId !== selectedChainId) {
       setShowWrongNetworkToast(true)
       await switchNetworkChain(selectedChainId)
-      accounts = await window.ethereum.request({
+      accounts = await (window.ethereum as any).request({
         method: 'eth_requestAccounts',
       })
       setConnectedAddress(accounts[0])
@@ -200,7 +200,7 @@ export default function Account({ minimized }: AccountsProps) {
       return
     }
     if (chainId === selectedChainId) {
-      accounts = await window.ethereum.request({
+      accounts = await (window.ethereum as any).request({
         method: 'eth_requestAccounts',
       })
       setConnectedAddress(accounts[0])
@@ -214,18 +214,18 @@ export default function Account({ minimized }: AccountsProps) {
       displayToast()
       return
     }
-    window.ethereum.on('chainChanged', async chainId => {
-      const accounts: any[] = await window.ethereum.request({
+    (window.ethereum as any).on('chainChanged', async (chainId: string | number | any) => {
+      const accounts: any[] = await (window.ethereum as any).request({
         method: 'eth_requestAccounts',
       })
-      if (!netInfo && netInfo.length) setNetInfo(await getCurrentChainId())
+      if (!netInfo) setNetInfo(await getCurrentChainId())
       if (accounts && accounts.length) {
         setConnectedAddress(accounts[0])
       }
     })
     return () => {
       checkForWeb3Provider() === 'Found'
-        ? window.ethereum.removeListener('chainChanged', () => console.log('removed'))
+        ? (window.ethereum as any).removeListener('chainChanged', () => console.log('removed'))
         : console.log('Metamask is not installed')
     }
   }, [checkForWeb3Provider, displayToast, netInfo, setConnectedAddress])
@@ -235,13 +235,13 @@ export default function Account({ minimized }: AccountsProps) {
       displayToast()
       return
     }
-    window.ethereum.on('accountsChanged', account => {
+    (window.ethereum as any).on('accountsChanged', (account: any[]) => {
       if (account.length === 0) displayToast()
       if (account[0] !== connectedAddress) setConnectedAddress(account[0])
     })
 
     return () => {
-      window.ethereum.removeListener('accountsChanged', () => console.log('accountsChanged removed!'))
+      (window.ethereum as any).removeListener('accountsChanged', () => console.log('accountsChanged removed!'))
     }
   }, [checkForWeb3Provider, connectedAddress, displayToast, setConnectedAddress])
 
@@ -260,7 +260,7 @@ export default function Account({ minimized }: AccountsProps) {
     </>
   )
   /* SETUP TOAST FOR WRONG NETWORK */
-  const WrongNetworkToast = ({ showWrongNetworkToast, closeWrongNetworkToast, wrongNetworkSnackBar }) => {
+  const WrongNetworkToast = ({ showWrongNetworkToast, closeWrongNetworkToast, wrongNetworkSnackBar }: any) => {
     const errorMsg = 'Network not supported!'
     return (
       <Toast

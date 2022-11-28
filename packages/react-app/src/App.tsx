@@ -5,9 +5,9 @@ import { BrowseBadges } from './views'
 import MintingPage from './views/MintingPage'
 import CloseIcon from '@mui/icons-material/Close'
 import IconButton from '@mui/material/IconButton'
-import Toast from 'components/Toast'
-import { BadgeContext } from 'contexts/BadgeContext'
-import externalContracts from 'contracts/external_contracts'
+import Toast from './components/Toast'
+import { BadgeContext } from './contexts/BadgeContext'
+import externalContracts from './contracts/external_contracts'
 const { ethers } = require('ethers')
 const temmainnet = new ethers.providers.StaticJsonRpcProvider(
   'https://mainnet.infura.io/v3/1b3241e53c8d422aab3c7c0e4101de9c',
@@ -29,15 +29,17 @@ function App() {
 
   const targetNetwork = NETWORKS['optimism']
 
-  let contractRef
-  let providerRef
+  let contractRef: any
+  let providerRef: any
+  //@ts-ignore
+  const extContract: any = externalContracts[selectedChainId]
   if (
-    externalContracts[selectedChainId] &&
-    externalContracts[selectedChainId].contracts &&
-    externalContracts[selectedChainId].contracts.REMIX_REWARD
+    extContract &&
+    extContract.contracts &&
+    extContract.contracts.REMIX_REWARD
   ) {
-    contractRef = externalContracts[selectedChainId].contracts.REMIX_REWARD
-    providerRef = externalContracts[selectedChainId].provider
+    contractRef = extContract.contracts.REMIX_REWARD
+    providerRef = extContract.provider
   }
   const closeToast = () => {
     setShowToast(false)
@@ -47,7 +49,7 @@ function App() {
     return window.ethereum === undefined ? 'Not Found' : 'Found'
   }, [])
 
-  const displayToast = useCallback(msg => {
+  const displayToast = useCallback((msg: string) => {
     console.log(msg)
     setShowToast(true)
   }, [])

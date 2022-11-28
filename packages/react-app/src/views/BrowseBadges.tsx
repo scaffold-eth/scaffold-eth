@@ -16,7 +16,7 @@ import { Paper } from '@mui/material'
 import { FormControl } from '@mui/material'
 import { useContext } from 'react'
 import { BadgeContext } from '../contexts/BadgeContext'
-import BadgesPaginatedSection from 'components/BadgesPaginatedSection'
+import BadgesPaginatedSection from '../components/BadgesPaginatedSection'
 
 export const toHex = ipfsHash => {
   let buf = multihash.fromB58String(ipfsHash)
