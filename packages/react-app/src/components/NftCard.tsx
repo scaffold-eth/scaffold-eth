@@ -7,24 +7,30 @@ import { ethers } from 'ethers'
 import multihash from 'multihashes'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import Snackbar from '@mui/material/Snackbar'
-import MuiAlert from '@mui/material/Alert'
+import MuiAlert, { AlertProps } from '@mui/material/Alert'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
+import { NftCardProps, TokensData } from '../types/rewardTypes'
 
-export const toBase58 = contentHash => {
+export const toBase58 = (contentHash: any) => {
   let hex = contentHash.substring(2)
   let buf = multihash.fromHexString(hex)
   return multihash.toB58String(buf)
 }
 
-const Notification = React.forwardRef(function Alert(props, ref) {
+const Notification = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) {
   // @ts-ignore
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
 })
 
-export default function NftCard(props) {
+export default function NftCard(props: NftCardProps) {
   const { contract, mainnet, to, id, transactionHash, etherscan } = props
-  const [state, setState] = useState({
-    data: {},
+  const [state, setState] = useState<{
+    data: TokensData,
+    title: string,
+    src: string,
+    txLink: string,
+  }>({
+    data: { hash:'', payload:'', tokenType:'' },
     title: '',
     src: '',
     txLink: '',
@@ -40,7 +46,7 @@ export default function NftCard(props) {
   }
   const run = useCallback(async () => {
     try {
-      let data = await contract.tokensData(ethers.BigNumber.from(id === '0x' ? '0x0' : id))
+      let data: TokensData = await contract.tokensData(ethers.BigNumber.from(id === '0x' ? '0x0' : id))
       let toFormatted = ethers.utils.hexZeroPad(ethers.utils.hexStripZeros(to), 20)
       const name = await mainnet.lookupAddress(toFormatted)
       let title = name ? name : toFormatted

@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react'
 import externalContracts from '../contracts/external_contracts'
 import { getAllRewards } from '../helpers/getAllRewards'
+import { EventBadge } from '../types/rewardTypes'
 
 import { ethers } from 'ethers'
 import InputLabel from '@mui/material/InputLabel'
@@ -14,7 +15,7 @@ import Box from '@mui/material/Box'
 import { Paper } from '@mui/material'
 import { FormControl } from '@mui/material'
 import { useContext } from 'react'
-import { BadgeContext } from 'contexts/BadgeContext'
+import { BadgeContext } from '../contexts/BadgeContext'
 import BadgesPaginatedSection from 'components/BadgesPaginatedSection'
 
 export const toHex = ipfsHash => {
@@ -42,7 +43,7 @@ export const unwrap = async arr => {
 
 export default function BrowseBadges() {
   const [badges, setBadges] = useState([])
-  const [eventBadges, setEventBadges] = useState([])
+  const [eventBadges, setEventBadges] = useState<Array<EventBadge>>([])
   const [groupedBadges, setPagedGroupedBadges] = useState({})
   const [error, setErrorMessage] = useState('')
   const [showSpinner, setShowSpinner] = useState(false)

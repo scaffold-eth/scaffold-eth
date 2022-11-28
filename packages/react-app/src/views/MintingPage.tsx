@@ -5,7 +5,7 @@ import MintingPageCard from '../components/MintingPageCard'
 import MintingActions from 'components/MintingActions'
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
-import { BadgeContext } from 'contexts/BadgeContext'
+import { BadgeContext } from '../contexts/BadgeContext'
 
 export default function MintingPage() {
   // @ts-ignore
