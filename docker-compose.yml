@@ -26,3 +26,5 @@ services:
     working_dir: /app
     volumes:
       - .:/app
+    environment:
+      HARDHAT_HOST: chain
