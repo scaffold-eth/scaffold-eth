@@ -1,5 +1,13 @@
 version: "3.9"
 services:
+  chain:
+    build: .
+    command: sh -c "yarn chain"
+    ports:
+      - "3001:3001"
+    working_dir: /app
+    volumes:
+      - .:/app
   app:
     build: .
     command: sh -c "yarn start"
@@ -10,14 +18,6 @@ services:
       - .:/app
     environment:
       HARDHAT_HOST: chain
-  chain:
-    build: .
-    command: sh -c "yarn chain"
-    ports:
-      - "3001:3001"
-    working_dir: /app
-    volumes:
-      - .:/app
   deploy:
     build: .
     command: sh -c "yarn deploy"
