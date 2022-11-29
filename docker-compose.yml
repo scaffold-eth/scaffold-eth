@@ -28,3 +28,6 @@ services:
       - .:/app
     environment:
       HARDHAT_HOST: chain
+    depends_on:
+      - chain
+      - app
