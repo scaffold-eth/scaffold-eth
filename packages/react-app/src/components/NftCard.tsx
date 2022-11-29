@@ -25,12 +25,12 @@ const Notification = React.forwardRef<HTMLDivElement, AlertProps>(function Alert
 export default function NftCard(props: NftCardProps) {
   const { contract, mainnet, to, id, transactionHash, etherscan } = props
   const [state, setState] = useState<{
-    data: TokensData,
-    title: string,
-    src: string,
-    txLink: string,
+    data: TokensData
+    title: string
+    src: string
+    txLink: string
   }>({
-    data: { hash:'', payload:'', tokenType:'' },
+    data: { hash: '', payload: '', tokenType: '' },
     title: '',
     src: '',
     txLink: '',
@@ -88,6 +88,8 @@ export default function NftCard(props: NftCardProps) {
                 <CardMedia component={'img'} width={200} image={state.src} alt={'nftimage'} />
               </Skeleton>
             </>
+          ) : state.data.tokenType === 'Remixer' ? (
+            <CardMedia component={'img'} width={200} height={360} image={state.src} alt={'Remixer NFT'} />
           ) : (
             <CardMedia component={'img'} width={200} image={state.src} alt={'nftimage'} />
           )}
