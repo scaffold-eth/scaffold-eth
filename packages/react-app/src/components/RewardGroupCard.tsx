@@ -98,6 +98,8 @@ export default function RewardGroupCard(props: any) {
                 <CardMedia component={'img'} width={200} image={state.src} alt={'nftimage'} />
               </Skeleton>
             </>
+          ) : state.tokenType === 'Remixer' ? (
+            <CardMedia component={'img'} width={200} height={360} image={state.src} alt={'Remixer NFT'} />
           ) : (
             <CardMedia component={'img'} width={200} image={state.src} alt={'nftimage'} />
           )}
