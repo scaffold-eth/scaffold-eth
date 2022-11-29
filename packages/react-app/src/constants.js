@@ -19,9 +19,13 @@ Note: this is not used when you are in the local hardhat chain.
 */
 export const RPC_POLL_TIME = 30000;
 
-const localRpcUrl = process.env.REACT_APP_CODESPACES
+let localRpcUrl = process.env.REACT_APP_CODESPACES
   ? `https://${window.location.hostname.replace("3000", "8545")}`
   : "http://" + (global.window ? window.location.hostname : "localhost") + ":8545";
+
+if (process.env.HARDHAT_HOST) {
+  localRpcUrl = `http://${process.env.HARDHAT_HOST}:8545`;
+}
 
 export const NETWORKS = {
   localhost: {

@@ -33,7 +33,7 @@ const web3ModalSetup = () =>
             10: "https://mainnet.optimism.io", // xDai
             100: "https://rpc.gnosischain.com", // xDai
             137: "https://polygon-rpc.com",
-            31337: "http://localhost:8545",
+            31337: `http://${process.env.HARDHAT_HOST}:8545`,
             42161: "https://arb1.arbitrum.io/rpc",
             80001: "https://rpc-mumbai.maticvigil.com",
             71401: "https://godwoken-testnet-v1.ckbapp.dev",
