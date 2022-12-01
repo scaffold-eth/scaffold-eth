@@ -145,8 +145,8 @@ export default function RewardGroupCard(props: any) {
               sx={{
                 background: '#81a6f7',
                 ':hover': { background: '#1976d2', color: '#fff' },
-                borderBottomLeftRadius: '3px',
-                borderBottomRightRadius: '3px',
+                borderBottomLeftRadius: '15px !important',
+                borderBottomRightRadius: '15px !important',
               }}
             >
               <AccordionSummary sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -160,8 +160,8 @@ export default function RewardGroupCard(props: any) {
                   paddingLeft: '5px',
                   paddingRight: '5px',
                   paddingBottom: '5px !important',
-                  borderBottomLeftRadius: '5px',
-                  borderBottomRightRadius: '5px',
+                  borderBottomLeftRadius: '5px !important',
+                  borderBottomRightRadius: '5px !important',
                 }}
               >
                 <List sx={{ backgroundColor: 'white' }}>
