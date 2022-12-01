@@ -102,6 +102,10 @@ contract Emotilon is ERC721Enumerable, IERC721Receiver, Ownable, AccessControl {
     healthTimestamp[id] += amount;
   }
 
+  function decreaseHealth(uint256 id, uint256 amount) public onlyRole(HEALTH_ROLE) {
+    healthTimestamp[id] -= amount;
+  }
+
   function healthStatus(uint256 id) public view returns (uint256) {
     require(_exists(id), "not exist");
 

@@ -303,14 +303,6 @@ function App(props) {
       <div id="header">
         <div>
           <Header />
-          <div class="info">
-            <ul>
-              <li>Mint a Roboto</li>
-              <li>Add Antennas, Ears and Glasses</li>
-              <li>Buy Batteries</li>
-              <li>Keep the Roboto charged!</li>
-            </ul>
-          </div>
           <NetworkDisplay
             NETWORKCHECK={NETWORKCHECK}
             localChainId={localChainId}
@@ -322,7 +314,7 @@ function App(props) {
               <Link to="/">Home</Link>
             </Menu.Item>
             <Menu.Item key="/yourRobotos">
-              <Link to="/yourRobotos">Your Robotos</Link>
+              <Link to="/yourRobotos">Your Emotilons</Link>
             </Menu.Item>
           </Menu>
         </div>
@@ -504,7 +496,7 @@ function App(props) {
               contractConfig={contractConfig}
             />
             <Contract
-              name="Antennas"
+              name="Emoticoin"
               price={price}
               signer={userSigner}
               provider={localProvider}
@@ -513,25 +505,7 @@ function App(props) {
               contractConfig={contractConfig}
             />
             <Contract
-              name="Ears"
-              price={price}
-              signer={userSigner}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-              contractConfig={contractConfig}
-            />
-            <Contract
-              name="Glasses"
-              price={price}
-              signer={userSigner}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-              contractConfig={contractConfig}
-            />
-            <Contract
-              name="RobotoBattery"
+              name="EmotilonVoucher"
               price={price}
               signer={userSigner}
               provider={localProvider}

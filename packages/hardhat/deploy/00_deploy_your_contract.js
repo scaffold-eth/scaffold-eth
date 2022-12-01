@@ -8,8 +8,8 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
   const chainId = await getChainId();
-
-  const battery = await deploy("RobotoBattery", {
+/*
+  const emoticoin = await deploy("Emoticoin", {
     from: deployer,
     log: true,
   });
@@ -35,10 +35,30 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
 
   const emotilon = await deploy("Emotilon", {
     from: deployer,
-    args: [battery.address],
+    args: [emoticoin.address],
     libraries: { EmotilonMetadata: metadata.address },
     log: true,
   });
+
+  await deploy("EmotilonVoucher", {
+    from: deployer,
+    log: true,
+  });
+*/
+  const gameAddress = "0x8A791620dd6260079BF849Dc5567aDC3F2FdC318";
+
+  const emoticoin = await ethers.getContract("Emoticoin", deployer);
+  const emotilon = await ethers.getContract("Emotilon", deployer);
+
+  await emoticoin.grantRole(
+    ethers.utils.keccak256(ethers.utils.toUtf8Bytes("MINTER_ROLE")),
+    gameAddress
+  );
+
+  await emotilon.grantRole(
+    ethers.utils.keccak256(ethers.utils.toUtf8Bytes("HEALTH_ROLE")),
+    gameAddress
+  );
 
 /*
   const eyelash = await deploy("Eyelash", {
