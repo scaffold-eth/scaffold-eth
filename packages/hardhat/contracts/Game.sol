@@ -10,26 +10,29 @@ enum MoveDirection {
     Right
 }
 
-abstract contract LoogieCoinContract {
+abstract contract TokenContract {
   function mint(address to, uint256 amount) virtual public;
 }
 
-abstract contract LoogiesContract {
+abstract contract NFTContract {
   function tokenURI(uint256 id) external virtual view returns (string memory);
   function ownerOf(uint256 id) external virtual view returns (address);
+  function rechargeHealth(uint256 id, uint256 amount) public virtual;
+  function decreaseHealth(uint256 id, uint256 amount) public virtual;
+  function healthStatus(uint256 id) public virtual view returns (uint256);
 }
 
 contract Game is Ownable  {
     event Restart(uint8 width, uint8 height);
-    event Register(address indexed txOrigin, address indexed msgSender, uint8 x, uint8 y, uint256 loogieId);
-    event Move(address indexed txOrigin, uint8 x, uint8 y, uint256 health);
+    event Register(address indexed txOrigin, address indexed msgSender, uint8 x, uint8 y, uint256 indexed nftId);
+    event Move(uint256 indexed nftId, address indexed txOrigin, uint8 x, uint8 y, uint256 health);
     event GameOver(address indexed player);
-    event CollectedTokens(address indexed player, uint256 amount);
-    event CollectedHealth(address indexed player, uint256 amount);
+    event CollectedTokens(address indexed player, uint256 indexed nftId, uint256 amount);
+    event CollectedHealth(address indexed player, uint256 indexed nftId, uint256 amount);
     event NewDrop(bool indexed isHealth, uint256 amount, uint8 x, uint8 y);
 
     struct Field {
-        address player;
+        uint256 player;
         uint256 tokenAmountToCollect;
         uint256 healthAmountToCollect;
     }
@@ -39,8 +42,8 @@ contract Game is Ownable  {
         uint8 y;
     }
 
-    LoogiesContract public loogiesContract;
-    LoogieCoinContract public loogieCoin;
+    NFTContract public nftContract;
+    TokenContract public tokenContract;
 
     bool public gameOn;
     uint public collectInterval;
@@ -49,21 +52,25 @@ contract Game is Ownable  {
     uint8 public constant height = 24;
     Field[width][height] public worldMatrix;
 
-    mapping(address => address) public yourContract;
-    mapping(address => Position) public yourPosition;
-    mapping(address => uint256) public health;
-    mapping(address => uint256) public lastCollectAttempt;
-    mapping(address => uint256) public loogies;
-    address[] public players;
+    mapping(uint256 => Position) public yourPosition;
+    mapping(uint256 => uint256) public lastCollectAttempt;
+    uint256[] public players;
 
     uint256 public restartBlockNumber;
     bool public dropOnCollect;
-    uint8 public attritionDivider = 50;
+    uint256 public attritionDivider = 50;
+    uint256 public healthByMove = 50;
 
-    constructor(uint256 _collectInterval, address _loogiesContractAddress, address _loogieCoinContractAddress) {
+    modifier onlyNftOwner(uint256 nftId) {
+        require(nftContract.ownerOf(nftId) == tx.origin, "ONLY NFT THAT YOU OWN");
+
+        _;
+    }
+
+    constructor(uint256 _collectInterval, address _nftContractAddress, address _tokenContractAddress) {
         collectInterval = _collectInterval;
-        loogiesContract = LoogiesContract(_loogiesContractAddress);
-        loogieCoin = LoogieCoinContract(_loogieCoinContractAddress);
+        nftContract = NFTContract(_nftContractAddress);
+        tokenContract = TokenContract(_tokenContractAddress);
         restartBlockNumber = block.number;
 
         emit Restart(width, height);
@@ -87,13 +94,10 @@ contract Game is Ownable  {
 
     function restart() public onlyOwner {
         for (uint i=0; i<players.length; i++) {
-            yourContract[players[i]] = address(0);
             Position memory playerPosition = yourPosition[players[i]];
-            worldMatrix[playerPosition.x][playerPosition.y] = Field(address(0),0,0);
+            worldMatrix[playerPosition.x][playerPosition.y] = Field(0,0,0);
             yourPosition[players[i]] = Position(0,0);
-            health[players[i]] = 0;
             lastCollectAttempt[players[i]] = 0;
-            loogies[players[i]] = 0;
         }
 
         delete players;
@@ -103,43 +107,23 @@ contract Game is Ownable  {
         emit Restart(width, height);
     }
 
-    function getPlayers() public view returns(address[] memory){
+    function getPlayers() public view returns(uint256[] memory) {
         return players;
     }
 
-    function update(address newContract) public {
-      require(gameOn, "TOO LATE");
-      health[tx.origin] = (health[tx.origin]*80)/100; //20% loss of health on contract update?!!? lol
-      require(tx.origin == msg.sender, "MUST BE AN EOA");
-      require(yourContract[tx.origin] != address(0), "MUST HAVE A CONTRACT");
-      yourContract[tx.origin] = newContract;
-    }
-
-    bool public requireContract = false;
-
-    function setRequireContract(bool newValue) public onlyOwner {
-        requireContract = newValue;
-    }
-
-    function register(uint256 loogieId) public {
+    function register(uint256 nftId) public onlyNftOwner(nftId) {
         require(gameOn, "TOO LATE");
-        if(requireContract) require(tx.origin != msg.sender, "NOT A CONTRACT");
-        require(yourContract[tx.origin] == address(0), "NO MORE PLZ");
-        require(loogiesContract.ownerOf(loogieId) == tx.origin, "ONLY LOOGIES THAT YOU OWN");
-        require(players.length <= 50, "MAX 50 LOOGIES REACHED");
+        require(players.length <= 50, "MAX 50 PLAYERS REACHED");
 
-        players.push(tx.origin);
-        yourContract[tx.origin] = msg.sender;
-        health[tx.origin] = 500;
-        loogies[tx.origin] = loogieId;
+        players.push(nftId);
 
-        randomlyPlace();
+        randomlyPlace(nftId);
 
-        emit Register(tx.origin, msg.sender, yourPosition[tx.origin].x, yourPosition[tx.origin].y, loogieId);
+        emit Register(tx.origin, msg.sender, yourPosition[nftId].x, yourPosition[nftId].y, nftId);
     }
 
-    function randomlyPlace() internal {
-        bytes32 predictableRandom = keccak256(abi.encodePacked( blockhash(block.number-1), msg.sender, tx.origin, address(this) ));
+    function randomlyPlace(uint256 nftId) internal {
+        bytes32 predictableRandom = keccak256(abi.encodePacked( blockhash(block.number-1), msg.sender, tx.origin, nftId, address(this) ));
 
         uint8 index = 0;
         uint8 x  = uint8(predictableRandom[index++])%width;
@@ -147,45 +131,43 @@ contract Game is Ownable  {
 
         Field memory field = worldMatrix[x][y];
 
-        while(field.player != address(0)){
+        while(field.player != 0){
             x  = uint8(predictableRandom[index++])%width;
             y  = uint8(predictableRandom[index++])%height;
             field = worldMatrix[x][y];
         }
 
-        worldMatrix[x][y].player = tx.origin;
-        worldMatrix[yourPosition[tx.origin].x][yourPosition[tx.origin].y].player = address(0);
-        yourPosition[tx.origin] = Position(x, y);
-        //emit Move(tx.origin, x, y);
+        worldMatrix[x][y].player = nftId;
+        worldMatrix[yourPosition[nftId].x][yourPosition[nftId].y].player = 0;
+        yourPosition[nftId] = Position(x, y);
+
+        uint256 healthStatus = nftContract.healthStatus(nftId);
+        emit Move(nftId, tx.origin, x, y, healthStatus);
     }
 
-    function currentPosition() public view returns(Position memory) {
-        return yourPosition[tx.origin];
+    function positionOf(uint256 nftId) public view returns(Position memory) {
+        return yourPosition[nftId];
     }
 
-    function positionOf(address player) public view returns(Position memory) {
-        return yourPosition[player];
+    function tokenURIOf(uint256 nftId) public view returns(string memory) {
+        return nftContract.tokenURI(nftId);
     }
 
-    function tokenURIOf(address player) public view returns(string memory) {
-        return loogiesContract.tokenURI(loogies[player]);
-    }
+    function collectTokens(uint256 nftId) public onlyNftOwner(nftId) {
+        require(nftContract.healthStatus(nftId) > 0, "NO HEALTH");
+        require(block.timestamp - lastCollectAttempt[nftId] >= collectInterval, "TOO EARLY");
+        lastCollectAttempt[nftId] = block.timestamp;
 
-    function collectTokens() public {
-        require(health[tx.origin] > 0, "YOU DED");
-        require(block.timestamp - lastCollectAttempt[tx.origin] >= collectInterval, "TOO EARLY");
-        lastCollectAttempt[tx.origin] = block.timestamp;
-
-        Position memory position = yourPosition[tx.origin];
+        Position memory position = yourPosition[nftId];
         Field memory field = worldMatrix[position.x][position.y];
         require(field.tokenAmountToCollect > 0, "NOTHING TO COLLECT");
 
         if(field.tokenAmountToCollect > 0) {
             uint256 amount = field.tokenAmountToCollect;
             // mint tokens to tx.origin
-            loogieCoin.mint(tx.origin, amount);
+            tokenContract.mint(tx.origin, amount);
             worldMatrix[position.x][position.y].tokenAmountToCollect = 0;
-            emit CollectedTokens(tx.origin, amount);
+            emit CollectedTokens(tx.origin, nftId, amount);
             if (dropOnCollect) {
                 dropToken(amount);
             }
@@ -193,21 +175,20 @@ contract Game is Ownable  {
 
     }
 
-    function collectHealth() public {
-        require(health[tx.origin] > 0, "YOU DED");
-        require(block.timestamp - lastCollectAttempt[tx.origin] >= collectInterval, "TOO EARLY");
-        lastCollectAttempt[tx.origin] = block.timestamp;
+    function collectHealth(uint256 nftId) public onlyNftOwner(nftId) {
+        require(nftContract.healthStatus(nftId) > 0, "NO HEALTH");
+        require(block.timestamp - lastCollectAttempt[nftId] >= collectInterval, "TOO EARLY");
+        lastCollectAttempt[nftId] = block.timestamp;
 
-        Position memory position = yourPosition[tx.origin];
+        Position memory position = yourPosition[nftId];
         Field memory field = worldMatrix[position.x][position.y];
         require(field.healthAmountToCollect > 0, "NOTHING TO COLLECT");
 
         if(field.healthAmountToCollect > 0) {
             uint256 amount = field.healthAmountToCollect;
-            // increase health
-            health[tx.origin] += amount;
+            nftContract.rechargeHealth(nftId, amount);
             worldMatrix[position.x][position.y].healthAmountToCollect = 0;
-            emit CollectedHealth(tx.origin, amount);
+            emit CollectedHealth(tx.origin, nftId, amount);
             if (dropOnCollect) {
                 dropHealth(amount);
             }
@@ -218,32 +199,28 @@ contract Game is Ownable  {
         attritionDivider = newDivider;
     }
 
-    function move(MoveDirection direction) public {
-        require(health[tx.origin] > 0, "YOU DED");
-        if(requireContract) require(tx.origin != msg.sender, "NOT A CONTRACT");
-        (uint8 x, uint8 y) = getCoordinates(direction, tx.origin);
+    function move(uint256 nftId, MoveDirection direction) public onlyNftOwner(nftId) {
+        require(nftContract.healthStatus(nftId) > healthByMove, "NOT ENOUGH HEALTH");
+        (uint8 x, uint8 y) = getCoordinates(direction, nftId);
         require(x < width && y < height, "OUT OF BOUNDS");
 
         Field memory field = worldMatrix[x][y];
 
-        require(field.player == address(0), "ANOTHER LOOGIE ON THIS POSITION");
+        require(field.player == 0, "ANOTHER PLAYER ON THIS POSITION");
 
-        bytes32 predictableRandom = keccak256(abi.encodePacked( blockhash(block.number-1), msg.sender, address(this)));
+        bytes32 predictableRandom = keccak256(abi.encodePacked( blockhash(block.number-1), msg.sender, nftId, address(this)));
 
-        health[tx.origin] -= uint8(predictableRandom[0])/attritionDivider;
+        // TODO: make it based on nft attribute
+        nftContract.decreaseHealth(nftId, healthByMove);
+        uint256 healthStatus = nftContract.healthStatus(nftId);
 
-        worldMatrix[x][y].player = tx.origin;
-        worldMatrix[yourPosition[tx.origin].x][yourPosition[tx.origin].y].player = address(0);
-        yourPosition[tx.origin] = Position(x, y);
-        emit Move(tx.origin, x, y, health[tx.origin]);
-
-        if(health[tx.origin] <= 0) {
-            worldMatrix[yourPosition[tx.origin].x][yourPosition[tx.origin].y].player = address(0);
-            emit GameOver(tx.origin);
-        }
+        worldMatrix[x][y].player = nftId;
+        worldMatrix[yourPosition[nftId].x][yourPosition[nftId].y].player = 0;
+        yourPosition[nftId] = Position(x, y);
+        emit Move(nftId, tx.origin, x, y, healthStatus);
     }
 
-    function getCoordinates(MoveDirection direction, address txOrigin) internal view returns(uint8 x, uint8 y) {
+    function getCoordinates(MoveDirection direction, uint256 nftId) internal view returns(uint8 x, uint8 y) {
         //       x ----->
         //      _______________
         //  y  |____|____|_____
@@ -252,23 +229,23 @@ contract Game is Ownable  {
         //     |____|____|_____
 
         if (direction == MoveDirection.Up) {
-            x = yourPosition[txOrigin].x;
-            y = yourPosition[txOrigin].y - 1;
+            x = yourPosition[nftId].x;
+            y = yourPosition[nftId].y - 1;
         }
 
         if (direction == MoveDirection.Down) {
-            x = yourPosition[txOrigin].x;
-            y = yourPosition[txOrigin].y + 1;
+            x = yourPosition[nftId].x;
+            y = yourPosition[nftId].y + 1;
         }
 
         if (direction == MoveDirection.Left) {
-            x = yourPosition[txOrigin].x - 1;
-            y = yourPosition[txOrigin].y;
+            x = yourPosition[nftId].x - 1;
+            y = yourPosition[nftId].y;
         }
 
         if (direction == MoveDirection.Right) {
-            x = yourPosition[txOrigin].x + 1;
-            y = yourPosition[txOrigin].y;
+            x = yourPosition[nftId].x + 1;
+            y = yourPosition[nftId].y;
         }
     }
 
@@ -308,12 +285,12 @@ contract Game is Ownable  {
 
         x = uint8(uint256(keccak256(abi.encode(firstRandomNumber, 3))) % width);
         y = uint8(uint256(keccak256(abi.encode(secondRandomNumber, 3))) % height);
-        worldMatrix[x][y].healthAmountToCollect += 100;
-        emit NewDrop(true, 100, x, y);
+        worldMatrix[x][y].healthAmountToCollect += 100000;
+        emit NewDrop(true, 100000, x, y);
 
         x = uint8(uint256(keccak256(abi.encode(firstRandomNumber, 4))) % width);
         y = uint8(uint256(keccak256(abi.encode(secondRandomNumber, 4))) % height);
-        worldMatrix[x][y].healthAmountToCollect += 50;
-        emit NewDrop(true, 50, x, y);
+        worldMatrix[x][y].healthAmountToCollect += 50000;
+        emit NewDrop(true, 50000, x, y);
     }
 }
