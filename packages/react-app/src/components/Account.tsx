@@ -214,8 +214,8 @@ export default function Account({ minimized }: AccountsProps) {
       displayToast()
       return
     }
-    (window.ethereum as any).on('chainChanged', async (chainId: string | number | any) => {
-      const accounts: any[] = await (window.ethereum as any).request({
+    (window.ethereum as any).on('chainChanged', async (chainId: string) => {
+      const accounts: string[] = await (window.ethereum as any).request({
         method: 'eth_requestAccounts',
       })
       if (!netInfo) setNetInfo(await getCurrentChainId())
@@ -235,7 +235,8 @@ export default function Account({ minimized }: AccountsProps) {
       displayToast()
       return
     }
-    (window.ethereum as any).on('accountsChanged', (account: any[]) => {
+    (window.ethereum as any).on('accountsChanged', (account: string[]) => {
+      console.log('accountsChanged', { account })
       if (account.length === 0) displayToast()
       if (account[0] !== connectedAddress) setConnectedAddress(account[0])
     })

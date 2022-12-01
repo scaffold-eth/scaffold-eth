@@ -11,16 +11,14 @@ import useMediaQuery from '@mui/material/useMediaQuery'
 import { useCallback } from 'react'
 import AddressedCard from './AddressedCard'
 import RewardGroupCard from './RewardGroupCard'
-import { BadgesPaginatedSectionProps } from '../types/rewardTypes'
+import { BadgesPaginatedSectionProps, EventBadge } from '../types/rewardTypes'
 
 export default function BadgesPaginatedSection({
   badges,
   checkeventBagesAndBadges,
-  checkForWeb3Provider,
   etherscanRef,
   eventBadges,
   groupedRewards,
-  setBadges,
 }: BadgesPaginatedSectionProps) {
   const pageSize = 10
   // @ts-ignore
@@ -28,7 +26,6 @@ export default function BadgesPaginatedSection({
   const contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
   const [pageNumber, setPageNumber] = useState(1)
   const [pagedBadges, setPagedBadges] = useState<Array<any>>([])
-  const [pagedGroups, setPagedGroups] = useState<Array<any>>([])
   const mobileResponsiveMatch = useMediaQuery('(min-width:600px)')
   const getPaginationData = useCallback(
     (pgSize: number, pgNumber: number) => {
@@ -92,8 +89,8 @@ export default function BadgesPaginatedSection({
             >
               <AddressedCard badges={badges} etherscanRef={etherscanRef} />
             </Grid>
-          ) : groupedRewards && groupedRewards.length > 0 ? (
-            groupedRewards.map((eventB: any) => {
+          ) : eventBadges && eventBadges.length > 0 ? (
+            eventBadges.map((eventB: EventBadge) => {
               return (
                 <Grid
                   item

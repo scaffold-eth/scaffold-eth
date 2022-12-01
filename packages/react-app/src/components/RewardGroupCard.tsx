@@ -11,7 +11,6 @@ import {
   AccordionDetails,
   List,
   ListItem,
-  Badge,
 } from '@mui/material'
 import IconButton from '@mui/material/IconButton'
 import SearchIcon from '@mui/icons-material/Search'
@@ -23,7 +22,7 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import Snackbar from '@mui/material/Snackbar'
 import MuiAlert, { AlertProps } from '@mui/material/Alert'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
-import { EventBadge } from '../types/rewardTypes'
+import { Reward } from '../types/rewardTypes'
 
 export const toBase58 = (contentHash: any) => {
   let hex = contentHash.substring(2)
@@ -46,7 +45,7 @@ export default function RewardGroupCard(props: any) {
   })
   const [open, setOpen] = useState(false)
   // @ts-ignore
-  const [hoverActive, setHoverActive] = useReducer(previous => !previous, false)
+  const [, setHoverActive] = useReducer(previous => !previous, false)
   const handleTooltipClose = () => {
     setOpen(false)
   }
@@ -146,7 +145,7 @@ export default function RewardGroupCard(props: any) {
               </AccordionSummary>
               <AccordionDetails>
                 <List>
-                  {props.event.map((x: EventBadge) => (
+                  {props.event.map((x: Reward) => (
                     <ListItem
                       key={x.transactionHash}
                       sx={{

@@ -10,7 +10,7 @@ export function NetInfo({ netInfo, setNetInfo, connectedAddress, checkForWeb3Pro
       // displayToast()
       return
     }
-    (window as any).ethereum.on('chainChanged', async (chainId: string | number | any) => {
+    (window as any).ethereum.on('chainChanged', async (chainId: string) => {
       const chainInfo = await getCurrentChainId()
       setNetInfo(chainInfo)
     })
@@ -20,7 +20,7 @@ export function NetInfo({ netInfo, setNetInfo, connectedAddress, checkForWeb3Pro
         console.log('Metamask is not installed!')
         return
       }
-      (window as any).removeListener('chainChanged', () => console.log('removed chainChanged from NetInfo'))
+      (window.ethereum as any).removeListener('chainChanged', () => console.log('removed chainChanged from NetInfo'))
     }
   }, [checkForWeb3Provider, displayToast, setNetInfo])
   return (
