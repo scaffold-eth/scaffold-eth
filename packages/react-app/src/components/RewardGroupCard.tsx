@@ -80,6 +80,7 @@ export default function RewardGroupCard(props: any) {
         sx={{
           position: 'relative',
           padding: '2px',
+          paddingBottom: 0,
           color: '#333333',
           borderRadius: 5,
           boxShadow: '1px 1px 4px 0px rgb(170,170,170)',
@@ -106,6 +107,10 @@ export default function RewardGroupCard(props: any) {
             sx={{
               background:
                 'linear-gradient(90deg, #d4def4, #d9dff6, #dee1f7, #e3e2f9, #e8e4fa, #ede5fb, #f1e6fb, #f6e8fc)',
+              paddingTop: '1px',
+              paddingBottom: '5px !important',
+              paddingRight: '2px',
+              paddingLeft: '2px',
             }}
           >
             <div
@@ -136,15 +141,30 @@ export default function RewardGroupCard(props: any) {
                 {state.rewardCount}
               </Typography>
             </div>
-            <Accordion sx={{ background: '#81a6f7', ':hover': { background: '#1976d2', color: '#fff' } }}>
+            <Accordion
+              sx={{
+                background: '#81a6f7',
+                ':hover': { background: '#1976d2', color: '#fff' },
+                borderBottomLeftRadius: '3px',
+                borderBottomRightRadius: '3px',
+              }}
+            >
               <AccordionSummary sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <Typography
                   fontWeight={'bold'}
                   color={'white'}
                 >{`${props.event[0].tokenType} ${props.event[0].payload}`}</Typography>
               </AccordionSummary>
-              <AccordionDetails>
-                <List>
+              <AccordionDetails
+                sx={{
+                  paddingLeft: '5px',
+                  paddingRight: '5px',
+                  paddingBottom: '5px !important',
+                  borderBottomLeftRadius: '5px',
+                  borderBottomRightRadius: '5px',
+                }}
+              >
+                <List sx={{ backgroundColor: 'white' }}>
                   {props.event.map((x: Reward) => (
                     <ListItem
                       key={x.transactionHash}
@@ -180,7 +200,7 @@ export default function RewardGroupCard(props: any) {
                           variant={'body2'}
                           noWrap={false}
                           fontWeight={400}
-                          color={'white'}
+                          color={'darkblue'}
                           onMouseOver={() => setHoverActive()}
                           onMouseOut={() => setHoverActive()}
                           sx={{

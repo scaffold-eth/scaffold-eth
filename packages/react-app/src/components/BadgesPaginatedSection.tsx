@@ -89,30 +89,6 @@ export default function BadgesPaginatedSection({
             >
               <AddressedCard badges={badges} etherscanRef={etherscanRef} />
             </Grid>
-          ) : eventBadges && eventBadges.length > 0 ? (
-            eventBadges.map((eventB: EventBadge) => {
-              return (
-                <Grid
-                  item
-                  mt={-12}
-                  mb={15}
-                  ml={'auto'}
-                  mr={'auto'}
-                  key={`${eventB.to}-${eventB.id}`}
-                  alignItems={'left'}
-                  justifyContent={'left'}
-                >
-                  <NftCard
-                    etherscan={etherscanRef}
-                    to={eventB.to}
-                    id={eventB.id}
-                    transactionHash={eventB.transactionHash}
-                    contract={contract}
-                    mainnet={mainnet}
-                  />
-                </Grid>
-              )
-            })
           ) : groupedRewards && Object.keys(groupedRewards).length > 0 ? (
             Object.keys(groupedRewards).map(eventKey => {
               return (
