@@ -169,7 +169,7 @@ export default function RewardGroupCard(props: any) {
                     <ListItem
                       key={x.transactionHash}
                       sx={{
-                        marginBottom: 2,
+                        marginBottom: 1,
                       }}
                       secondaryAction={
                         <Tooltip title="view transaction" placement={'top-start'}>
