@@ -30,7 +30,7 @@ const { utils } = require('ethers')
   - Provide price={price} of ether and get your balance converted to dollars
 **/
 
-export default function Balance(props) {
+export default function Balance(props: any) {
   const [dollarMode, setDollarMode] = useState(true)
 
   const balance = useBalance(props.provider, props.address)

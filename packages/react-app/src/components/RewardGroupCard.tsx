@@ -16,24 +16,26 @@ import IconButton from '@mui/material/IconButton'
 import SearchIcon from '@mui/icons-material/Search'
 import Tooltip from '@mui/material/Tooltip'
 import Accordion from '@mui/material/Accordion'
+// @ts-ignore
 import multihash from 'multihashes'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import Snackbar from '@mui/material/Snackbar'
-import MuiAlert from '@mui/material/Alert'
+import MuiAlert, { AlertProps } from '@mui/material/Alert'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
+import { Reward } from '../types/rewardTypes'
 
-export const toBase58 = contentHash => {
+export const toBase58 = (contentHash: any) => {
   let hex = contentHash.substring(2)
   let buf = multihash.fromHexString(hex)
   return multihash.toB58String(buf)
 }
 
-const Notification = React.forwardRef(function Alert(props, ref) {
+const Notification = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) {
   // @ts-ignore
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
 })
 
-export default function RewardGroupCard(props) {
+export default function RewardGroupCard(props: any) {
   const [state, setState] = useState({
     title: '',
     src: '',
@@ -43,7 +45,7 @@ export default function RewardGroupCard(props) {
   })
   const [open, setOpen] = useState(false)
   // @ts-ignore
-  const [hoverActive, setHoverActive] = useReducer(previous => !previous, false)
+  const [, setHoverActive] = useReducer(previous => !previous, false)
   const handleTooltipClose = () => {
     setOpen(false)
   }
@@ -78,6 +80,7 @@ export default function RewardGroupCard(props) {
         sx={{
           position: 'relative',
           padding: '2px',
+          paddingBottom: 0,
           color: '#333333',
           borderRadius: 5,
           boxShadow: '1px 1px 4px 0px rgb(170,170,170)',
@@ -95,6 +98,8 @@ export default function RewardGroupCard(props) {
                 <CardMedia component={'img'} width={200} image={state.src} alt={'nftimage'} />
               </Skeleton>
             </>
+          ) : state.tokenType === 'Remixer' ? (
+            <CardMedia component={'img'} width={200} height={360} image={state.src} alt={'Remixer NFT'} />
           ) : (
             <CardMedia component={'img'} width={200} image={state.src} alt={'nftimage'} />
           )}
@@ -102,19 +107,69 @@ export default function RewardGroupCard(props) {
             sx={{
               background:
                 'linear-gradient(90deg, #d4def4, #d9dff6, #dee1f7, #e3e2f9, #e8e4fa, #ede5fb, #f1e6fb, #f6e8fc)',
+              paddingTop: '1px',
+              paddingBottom: '5px !important',
+              paddingRight: '2px',
+              paddingLeft: '2px',
             }}
           >
-            <Accordion>
-              <AccordionSummary>
-                <Typography>{`${props.event[0].tokenType} ${props.event[0].payload}`}</Typography>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'right',
+                alignItems: 'start',
+                top: 20,
+                position: 'relative',
+                zIndex: 50,
+              }}
+            >
+              <Typography
+                color={'primary'}
+                ml={10}
+                width={30}
+                height={30}
+                fontWeight={'bold'}
+                sx={{
+                  borderRadius: '50%',
+                  backgroundColor: 'white',
+                  border: '1px solid primary',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                {state.rewardCount}
+              </Typography>
+            </div>
+            <Accordion
+              sx={{
+                background: '#81a6f7',
+                ':hover': { background: '#1976d2', color: '#fff' },
+                borderBottomLeftRadius: '15px !important',
+                borderBottomRightRadius: '15px !important',
+              }}
+            >
+              <AccordionSummary sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <Typography
+                  fontWeight={'bold'}
+                  color={'white'}
+                >{`${props.event[0].tokenType} ${props.event[0].payload}`}</Typography>
               </AccordionSummary>
-              <AccordionDetails>
-                <List>
-                  {props.event.map(x => (
+              <AccordionDetails
+                sx={{
+                  paddingLeft: '5px',
+                  paddingRight: '5px',
+                  paddingBottom: '5px !important',
+                  borderBottomLeftRadius: '5px !important',
+                  borderBottomRightRadius: '5px !important',
+                }}
+              >
+                <List sx={{ backgroundColor: 'white' }}>
+                  {props.event.map((x: Reward) => (
                     <ListItem
                       key={x.transactionHash}
                       sx={{
-                        marginBottom: 2,
+                        marginBottom: 1,
                       }}
                       secondaryAction={
                         <Tooltip title="view transaction" placement={'top-start'}>
@@ -126,8 +181,13 @@ export default function RewardGroupCard(props) {
                             rel="noreferrer"
                             sx={{
                               background: '#81a6f7',
+                              border: '2px solid white',
                               color: '#fff',
-                              ':hover': { background: '#1976d2', color: '#fff' },
+                              ':hover': {
+                                background: '#1976d2',
+                                color: '#fff',
+                                border: '2px solid pink',
+                              },
                             }}
                           >
                             <SearchIcon />
@@ -140,7 +200,7 @@ export default function RewardGroupCard(props) {
                           variant={'body2'}
                           noWrap={false}
                           fontWeight={400}
-                          color={'#333333'}
+                          color={'darkblue'}
                           onMouseOver={() => setHoverActive()}
                           onMouseOut={() => setHoverActive()}
                           sx={{

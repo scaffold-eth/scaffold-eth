@@ -1,6 +1,6 @@
 import { Box, Card, CardMedia } from '@mui/material'
 
-export default function MintingPageCard({ top }) {
+export default function MintingPageCard({ top }: { top: number }) {
   return (
     <>
       <Box

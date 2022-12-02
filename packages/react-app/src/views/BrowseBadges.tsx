@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react'
 import externalContracts from '../contracts/external_contracts'
 import { getAllRewards } from '../helpers/getAllRewards'
+import { EventBadge, RewardGroups } from '../types/rewardTypes'
 
 import { ethers } from 'ethers'
 import InputLabel from '@mui/material/InputLabel'
@@ -14,8 +15,8 @@ import Box from '@mui/material/Box'
 import { Paper } from '@mui/material'
 import { FormControl } from '@mui/material'
 import { useContext } from 'react'
-import { BadgeContext } from 'contexts/BadgeContext'
-import BadgesPaginatedSection from 'components/BadgesPaginatedSection'
+import { BadgeContext } from '../contexts/BadgeContext'
+import BadgesPaginatedSection from '../components/BadgesPaginatedSection'
 
 export const toHex = ipfsHash => {
   let buf = multihash.fromB58String(ipfsHash)
@@ -42,8 +43,8 @@ export const unwrap = async arr => {
 
 export default function BrowseBadges() {
   const [badges, setBadges] = useState([])
-  const [eventBadges, setEventBadges] = useState([])
-  const [groupedBadges, setPagedGroupedBadges] = useState({})
+  const [eventBadges, setEventBadges] = useState<Array<EventBadge>>([])
+  const [groupedBadges, setPagedGroupedBadges] = useState<RewardGroups>({})
   const [error, setErrorMessage] = useState('')
   const [showSpinner, setShowSpinner] = useState(false)
   const { localProvider, mainnet, address, setAddress, injectedProvider, selectedChainId, checkForWeb3Provider } =
@@ -192,7 +193,7 @@ export default function BrowseBadges() {
       reducedCopy[`${badge.tokenType} ${badge.payload}`] = tempCopy
       return reducedCopy
     }, {})
-
+    console.log({ effectResult })
     setEventBadges(badges)
     setPagedGroupedBadges(effectResult)
   }, [address, contractRef.address, mainnet, providerRef])

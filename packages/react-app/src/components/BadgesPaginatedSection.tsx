@@ -5,32 +5,30 @@ import Typography from '@mui/material/Typography'
 import DownloadingRoundedIcon from '@mui/icons-material/DownloadingRounded'
 import { ethers } from 'ethers'
 import { useContext, useEffect, useState } from 'react'
-import { BadgeContext } from 'contexts/BadgeContext'
+import { BadgeContext } from '../contexts/BadgeContext'
 import Fab from '@mui/material/Fab'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { useCallback } from 'react'
 import AddressedCard from './AddressedCard'
 import RewardGroupCard from './RewardGroupCard'
+import { BadgesPaginatedSectionProps, EventBadge } from '../types/rewardTypes'
 
 export default function BadgesPaginatedSection({
   badges,
   checkeventBagesAndBadges,
-  checkForWeb3Provider,
   etherscanRef,
   eventBadges,
   groupedRewards,
-  setBadges,
-}) {
+}: BadgesPaginatedSectionProps) {
   const pageSize = 10
   // @ts-ignore
   const { contractRef, localProvider, mainnet } = useContext(BadgeContext)
   const contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
   const [pageNumber, setPageNumber] = useState(1)
-  const [pagedBadges, setPagedBadges] = useState([])
-  const [pagedGroups, setPagedGroups] = useState([])
+  const [pagedBadges, setPagedBadges] = useState<Array<any>>([])
   const mobileResponsiveMatch = useMediaQuery('(min-width:600px)')
   const getPaginationData = useCallback(
-    (pgSize, pgNumber) => {
+    (pgSize: number, pgNumber: number) => {
       console.log({ eventBadges })
       const startIndex = pgNumber * pgSize - pgSize
       const endIndex = startIndex + pgSize
@@ -42,7 +40,7 @@ export default function BadgesPaginatedSection({
 
   const loadMore = async () => {
     setPageNumber(prev => prev + 1)
-    setPagedBadges(prevArray => {
+    setPagedBadges((prevArray: any[]) => {
       const result = [...new Set([...prevArray, ...eventBadges])]
       return result
     })
@@ -91,32 +89,8 @@ export default function BadgesPaginatedSection({
             >
               <AddressedCard badges={badges} etherscanRef={etherscanRef} />
             </Grid>
-          ) : groupedRewards && groupedRewards.length > 0 ? (
-            groupedRewards.map(event => {
-              return (
-                <Grid
-                  item
-                  mt={-12}
-                  mb={15}
-                  ml={'auto'}
-                  mr={'auto'}
-                  key={`${event.to}-${event.id}`}
-                  alignItems={'left'}
-                  justifyContent={'left'}
-                >
-                  <NftCard
-                    etherscan={etherscanRef}
-                    to={event.to}
-                    id={event.id}
-                    transactionHash={event.transactionHash}
-                    contract={contract}
-                    mainnet={mainnet}
-                  />
-                </Grid>
-              )
-            })
           ) : groupedRewards && Object.keys(groupedRewards).length > 0 ? (
-            Object.keys(groupedRewards).map(event => {
+            Object.keys(groupedRewards).map(eventKey => {
               return (
                 <Grid
                   item
@@ -124,11 +98,11 @@ export default function BadgesPaginatedSection({
                   mb={15}
                   ml={'auto'}
                   mr={'auto'}
-                  key={`${event}`}
+                  key={`${eventKey}`}
                   alignItems={'center'}
                   justifyContent={'center'}
                 >
-                  <RewardGroupCard etherscan={etherscanRef} event={groupedRewards[event]} mainnet={mainnet} />
+                  <RewardGroupCard etherscan={etherscanRef} event={groupedRewards[eventKey]} mainnet={mainnet} />
                 </Grid>
               )
             })

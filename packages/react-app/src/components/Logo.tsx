@@ -1,10 +1,10 @@
 import React from 'react'
-import { Box, Typography, useMediaQuery } from '@mui/material'
+import { Box, ClassNameMap, Typography, useMediaQuery } from '@mui/material'
 
 /**
  * @param {{ useStyles: () => any; textLeftMargin?: number }} props
  */
-export default function Logo(props) {
+export default function Logo(props: { useStyles: (props?: any) => ClassNameMap<"logo">, textLeftMargin: number }) {
   const classes = props.useStyles()
   const mobileResponsiveMatch = useMediaQuery('(min-width:600px)')
   return (

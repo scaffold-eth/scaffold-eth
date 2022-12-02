@@ -1,4 +1,4 @@
-function MediumIcon({ mobileResponsiveMatch }) {
+function MediumIcon({ mobileResponsiveMatch }: { mobileResponsiveMatch: boolean }) {
   return (
     <>
       <svg

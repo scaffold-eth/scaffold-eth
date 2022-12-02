@@ -13,9 +13,9 @@ const mintBadge = {
   // component: 'button',
 }
 
-export default function MenuItems(props) {
+export default function MenuItems(props: any) {
   const { tabValue, setTabValue } = props
-  function handleChange(evt, newValue) {
+  function handleChange(evt: any, newValue: any) {
     setTabValue(newValue)
   }
   return (
