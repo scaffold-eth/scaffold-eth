@@ -9,6 +9,19 @@
 
 # 🏄‍♂️ Quick Start
 
+## Docker setup
+
+This brings up the frontend and the hardhat chain
+
+```bash
+docker-compose up
+```
+
+Deploy your contract using:
+
+```bash
+```
+
 Prerequisites: [Node (v16 LTS)](https://nodejs.org/en/download/) plus [Yarn (v1.x)](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
 
 > clone/fork 🏗 scaffold-eth:
