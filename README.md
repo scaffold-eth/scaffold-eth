@@ -28,12 +28,14 @@ yarn install
 This brings up two containers, one each for the frontend and hardhat
 
 ```bash
+cd scaffold-eth
 docker-compose up
 ```
 
 Deploy your contract using:
 
 ```bash
+cd scaffold-eth
 yarn deploy
 ```
 
