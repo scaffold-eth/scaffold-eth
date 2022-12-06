@@ -31,7 +31,6 @@ Prerequisites:
 - [Docker Compose](https://docs.docker.com/compose/install/)
 - [Git](https://git-scm.com/)
 
-This brings up two containers, one each for the frontend and hardhat
 
 ***Note**: If you are using a Windows environment, you can use [Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/) or a Bash emulator like "Git BASH" (which its included in [Git for Windows](https://gitforwindows.org/)). If you use WSL take into account that you should [configure Docker to use the WSL 2 backend](https://docs.docker.com/desktop/windows/wsl/).*
 
@@ -40,6 +39,8 @@ cd scaffold-eth
 docker-compose up
 ```
 
+Now you have two containers, one running the frontend and one running hardhat
+
 Deploy your contract using:
 
 ```bash
@@ -47,7 +48,7 @@ cd scaffold-eth
 yarn deploy
 ```
 
-## Regular setup (non-Docker)
+# 🏄‍♂️ Regular setup (non-Docker)
 
 > in a second terminal window, start your 📱 frontend:
 
