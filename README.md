@@ -9,21 +9,6 @@
 
 # 🏄‍♂️ Quick Start
 
-## Docker setup
-
-This brings up the frontend and the hardhat chain
-
-```bash
-docker-compose up
-```
-
-Deploy your contract using:
-
-```bash
-```
-
-## Regular setup
-
 Prerequisites: [Node (v16 LTS)](https://nodejs.org/en/download/) plus [Yarn (v1.x)](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
 
 > clone/fork 🏗 scaffold-eth:
@@ -37,8 +22,22 @@ git clone https://github.com/scaffold-eth/scaffold-eth.git
 ```bash
 cd scaffold-eth
 yarn install
-yarn chain
 ```
+## Docker setup
+
+This brings up two containers, one each for the frontend and hardhat
+
+```bash
+docker-compose up
+```
+
+Deploy your contract using:
+
+```bash
+yarn deploy
+```
+
+## Regular setup (non-Docker)
 
 > in a second terminal window, start your 📱 frontend:
 
