@@ -2,7 +2,7 @@ version: "3.9"
 services:
   chain:
     build: .
-    command: sh -c "yarn install && yarn chain"
+    command: sh -c "yarn chain"
     ports:
       - "8545:8545"
     working_dir: /app
@@ -10,7 +10,7 @@ services:
       - .:/app
   app:
     build: .
-    command: sh -c "yarn install && yarn start"
+    command: sh -c "yarn start"
     ports:
       - "3000:3000"
     working_dir: /app
