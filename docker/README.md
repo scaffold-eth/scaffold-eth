@@ -2,6 +2,7 @@
 
 Prerequisites: 
 - [Docker](https://docs.docker.com/engine/install/)
+- [Docker Compose](https://docs.docker.com/compose/install/)
 - [Git](https://git-scm.com/)
 - Bash Shell: available in macOS by default and the vast majority of Linux distros
 
