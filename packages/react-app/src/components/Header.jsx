@@ -9,22 +9,19 @@ export default function Header({ link, title, subTitle, ...props }) {
   return (
     <div style={{ display: "flex", justifyContent: "space-between", padding: "1.2rem" }}>
       <div style={{ display: "flex", flexDirection: "column", flex: 1, alignItems: "start" }}>
-        <a href={link} target="_blank" rel="noopener noreferrer">
-          <Title level={4} style={{ margin: "0 0.5rem 0 0" }}>
-            {title}
+        <a href="/">
+          <div style={{ position: "absolute", left: -20, top: -30 }}>
+            <img src="optimistic-loogie.svg" width="130" height="130" alt="Optimistic Loogie" />
+          </div>
+          <Title level={4} style={{ marginLeft: 50 }}>
+            Optimistic Loogies
           </Title>
         </a>
-        <Text type="secondary" style={{ textAlign: "left" }}>
-          {subTitle}
+        <Text type="secondary" style={{ textAlign: "left", marginLeft: 50 }}>
+          Loogies with a smile :-)
         </Text>
       </div>
       {props.children}
     </div>
   );
 }
-
-Header.defaultProps = {
-  link: "https://github.com/scaffold-eth/scaffold-eth",
-  title: "🏗 Scaffold-Eth",
-  subTitle: "Forkable Ethereum dev stack focused on fast product iteration",
-};

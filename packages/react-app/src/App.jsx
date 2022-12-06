@@ -15,6 +15,7 @@ import { Link, Route, Switch, useLocation } from "react-router-dom";
 import "./App.css";
 import {
   Account,
+  Address,
   Contract,
   Faucet,
   GasGauge,
@@ -30,7 +31,7 @@ import externalContracts from "./contracts/external_contracts";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { getRPCPollTime, Transactor, Web3ModalSetup } from "./helpers";
-import { Home, ExampleUI, Hints, Subgraph } from "./views";
+import { YourLoogies, Loogies } from "./views";
 import { useStaticJsonRPC } from "./hooks";
 
 const { ethers } = require("ethers");
@@ -54,7 +55,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const initialNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, goerli, xdai, mainnet)
+const initialNetwork = NETWORKS.optimism; // <------- select your target frontend network (localhost, goerli, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -176,14 +177,50 @@ function App(props) {
     mainnetProviderPollingTime,
   );
 
+  const priceToMint = useContractReader(readContracts, "YourCollectible", "price", [], localProviderPollingTime);
+  if (DEBUG) console.log("🤗 priceToMint:", priceToMint);
+
+  const totalSupply = useContractReader(readContracts, "YourCollectible", "totalSupply", [], localProviderPollingTime);
+  if (DEBUG) console.log("🤗 totalSupply:", totalSupply);
+  const loogiesLeft = 3728 - totalSupply;
+
   // keep track of a variable from the contract in the local React state:
-  const purpose = useContractReader(readContracts, "YourContract", "purpose", [], localProviderPollingTime);
+  const balance = useContractReader(readContracts, "YourCollectible", "balanceOf", [address], localProviderPollingTime);
+  if (DEBUG) console.log("🤗 address: ", address, " balance:", balance);
 
-  /*
-  const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
-  console.log("🏷 Resolved austingriffith.eth as:", addressFromENS)
-  */
+  //
+  // 🧠 This effect will update yourCollectibles by polling when your balance changes
+  //
+  const yourBalance = balance && balance.toNumber && balance.toNumber();
+  const [yourCollectibles, setYourCollectibles] = useState();
+  const [transferToAddresses, setTransferToAddresses] = useState({});
 
+  useEffect(() => {
+    const updateYourCollectibles = async () => {
+      const collectibleUpdate = [];
+      for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
+        try {
+          if (DEBUG) console.log("Getting token index", tokenIndex);
+          const tokenId = await readContracts.YourCollectible.tokenOfOwnerByIndex(address, tokenIndex);
+          if (DEBUG) console.log("Getting Loogie tokenId: ", tokenId);
+          const tokenURI = await readContracts.YourCollectible.tokenURI(tokenId);
+          if (DEBUG) console.log("tokenURI: ", tokenURI);
+          const jsonManifestString = atob(tokenURI.substring(29));
+
+          try {
+            const jsonManifest = JSON.parse(jsonManifestString);
+            collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+          } catch (e) {
+            console.log(e);
+          }
+        } catch (e) {
+          console.log(e);
+        }
+      }
+      setYourCollectibles(collectibleUpdate.reverse());
+    };
+    updateYourCollectibles();
+  }, [address, yourBalance]);
   //
   // 🧫 DEBUG 👨🏻‍🔬
   //
@@ -296,41 +333,131 @@ function App(props) {
         logoutOfWeb3Modal={logoutOfWeb3Modal}
         USE_NETWORK_SELECTOR={USE_NETWORK_SELECTOR}
       />
-      <Menu style={{ textAlign: "center", marginTop: 20 }} selectedKeys={[location.pathname]} mode="horizontal">
+      <Menu style={{ textAlign: "center" }} selectedKeys={[location.pathname]} mode="horizontal">
         <Menu.Item key="/">
-          <Link to="/">App Home</Link>
+          <Link to="/">Home</Link>
+        </Menu.Item>
+        <Menu.Item key="/yourLoogies">
+          <Link to="/yourLoogies">Your Optimistic Loogies</Link>
+        </Menu.Item>
+        <Menu.Item key="/howto">
+          <Link to="/howto">How To Use Optimistic Network</Link>
         </Menu.Item>
         <Menu.Item key="/debug">
           <Link to="/debug">Debug Contracts</Link>
         </Menu.Item>
-        <Menu.Item key="/hints">
-          <Link to="/hints">Hints</Link>
-        </Menu.Item>
-        <Menu.Item key="/exampleui">
-          <Link to="/exampleui">ExampleUI</Link>
-        </Menu.Item>
-        <Menu.Item key="/mainnetdai">
-          <Link to="/mainnetdai">Mainnet DAI</Link>
-        </Menu.Item>
-        <Menu.Item key="/subgraph">
-          <Link to="/subgraph">Subgraph</Link>
-        </Menu.Item>
       </Menu>
+
+      <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
+        <div style={{ fontSize: 16 }}>
+          <p>
+            Only <strong>3728 Optimistic Loogies</strong> available (2X the supply of the{" "}
+            <a href="https://loogies.io" target="_blank" rel="noreferrer">
+              Original Ethereum Mainnet Loogies
+            </a>
+            ) on a price curve <strong>increasing 0.2%</strong> with each new mint.
+          </p>
+          <p>All Ether from sales goes to public goods!!</p>
+        </div>
+
+        <Button
+          type="primary"
+          onClick={async () => {
+            const priceRightNow = await readContracts.YourCollectible.price();
+            try {
+              const txCur = await tx(
+                writeContracts.YourCollectible.mintItem({ value: priceRightNow, gasLimit: 300000 }),
+              );
+              await txCur.wait();
+            } catch (e) {
+              console.log("mint failed", e);
+            }
+          }}
+        >
+          MINT for Ξ{priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(4)}
+        </Button>
+
+        <p style={{ fontWeight: "bold" }}>{loogiesLeft} left</p>
+      </div>
 
       <Switch>
         <Route exact path="/">
-          {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
-          <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} />
+          <Loogies
+            readContracts={readContracts}
+            mainnetProvider={mainnetProvider}
+            blockExplorer={blockExplorer}
+            totalSupply={totalSupply}
+            DEBUG={DEBUG}
+          />
+        </Route>
+        <Route exact path="/yourLoogies">
+          <YourLoogies
+            readContracts={readContracts}
+            writeContracts={writeContracts}
+            priceToMint={priceToMint}
+            yourCollectibles={yourCollectibles}
+            tx={tx}
+            mainnetProvider={mainnetProvider}
+            blockExplorer={blockExplorer}
+            transferToAddresses={transferToAddresses}
+            setTransferToAddresses={setTransferToAddresses}
+            address={address}
+          />
+        </Route>
+        <Route exact path="/howto">
+          <div style={{ fontSize: 18, width: 820, margin: "auto" }}>
+            <h2 style={{ fontSize: "2em", fontWeight: "bold" }}>How to add Optimistic Ethereum network on MetaMask</h2>
+            <div style={{ textAlign: "left", marginLeft: 50, marginBottom: 50 }}>
+              <ul>
+                <li>
+                  Go to{" "}
+                  <a target="_blank" href="https://chainid.link/?network=optimism" rel="noreferrer">
+                    https://chainid.link/?network=optimism
+                  </a>
+                </li>
+                <li>
+                  Click on <strong>connect</strong> to add the <strong>Optimistic Ethereum</strong> network in{" "}
+                  <strong>MetaMask</strong>.
+                </li>
+              </ul>
+            </div>
+            <h2 style={{ fontSize: "2em", fontWeight: "bold" }}>
+              How to add funds to your wallet on Optimistic Ethereum network
+            </h2>
+            <div style={{ textAlign: "left", marginLeft: 50, marginBottom: 100 }}>
+              <ul>
+                <li>
+                  <a href="https://portr.xyz/" target="_blank" rel="noreferrer">
+                    The Teleporter
+                  </a>
+                  : the cheaper option, but with a 0.05 ether limit per transfer.
+                </li>
+                <li>
+                  <a href="https://gateway.optimism.io/" target="_blank" rel="noreferrer">
+                    The Optimism Gateway
+                  </a>
+                  : larger transfers and cost more.
+                </li>
+                <li>
+                  <a
+                    href="https://app.hop.exchange/send?token=ETH&sourceNetwork=ethereum&destNetwork=optimism"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Hop.Exchange
+                  </a>
+                  : where you can send from/to Ethereum mainnet and other L2 networks.
+                </li>
+              </ul>
+            </div>
+          </div>
         </Route>
         <Route exact path="/debug">
-          {/*
-                🎛 this scaffolding is full of commonly used components
-                this <Contract/> component will automatically parse your ABI
-                and give you a form to interact with it locally
-            */}
-
+          <div style={{ padding: 32 }}>
+            <Address value={readContracts && readContracts.YourCollectible && readContracts.YourCollectible.address} />
+          </div>
           <Contract
-            name="YourContract"
+            name="YourCollectible"
             price={price}
             signer={userSigner}
             provider={localProvider}
@@ -339,59 +466,19 @@ function App(props) {
             contractConfig={contractConfig}
           />
         </Route>
-        <Route path="/hints">
-          <Hints
-            address={address}
-            yourLocalBalance={yourLocalBalance}
-            mainnetProvider={mainnetProvider}
-            price={price}
-          />
-        </Route>
-        <Route path="/exampleui">
-          <ExampleUI
-            address={address}
-            userSigner={userSigner}
-            mainnetProvider={mainnetProvider}
-            localProvider={localProvider}
-            yourLocalBalance={yourLocalBalance}
-            price={price}
-            tx={tx}
-            writeContracts={writeContracts}
-            readContracts={readContracts}
-            purpose={purpose}
-          />
-        </Route>
-        <Route path="/mainnetdai">
-          <Contract
-            name="DAI"
-            customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.DAI}
-            signer={userSigner}
-            provider={mainnetProvider}
-            address={address}
-            blockExplorer="https://etherscan.io/"
-            contractConfig={contractConfig}
-            chainId={1}
-          />
-          {/*
-            <Contract
-              name="UNI"
-              customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.UNI}
-              signer={userSigner}
-              provider={mainnetProvider}
-              address={address}
-              blockExplorer="https://etherscan.io/"
-            />
-            */}
-        </Route>
-        <Route path="/subgraph">
-          <Subgraph
-            subgraphUri={props.subgraphUri}
-            tx={tx}
-            writeContracts={writeContracts}
-            mainnetProvider={mainnetProvider}
-          />
-        </Route>
       </Switch>
+
+      <div style={{ maxWidth: 820, margin: "auto", marginTop: 32 }}>
+        🛠 built with{" "}
+        <a href="https://github.com/scaffold-eth/scaffold-eth" target="_blank" rel="noreferrer">
+          🏗 scaffold-eth
+        </a>
+        🍴{" "}
+        <a href="https://github.com/scaffold-eth/scaffold-eth" target="_blank" rel="noreferrer">
+          Fork this repo
+        </a>{" "}
+        and build a cool SVG NFT!
+      </div>
 
       <ThemeSwitch />
 
