@@ -17,12 +17,6 @@ Prerequisites: [Node (v16 LTS)](https://nodejs.org/en/download/) plus [Yarn (v1.
 git clone https://github.com/scaffold-eth/scaffold-eth.git
 ```
 
-> install and start your 👷‍ Hardhat chain:
-
-```bash
-cd scaffold-eth
-yarn install
-```
 
 # 🏄‍♂️ Using Docker
 
@@ -50,6 +44,13 @@ yarn deploy
 
 # 🏄‍♂️ Regular setup (non-Docker)
 
+> install and start your 👷‍ Hardhat chain:
+
+```bash
+cd scaffold-eth
+yarn install
+yarn chain
+```
 > in a second terminal window, start your 📱 frontend:
 
 ```bash
