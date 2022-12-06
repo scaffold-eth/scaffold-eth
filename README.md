@@ -28,6 +28,7 @@ yarn install
 
 Prerequisites: 
 - [Docker](https://docs.docker.com/engine/install/)
+- [Docker Compose](https://docs.docker.com/compose/install/)
 - [Git](https://git-scm.com/)
 
 This brings up two containers, one each for the frontend and hardhat
