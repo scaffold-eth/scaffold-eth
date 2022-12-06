@@ -4,7 +4,7 @@ services:
     build: .
     command: sh -c "yarn chain"
     ports:
-      - "3001:3001"
+      - "8545:8545"
     working_dir: /app
     volumes:
       - .:/app
@@ -18,16 +18,3 @@ services:
       - .:/app
     environment:
       HARDHAT_HOST: chain
-  deploy:
-    build: .
-    ports:
-      - "3002:3002"
-    working_dir: /app
-    volumes:
-      - .:/app
-    environment:
-      HARDHAT_HOST: chain
-    depends_on:
-      - chain
-      - app
-    command: ["/bin/sh ./wait-for-it.sh", "chain:8545", "--", "sh -c", "yarn deploy"]
