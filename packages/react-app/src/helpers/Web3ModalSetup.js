@@ -3,7 +3,6 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import Authereum from "authereum";
 import Fortmatic from "fortmatic";
 import WalletLink from "walletlink";
-import Web3Modal from "web3modal";
 import { ALCHEMY_KEY, INFURA_ID } from "../constants";
 import { SafeAppWeb3Modal } from "@gnosis.pm/safe-apps-web3modal";
 
