@@ -1,5 +1,4 @@
 import Grid from '@mui/material/Grid'
-import NftCard from './NftCard'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import DownloadingRoundedIcon from '@mui/icons-material/DownloadingRounded'
@@ -11,7 +10,7 @@ import useMediaQuery from '@mui/material/useMediaQuery'
 import { useCallback } from 'react'
 import AddressedCard from './AddressedCard'
 import RewardGroupCard from './RewardGroupCard'
-import { BadgesPaginatedSectionProps, EventBadge } from '../types/rewardTypes'
+import { BadgesPaginatedSectionProps } from '../types/rewardTypes'
 
 export default function BadgesPaginatedSection({
   badges,
