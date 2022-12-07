@@ -247,8 +247,12 @@ function App(props) {
     // eslint-disable-next-line
   }, [setInjectedProvider]);
 
-  useEffect(() => {
+  useEffect(async () => {
     if (web3Modal.cachedProvider) {
+      loadWeb3Modal();
+    }
+    //automatically connect if it is a safe app
+    if (await web3Modal.isSafeApp()) {
       loadWeb3Modal();
     }
   }, [loadWeb3Modal]);
