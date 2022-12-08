@@ -1,0 +1,29 @@
+.account {
+  display: flex;
+}
+
+.account__connect-button {
+  display: flex;
+  margin-left: 8px;
+}
+
+.account .account__connect-button--lg {
+  border-width: 2px;
+  font-size: 18px;
+  font-weight: bold;
+  height: 48px;
+  padding-left: 24px;
+  padding-right: 24px;
+  display: flex;
+  align-items: center;
+}
+
+.account .account__connect-button:not(:hover) {
+  border-color: black;
+}
+
+.account__connect-button-icon {
+  margin-left: 8px;
+  height: 26px;
+  width: 26px;
+}

@@ -1,0 +1,33 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-right: 1.2rem;
+  position: relative;
+}
+
+.navbar .navbar__menu {
+  border-bottom-width: 0;
+  font-weight: 700;
+}
+
+/* priority */
+.navbar.navbar.navbar.navbar .navbar__menu-item {
+  border-bottom-width: 0;
+  line-height: 80px;
+  font-size: 18px;
+}
+
+.navbar__logo {
+  display: none;
+}
+
+@media screen and (min-width: 1024px) {
+  .navbar__logo {
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
