@@ -1,4 +1,5 @@
 import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
 import { InfoCard } from '../components'
 
 export default function About() {
@@ -6,6 +7,9 @@ export default function About() {
     <>
       <Box sx={{ paddingTop: '76px' }}>
         <h3>About Rewards!</h3>
+        <Typography variant="h5">
+          Have you ever wondered how you can get a reward? Well you find out how here.
+        </Typography>
         <Box
           sx={{
             marginTop: '176px',
