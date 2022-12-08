@@ -31,7 +31,7 @@ import externalContracts from "./contracts/external_contracts";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { getRPCPollTime, Transactor, Web3ModalSetup } from "./helpers";
-import { YourLoogies, Loogies } from "./views";
+import { YourLoogies, Loogies, Home } from "./views";
 import { useStaticJsonRPC } from "./hooks";
 
 const { ethers } = require("ethers");
@@ -348,7 +348,8 @@ function App(props) {
         </Menu.Item>
       </Menu>
 
-      <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
+      {/* TODO : Add the whole logic inside Home page  */}
+      {/* <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
         <div style={{ fontSize: 16 }}>
           <p>
             Only <strong>3728 Optimistic Loogies</strong> available (2X the supply of the{" "}
@@ -378,11 +379,19 @@ function App(props) {
         </Button>
 
         <p style={{ fontWeight: "bold" }}>{loogiesLeft} left</p>
-      </div>
+      </div> */}
 
       <Switch>
         <Route exact path="/">
-          <Loogies
+          {/* TODO : Add the whole logic inside Home page  */}
+          {/* <Loogies
+            readContracts={readContracts}
+            mainnetProvider={mainnetProvider}
+            blockExplorer={blockExplorer}
+            totalSupply={totalSupply}
+            DEBUG={DEBUG}
+          /> */}
+          <Home
             readContracts={readContracts}
             mainnetProvider={mainnetProvider}
             blockExplorer={blockExplorer}
