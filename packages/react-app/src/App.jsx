@@ -1,4 +1,4 @@
-import { Button, Col, Menu, Row } from "antd";
+import { Button, Col, Row } from "antd";
 
 import "antd/dist/antd.css";
 import {
@@ -33,6 +33,7 @@ import deployedContracts from "./contracts/hardhat_contracts.json";
 import { getRPCPollTime, Transactor, Web3ModalSetup } from "./helpers";
 import { YourLoogies, Loogies } from "./views";
 import { useStaticJsonRPC } from "./hooks";
+import NavBar from "./components/Navbar";
 
 const { ethers } = require("ethers");
 /*
@@ -55,7 +56,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const initialNetwork = NETWORKS.optimism; // <------- select your target frontend network (localhost, goerli, xdai, mainnet)
+const initialNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, goerli, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -80,7 +81,6 @@ function App(props) {
   const [injectedProvider, setInjectedProvider] = useState();
   const [address, setAddress] = useState();
   const [selectedNetwork, setSelectedNetwork] = useState(networkOptions[0]);
-  const location = useLocation();
 
   const targetNetwork = NETWORKS[selectedNetwork];
 
@@ -333,20 +333,8 @@ function App(props) {
         logoutOfWeb3Modal={logoutOfWeb3Modal}
         USE_NETWORK_SELECTOR={USE_NETWORK_SELECTOR}
       />
-      <Menu style={{ textAlign: "center" }} selectedKeys={[location.pathname]} mode="horizontal">
-        <Menu.Item key="/">
-          <Link to="/">Home</Link>
-        </Menu.Item>
-        <Menu.Item key="/yourLoogies">
-          <Link to="/yourLoogies">Your Optimistic Loogies</Link>
-        </Menu.Item>
-        <Menu.Item key="/howto">
-          <Link to="/howto">How To Use Optimistic Network</Link>
-        </Menu.Item>
-        <Menu.Item key="/debug">
-          <Link to="/debug">Debug Contracts</Link>
-        </Menu.Item>
-      </Menu>
+
+      <NavBar web3Modal={web3Modal} loadWeb3Modal={loadWeb3Modal} logoutOfWeb3Modal={logoutOfWeb3Modal} />
 
       <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
         <div style={{ fontSize: 16 }}>
@@ -404,7 +392,7 @@ function App(props) {
             address={address}
           />
         </Route>
-        <Route exact path="/howto">
+        <Route exact path="/guide">
           <div style={{ fontSize: 18, width: 820, margin: "auto" }}>
             <h2 style={{ fontSize: "2em", fontWeight: "bold" }}>How to add Optimistic Ethereum network on MetaMask</h2>
             <div style={{ textAlign: "left", marginLeft: 50, marginBottom: 50 }}>
@@ -452,7 +440,7 @@ function App(props) {
             </div>
           </div>
         </Route>
-        <Route exact path="/debug">
+        <Route exact path="/contracts">
           <div style={{ padding: 32 }}>
             <Address value={readContracts && readContracts.YourCollectible && readContracts.YourCollectible.address} />
           </div>
