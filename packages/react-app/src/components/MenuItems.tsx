@@ -1,6 +1,7 @@
 import React from 'react'
 import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
+import { MenuItemsProps } from '../types/rewardTypes'
 
 const browseBage = {
   name: 'Browse',
@@ -13,9 +14,15 @@ const mintBadge = {
   // component: 'button',
 }
 
-export default function MenuItems(props: any) {
+const aboutRewards = {
+  name: 'About Rewards',
+  url: '/about',
+}
+
+export default function MenuItems(props: MenuItemsProps) {
   const { tabValue, setTabValue } = props
   function handleChange(evt: any, newValue: any) {
+    console.log({ newValue })
     setTabValue(newValue)
   }
   return (
@@ -37,6 +44,13 @@ export default function MenuItems(props: any) {
         <Tab
           key={mintBadge.name}
           label={mintBadge.name}
+          sx={{
+            fontWeight: '700',
+          }}
+        />
+        <Tab
+          key={aboutRewards.name}
+          label={aboutRewards.name}
           sx={{
             fontWeight: '700',
           }}

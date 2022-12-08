@@ -85,3 +85,8 @@ export interface BadgeContextProps {
   setShowWrongNetworkToast: any
   targetNetwork: any
 }
+
+export interface MenuItemsProps {
+  tabValue: number
+  setTabValue: Dispatch<React.SetStateAction<number>>
+}
