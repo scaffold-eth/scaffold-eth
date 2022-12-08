@@ -247,14 +247,17 @@ function App(props) {
     // eslint-disable-next-line
   }, [setInjectedProvider]);
 
-  useEffect(async () => {
+  useEffect(() => {
     if (web3Modal.cachedProvider) {
       loadWeb3Modal();
     }
     //automatically connect if it is a safe app
-    if (await web3Modal.isSafeApp()) {
-      loadWeb3Modal();
-    }
+    const checkSafeApp = async () => {
+      if (await web3Modal.isSafeApp()) {
+        loadWeb3Modal();
+      }
+    };
+    checkSafeApp();
   }, [loadWeb3Modal]);
 
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
