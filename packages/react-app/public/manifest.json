@@ -3,7 +3,6 @@
   "description": "A Scaffold-Eth App",
   "iconPath": "logo192.png",
   "short_name": "🏗 Scaffold-Eth App",
-  "start_url": ".",
   "icons": [
     {
       "src": "favicon.ico",
