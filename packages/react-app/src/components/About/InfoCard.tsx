@@ -2,12 +2,14 @@ import { CardContent } from '@mui/material'
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import Typography from '@mui/material/Typography'
+import { RewardNames } from '../../types/rewardTypes'
 
 export interface InfoCardProps {
   imageSrc: string
+  rewardType: RewardNames
 }
 
-export default function InfoCard({ imageSrc }: InfoCardProps) {
+export default function InfoCard({ imageSrc, rewardType }: InfoCardProps) {
   return (
     <Card
       sx={{
@@ -28,6 +30,9 @@ export default function InfoCard({ imageSrc }: InfoCardProps) {
         />
         <Box sx={{ marginLeft: 2 }}>
           <CardContent>
+            <Typography variant="h5" fontWeight={700}>
+              {rewardType}
+            </Typography>
             <Typography align="left">
               This is some text Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati et repudiandae
               reiciendis, molestiae nobis ipsam inventore eaque! Non, consequatur. Suscipit sapiente vel nemo facere

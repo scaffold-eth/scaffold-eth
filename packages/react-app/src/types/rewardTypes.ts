@@ -17,6 +17,14 @@ export type EventBadge = {
   transactionHash: string
 }
 
+export type RewardNames =
+  | 'Beta Tester'
+  | 'Contributor'
+  | 'Dev Connector'
+  | 'Release Manager'
+  | 'Remixer'
+  | 'UX Champion'
+
 export type RewardKey = keyof Reward
 
 export type RewardGroups = {

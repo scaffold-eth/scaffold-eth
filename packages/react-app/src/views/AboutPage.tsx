@@ -23,12 +23,12 @@ export default function About() {
           flexWrap={'wrap'}
           gap={3}
         >
-          <InfoCard imageSrc="/Contributor.png" />
-          <InfoCard imageSrc="/Remixer.png" />
-          <InfoCard imageSrc="/UX Champion.png" />
-          <InfoCard imageSrc="/ReleaseManager.png" />
-          <InfoCard imageSrc="/BetaTester.png" />
-          <InfoCard imageSrc="/DevConnector.png" />
+          <InfoCard imageSrc="/Contributor.png" rewardType="Contributor" />
+          <InfoCard imageSrc="/Remixer.png" rewardType="Remixer" />
+          <InfoCard imageSrc="/UX Champion.png" rewardType="UX Champion" />
+          <InfoCard imageSrc="/ReleaseManager.png" rewardType="Release Manager" />
+          <InfoCard imageSrc="/BetaTester.png" rewardType="Beta Tester" />
+          <InfoCard imageSrc="/DevConnector.png" rewardType="Dev Connector" />
         </Box>
       </Box>
     </>
