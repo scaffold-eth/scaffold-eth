@@ -11,7 +11,7 @@ import {
 } from "eth-hooks";
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
 import React, { useCallback, useEffect, useState } from "react";
-import { Link, Route, Switch, useLocation } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 import "./App.css";
 import {
   Account,
@@ -294,9 +294,9 @@ function App(props) {
   return (
     <div className="App">
       {/* ✏️ Edit the header and change the title to your project name */}
-      <Header>
-        {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
-        <div style={{ position: "relative", display: "flex", flexDirection: "column" }}>
+      {/* <Header> */}
+      {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
+      {/* <div style={{ position: "relative", display: "flex", flexDirection: "column" }}>
           <div style={{ display: "flex", flex: 1 }}>
             {USE_NETWORK_SELECTOR && (
               <div style={{ marginRight: 20 }}>
@@ -320,19 +320,19 @@ function App(props) {
               blockExplorer={blockExplorer}
             />
           </div>
-        </div>
-      </Header>
-      {yourLocalBalance.lte(ethers.BigNumber.from("0")) && (
+        </div> */}
+      {/* </Header> */}
+      {/* {yourLocalBalance.lte(ethers.BigNumber.from("0")) && (
         <FaucetHint localProvider={localProvider} targetNetwork={targetNetwork} address={address} />
-      )}
-      <NetworkDisplay
+      )} */}
+      {/* <NetworkDisplay
         NETWORKCHECK={NETWORKCHECK}
         localChainId={localChainId}
         selectedChainId={selectedChainId}
         targetNetwork={targetNetwork}
         logoutOfWeb3Modal={logoutOfWeb3Modal}
         USE_NETWORK_SELECTOR={USE_NETWORK_SELECTOR}
-      />
+      /> */}
 
       <NavBar web3Modal={web3Modal} loadWeb3Modal={loadWeb3Modal} logoutOfWeb3Modal={logoutOfWeb3Modal} />
 
@@ -471,7 +471,7 @@ function App(props) {
       <ThemeSwitch />
 
       {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
-      <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
+      <div style={{ display: "none", position: "fixed", textAlign: "left", left: 0, bottom: 100, padding: 10 }}>
         <Row align="middle" gutter={[4, 4]}>
           <Col span={8}>
             <Ramp price={price} address={address} networks={NETWORKS} />
