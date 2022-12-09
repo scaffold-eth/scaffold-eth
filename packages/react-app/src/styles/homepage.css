@@ -4,9 +4,10 @@
   /* min-height: 50vh; */
   min-width: 100vw;
   display: flex;
-  height: 60vh;
+  min-height: 70vh;
   justify-content: center;
   align-items: flex-start;
+  align-items: center;
   overflow: hidden;
 }
 
@@ -16,7 +17,7 @@
   flex-direction: column;
   align-items: center;
   gap: 0.75rem;
-  margin-top: 5rem;
+  /* margin-top: 5rem; */
   position: relative;
 }
 
@@ -63,6 +64,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
 }
 
 .homepage__btnImg{

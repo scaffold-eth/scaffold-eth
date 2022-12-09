@@ -14,10 +14,10 @@ function Home({ readContracts, mainnetProvider, blockExplorer, totalSupply, DEBU
               Original Ethereum Mainnet Loogies
             </a>
           </p>
-          <div className="homepage__btn">
+          <button className="homepage__btn">
             <p className="homepage__btnText">Mint Now for</p>
             <img src="/assets/fa-ethereum.svg" alt="ethereum" className="homepage__btnImg" />
-          </div>
+          </button>
         </div>
       </div>
     </div>
