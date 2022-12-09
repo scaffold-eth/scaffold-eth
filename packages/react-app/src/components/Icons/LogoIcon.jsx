@@ -1,4 +1,4 @@
-export default function Logo() {
+export default function LogoIcon() {
   return (
     <svg width="134" height="56" viewBox="0 0 134 56" fill="none" xmlns="http://www.w3.org/2000/svg">
       <circle r="13.2557" transform="matrix(-1 0 0 1 43.7149 31.1313)" fill="white" stroke="#0F0F0F" />
