@@ -9,6 +9,9 @@
   align-items: flex-start;
   align-items: center;
   overflow: hidden;
+  position: relative;
+  background-position: bottom -45px left -180px;
+  background-repeat: no-repeat;
 }
 
 .homepage__container{
@@ -17,7 +20,7 @@
   flex-direction: column;
   align-items: center;
   gap: 0.75rem;
-  /* margin-top: 5rem; */
+  margin-top: -5rem;
   position: relative;
 }
 
@@ -65,6 +68,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  box-shadow: 0px 0px 16px rgba(0, 0, 0, 0.25);
 }
 
 .homepage__btnImg{
@@ -77,16 +81,21 @@
   margin-right: 0.5rem;
 }
 
+.homepage__loggiesBg{
+  position: absolute;
+}
+
 @media screen and (max-width: 720px) {
 
   .homepage {
     position: relative;
-    min-height: 80vh;
+    min-height: 60vh;
     align-items: center;
+    background-position: bottom -45px right -150px;
   }
 
   .homepage__container{
-    position: static;
+    position: relative;
     margin-top: -5rem;
   }
 
@@ -107,9 +116,8 @@
 
   .homepage__pickerImg{
     position: absolute;
-    right : 100px;
-    top : -275px;
+    right : 48px;
+    top : -517px;
   }
-
 
 }
