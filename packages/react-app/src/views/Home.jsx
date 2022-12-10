@@ -6,7 +6,7 @@ function Home({ readContracts, mainnetProvider, blockExplorer, totalSupply, DEBU
       <div
         className="homepage"
         style={{
-          backgroundImage: "url('hero-loogies.svg')",
+          backgroundImage: "url('LOOGIES.svg')",
         }}
       >
         <div className="homepage__container">

@@ -10,7 +10,7 @@
   align-items: center;
   overflow: hidden;
   position: relative;
-  background-position: bottom -45px left -180px;
+  background-position: bottom -50px left -180px;
   background-repeat: no-repeat;
 }
 
@@ -91,7 +91,8 @@
     position: relative;
     min-height: 60vh;
     align-items: center;
-    background-position: bottom -45px right -150px;
+    background-position: bottom -43px right -25px;
+    background-size: 285%;
   }
 
   .homepage__container{
@@ -118,6 +119,26 @@
     position: absolute;
     right : 48px;
     top : -517px;
+  }
+
+}
+@media screen and (min-width: 1400px) {
+  .homepage {
+    background-position: bottom -50px left -190px;
+    background-size: 130%;
+  }
+
+}
+
+
+@media screen and (min-width: 2000px) {
+  .homepage {
+    background-position: bottom -100px left -190px;
+    background-size: 115%;
+  }
+
+  .homepage__container{
+    margin-top: -24rem;
   }
 
 }
