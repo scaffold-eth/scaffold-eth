@@ -62,9 +62,9 @@ export default function Account({
 
   let accountButtonInfo;
   if (web3Modal?.cachedProvider) {
-    accountButtonInfo = { name: "Logout", action: logoutOfWeb3Modal, color: "#fff" };
+    accountButtonInfo = { name: "Log out", action: logoutOfWeb3Modal, color: "#fff" };
   } else {
-    accountButtonInfo = { name: "Connect", action: loadWeb3Modal, color: "#A056FF" };
+    accountButtonInfo = { name: "Connect", action: loadWeb3Modal, showWallet: true, color: "#A056FF" };
   }
 
   const display = !minimized && (
@@ -98,7 +98,7 @@ export default function Account({
           onClick={accountButtonInfo.action}
         >
           {accountButtonInfo.name}
-          {connectButtonStyles === "lg" && (
+          {connectButtonStyles === "lg" && accountButtonInfo.showWallet && (
             <WalletIcon style={{ color: accountButtonInfo.color }} className="account__connect-button-icon" />
           )}
         </Button>
