@@ -293,38 +293,11 @@ function App(props) {
 
   return (
     <div className="App">
-      {/* ✏️ Edit the header and change the title to your project name */}
-      {/* <Header> */}
-      {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
-      {/* <div style={{ position: "relative", display: "flex", flexDirection: "column" }}>
-          <div style={{ display: "flex", flex: 1 }}>
-            {USE_NETWORK_SELECTOR && (
-              <div style={{ marginRight: 20 }}>
-                <NetworkSwitch
-                  networkOptions={networkOptions}
-                  selectedNetwork={selectedNetwork}
-                  setSelectedNetwork={setSelectedNetwork}
-                />
-              </div>
-            )}
-            <Account
-              useBurner={USE_BURNER_WALLET}
-              address={address}
-              localProvider={localProvider}
-              userSigner={userSigner}
-              mainnetProvider={mainnetProvider}
-              price={price}
-              web3Modal={web3Modal}
-              loadWeb3Modal={loadWeb3Modal}
-              logoutOfWeb3Modal={logoutOfWeb3Modal}
-              blockExplorer={blockExplorer}
-            />
-          </div>
-      </div> */}
-      {/* </Header> */}
+      {/* TODO remove after design update */}
       {/* {yourLocalBalance.lte(ethers.BigNumber.from("0")) && (
         <FaucetHint localProvider={localProvider} targetNetwork={targetNetwork} address={address} />
       )} */}
+      {/* TODO remove after design update */}
       {/* <NetworkDisplay
         NETWORKCHECK={NETWORKCHECK}
         localChainId={localChainId}
@@ -478,6 +451,7 @@ function App(props) {
 
       <ThemeSwitch />
 
+      {/* TODO remove after design update */}
       {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
       <div style={{ display: "none", position: "fixed", textAlign: "left", left: 0, bottom: 100, padding: 10 }}>
         <Row align="middle" gutter={[4, 4]}>

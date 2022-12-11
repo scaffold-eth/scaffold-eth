@@ -48,51 +48,47 @@ function Loogies({ readContracts, mainnetProvider, blockExplorer, totalSupply, D
   return (
     <div className="loogies">
       <div style={{ width: "auto", margin: "auto", paddingBottom: 25, minHeight: 800 }}>
-        {false ? (
-          <Spin style={{ marginTop: 100 }} />
-        ) : (
-          <div>
-            <List
-              grid={{
-                gutter: 16,
-                xs: 1,
-                sm: 2,
-                md: 2,
-                lg: 3,
-                xl: 4,
-                xxl: 6,
-              }}
-              pagination={{
-                total: totalSupply,
-                defaultPageSize: perPage,
-                defaultCurrent: page,
-                onChange: currentPage => {
-                  setPage(currentPage);
-                },
-                showTotal: (total, range) => `${range[0]}-${range[1]} of ${totalSupply} items`,
-              }}
-              loading={loadingLoogies}
-              dataSource={allLoogies}
-              renderItem={item => {
-                const id = item.id.toNumber();
+        <div>
+          <List
+            grid={{
+              gutter: 16,
+              xs: 1,
+              sm: 2,
+              md: 2,
+              lg: 3,
+              xl: 4,
+              xxl: 6,
+            }}
+            pagination={{
+              total: totalSupply,
+              defaultPageSize: perPage,
+              defaultCurrent: page,
+              onChange: currentPage => {
+                setPage(currentPage);
+              },
+              showTotal: (total, range) => `${range[0]}-${range[1]} of ${totalSupply} items`,
+            }}
+            loading={loadingLoogies}
+            dataSource={allLoogies}
+            renderItem={item => {
+              const id = item.id.toNumber();
 
-                return (
-                  <List.Item key={id + "_" + item.uri + "_" + item.owner}>
-                    <LoogieCard
-                      image={item.image}
-                      id={id}
-                      name={item.name}
-                      description={item.description}
-                      owner={item.owner}
-                      mainnetProvider={mainnetProvider}
-                      blockExplorer={blockExplorer}
-                    />
-                  </List.Item>
-                );
-              }}
-            />
-          </div>
-        )}
+              return (
+                <List.Item key={id + "_" + item.uri + "_" + item.owner}>
+                  <LoogieCard
+                    image={item.image}
+                    id={id}
+                    name={item.name}
+                    description={item.description}
+                    owner={item.owner}
+                    mainnetProvider={mainnetProvider}
+                    blockExplorer={blockExplorer}
+                  />
+                </List.Item>
+              );
+            }}
+          />
+        </div>
       </div>
     </div>
   );
