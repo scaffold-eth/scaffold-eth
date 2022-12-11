@@ -44,7 +44,9 @@
 }
 
 .navbar__menu-item-mobile-content {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .navbar__menu-item svg {

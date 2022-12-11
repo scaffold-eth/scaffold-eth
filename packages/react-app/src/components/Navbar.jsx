@@ -29,53 +29,46 @@ export default function NavBar({
       <div>
         <LoogieIcon className="navbar__loogie-logo" />
         <Menu selectedKeys={[location.pathname]} mode="horizontal" className="navbar__menu">
-          {/* <div className="navbar__menu-wrapper"> */}
-          {/* <MenuItem title="Home" linkTo="/" icon={<HomeIcon />} />
-          <MenuItem title="Your Loogies" linkTo="/yourLoogies" icon={<LoogieNavIcon />} />
-          <MenuItem title="Guide" linkTo="/guide" icon={<GuideIcon />} />
-          <MenuItem title="Contracts" linkTo="/contracts" icon={<ContractIcon />} /> */}
-          {/* </div> */}
-
-          <Menu.Item key={"/"} className="navbar__menu-item">
-            <Link to={"/"} className="navbar__link navbar__menu-item-desktop-content">
-              {"Home"}
+          <Menu.Item key="/" className="navbar__menu-item">
+            <Link to="/" className="navbar__link navbar__menu-item-desktop-content">
+              Home
             </Link>
-            <Tooltip title={"Home"} className="navbar__menu-item-mobile-content" color="#666">
+            <Tooltip title="Home" className="navbar__menu-item-mobile-content">
               <Link to="/" className="navbar__link">
-                {<HomeIcon />}
+                <HomeIcon />
               </Link>
             </Tooltip>
           </Menu.Item>
 
-          <Menu.Item key={"/yourLoogies"} className="navbar__menu-item">
-            <Link to={"/yourLoogies"} className="navbar__link navbar__menu-item-desktop-content">
-              {"Your Loogies"}
+          <Menu.Item key="/yourLoogies" className="navbar__menu-item">
+            <Link to="/yourLoogies" className="navbar__link navbar__menu-item-desktop-content">
+              Your Loogies
             </Link>
-            <Tooltip title={"Your Loogies"} className="navbar__menu-item-mobile-content" color="#666">
+            <Tooltip title="Your Loogies" className="navbar__menu-item-mobile-content">
               <Link to="/yourLoogies" className="navbar__link">
-                {<LoogieNavIcon />}
+                <LoogieNavIcon />
               </Link>
             </Tooltip>
           </Menu.Item>
 
-          <Menu.Item key={"/guide"} className="navbar__menu-item">
-            <Link to={"/guide"} className="navbar__link navbar__menu-item-desktop-content">
-              {"Guide"}
+          <Menu.Item key="/guide" className="navbar__menu-item">
+            <Link to="/guide" className="navbar__link navbar__menu-item-desktop-content">
+              Guide
             </Link>
-            <Tooltip title={"Guide"} className="navbar__menu-item-mobile-content" color="#666">
+            <Tooltip title="Guide" className="navbar__menu-item-mobile-content">
               <Link to="/guide" className="navbar__link">
-                {<GuideIcon />}
+                <GuideIcon />
               </Link>
             </Tooltip>
           </Menu.Item>
 
-          <Menu.Item key={"/contracts"} className="navbar__menu-item">
-            <Link to={"/contracts"} className="navbar__link navbar__menu-item-desktop-content">
-              {"Contracts"}
+          <Menu.Item key="/contracts" className="navbar__menu-item">
+            <Link to="/contracts" className="navbar__link navbar__menu-item-desktop-content">
+              Contracts
             </Link>
-            <Tooltip title={"Contracts"} className="navbar__menu-item-mobile-content" color="#666">
+            <Tooltip title="Contracts" className="navbar__menu-item-mobile-content">
               <Link to="/contracts" className="navbar__link">
-                {<ContractIcon />}
+                <ContractIcon />
               </Link>
             </Tooltip>
           </Menu.Item>
@@ -103,20 +96,3 @@ export default function NavBar({
     </div>
   );
 }
-
-// TODO: fix. for some reason selecting menu items doesn't work with this component
-// function MenuItem({ title, icon, linkTo }) {
-//   return (
-//     <Menu.Item key={linkTo} className="navbar__menu-item">
-//       <Link to={linkTo} className="navbar__link navbar__menu-item-desktop-content">
-//         {title}
-//       </Link>
-
-//       <Tooltip title={title} className="navbar__menu-item-mobile-content" color="#666">
-//         <Link to={linkTo} className="navbar__link">
-//           {icon}
-//         </Link>
-//       </Tooltip>
-//     </Menu.Item>
-//   );
-// }
