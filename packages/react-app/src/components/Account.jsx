@@ -5,6 +5,9 @@ import { useThemeSwitcher } from "react-css-theme-switcher";
 import Address from "./Address";
 import Balance from "./Balance";
 import Wallet from "./Wallet";
+import WalletIcon from "./Icons/WalletIcon";
+
+import "./Account.css";
 
 /** 
   ~ What it does? ~
@@ -53,22 +56,23 @@ export default function Account({
   logoutOfWeb3Modal,
   blockExplorer,
   isContract,
+  connectButtonStyles,
 }) {
   const { currentTheme } = useThemeSwitcher();
 
   let accountButtonInfo;
   if (web3Modal?.cachedProvider) {
-    accountButtonInfo = { name: "Logout", action: logoutOfWeb3Modal };
+    accountButtonInfo = { name: "Logout", action: logoutOfWeb3Modal, color: "#fff" };
   } else {
-    accountButtonInfo = { name: "Connect", action: loadWeb3Modal };
+    accountButtonInfo = { name: "Connect", action: loadWeb3Modal, showWallet: true, color: "#A056FF" };
   }
 
   const display = !minimized && (
-    <span>
+    <div className="account__display">
       {address && (
-        <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} fontSize={20} />
+        <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} fontSize={16} />
       )}
-      <Balance address={address} provider={localProvider} price={price} size={20} />
+      <Balance address={address} provider={localProvider} price={price} size={16} />
       {!isContract && (
         <Wallet
           address={address}
@@ -81,15 +85,22 @@ export default function Account({
           padding={"0px"}
         />
       )}
-    </span>
+    </div>
   );
 
   return (
-    <div style={{ display: "flex" }}>
+    <div className="account">
       {display}
       {web3Modal && (
-        <Button style={{ marginLeft: 8 }} shape="round" onClick={accountButtonInfo.action}>
+        <Button
+          className={`account__connect-button ${connectButtonStyles === "lg" ? "account__connect-button--lg" : ""}`}
+          shape="round"
+          onClick={accountButtonInfo.action}
+        >
           {accountButtonInfo.name}
+          {connectButtonStyles === "lg" && accountButtonInfo.showWallet && (
+            <WalletIcon style={{ color: accountButtonInfo.color }} className="account__connect-button-icon" />
+          )}
         </Button>
       )}
     </div>

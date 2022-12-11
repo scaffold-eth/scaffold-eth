@@ -1,0 +1,51 @@
+.account {
+  display: flex;
+}
+
+.account__connect-button {
+  display: flex;
+  margin-left: 16px;
+}
+
+.account__display {
+  display: inline-flex;
+  align-items: center;
+  background: #f3f3f3;
+  padding-left: 12px;
+  padding-right: 12px;
+  border-radius: 40px;
+  font-size: 16px;
+  font-weight: bold;
+  position: absolute;
+  top: calc(100% + 20px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.account .account__connect-button--lg {
+  border-width: 2px;
+  font-size: 18px;
+  font-weight: bold;
+  height: 48px;
+  padding-left: 24px;
+  padding-right: 24px;
+  display: flex;
+  align-items: center;
+}
+
+.account .account__connect-button:not(:hover) {
+  border-color: black;
+}
+
+.account__connect-button-icon {
+  margin-left: 8px;
+  height: 26px;
+  width: 26px;
+}
+
+@media screen and (min-width: 1440px) {
+  .account__display {
+    position: static;
+    transform: none;
+  }
+}
