@@ -1,8 +1,9 @@
 import React from "react";
 
 import Address from "../Address";
+import { gasPrice } from "../GasGauge";
 
-const { utils } = require("ethers");
+const { utils, BigNumber } = require("ethers");
 
 const tryToDisplay = (thing, asText = false, blockExplorer) => {
   if (thing && thing.toNumber) {
@@ -26,10 +27,10 @@ const tryToDisplay = (thing, asText = false, blockExplorer) => {
     );
   }
   //better formatting of tx results
-  if (thing && thing.constructor && thing.constructor.name === "Object" && Object.keys(thing).length === 17) {
-    //17 keys should be reliable to target a tx result object
-    const gasPriceInGwei = 20; //sorry–could not find where to set gas price!
-    const costOfTransactionInEth = thing.gasLimit.mul(gasPriceInGwei).mul(1000000000);
+  if (thing && thing.constructor && thing.constructor.name === "Object" && Object.keys(thing).length === 18) {
+    //18 keys should be reliable to target a tx result object
+    const costOfTransactionInEth = thing.gasLimit.mul(gasPrice.wei);
+    const gasPriceInGwei = BigNumber.from(gasPrice.wei).div(1000000000);
     thing.costOfTransactionInEth = utils.formatUnits(costOfTransactionInEth, "ether");
     if (thing.gasLimit && thing.gasLimit != null) thing.gasLimit = utils.formatUnits(thing.gasLimit, "wei");
     if (thing.gasPrice && thing.gasPrice != null) thing.gasPrice = utils.formatUnits(thing.gasPrice, "gwei");
@@ -38,11 +39,10 @@ const tryToDisplay = (thing, asText = false, blockExplorer) => {
     if (thing.maxPriorityFeePerGas && thing.maxPriorityFeePerGas != null)
       thing.maxPriorityFeePerGas = utils.formatUnits(thing.maxPriorityFeePerGas, "wei");
     if (thing.value && thing.value != null) thing.value = utils.formatUnits(thing.value, "ether");
-
     const betterOrderedThing = {
       costOfTransactionInEth: thing.costOfTransactionInEth,
+      gasPrice: gasPriceInGwei + " Gwei",
       gasLimit: thing.gasLimit,
-      gasPrice: gasPriceInGwei,
       maxFeePerGas: thing.maxFeePerGas,
       maxPriorityFeePerGas: thing.maxPriorityFeePerGas,
       value: thing.value,
@@ -50,6 +50,7 @@ const tryToDisplay = (thing, asText = false, blockExplorer) => {
       from: thing.from,
       to: thing.to,
       hash: thing.hash,
+      confirmations: thing.confirmations,
       chainId: thing.chainId,
       type: thing.type,
       accessList: thing.accessList,
