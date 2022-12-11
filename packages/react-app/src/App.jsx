@@ -1,6 +1,7 @@
 import { Button, Col, Menu, Row } from "antd";
 
 import "antd/dist/antd.css";
+<<<<<<< HEAD
 import {
   useBalance,
   useContractLoader,
@@ -8,6 +9,9 @@ import {
   // useOnBlock,
   useUserProviderAndSigner,
 } from "eth-hooks";
+=======
+import { useBalance, useContractLoader, useContractReader, useOnBlock, useUserProviderAndSigner } from "eth-hooks";
+>>>>>>> 541d1ca (removing useGasPrice)
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
 import React, { useCallback, useEffect, useState } from "react";
 import { Link, Route, Switch, useLocation } from "react-router-dom";
