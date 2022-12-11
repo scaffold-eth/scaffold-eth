@@ -1,39 +1,47 @@
 import React from "react";
-import { Button } from "antd";
-
+import { Input } from "antd";
 // added display of 0 instead of NaN if gas price is not provided
 
 /**
   ~ What it does? ~
 
-  Displays gas gauge
-
-  ~ How can I use? ~
-
-  <GasGauge
-    gasPrice={gasPrice}
-  />
-
-  ~ Features ~
-
-  - Provide gasPrice={gasPrice} and get current gas gauge
+  Displays gas gauge and allows for custom gas values in Gwei
+ 
 **/
 
-export default function GasGauge(props) {
-  return (
-    <Button
-      onClick={() => {
-        window.open("https://ethgasstation.info/");
-      }}
-      size="large"
-      shape="round"
-    >
-      <span style={{ marginRight: 8 }}>
-        <span role="img" aria-label="fuelpump">
-          ⛽️
-        </span>
-      </span>
-      {typeof props.gasPrice === "undefined" ? 0 : parseInt(props.gasPrice, 10) / 10 ** 9}g
-    </Button>
-  );
+export const gasPrice = { wei: 25000000000 };
+
+export default class GasGauge extends React.Component {
+  constructor(props) {
+    // Init props and state
+    super(props);
+    this.state = {
+      gasPrice: gasPrice.wei,
+    };
+  }
+  setGasPrice(_gasPrice) {
+    _gasPrice = _gasPrice * 10 ** 9;
+    this.setState({ gasPrice: _gasPrice });
+    gasPrice.wei = _gasPrice;
+  }
+  render() {
+    return (
+      <div>
+        <Input
+          value={parseInt(this.state.gasPrice, 10) / 10 ** 9}
+          shape="round"
+          onChange={e => {
+            this.setGasPrice(e.target.value);
+          }}
+          suffix={
+            <span style={{ marginRight: 8 }}>
+              <span role="img" aria-label="fuelpump">
+                Gwei⛽️
+              </span>
+            </span>
+          }
+        />
+      </div>
+    );
+  }
 }
