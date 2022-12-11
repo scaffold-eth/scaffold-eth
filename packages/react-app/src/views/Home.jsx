@@ -1,33 +1,56 @@
 import "../styles/homepage.css";
+import Loogies from "./Loogies";
+import { ethers } from "ethers";
 
-function Home({ readContracts, mainnetProvider, blockExplorer, totalSupply, DEBUG }) {
+function Home({ readContracts, mainnetProvider, blockExplorer, totalSupply, DEBUG, tx, writeContracts, priceToMint }) {
+  const mintLoogie = async () => {
+    const priceRightNow = await readContracts.YourCollectible.price();
+    try {
+      const txCur = await tx(writeContracts.YourCollectible.mintItem({ value: priceRightNow, gasLimit: 300000 }));
+      await txCur.wait();
+    } catch (e) {
+      console.log("mint failed", e);
+    }
+  };
+
   return (
-    <div style={{ overflow: "hidden" }}>
-      <div
-        className="homepage"
-        style={{
-          backgroundImage: "url('LOOGIES.svg')",
-        }}
-      >
-        <div className="homepage__container">
-          <img src="/assets/loggiesPicker.svg" className="homepage__pickerImg" alt="Loggies Picker" />
-          <p className="homepage__heading">Loogies with a smile :)</p>
-          <div className="homepage-txtBtnContainer">
-            <p className="homepage__text">
-              Only <span className="homepage__span">3728 Optimistic Loogies</span> available on a price curve{" "}
-              <span className="homepage__span">increasing 0.2%</span> with each new mint. Double the supply of the{" "}
-              <a href="https://loogies.io" target="_blank" rel="noreferrer">
-                Original Ethereum Mainnet Loogies
-              </a>
-            </p>
-            <button className="homepage__btn">
-              <p className="homepage__btnText">Mint Now for</p>
-              <img src="/assets/fa-ethereum.svg" alt="ethereum" className="homepage__btnImg" />
-            </button>
+    <>
+      <div style={{ overflow: "hidden" }}>
+        <div
+          className="homepage"
+          style={{
+            backgroundImage: "url('LOOGIES.svg')",
+          }}
+        >
+          <div className="homepage__container">
+            <img src="/assets/loggiesPicker.svg" className="homepage__pickerImg" alt="Loggies Picker" />
+            <p className="homepage__heading">Loogies with a smile :)</p>
+            <div className="homepage-txtBtnContainer">
+              <p className="homepage__text">
+                Only <span className="homepage__span">3728 Optimistic Loogies</span> available on a price curve{" "}
+                <span className="homepage__span">increasing 0.2%</span> with each new mint. Double the supply of the{" "}
+                <a href="https://loogies.io" target="_blank" rel="noreferrer">
+                  Original Ethereum Mainnet Loogies
+                </a>
+              </p>
+              <button className="homepage__btn" onClick={mintLoogie}>
+                <p className="homepage__btnText">
+                  Mint Now for {priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(4)}
+                </p>
+                <img src="/assets/fa-ethereum.svg" alt="ethereum" className="homepage__btnImg" />
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+      <Loogies
+        readContracts={readContracts}
+        mainnetProvider={mainnetProvider}
+        blockExplorer={blockExplorer}
+        totalSupply={totalSupply}
+        DEBUG={DEBUG}
+      />
+    </>
   );
 }
 
