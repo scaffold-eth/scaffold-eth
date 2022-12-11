@@ -4,6 +4,7 @@ import { useThemeSwitcher } from "react-css-theme-switcher";
 import Blockies from "react-blockies";
 import { useLookupAddress } from "eth-hooks/dapps/ens";
 import CopyIcon from "./Icons/CopyIcon";
+import CopiedIcon from "./Icons/CopiedIcon";
 
 // changed value={address} to address={address}
 
@@ -125,6 +126,9 @@ export default function Address(props) {
               icon: [
                 <div style={{ display: "flex", alignItems: "center" }}>
                   <CopyIcon />
+                </div>,
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <CopiedIcon />
                 </div>,
               ],
             }}
