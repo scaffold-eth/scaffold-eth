@@ -4,6 +4,9 @@ import { Button, Card, List, Spin } from "antd";
 import { Address } from "../components";
 import { ethers } from "ethers";
 
+import "./Loogies.css";
+import LoogieCard from "../components/LoogieCard";
+
 function Loogies({ readContracts, mainnetProvider, blockExplorer, totalSupply, DEBUG }) {
   const [allLoogies, setAllLoogies] = useState();
   const [page, setPage] = useState(1);
@@ -43,10 +46,8 @@ function Loogies({ readContracts, mainnetProvider, blockExplorer, totalSupply, D
   }, [readContracts.YourCollectible, (totalSupply || "0").toString(), page]);
 
   return (
-    <div style={{ width: "auto", margin: "auto", paddingBottom: 25, minHeight: 800 }}>
-      {false ? (
-        <Spin style={{ marginTop: 100 }} />
-      ) : (
+    <div className="loogies">
+      <div style={{ width: "auto", margin: "auto", paddingBottom: 25, minHeight: 800 }}>
         <div>
           <List
             grid={{
@@ -56,7 +57,7 @@ function Loogies({ readContracts, mainnetProvider, blockExplorer, totalSupply, D
               md: 2,
               lg: 3,
               xl: 4,
-              xxl: 4,
+              xxl: 6,
             }}
             pagination={{
               total: totalSupply,
@@ -74,30 +75,21 @@ function Loogies({ readContracts, mainnetProvider, blockExplorer, totalSupply, D
 
               return (
                 <List.Item key={id + "_" + item.uri + "_" + item.owner}>
-                  <Card
-                    title={
-                      <div>
-                        <span style={{ fontSize: 18, marginRight: 8 }}>{item.name}</span>
-                      </div>
-                    }
-                  >
-                    <img src={item.image} alt={"Loogie #" + id} width="200" />
-                    <div>{item.description}</div>
-                    <div>
-                      <Address
-                        address={item.owner}
-                        ensProvider={mainnetProvider}
-                        blockExplorer={blockExplorer}
-                        fontSize={16}
-                      />
-                    </div>
-                  </Card>
+                  <LoogieCard
+                    image={item.image}
+                    id={id}
+                    name={item.name}
+                    description={item.description}
+                    owner={item.owner}
+                    mainnetProvider={mainnetProvider}
+                    blockExplorer={blockExplorer}
+                  />
                 </List.Item>
               );
             }}
           />
         </div>
-      )}
+      </div>
     </div>
   );
 }

@@ -1,0 +1,11 @@
+.your-loogies {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+@media screen and (min-width: 1440px) {
+  .your-loogies {
+    margin-left: 120px;
+    margin-right: 120px;
+  }
+}
