@@ -62,17 +62,17 @@ export default function Account({
 
   let accountButtonInfo;
   if (web3Modal?.cachedProvider) {
-    accountButtonInfo = { name: "Log out", action: logoutOfWeb3Modal, color: "#fff" };
+    accountButtonInfo = { name: "Logout", action: logoutOfWeb3Modal, color: "#fff" };
   } else {
     accountButtonInfo = { name: "Connect", action: loadWeb3Modal, showWallet: true, color: "#A056FF" };
   }
 
   const display = !minimized && (
-    <span>
+    <div className="account__display">
       {address && (
-        <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} fontSize={20} />
+        <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} fontSize={16} />
       )}
-      <Balance address={address} provider={localProvider} price={price} size={20} />
+      <Balance address={address} provider={localProvider} price={price} size={16} />
       {!isContract && (
         <Wallet
           address={address}
@@ -85,7 +85,7 @@ export default function Account({
           padding={"0px"}
         />
       )}
-    </span>
+    </div>
   );
 
   return (

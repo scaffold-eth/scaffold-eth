@@ -320,7 +320,7 @@ function App(props) {
               blockExplorer={blockExplorer}
             />
           </div>
-        </div> */}
+      </div> */}
       {/* </Header> */}
       {/* {yourLocalBalance.lte(ethers.BigNumber.from("0")) && (
         <FaucetHint localProvider={localProvider} targetNetwork={targetNetwork} address={address} />
@@ -333,10 +333,18 @@ function App(props) {
         logoutOfWeb3Modal={logoutOfWeb3Modal}
         USE_NETWORK_SELECTOR={USE_NETWORK_SELECTOR}
       /> */}
-
-      <NavBar web3Modal={web3Modal} loadWeb3Modal={loadWeb3Modal} logoutOfWeb3Modal={logoutOfWeb3Modal} />
-
-      <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
+      <NavBar
+        useBurner={USE_BURNER_WALLET}
+        address={address}
+        localProvider={localProvider}
+        userSigner={userSigner}
+        mainnetProvider={mainnetProvider}
+        price={price}
+        web3Modal={web3Modal}
+        loadWeb3Modal={loadWeb3Modal}
+        logoutOfWeb3Modal={logoutOfWeb3Modal}
+      />
+      <div style={{ maxWidth: 820, margin: "auto", marginTop: 96, paddingBottom: 32 }}>
         <div style={{ fontSize: 16 }}>
           <p>
             Only <strong>3728 Optimistic Loogies</strong> available (2X the supply of the{" "}

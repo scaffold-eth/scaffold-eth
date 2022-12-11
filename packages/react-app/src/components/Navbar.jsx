@@ -11,7 +11,17 @@ import LoogieNavIcon from "./Icons/LoogieNavIcon";
 
 import "./Navbar.css";
 
-export default function NavBar({ web3Modal, loadWeb3Modal, logoutOfWeb3Modal }) {
+export default function NavBar({
+  useBurner,
+  address,
+  localProvider,
+  userSigner,
+  mainnetProvider,
+  price,
+  web3Modal,
+  loadWeb3Modal,
+  logoutOfWeb3Modal,
+}) {
   const location = useLocation();
 
   return (
@@ -79,7 +89,12 @@ export default function NavBar({ web3Modal, loadWeb3Modal, logoutOfWeb3Modal }) 
       </div>
 
       <Account
-        minimized={true}
+        useBurner={useBurner}
+        address={address}
+        localProvider={localProvider}
+        userSigner={userSigner}
+        mainnetProvider={mainnetProvider}
+        price={price}
         web3Modal={web3Modal}
         loadWeb3Modal={loadWeb3Modal}
         logoutOfWeb3Modal={logoutOfWeb3Modal}
