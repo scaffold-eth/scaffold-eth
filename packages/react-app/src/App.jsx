@@ -31,7 +31,7 @@ import externalContracts from "./contracts/external_contracts";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { getRPCPollTime, Transactor, Web3ModalSetup } from "./helpers";
-import { YourLoogies, Loogies } from "./views";
+import { YourLoogies, Home } from "./views";
 import { useStaticJsonRPC } from "./hooks";
 import NavBar from "./components/Navbar";
 
@@ -317,46 +317,18 @@ function App(props) {
         loadWeb3Modal={loadWeb3Modal}
         logoutOfWeb3Modal={logoutOfWeb3Modal}
       />
-      <div style={{ maxWidth: 820, margin: "auto", marginTop: 96, paddingBottom: 32 }}>
-        <div style={{ fontSize: 16 }}>
-          <p>
-            Only <strong>3728 Optimistic Loogies</strong> available (2X the supply of the{" "}
-            <a href="https://loogies.io" target="_blank" rel="noreferrer">
-              Original Ethereum Mainnet Loogies
-            </a>
-            ) on a price curve <strong>increasing 0.2%</strong> with each new mint.
-          </p>
-          <p>All Ether from sales goes to public goods!!</p>
-        </div>
-
-        <Button
-          type="primary"
-          onClick={async () => {
-            const priceRightNow = await readContracts.YourCollectible.price();
-            try {
-              const txCur = await tx(
-                writeContracts.YourCollectible.mintItem({ value: priceRightNow, gasLimit: 300000 }),
-              );
-              await txCur.wait();
-            } catch (e) {
-              console.log("mint failed", e);
-            }
-          }}
-        >
-          MINT for Ξ{priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(4)}
-        </Button>
-
-        <p style={{ fontWeight: "bold" }}>{loogiesLeft} left</p>
-      </div>
-
       <Switch>
         <Route exact path="/">
-          <Loogies
+          <Home
             readContracts={readContracts}
             mainnetProvider={mainnetProvider}
             blockExplorer={blockExplorer}
             totalSupply={totalSupply}
+            priceToMint={priceToMint}
             DEBUG={DEBUG}
+            tx={tx}
+            writeContracts={writeContracts}
+            loogiesLeft={loogiesLeft}
           />
         </Route>
         <Route exact path="/yourLoogies">

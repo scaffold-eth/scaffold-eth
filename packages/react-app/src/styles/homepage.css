@@ -1,0 +1,154 @@
+.homepage {
+  background-color:  #F5F5F5;
+  /* border : 2px solid red; */
+  /* min-height: 50vh; */
+  min-width: 100vw;
+  display: flex;
+  min-height: 70vh;
+  justify-content: center;
+  align-items: flex-start;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+  background-position: bottom -50px left -180px;
+  background-repeat: no-repeat;
+}
+
+.homepage__container{
+  /* border : 2px solid blue; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: -5rem;
+  position: relative;
+}
+
+.homepage__pickerImg{
+  position: absolute;
+  right : -130px;
+  top : -375px;
+}
+
+.homepage__heading{
+  font-size: 4.25rem;
+  font-weight: 800;
+  margin: 0;
+  letter-spacing: 0.2rem;
+}
+
+.homepage-txtBtnContainer{
+  display: flex;
+  max-width: 720px;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.75rem;
+}
+
+.homepage__text{
+  font-size: 1.2rem;
+  margin: 0;
+  font-weight: 450;
+  letter-spacing: 0.02rem;
+}
+
+.homepage__span{
+  font-weight: 700;
+}
+
+.homepage__btn{
+  padding: 0.5rem 1.75rem;
+  border-radius: 40px;
+  background: #A056FF;
+  border : 0;
+  font-weight: 500;
+  font-size: 1.1rem;
+  color : white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0px 0px 16px rgba(0, 0, 0, 0.25);
+  margin-bottom: 0.5rem;
+}
+
+.homepage__btn:hover{
+  background: #8d4ce2;
+}
+
+.homepage__btnImg{
+  height: 1rem;
+  width: 1rem;
+}
+
+.homepage__btnText{
+  margin: 0;
+  margin-right: 0.5rem;
+}
+
+.homepage__loggiesBg{
+  position: absolute;
+}
+
+.homepage__text--publicGoodText {
+  color: #A056FF;
+  margin-top: 1.25rem;
+}
+
+@media screen and (max-width: 720px) {
+
+  .homepage {
+    position: relative;
+    min-height: 60vh;
+    align-items: center;
+    background-position: bottom -43px right -25px;
+    background-size: 285%;
+  }
+
+  .homepage__container{
+    position: relative;
+    margin-top: -5rem;
+  }
+
+  .homepage__heading{
+    font-size: 3rem;
+    letter-spacing: 0;
+  }
+
+  .homepage-txtBtnContainer{
+    max-width: 420px;
+  }
+
+  .homepage__text{
+    font-size: 1.2rem;
+    margin: 0;
+    letter-spacing: 0rem;
+  }
+
+  .homepage__pickerImg{
+    position: absolute;
+    right : 48px;
+    top : -517px;
+  }
+
+}
+@media screen and (min-width: 1400px) {
+  .homepage {
+    background-position: bottom -50px left -190px;
+    background-size: 130%;
+  }
+
+}
+
+
+@media screen and (min-width: 2000px) {
+  .homepage {
+    background-position: bottom -100px left -190px;
+    background-size: 115%;
+  }
+
+  .homepage__container{
+    margin-top: -24rem;
+  }
+
+}
