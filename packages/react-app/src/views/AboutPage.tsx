@@ -6,20 +6,21 @@ export default function About() {
   return (
     <>
       <Box sx={{ paddingTop: '76px' }}>
-        <h3>About Rewards!</h3>
-        <Typography variant="h5">
+        <Typography variant="h3" fontWeight={700} fontFamily={'Noah'} color={'black'} marginBottom={5}>
+          About Rewards
+        </Typography>
+        <Typography variant="h5" fontWeight={400} marginBottom={5}>
           Have you ever wondered how you can get a reward? Well you find out how here.
         </Typography>
         <Box
           sx={{
-            marginTop: '176px',
             height: 'auto',
             background:
               'linear-gradient(90deg, #f6e8fc, #f1e6fb, #ede5fb, #e8e4fa, #e3e2f9, #dee1f7, #d9dff6, #d4def4)',
           }}
-          mt={15}
           p={5}
           display={'flex'}
+          justifyContent={'center'}
           flexWrap={'wrap'}
           gap={3}
         >
