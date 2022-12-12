@@ -2,7 +2,17 @@ import "../styles/homepage.css";
 import Loogies from "./Loogies";
 import { ethers } from "ethers";
 
-function Home({ readContracts, mainnetProvider, blockExplorer, totalSupply, DEBUG, tx, writeContracts, priceToMint }) {
+function Home({
+  readContracts,
+  mainnetProvider,
+  blockExplorer,
+  totalSupply,
+  DEBUG,
+  tx,
+  writeContracts,
+  priceToMint,
+  loogiesLeft,
+}) {
   const mintLoogie = async () => {
     const priceRightNow = await readContracts.YourCollectible.price();
     try {
@@ -33,13 +43,21 @@ function Home({ readContracts, mainnetProvider, blockExplorer, totalSupply, DEBU
                   Original Ethereum Mainnet Loogies
                 </a>
               </p>
-              <button className="homepage__btn" onClick={mintLoogie}>
-                <p className="homepage__btnText">
-                  Mint Now for {priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(4)}
+              <div className="homepageBtn__container">
+                <button className="homepage__btn" onClick={mintLoogie}>
+                  <p className="homepage__btnText">
+                    Mint Now for {priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(4)}
+                  </p>
+                  <img src="/assets/fa-ethereum.svg" alt="ethereum" className="homepage__btnImg" />
+                </button>
+                <p className="homepage__text">
+                  <span className="homepage__span">{loogiesLeft} left</span>
                 </p>
-                <img src="/assets/fa-ethereum.svg" alt="ethereum" className="homepage__btnImg" />
-              </button>
+              </div>
             </div>
+            <p className="homepage__text  homepage__text--publicGoodText">
+              All Ether from sales goes to public goods!!
+            </p>
           </div>
         </div>
       </div>
