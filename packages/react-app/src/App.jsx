@@ -349,7 +349,7 @@ function App(props) {
               transferToAddresses={transferToAddresses}
               setTransferToAddresses={setTransferToAddresses}
               address={address}
-              isLoading={isYourCollectibleLoading}
+              loading={isYourCollectibleLoading}
             />
           </Route>
           <Route exact path="/guide">
