@@ -409,7 +409,17 @@ function App(props) {
         </Route>
       </Switch>
 
-      <div style={{ maxWidth: 820, margin: "auto", marginTop: 32 }}>
+      <div
+        style={{
+          maxWidth: 820,
+          margin: "auto",
+          display: "flex",
+          height: "80px",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "4px",
+        }}
+      >
         🛠 built with{" "}
         <a href="https://github.com/scaffold-eth/scaffold-eth" target="_blank" rel="noreferrer">
           🏗 scaffold-eth
