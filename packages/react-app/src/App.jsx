@@ -193,10 +193,12 @@ function App(props) {
   //
   const yourBalance = balance && balance.toNumber && balance.toNumber();
   const [yourCollectibles, setYourCollectibles] = useState();
+  const [isYourCollectibleLoading, setIsYourCollectibleLoading] = useState(false);
   const [transferToAddresses, setTransferToAddresses] = useState({});
 
   useEffect(() => {
     const updateYourCollectibles = async () => {
+      setIsYourCollectibleLoading(true);
       const collectibleUpdate = [];
       for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
         try {
@@ -216,6 +218,7 @@ function App(props) {
         } catch (e) {
           console.log(e);
         }
+        setIsYourCollectibleLoading(false);
       }
       setYourCollectibles(collectibleUpdate.reverse());
     };
@@ -343,6 +346,7 @@ function App(props) {
             transferToAddresses={transferToAddresses}
             setTransferToAddresses={setTransferToAddresses}
             address={address}
+            isLoading={isYourCollectibleLoading}
           />
         </Route>
         <Route exact path="/guide">
