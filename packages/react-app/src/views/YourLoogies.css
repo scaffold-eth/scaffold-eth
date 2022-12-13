@@ -1,10 +1,6 @@
 .your-loogies {
   padding-left: 20px;
   padding-right: 20px;
-  padding-top: 80px;
-  background-color: #f5f5f5;
-  /* 240px is top menu + bottom menu + footer */
-  min-height: calc(100vh - 240px);
 }
 
 .your-loogies__title {
@@ -19,10 +15,6 @@
 }
 
 @media screen and (min-width: 1024px) {
-  .your-loogies {
-    /* 160px is top menu + footer */
-    min-height: calc(100vh - 160px);
-  }
   .your-loogies__title {
     font-size: 40px;
   }
@@ -30,7 +22,6 @@
 
 @media screen and (min-width: 1440px) {
   .your-loogies {
-    padding-top: 20px;
     padding-left: 120px;
     padding-right: 120px;
   }

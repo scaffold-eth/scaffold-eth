@@ -334,83 +334,89 @@ function App(props) {
             loogiesLeft={loogiesLeft}
           />
         </Route>
-        <Route exact path="/yourLoogies">
-          <YourLoogies
-            readContracts={readContracts}
-            writeContracts={writeContracts}
-            priceToMint={priceToMint}
-            yourCollectibles={yourCollectibles}
-            tx={tx}
-            mainnetProvider={mainnetProvider}
-            blockExplorer={blockExplorer}
-            transferToAddresses={transferToAddresses}
-            setTransferToAddresses={setTransferToAddresses}
-            address={address}
-            isLoading={isYourCollectibleLoading}
-          />
-        </Route>
-        <Route exact path="/guide">
-          <div style={{ fontSize: 18, width: 820, margin: "auto" }}>
-            <h2 style={{ fontSize: "2em", fontWeight: "bold" }}>How to add Optimistic Ethereum network on MetaMask</h2>
-            <div style={{ textAlign: "left", marginLeft: 50, marginBottom: 50 }}>
-              <ul>
-                <li>
-                  Go to{" "}
-                  <a target="_blank" href="https://chainid.link/?network=optimism" rel="noreferrer">
-                    https://chainid.link/?network=optimism
-                  </a>
-                </li>
-                <li>
-                  Click on <strong>connect</strong> to add the <strong>Optimistic Ethereum</strong> network in{" "}
-                  <strong>MetaMask</strong>.
-                </li>
-              </ul>
+        <div className="App__page-content-wrapper">
+          <Route exact path="/yourLoogies">
+            <YourLoogies
+              readContracts={readContracts}
+              writeContracts={writeContracts}
+              priceToMint={priceToMint}
+              yourCollectibles={yourCollectibles}
+              tx={tx}
+              mainnetProvider={mainnetProvider}
+              blockExplorer={blockExplorer}
+              transferToAddresses={transferToAddresses}
+              setTransferToAddresses={setTransferToAddresses}
+              address={address}
+              isLoading={isYourCollectibleLoading}
+            />
+          </Route>
+          <Route exact path="/guide">
+            <div style={{ fontSize: 18, width: 820, margin: "auto" }}>
+              <h2 style={{ fontSize: "2em", fontWeight: "bold" }}>
+                How to add Optimistic Ethereum network on MetaMask
+              </h2>
+              <div style={{ textAlign: "left", marginLeft: 50, marginBottom: 50 }}>
+                <ul>
+                  <li>
+                    Go to{" "}
+                    <a target="_blank" href="https://chainid.link/?network=optimism" rel="noreferrer">
+                      https://chainid.link/?network=optimism
+                    </a>
+                  </li>
+                  <li>
+                    Click on <strong>connect</strong> to add the <strong>Optimistic Ethereum</strong> network in{" "}
+                    <strong>MetaMask</strong>.
+                  </li>
+                </ul>
+              </div>
+              <h2 style={{ fontSize: "2em", fontWeight: "bold" }}>
+                How to add funds to your wallet on Optimistic Ethereum network
+              </h2>
+              <div style={{ textAlign: "left", marginLeft: 50, marginBottom: 100 }}>
+                <ul>
+                  <li>
+                    <a href="https://portr.xyz/" target="_blank" rel="noreferrer">
+                      The Teleporter
+                    </a>
+                    : the cheaper option, but with a 0.05 ether limit per transfer.
+                  </li>
+                  <li>
+                    <a href="https://gateway.optimism.io/" target="_blank" rel="noreferrer">
+                      The Optimism Gateway
+                    </a>
+                    : larger transfers and cost more.
+                  </li>
+                  <li>
+                    <a
+                      href="https://app.hop.exchange/send?token=ETH&sourceNetwork=ethereum&destNetwork=optimism"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Hop.Exchange
+                    </a>
+                    : where you can send from/to Ethereum mainnet and other L2 networks.
+                  </li>
+                </ul>
+              </div>
             </div>
-            <h2 style={{ fontSize: "2em", fontWeight: "bold" }}>
-              How to add funds to your wallet on Optimistic Ethereum network
-            </h2>
-            <div style={{ textAlign: "left", marginLeft: 50, marginBottom: 100 }}>
-              <ul>
-                <li>
-                  <a href="https://portr.xyz/" target="_blank" rel="noreferrer">
-                    The Teleporter
-                  </a>
-                  : the cheaper option, but with a 0.05 ether limit per transfer.
-                </li>
-                <li>
-                  <a href="https://gateway.optimism.io/" target="_blank" rel="noreferrer">
-                    The Optimism Gateway
-                  </a>
-                  : larger transfers and cost more.
-                </li>
-                <li>
-                  <a
-                    href="https://app.hop.exchange/send?token=ETH&sourceNetwork=ethereum&destNetwork=optimism"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    Hop.Exchange
-                  </a>
-                  : where you can send from/to Ethereum mainnet and other L2 networks.
-                </li>
-              </ul>
+          </Route>
+          <Route exact path="/contracts">
+            <div style={{ padding: 32 }}>
+              <Address
+                value={readContracts && readContracts.YourCollectible && readContracts.YourCollectible.address}
+              />
             </div>
-          </div>
-        </Route>
-        <Route exact path="/contracts">
-          <div style={{ padding: 32 }}>
-            <Address value={readContracts && readContracts.YourCollectible && readContracts.YourCollectible.address} />
-          </div>
-          <Contract
-            name="YourCollectible"
-            price={price}
-            signer={userSigner}
-            provider={localProvider}
-            address={address}
-            blockExplorer={blockExplorer}
-            contractConfig={contractConfig}
-          />
-        </Route>
+            <Contract
+              name="YourCollectible"
+              price={price}
+              signer={userSigner}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+              contractConfig={contractConfig}
+            />
+          </Route>
+        </div>
       </Switch>
 
       <div

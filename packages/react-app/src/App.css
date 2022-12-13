@@ -2,3 +2,23 @@
   text-align: center;
   padding-left: 0;
 }
+
+.App__page-content-wrapper {
+  background-color: #f5f5f5;
+  /* 240px is top menu + bottom menu + footer */
+  min-height: calc(100vh - 240px);
+  padding-top: 80px;
+}
+
+@media screen and (min-width: 1024px) {
+  .App__page-content-wrapper {
+    /* 160px is top menu + footer */
+    min-height: calc(100vh - 160px);
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  .App__page-content-wrapper {
+    padding-top: 20px;
+  }
+}
