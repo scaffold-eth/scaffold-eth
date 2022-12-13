@@ -115,12 +115,12 @@ export default function Contract({
   });
 
   return (
-    <div style={{ margin: "auto", width: "70vw" }}>
+    <div style={{ margin: "auto", width: "80vw" }}>
       <Card
         title={
-          <div style={{ fontSize: 24 }}>
+          <div style={{ fontSize: 24, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             {name}
-            <div style={{ float: "right" }}>
+            <div style={{ display: "inline-flex", alignItems: "center", justifyContent: "flex-end" }}>
               <Address value={address} blockExplorer={blockExplorer} />
               <Balance address={address} provider={provider} price={price} />
             </div>

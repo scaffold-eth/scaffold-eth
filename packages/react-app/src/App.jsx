@@ -351,7 +351,7 @@ function App(props) {
             />
           </Route>
           <Route exact path="/guide">
-            <div style={{ fontSize: 18, width: 820, margin: "auto" }}>
+            <div style={{ fontSize: 18, maxWidth: 820, margin: "auto", paddingRight: 20, paddingLeft: 20 }}>
               <h2 style={{ fontSize: "2em", fontWeight: "bold" }}>
                 How to add Optimistic Ethereum network on MetaMask
               </h2>
@@ -372,7 +372,7 @@ function App(props) {
               <h2 style={{ fontSize: "2em", fontWeight: "bold" }}>
                 How to add funds to your wallet on Optimistic Ethereum network
               </h2>
-              <div style={{ textAlign: "left", marginLeft: 50, marginBottom: 100 }}>
+              <div style={{ textAlign: "left", paddingLeft: 50, paddingBottom: 100 }}>
                 <ul>
                   <li>
                     <a href="https://portr.xyz/" target="_blank" rel="noreferrer">
@@ -419,26 +419,22 @@ function App(props) {
         </div>
       </Switch>
 
-      <div
-        style={{
-          maxWidth: 820,
-          margin: "auto",
-          display: "flex",
-          height: "80px",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: "4px",
-        }}
-      >
-        🛠 built with{" "}
-        <a href="https://github.com/scaffold-eth/scaffold-eth" target="_blank" rel="noreferrer">
-          🏗 scaffold-eth
-        </a>
-        🍴{" "}
-        <a href="https://github.com/scaffold-eth/scaffold-eth" target="_blank" rel="noreferrer">
-          Fork this repo
-        </a>{" "}
-        and build a cool SVG NFT!
+      <div className="App__footer-wrapper">
+        <div className="App__footer">
+          <span>
+            🛠 built with{" "}
+            <a href="https://github.com/scaffold-eth/scaffold-eth" target="_blank" rel="noreferrer">
+              🏗 scaffold-eth
+            </a>
+            🍴
+          </span>
+          <span>
+            <a href="https://github.com/scaffold-eth/scaffold-eth" target="_blank" rel="noreferrer">
+              Fork this repo
+            </a>{" "}
+            and build a cool SVG NFT!
+          </span>
+        </div>
       </div>
 
       <ThemeSwitch />
