@@ -2,3 +2,48 @@
   text-align: center;
   padding-left: 0;
 }
+
+.App__page-content-wrapper {
+  background-color: #f5f5f5;
+  /* 240px is top menu + bottom menu + footer */
+  min-height: calc(100vh - 240px);
+  padding-top: 80px;
+}
+
+.App__footer {
+  max-width: 820px;
+  margin: auto;
+  display: flex;
+  height: 80px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  flex-direction: column;
+  font-size: 16px;
+}
+
+.App__footer-wrapper {
+  padding-bottom: 80px;
+}
+
+@media screen and (min-width: 768px) {
+  .App__footer {
+    flex-direction: row;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .App__page-content-wrapper {
+    /* 160px is top menu + footer */
+    min-height: calc(100vh - 160px);
+  }
+  .App__footer-wrapper {
+    padding-bottom: 0px;
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  .App__page-content-wrapper {
+    padding-top: 20px;
+  }
+}

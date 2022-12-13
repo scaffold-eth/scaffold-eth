@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Button, Card, List } from "antd";
+import { Button, Card, List, Spin } from "antd";
 import { Address, AddressInput } from "../components";
 import { ethers } from "ethers";
 
@@ -18,11 +18,15 @@ function YourLoogies({
   transferToAddresses,
   setTransferToAddresses,
   address,
+  loading,
 }) {
   return (
     <div className="your-loogies">
+      <h2 className="your-loogies__title">Sneak peak on your Loogies with a smile:</h2>
+      <p className="your-loogies__description">The more loogies the happier they are!</p>
       <div style={{ margin: "auto", paddingBottom: 25 }}>
         <List
+          loading={loading}
           grid={{
             gutter: 16,
             xs: 1,

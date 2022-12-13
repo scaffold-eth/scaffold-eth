@@ -1,11 +1,13 @@
 .loogies {
-  margin-left: 20px;
-  margin-right: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
+  background-color: #f5f5f5;
+  padding-top: 40px;
 }
 
 @media screen and (min-width: 1440px) {
   .loogies {
-    margin-left: 120px;
-    margin-right: 120px;
+    padding-left: 120px;
+    padding-right: 120px;
   }
 }

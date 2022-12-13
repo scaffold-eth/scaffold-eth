@@ -10,7 +10,7 @@
 .account__display {
   display: inline-flex;
   align-items: center;
-  background: #f3f3f3;
+  background: #fff;
   padding-left: 12px;
   padding-right: 12px;
   border-radius: 40px;
@@ -20,6 +20,7 @@
   top: calc(100% + 20px);
   left: 50%;
   transform: translateX(-50%);
+  z-index: 1;
 }
 
 .account .account__connect-button--lg {
@@ -47,5 +48,6 @@
   .account__display {
     position: static;
     transform: none;
+    background: #f3f3f3;
   }
 }

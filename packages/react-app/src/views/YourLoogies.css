@@ -1,11 +1,28 @@
 .your-loogies {
-  margin-left: 20px;
-  margin-right: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.your-loogies__title {
+  font-size: 28px;
+  font-weight: 900;
+  margin-bottom: 12px;
+  line-height: 1.2;
+}
+
+.your-loogies__description {
+  font-size: 18px;
+}
+
+@media screen and (min-width: 1024px) {
+  .your-loogies__title {
+    font-size: 40px;
+  }
 }
 
 @media screen and (min-width: 1440px) {
   .your-loogies {
-    margin-left: 120px;
-    margin-right: 120px;
+    padding-left: 120px;
+    padding-right: 120px;
   }
 }
