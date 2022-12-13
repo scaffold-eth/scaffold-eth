@@ -211,7 +211,7 @@ export default function BrowseBadges() {
     <>
       <Box sx={{ paddingTop: '76px' }}>
         <Box sx={{ textAlign: 'left', padding: '10px', color: '#007aa6', marginLeft: 5 }}>
-          <Typography variant={'h3'} fontWeight={700} sx={{ marginBottom: 5 }} color={'black'} fontFamily={'Noah'}>
+          <Typography variant={'h3'} fontWeight={700} sx={{ marginBottom: 5 }} color={'#333333'} fontFamily={'Noah'}>
             Remix Rewards
           </Typography>
           <Box>

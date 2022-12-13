@@ -26,7 +26,7 @@ export default function MintingPage() {
             variant={'h3'}
             fontWeight={700}
             sx={{ marginBottom: 2 }}
-            color={'black'}
+            color={'#333333'}
             fontFamily={'Noah'}
           >
             Mint a Remixer
