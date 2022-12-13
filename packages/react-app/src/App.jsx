@@ -34,6 +34,8 @@ import { getRPCPollTime, Transactor, Web3ModalSetup } from "./helpers";
 import { YourLoogies, Home } from "./views";
 import { useStaticJsonRPC } from "./hooks";
 import NavBar from "./components/Navbar";
+import ScaffoldIcon from "./components/Icons/ScaffoldIcon";
+import ForkIcon from "./components/Icons/ForkIcon";
 
 const { ethers } = require("ethers");
 /*
@@ -421,19 +423,29 @@ function App(props) {
 
       <div className="App__footer-wrapper">
         <div className="App__footer">
-          <span>
-            🛠 built with{" "}
-            <a href="https://github.com/scaffold-eth/scaffold-eth" target="_blank" rel="noreferrer">
-              🏗 scaffold-eth
+          <div style={{ display: "flex", alignItems: "center", gap: "4px", fontWeight: 500 }}>
+            Built with <ScaffoldIcon />
+            <a
+              href="https://github.com/scaffold-eth/scaffold-eth"
+              target="_blank"
+              rel="noreferrer"
+              style={{ fontWeight: 600 }}
+            >
+              scaffold-eth
             </a>
-            🍴
-          </span>
-          <span>
-            <a href="https://github.com/scaffold-eth/scaffold-eth" target="_blank" rel="noreferrer">
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: "4px", fontWeight: 500 }}>
+            <ForkIcon />
+            <a
+              href="https://github.com/scaffold-eth/scaffold-eth"
+              target="_blank"
+              rel="noreferrer"
+              style={{ fontWeight: 600 }}
+            >
               Fork this repo
             </a>{" "}
             and build a cool SVG NFT!
-          </span>
+          </div>
         </div>
       </div>
 
