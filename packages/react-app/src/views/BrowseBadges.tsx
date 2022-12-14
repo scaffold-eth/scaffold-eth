@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react'
 import externalContracts from '../contracts/external_contracts'
 import { getAllRewards } from '../helpers/getAllRewards'
-import { EventBadge, RewardGroups } from '../types/rewardTypes'
+import { Badge, EventBadge, RewardGroups } from '../types/rewardTypes'
 
 import { ethers } from 'ethers'
 import InputLabel from '@mui/material/InputLabel'
@@ -159,12 +159,19 @@ export default function BrowseBadges() {
       setEventBadges([])
       return
     }
-    let badges = await getAllRewards(contractRef.address, providerRef)
-    badges = badges.map(badge => {
+    let rawBadges: Badge[] = await getAllRewards(contractRef.address, providerRef)
+    const provider = new ethers.providers.Web3Provider(window.ethereum)
+    console.log({ rawBadges })
+    const badges = rawBadges.map(badge => {
+      const blk = provider.getBlock(badge.blockNumber).then(response => {
+        console.log(response)
+      })
+      // console.log(blk)
       return {
         id: ethers.utils.hexStripZeros(badge.topics[3]),
         to: ethers.utils.hexZeroPad(ethers.utils.hexStripZeros(badge.topics[2]), 20),
         transactionHash: badge.transactionHash,
+        date: new Date(blk.timestamp),
       }
     })
     let dataArray = []

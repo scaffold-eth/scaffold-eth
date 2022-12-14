@@ -26,6 +26,18 @@ export type RewardNames =
   | 'UX Champion'
   | 'Specials'
 
+export type Badge = {
+  address: string
+  blockHash: string
+  blockNumber: string
+  data: string
+  logIndex: string
+  removed: boolean
+  topics: string[]
+  transactionHash: string
+  transactionIndex: string
+}
+
 export type RewardKey = keyof Reward
 
 export type RewardGroups = {
