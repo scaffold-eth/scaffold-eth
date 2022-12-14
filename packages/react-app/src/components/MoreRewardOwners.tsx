@@ -1,7 +1,12 @@
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
+import { Reward } from '../types/rewardTypes'
 
-export default function MoreRewardOwners() {
+export interface MoreRewardOwnersProps {
+  rewards?: Reward[]
+}
+
+export default function MoreRewardOwners(props: MoreRewardOwnersProps) {
   return (
     <Box>
       <Box>
@@ -11,8 +16,7 @@ export default function MoreRewardOwners() {
               <Typography>Account</Typography>
             </Box>
           </li>
-          <li>
-          </li>
+          <li></li>
           <li></li>
           <li></li>
           <li></li>

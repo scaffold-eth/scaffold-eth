@@ -27,7 +27,12 @@ const inforCardPayload: { imageSrc: string; rewardType: RewardNames; text: JSX.E
       <p>
         Beta test any release of Remix IDE and you earn the Beta Tester for that version.
         <br />
-        <Button variant="outlined" sx={{ marginTop: 3 }} href="#" color={'inherit'}>
+        <Button
+          variant="outlined"
+          sx={{ marginTop: 3 }}
+          href=" https://docs.google.com/forms/d/e/1FAIpQLSd0WsJnKbeJo-BGrnf7WijxAdmE4PnC_Z4M0IApbBfHLHZdsQ/viewform"
+          color={'inherit'}
+        >
           Here is how
         </Button>
       </p>
@@ -35,11 +40,11 @@ const inforCardPayload: { imageSrc: string; rewardType: RewardNames; text: JSX.E
   },
   {
     imageSrc: '/DevConnector.png',
-    rewardType: 'Dev Connector',
+    rewardType: 'Specials',
     text: (
       <p>
         These are special issue rewards for participation in one of the several select events during the year.
-        <Button variant="outlined" sx={{ marginTop: 3 }} color={'inherit'} href="#">
+        <Button variant="outlined" sx={{ marginTop: 3 }} color={'inherit'} href="https://remix-project.org/#events">
           Event schedule
         </Button>
       </p>

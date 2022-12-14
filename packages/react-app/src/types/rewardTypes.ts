@@ -24,6 +24,7 @@ export type RewardNames =
   | 'Release Manager'
   | 'Remixer'
   | 'UX Champion'
+  | 'Specials'
 
 export type RewardKey = keyof Reward
 
