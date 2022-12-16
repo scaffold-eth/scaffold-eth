@@ -95,14 +95,14 @@
   margin-top: 1.25rem;
 }
 
-@media screen and (max-width: 720px) {
+@media screen and (max-width: 1400px) {
 
   .homepage {
     position: relative;
-    min-height: 60vh;
+    min-height: 65vh;
     align-items: center;
-    background-position: bottom -43px right -25px;
-    background-size: 285%;
+    background-position: bottom -90px right -25px;
+    background-size: 178%;
   }
 
   .homepage__container{
@@ -132,6 +132,22 @@
   }
 
 }
+
+@media screen  and (max-width: 1000px){
+  .homepage {
+    background-position: bottom -43px right -25px;
+    background-size: 200%;
+  }
+}
+
+@media screen  and (max-width: 700px){
+  .homepage {
+    min-height: 75vh;
+    background-position: bottom -43px right -25px;
+    background-size: 285%;
+  }
+}
+
 @media screen and (min-width: 1400px) {
   .homepage {
     background-position: bottom -50px left -190px;
@@ -144,11 +160,11 @@
 @media screen and (min-width: 2000px) {
   .homepage {
     background-position: bottom -100px left -190px;
-    background-size: 115%;
+    background-size: 120%;
   }
 
   .homepage__container{
-    margin-top: -24rem;
+    margin-top: -18rem;
   }
 
 }
