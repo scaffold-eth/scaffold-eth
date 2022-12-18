@@ -160,18 +160,12 @@ export default function BrowseBadges() {
       return
     }
     let rawBadges: Badge[] = await getAllRewards(contractRef.address, providerRef)
-    const provider = new ethers.providers.Web3Provider(window.ethereum)
     console.log({ rawBadges })
     const badges = rawBadges.map(badge => {
-      const blk = provider.getBlock(badge.blockNumber).then(response => {
-        console.log(response)
-      })
-      // console.log(blk)
       return {
         id: ethers.utils.hexStripZeros(badge.topics[3]),
         to: ethers.utils.hexZeroPad(ethers.utils.hexStripZeros(badge.topics[2]), 20),
         transactionHash: badge.transactionHash,
-        date: new Date(blk.timestamp),
       }
     })
     let dataArray = []
