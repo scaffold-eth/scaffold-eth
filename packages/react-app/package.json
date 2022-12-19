@@ -19,6 +19,8 @@
     "@apollo/client": "^3.3.21",
     "@apollo/react-hooks": "^4.0.0",
     "@arbitrum/sdk": "^2.0.0",
+    "@gnosis.pm/safe-apps-sdk": "^7.8.0",
+    "@gnosis.pm/safe-apps-web3modal": "^17.0.4",
     "@portis/web3": "^4.0.5",
     "@ramp-network/ramp-instant-sdk": "^2.2.0",
     "@testing-library/jest-dom": "^5.11.4",
@@ -55,7 +57,7 @@
     "react-scripts": "4.0.1",
     "searchico": "^1.2.1",
     "walletlink": "^2.1.5",
-    "web3modal": "^1.9.1"
+    "web3modal": "^1.9.10"
   },
   "devDependencies": {
     "@apollo/client": "^3.3.21",
@@ -88,7 +90,7 @@
     "build": "react-scripts build",
     "eject": "react-scripts eject",
     "prestart": "node ./scripts/create_contracts.js",
-    "start": "react-scripts start",
+    "start": "react-scripts --openssl-legacy-provider start",
     "test": "react-scripts test",
     "lint": "eslint ./src/**/*.{js,jsx} --ignore-path ./.eslintignore --max-warnings=0",
     "ipfs": "node ./scripts/ipfs.js",
