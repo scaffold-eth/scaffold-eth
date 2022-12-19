@@ -19,6 +19,29 @@ Prerequisites: [Node (v18 LTS)](https://nodejs.org/en/download/) plus [Yarn (v1.
 git clone https://github.com/scaffold-eth/scaffold-eth.git
 ```
 
+# 🏄‍♂️ Regular setup (non-Docker)
+
+> install and start your 👷‍ Hardhat chain:
+
+```bash
+cd scaffold-eth
+yarn install
+yarn chain
+```
+> in a second terminal window, start your 📱 frontend:
+
+```bash
+cd scaffold-eth
+yarn start
+```
+
+> in a third terminal window, 🛰 deploy your contract:
+
+```bash
+cd scaffold-eth
+yarn deploy
+```
+
 
 # 🏄‍♂️ Using Docker
 
@@ -38,29 +61,6 @@ docker-compose up
 Now you have two containers, one running the frontend and one running hardhat
 
 Deploy your contract using:
-
-```bash
-cd scaffold-eth
-yarn deploy
-```
-
-# 🏄‍♂️ Regular setup (non-Docker)
-
-> install and start your 👷‍ Hardhat chain:
-
-```bash
-cd scaffold-eth
-yarn install
-yarn chain
-```
-> in a second terminal window, start your 📱 frontend:
-
-```bash
-cd scaffold-eth
-yarn start
-```
-
-> in a third terminal window, 🛰 deploy your contract:
 
 ```bash
 cd scaffold-eth
