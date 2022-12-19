@@ -1,4 +1,4 @@
-import { Button, Col, Row, Card, List, Table } from "antd";
+import { Button, Col, Row, Card, List, Table, Spin } from "antd";
 import "antd/dist/antd.css";
 import { useBalance, useContractLoader, useGasPrice, useOnBlock, useUserProviderAndSigner } from "eth-hooks";
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
@@ -175,9 +175,7 @@ function App(props) {
             player {
               id
               address
-              fancyLoogieId
-              health
-              token
+              nftId
             }
       }
     }
@@ -201,9 +199,7 @@ function App(props) {
             player {
               id
               address
-              fancyLoogieId
-              health
-              token
+              nftId
             }
       }
     }
@@ -227,9 +223,7 @@ function App(props) {
             player {
               id
               address
-              fancyLoogieId
-              health
-              token
+              nftId
             }
       }
     }
@@ -249,9 +243,9 @@ function App(props) {
   useEffect(() => {
     const updateBalances = async () => {
       if (DEBUG) console.log("Updating loogies balance...");
-      if (readContracts.FancyLoogie) {
-        const loogieNewBalance = await readContracts.FancyLoogie.balanceOf(address);
-        if (DEBUG) console.log("NFT: FancyLoogie - Balance: ", loogieNewBalance);
+      if (readContracts.Emotilon) {
+        const loogieNewBalance = await readContracts.Emotilon.balanceOf(address);
+        if (DEBUG) console.log("NFT: Emotilon - Balance: ", loogieNewBalance);
         const yourLoogieNewBalance = loogieNewBalance && loogieNewBalance.toNumber && loogieNewBalance.toNumber();
         setYourLoogieBalance(yourLoogieNewBalance);
       } else {
@@ -259,7 +253,7 @@ function App(props) {
       }
     };
     updateBalances();
-  }, [address, readContracts.FancyLoogie]);
+  }, [address, readContracts.Emotilon]);
 
   useEffect(() => {
     const updateYourLoogies = async () => {
@@ -267,9 +261,9 @@ function App(props) {
       const loogieUpdate = [];
       for (let tokenIndex = 0; tokenIndex < yourLoogieBalance; tokenIndex++) {
         try {
-          const tokenId = await readContracts.FancyLoogie.tokenOfOwnerByIndex(address, tokenIndex);
-          if (DEBUG) console.log("Getting FancyLoogie tokenId: ", tokenId);
-          const tokenURI = await readContracts.FancyLoogie.tokenURI(tokenId);
+          const tokenId = await readContracts.Emotilon.tokenOfOwnerByIndex(address, tokenIndex);
+          if (DEBUG) console.log("Getting Emotilon tokenId: ", tokenId);
+          const tokenURI = await readContracts.Emotilon.tokenURI(tokenId);
           if (DEBUG) console.log("tokenURI: ", tokenURI);
           const jsonManifestString = atob(tokenURI.substring(29));
 
@@ -292,7 +286,7 @@ function App(props) {
       setLoadingLoogies(false);
     };
     updateYourLoogies();
-  }, [address, readContracts.FancyLoogie, yourLoogieBalance]);
+  }, [address, readContracts.Emotilon, yourLoogieBalance]);
 
   const [activePlayer, setActivePlayer] = useState();
 
@@ -309,6 +303,7 @@ function App(props) {
   }, [address, worldPlayerData.data]);
 
   const [playerData, setPlayerData] = useState();
+  const [activeNftId, setActiveNftId] = useState();
 
   useEffect(() => {
     const updatePlayersData = async () => {
@@ -319,19 +314,23 @@ function App(props) {
         for (let p in playersData) {
           const currentPosition = playersData[p];
           console.log("loading info for ", currentPosition);
-          const tokenURI = await readContracts.Game.tokenURIOf(currentPosition.player.address);
+          const tokenURI = await readContracts.Game.tokenURIOf(currentPosition.player.nftId);
           const jsonManifestString = atob(tokenURI.substring(29));
           const jsonManifest = JSON.parse(jsonManifestString);
           const info = {
-            health: parseInt(currentPosition.player.health),
+            // health: parseInt(currentPosition.player.health),
             position: { x: currentPosition.x, y: currentPosition.y },
             //contract: await readContracts.Game.yourContract(worldPlayerData.data[p]),
             image: jsonManifest.image,
-            gold: parseInt(currentPosition.player.token),
+            // gold: parseInt(currentPosition.player.token),
             address: currentPosition.player.address,
+            nftId: currentPosition.player.nftId,
+            health: 0,
+            gold: 0,
           };
-          playerInfo[currentPosition.player.address] = info;
-          if (address && currentPosition.player.address.toLowerCase() === address.toLowerCase()) {
+          playerInfo[currentPosition.player.nftId] = info;
+          if (activeNftId && currentPosition.player.nftId == activeNftId) {
+            console.log("current player: ", info);
             setcurrentPlayer(info);
           }
         }
@@ -340,7 +339,7 @@ function App(props) {
       }
     };
     updatePlayersData();
-  }, [address, worldPlayerData, readContracts.Game]);
+  }, [address, worldPlayerData, readContracts.Game, activeNftId]);
 
   const [highScores, setHighScores] = useState();
 
@@ -445,9 +444,9 @@ function App(props) {
                     src={player.image}
                     style={{
                       transform: "rotate(45deg) scale(1,3)",
-                      width: 170,
-                      height: 170,
-                      marginLeft: -10,
+                      width: 110,
+                      height: 110,
+                      marginLeft: 20,
                       marginTop: -190,
                     }}
                   />
@@ -615,29 +614,39 @@ function App(props) {
         </Card>
       </div>
       <div style={{ position: "absolute", right: 50, top: 150, width: 600 }}>
-        {activePlayer ? (
+        {activePlayer && activeNftId ? (
           <div style={{ display: "flex" }}>
-            {currentPlayer && (
-              <div style={{ marginRight: 30, paddingTop: 5 }}>
-                <div>
-                  <span style={{ margin: 16 }}>{currentPlayer.gold}🏵</span>
-                  <span style={{ margin: 16, opacity: 0.77 }}>{currentPlayer.health}❤️</span>
+            {currentPlayer ? (
+              <>
+                <div style={{ marginRight: 30, paddingTop: 5 }}>
+                  <div>
+                    <span style={{ margin: 16 }}>{currentPlayer.gold}🏵</span>
+                    <span style={{ margin: 16, opacity: 0.77 }}>{currentPlayer.health}❤️</span>
+                  </div>
+                  <div style={{ overflow: "hidden", width: 130, height: 130 }}>
+                    <img
+                      src={currentPlayer.image}
+                      alt="Current Loogie"
+                      style={{ transform: "scale(0.7,0.7)", width: 400, height: 400, marginTop: -130, marginLeft: -130 }}
+                    />
+                  </div>
+                  <div>
+                    <Address value={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} fontSize={14} />
+                  </div>
                 </div>
-                <div style={{ overflow: "hidden", width: 130, height: 130 }}>
-                  <img
-                    src={currentPlayer.image}
-                    alt="Current Loogie"
-                    style={{ transform: "scale(0.7,0.7)", width: 400, height: 400, marginTop: -130, marginLeft: -130 }}
-                  />
+                <div style={{ width: 400 }}>
+                  <Joystick writeContracts={writeContracts} tx={tx} nftId={currentPlayer.nftId} />
+                  <Button
+                    onClick={() => {
+                      setActiveNftId(null);
+                      setcurrentPlayer(null);
+                    }}
+                  >Switch to another Emotilon</Button>
                 </div>
-                <div>
-                  <Address value={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} fontSize={14} />
-                </div>
-              </div>
+              </>
+            ) : (
+              <Spin />
             )}
-            <div style={{ width: 400 }}>
-              <Joystick writeContracts={writeContracts} tx={tx} />
-            </div>
           </div>
         ) : (
           <div>
@@ -683,17 +692,29 @@ function App(props) {
                               title={
                                 <div>
                                   <span style={{ fontSize: 16, marginRight: 8 }}>{item.name}</span>
-                                  <Button
-                                    onClick={async () => {
-                                      tx(writeContracts.Game.register(id));
-                                    }}
-                                  >
-                                    Register
-                                  </Button>
+                                  { playerData && playerData[id] ? (
+                                    <Button
+                                      onClick={() => {
+                                        setActiveNftId(id);
+                                      }}
+                                    >
+                                      Select
+                                    </Button>
+                                  ) : (
+                                    <Button
+                                      onClick={async () => {
+                                        tx(writeContracts.Game.register(id), function (transaction) {
+                                          setActiveNftId(id);
+                                        });
+                                      }}
+                                    >
+                                      Register
+                                    </Button>
+                                  )}
                                 </div>
                               }
                             >
-                              <img alt={item.id} src={item.image} width="240" />
+                              <img alt={item.id} src={item.image} width="120" />
                             </Card>
                           </List.Item>
                         );

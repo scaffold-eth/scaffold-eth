@@ -697,7 +697,7 @@ const Joystick = (props) => (
             }}
             d="m174.91 341.66-10.416 7.2111 10.416 7.2111v-2.975h10.057v-8.4722h-10.057v-2.975z"
             onClick={async () => {
-              props.tx(props.writeContracts.Game.move(2));
+              props.tx(props.writeContracts.Game.move(props.nftId, 2));
             }}
           />
         </Tooltip>
@@ -712,7 +712,7 @@ const Joystick = (props) => (
             transform="matrix(-1 0 0 1 378.43 -54.548)"
             d="m144.61 396.13-10.416 7.2111 10.416 7.2111v-2.975h10.057v-8.4722h-10.057v-2.975z"
             onClick={async () => {
-              props.tx(props.writeContracts.Game.move(3));
+              props.tx(props.writeContracts.Game.move(props.nftId, 3));
             }}
           />
         </Tooltip>
@@ -727,7 +727,7 @@ const Joystick = (props) => (
             transform="matrix(0 1 1 0 -198.37 175.07)"
             d="m144.61 396.13-10.416 7.2111 10.416 7.2111v-2.975h10.057v-8.4722h-10.057v-2.975z"
             onClick={async () => {
-              props.tx(props.writeContracts.Game.move(0));
+              props.tx(props.writeContracts.Game.move(props.nftId, 0));
             }}
           />
         </Tooltip>
@@ -742,7 +742,7 @@ const Joystick = (props) => (
             transform="matrix(0 -1 1 0 -198.37 523.53)"
             d="m144.61 396.13-10.416 7.2111 10.416 7.2111v-2.975h10.057v-8.4722h-10.057v-2.975z"
             onClick={async () => {
-              props.tx(props.writeContracts.Game.move(1));
+              props.tx(props.writeContracts.Game.move(props.nftId, 1));
             }}
           />
         </Tooltip>
@@ -761,7 +761,7 @@ const Joystick = (props) => (
             sodipodiCy={625.2193}
             sodipodiCx={-860.71429}
             onClick={async () => {
-              props.tx(props.writeContracts.Game.collectTokens());
+              props.tx(props.writeContracts.Game.collectTokens(props.nftId));
             }}
           />
         </Tooltip>
@@ -780,7 +780,7 @@ const Joystick = (props) => (
             sodipodiCy={625.2193}
             sodipodiCx={-860.71429}
             onClick={async () => {
-              props.tx(props.writeContracts.Game.collectHealth());
+              props.tx(props.writeContracts.Game.collectHealth(props.nftId));
             }}
           />
         </Tooltip>

@@ -25,7 +25,7 @@ abstract contract NFTContract {
 contract Game is Ownable  {
     event Restart(uint8 width, uint8 height);
     event Register(address indexed txOrigin, address indexed msgSender, uint8 x, uint8 y, uint256 indexed nftId);
-    event Move(uint256 indexed nftId, address indexed txOrigin, uint8 x, uint8 y, uint256 health);
+    event Move(uint256 indexed nftId, address indexed txOrigin, uint8 x, uint8 y);
     event GameOver(address indexed player);
     event CollectedTokens(address indexed player, uint256 indexed nftId, uint256 amount);
     event CollectedHealth(address indexed player, uint256 indexed nftId, uint256 amount);
@@ -141,8 +141,7 @@ contract Game is Ownable  {
         worldMatrix[yourPosition[nftId].x][yourPosition[nftId].y].player = 0;
         yourPosition[nftId] = Position(x, y);
 
-        uint256 healthStatus = nftContract.healthStatus(nftId);
-        emit Move(nftId, tx.origin, x, y, healthStatus);
+        emit Move(nftId, tx.origin, x, y);
     }
 
     function positionOf(uint256 nftId) public view returns(Position memory) {
@@ -212,12 +211,11 @@ contract Game is Ownable  {
 
         // TODO: make it based on nft attribute
         nftContract.decreaseHealth(nftId, healthByMove);
-        uint256 healthStatus = nftContract.healthStatus(nftId);
 
         worldMatrix[x][y].player = nftId;
         worldMatrix[yourPosition[nftId].x][yourPosition[nftId].y].player = 0;
         yourPosition[nftId] = Position(x, y);
-        emit Move(nftId, tx.origin, x, y, healthStatus);
+        emit Move(nftId, tx.origin, x, y);
     }
 
     function getCoordinates(MoveDirection direction, uint256 nftId) internal view returns(uint8 x, uint8 y) {

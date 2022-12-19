@@ -12,9 +12,8 @@ type Player @entity {
   x: Int!
   y: Int!
   address: Bytes!
-  fancyLoogieId: BigInt!
-  health: BigInt!
-  token: BigInt!
+  nftId: BigInt!
   createdAt: BigInt!
+  lastSeenAt: BigInt!
   transactionHash: String!
 }

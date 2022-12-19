@@ -784,17 +784,22 @@ const DAIABI = [
   },
 ];
 
-const FANCYLOOGIEABI = [
+const EMOTILONABI = [
   {
     "inputs": [
       {
         "internalType": "address",
-        "name": "_loogies",
+        "name": "emoticoin",
         "type": "address"
       }
     ],
     "stateMutability": "nonpayable",
     "type": "constructor"
+  },
+  {
+    "inputs": [],
+    "name": "NftAlreadyExists",
+    "type": "error"
   },
   {
     "anonymous": false,
@@ -870,6 +875,81 @@ const FANCYLOOGIEABI = [
     "inputs": [
       {
         "indexed": true,
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "previousAdminRole",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "newAdminRole",
+        "type": "bytes32"
+      }
+    ],
+    "name": "RoleAdminChanged",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      }
+    ],
+    "name": "RoleGranted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      }
+    ],
+    "name": "RoleRevoked",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
         "internalType": "address",
         "name": "from",
         "type": "address"
@@ -889,6 +969,32 @@ const FANCYLOOGIEABI = [
     ],
     "name": "Transfer",
     "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "DEFAULT_ADMIN_ROLE",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "HEALTH_ROLE",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
   },
   {
     "inputs": [
@@ -944,13 +1050,125 @@ const FANCYLOOGIEABI = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "id",
+        "name": "",
         "type": "uint256"
       }
     ],
-    "name": "downgradeLoogie",
+    "name": "batteryRecharged",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "fatherId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "motherId",
+        "type": "uint256"
+      }
+    ],
+    "name": "breeding",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "breedingCount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "contractURI",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "currentId",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "decreaseHealth",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "genes",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -988,22 +1206,97 @@ const FANCYLOOGIEABI = [
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "nft",
-        "type": "address"
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      }
+    ],
+    "name": "getRoleAdmin",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
       },
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "grantRole",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "hasRole",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
       {
         "internalType": "uint256",
         "name": "id",
         "type": "uint256"
       }
     ],
-    "name": "hasNft",
+    "name": "healthStatus",
     "outputs": [
       {
-        "internalType": "bool",
+        "internalType": "uint256",
         "name": "",
-        "type": "bool"
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "healthTimestamp",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -1034,13 +1327,20 @@ const FANCYLOOGIEABI = [
     "type": "function"
   },
   {
-    "inputs": [
+    "inputs": [],
+    "name": "lifetime",
+    "outputs": [
       {
         "internalType": "uint256",
-        "name": "loogieId",
+        "name": "",
         "type": "uint256"
       }
     ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "mintItem",
     "outputs": [
       {
@@ -1140,7 +1440,7 @@ const FANCYLOOGIEABI = [
       },
       {
         "internalType": "bytes",
-        "name": "fancyIdData",
+        "name": "emotilonIdData",
         "type": "bytes"
       }
     ],
@@ -1190,19 +1490,38 @@ const FANCYLOOGIEABI = [
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "nft",
-        "type": "address"
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
       },
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "rechargeHealth",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
       {
         "internalType": "uint256",
         "name": "id",
         "type": "uint256"
       }
     ],
-    "name": "removeNftFromLoogie",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "name": "renderEmotilonById",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -1227,6 +1546,42 @@ const FANCYLOOGIEABI = [
   {
     "inputs": [],
     "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "renounceRole",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "revokeRole",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1298,6 +1653,67 @@ const FANCYLOOGIEABI = [
     "name": "setApprovalForAll",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      }
+    ],
+    "name": "statsById",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint8",
+            "name": "speed",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint8",
+            "name": "strength",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint8",
+            "name": "iq",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint8",
+            "name": "skill",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint8",
+            "name": "evil",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint8",
+            "name": "accuracy",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint8",
+            "name": "stamina",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint8",
+            "name": "beauty",
+            "type": "uint8"
+          }
+        ],
+        "internalType": "struct EmotilonMetadata.StatsStruct",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -1445,7 +1861,7 @@ const FANCYLOOGIEABI = [
   }
 ];
 
-const LOOGIECOINABI = [
+const EMOTICOINABI = [
   {
     "inputs": [],
     "stateMutability": "nonpayable",
@@ -2005,37 +2421,37 @@ module.exports = {
   },
   31337: {
     contracts: {
-      FancyLoogie: {
-        address: "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707",
-        abi: FANCYLOOGIEABI,
+      Emotilon: {
+        address: "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
+        abi: EMOTILONABI,
       },
-      LoogieCoin: {
+      Emoticoin: {
         address: "0x5c74c94173F05dA1720953407cbb920F3DF9f887",
-        abi: LOOGIECOINABI,
+        abi: EMOTICOINABI,
       },
     },
   },
   69: {
     contracts: {
-      FancyLoogie: {
+      Emotilon: {
         address: "0x43693eeC62666D621ba33095090BE60d4aF6D6FA",
-        abi: FANCYLOOGIEABI,
+        abi: EMOTILONABI,
       },
-      LoogieCoin: {
+      Emoticoin: {
         address: "0x37a76CFB334b62C0eAf8808Dc9B5Ff82bB246827",
-        abi: LOOGIECOINABI,
+        abi: EMOTICOINABI,
       },
     },
   },
   10: {
     contracts: {
-      FancyLoogie: {
+      Emotilon: {
         address: "0xbE7706DFA9Cc5aEEB5b26698C1bc5c43829E808A",
-        abi: FANCYLOOGIEABI,
+        abi: EMOTILONABI,
       },
-      LoogieCoin: {
+      Emoticoin: {
         address: "0x83eD2eE1e2744D27Ffd949314f4098f13535292F",
-        abi: LOOGIECOINABI,
+        abi: EMOTICOINABI,
       },
     },
   },

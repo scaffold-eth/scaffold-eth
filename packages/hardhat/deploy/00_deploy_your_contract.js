@@ -19,23 +19,22 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
 
   const collectInterval = 60; // 1 minute, block.timestamp is in UNIX seconds
 
-  /*
   // localhost
-  const loogiesContractAddress = "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707";
-  const loogieCoinContractAddress =
-    "0x5c74c94173F05dA1720953407cbb920F3DF9f887";
+  const nftContractAddress = "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9";
+  const tokenContractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
-
+  /*
   // kovan optimism
   const loogiesContractAddress = "0x43693eeC62666D621ba33095090BE60d4aF6D6FA";
   const loogieCoinContractAddress =
     "0x37a76CFB334b62C0eAf8808Dc9B5Ff82bB246827";
-   */
+
 
   // optimism
   const loogiesContractAddress = "0xbE7706DFA9Cc5aEEB5b26698C1bc5c43829E808A";
   const loogieCoinContractAddress =
     "0x83eD2eE1e2744D27Ffd949314f4098f13535292F";
+   */
 
   console.log(
     `Attempting to deploy Game.sol to network number ${chainId} from ${deployer.address}`

@@ -33,7 +33,7 @@ export function handleRestart(event: Restart): void {
 }
 
 export function handleRegister(event: Register): void {
-  let playerString = event.params.txOrigin.toHexString();
+  let playerString = event.params.nftId.toHexString();
 
   let player = Player.load(playerString);
 
@@ -42,12 +42,11 @@ export function handleRegister(event: Register): void {
     player.address = event.params.txOrigin;
   }
 
-  player.fancyLoogieId = event.params.loogieId;
-  player.health = BigInt.fromI32(500);
-  player.token = BigInt.fromI32(0);
+  player.nftId = event.params.nftId;
   player.x = event.params.x;
   player.y = event.params.y;
   player.createdAt = event.block.timestamp;
+  player.lastSeenAt = event.block.timestamp;
   player.transactionHash = event.transaction.hash.toHex();
   player.save();
 
@@ -60,7 +59,7 @@ export function handleRegister(event: Register): void {
 }
 
 export function handleMove(event: Move): void {
-  let playerString = event.params.txOrigin.toHexString();
+  let playerString = event.params.nftId.toHexString();
 
   let player = Player.load(playerString);
 
@@ -75,7 +74,6 @@ export function handleMove(event: Move): void {
       oldField.save();
     }
 
-    player.health = event.params.health;
     player.x = event.params.x;
     player.y = event.params.y;
     player.save();
@@ -90,12 +88,10 @@ export function handleMove(event: Move): void {
 }
 
 export function handleCollectedTokens(event: CollectedTokens): void {
-  let playerString = event.params.player.toHexString();
+  let playerString = event.params.nftId.toHexString();
 
   let player = Player.load(playerString);
   if (player !== null) {
-    player.token = player.token.plus(event.params.amount);
-    player.save();
 
     const fieldId = player.x.toString() + "-" + player.y.toString();
     let field = WorldMatrix.load(fieldId);
@@ -107,12 +103,10 @@ export function handleCollectedTokens(event: CollectedTokens): void {
 }
 
 export function handleCollectedHealth(event: CollectedHealth): void {
-  let playerString = event.params.player.toHexString();
+  let playerString = event.params.nftId.toHexString();
 
   let player = Player.load(playerString);
   if (player !== null) {
-    player.health = player.health.plus(event.params.amount);
-    player.save();
 
     const fieldId = player.x.toString() + "-" + player.y.toString();
     let field = WorldMatrix.load(fieldId);
