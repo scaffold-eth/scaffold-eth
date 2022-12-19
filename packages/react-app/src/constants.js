@@ -23,6 +23,8 @@ let localRpcUrl = process.env.REACT_APP_CODESPACES
   ? `https://${window.location.hostname.replace("3000", "8545")}`
   : "http://" + (global.window ? window.location.hostname : "localhost") + ":8545";
 
+// When running inside docker, we need to use the HARDHAT_HOST env variable
+// in order to access the container running hardhat
 if (process.env.HARDHAT_HOST) {
   localRpcUrl = `http://${process.env.HARDHAT_HOST}:8545`;
 }
