@@ -8,6 +8,7 @@ services:
     working_dir: /app
     volumes:
       - .:/app
+      - /app/node_modules
   app:
     build: .
     command: sh -c "yarn start"
@@ -16,5 +17,6 @@ services:
     working_dir: /app
     volumes:
       - .:/app
+      - /app/node_modules
     environment:
       HARDHAT_HOST: chain
