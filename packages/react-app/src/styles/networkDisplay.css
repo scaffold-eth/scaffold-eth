@@ -1,0 +1,27 @@
+.networkDisplay__text {
+  z-index: 1;
+  position: absolute;
+  right: 47.5%;
+  top: 80px;
+}
+
+
+@media screen  and (max-width: 1000px){
+  .networkDisplay__text {
+    right: 46.5%;    
+  }
+}
+
+@media screen and (min-width: 1400px) {
+  .networkDisplay__text {
+    right: 48%;    
+  }
+
+}
+
+@media screen and (min-width: 2000px) {
+  .networkDisplay__text {
+    right: 49%;    
+  }
+
+}
