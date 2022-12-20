@@ -15,7 +15,7 @@ const inforCardPayload: { imageSrc: string; rewardType: RewardNames; text: JSX.E
     rewardType: 'Remixer',
     text: (
       <p>
-        Our base reward. When you earn any of the other rewards, you gain the ability to mint Remixer to any wallet of
+        Our base reward. When you earn any of the other rewards, you gain the ability to mint a Remixer to any wallet of
         your choice.
       </p>
     ),
@@ -53,7 +53,7 @@ const inforCardPayload: { imageSrc: string; rewardType: RewardNames; text: JSX.E
   {
     imageSrc: '/UX Champion.png',
     rewardType: 'UX Champion',
-    text: <p>If you helpf us learn more about the user experience from your perspective, you earn the UX Chamion.</p>,
+    text: <p>If you help us learn more about the user experience from your perspective, you earn the UX Chamion.</p>,
   },
 ]
 
