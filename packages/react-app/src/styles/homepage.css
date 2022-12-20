@@ -133,6 +133,12 @@
 
 }
 
+@media screen and (max-width: 1400px) and (max-height : 800px) {
+  .homepage {
+    min-height: 90vh;
+  }
+}
+
 @media screen  and (max-width: 1000px){
   .homepage {
     background-position: bottom -43px right -25px;
