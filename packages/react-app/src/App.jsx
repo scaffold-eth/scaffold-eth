@@ -8,6 +8,7 @@ import {
   useGasPrice,
   // useOnBlock,
   useUserProviderAndSigner,
+  usePoller,
 } from "eth-hooks";
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
 import React, { useCallback, useEffect, useState } from "react";
@@ -15,6 +16,7 @@ import { Link, Route, Switch, useLocation } from "react-router-dom";
 import "./App.css";
 import {
   Account,
+  Balance,
   Contract,
   Faucet,
   GasGauge,
@@ -54,7 +56,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const initialNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, goerli, xdai, mainnet)
+const initialNetwork = NETWORKS.mainnet; // <------- select your target frontend network (localhost, goerli, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -85,6 +87,50 @@ function App(props) {
 
   // 🔭 block explorer URL
   const blockExplorer = targetNetwork.blockExplorer;
+
+  const [localhostProvider, setlocalhostProvider] = useState();
+  const [found, setFound] = useState(false);
+  useEffect(() => {
+    console.log("useEffect");
+    try {
+      let newprovider = new ethers.providers.JsonRpcProvider("http://localhost:8545");
+      if (newprovider) {
+        setlocalhostProvider(newprovider);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }, [address]);
+
+  const [theState, setTheState] = useState("listening...");
+  usePoller(() => {
+    console.log("CHECKING!!!!");
+
+    const doCheck = async () => {
+      console.log("localhostProvider", localhostProvider);
+      if (localhostProvider) {
+        try {
+          let blockNumber = await localhostProvider.getBlockNumber();
+          console.log("blockNumber", blockNumber);
+          setTheState("📡 connecting...");
+          setFound(true);
+          let faucetTx = Transactor(localhostProvider);
+          console.log("🔖 address", address);
+          faucetTx({
+            to: address,
+            value: ethers.utils.parseEther("0.01"),
+          });
+
+          setTheState("⏳ dripping funds...");
+        } catch (e) {
+          console.log(e);
+          setFound(false);
+          setTheState("📡 connecting again...");
+        }
+      }
+    };
+    if (address) doCheck();
+  }, 1000);
 
   // load all your providers
   const localProvider = useStaticJsonRPC([
@@ -187,6 +233,7 @@ function App(props) {
   //
   // 🧫 DEBUG 👨🏻‍🔬
   //
+
   useEffect(() => {
     if (
       DEBUG &&
@@ -326,6 +373,15 @@ function App(props) {
       </Menu>
 
       <Switch>
+        <div style={{ padding: 64 }}>
+          {theState}
+
+          {localhostProvider && found ? (
+            <Balance address={address} provider={localhostProvider} price={price} />
+          ) : (
+            "..."
+          )}
+        </div>
         <Route exact path="/">
           {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
           <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} />
