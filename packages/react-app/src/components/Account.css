@@ -44,7 +44,7 @@
   width: 26px;
 }
 
-@media screen and (min-width: 1440px) {
+@media screen and (min-width: 1140px) {
   .account__display {
     position: static;
     transform: none;
