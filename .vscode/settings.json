@@ -32,5 +32,10 @@
       "**/yarn-error.log": true,
       "**/yarn.lock": true
    },
-   "git.detectSubmodules": false
+   "git.detectSubmodules": false,
+   "python.testing.pytestArgs": [
+      "ISSUE_TEMPLATE"
+   ],
+   "python.testing.unittestEnabled": false,
+   "python.testing.pytestEnabled": true
 }
