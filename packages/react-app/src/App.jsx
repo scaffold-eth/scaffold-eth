@@ -162,17 +162,22 @@ function App(props) {
 
   const [currentPlayer, setcurrentPlayer] = useState();
 
-  const WORLD_PLAYER_GRAPHQL = `
+  const WORLD_PLAYER1_GRAPHQL = `
     {
       worldMatrixes(
-        where: {player_not: null}
+        where: {player1_not: null}
         ) {
             id
             x
             y
             tokenAmountToCollect
             healthAmountToCollect
-            player {
+            player1 {
+              id
+              address
+              nftId
+            }
+            player2 {
               id
               address
               nftId
@@ -181,10 +186,39 @@ function App(props) {
     }
   `;
 
-  const WORLD_PLAYER_GQL = gql(WORLD_PLAYER_GRAPHQL);
-  const worldPlayerData = useQuery(WORLD_PLAYER_GQL, { pollInterval: 10000 });
+  const WORLD_PLAYER1_GQL = gql(WORLD_PLAYER1_GRAPHQL);
+  const worldPlayerData1 = useQuery(WORLD_PLAYER1_GQL, { pollInterval: 10000 });
 
-  console.log("worldPlayerData: ", worldPlayerData);
+  console.log("worldPlayerData1: ", worldPlayerData1);
+
+  const WORLD_PLAYER2_GRAPHQL = `
+    {
+      worldMatrixes(
+        where: {player2_not: null}
+        ) {
+            id
+            x
+            y
+            tokenAmountToCollect
+            healthAmountToCollect
+            player1 {
+              id
+              address
+              nftId
+            }
+            player2 {
+              id
+              address
+              nftId
+            }
+      }
+    }
+  `;
+
+  const WORLD_PLAYER2_GQL = gql(WORLD_PLAYER2_GRAPHQL);
+  const worldPlayerData2 = useQuery(WORLD_PLAYER2_GQL, { pollInterval: 10000 });
+
+  console.log("worldPlayerData2: ", worldPlayerData2);
 
   const WORLD_TOKEN_GRAPHQL = `
     {
@@ -196,7 +230,12 @@ function App(props) {
             y
             tokenAmountToCollect
             healthAmountToCollect
-            player {
+            player1 {
+              id
+              address
+              nftId
+            }
+            player2 {
               id
               address
               nftId
@@ -220,7 +259,12 @@ function App(props) {
             y
             tokenAmountToCollect
             healthAmountToCollect
-            player {
+            player1 {
+              id
+              address
+              nftId
+            }
+            player2 {
               id
               address
               nftId
@@ -239,6 +283,15 @@ function App(props) {
   const [loadingLoogies, setLoadingLoogies] = useState(true);
   const [page, setPage] = useState(1);
   const perPage = 1;
+  const [worldPlayerData, setWorldPlayerData] = useState([]);
+
+  useEffect(() => {
+    if (worldPlayerData1 && worldPlayerData1.data && worldPlayerData2 && worldPlayerData2.data) {
+      const newWorldPlayerData = worldPlayerData1.data.worldMatrixes.concat(worldPlayerData2.data.worldMatrixes);
+      console.log("newWorldPlayerData: ", newWorldPlayerData);
+      setWorldPlayerData(newWorldPlayerData);
+    }
+  }, [worldPlayerData1, worldPlayerData1.data, worldPlayerData2, worldPlayerData2.data]);
 
   useEffect(() => {
     const updateBalances = async () => {
@@ -291,16 +344,19 @@ function App(props) {
   const [activePlayer, setActivePlayer] = useState();
 
   useEffect(() => {
-    if (address && worldPlayerData.data) {
+    if (address && worldPlayerData.length > 0) {
       let active = false;
-      for (let p in worldPlayerData.data.worldMatrixes) {
-        if (worldPlayerData.data.worldMatrixes[p].player.address.toLowerCase() === address.toLowerCase()) {
+      for (let p in worldPlayerData) {
+        if (worldPlayerData[p].player1 && worldPlayerData[p].player1.address.toLowerCase() === address.toLowerCase()) {
+          active = true;
+        }
+        if (worldPlayerData[p].player2 && worldPlayerData[p].player2.address.toLowerCase() === address.toLowerCase()) {
           active = true;
         }
       }
       setActivePlayer(active);
     }
-  }, [address, worldPlayerData.data]);
+  }, [address, worldPlayerData]);
 
   const [playerData, setPlayerData] = useState();
   const [activeNftId, setActiveNftId] = useState();
@@ -310,28 +366,51 @@ function App(props) {
       if (readContracts.Game) {
         console.log("PARSE PLAYERS:::", worldPlayerData);
         let playerInfo = {};
-        const playersData = worldPlayerData.data.worldMatrixes;
+        const playersData = worldPlayerData;
         for (let p in playersData) {
           const currentPosition = playersData[p];
           console.log("loading info for ", currentPosition);
-          const tokenURI = await readContracts.Game.tokenURIOf(currentPosition.player.nftId);
-          const jsonManifestString = atob(tokenURI.substring(29));
-          const jsonManifest = JSON.parse(jsonManifestString);
-          const info = {
-            // health: parseInt(currentPosition.player.health),
-            position: { x: currentPosition.x, y: currentPosition.y },
-            //contract: await readContracts.Game.yourContract(worldPlayerData.data[p]),
-            image: jsonManifest.image,
-            // gold: parseInt(currentPosition.player.token),
-            address: currentPosition.player.address,
-            nftId: currentPosition.player.nftId,
-            health: 0,
-            gold: 0,
-          };
-          playerInfo[currentPosition.player.nftId] = info;
-          if (activeNftId && currentPosition.player.nftId == activeNftId) {
-            console.log("current player: ", info);
-            setcurrentPlayer(info);
+          if (currentPosition.player1) {
+            const tokenURI = await readContracts.Game.tokenURIOf(currentPosition.player1.nftId);
+            const jsonManifestString = atob(tokenURI.substring(29));
+            const jsonManifest = JSON.parse(jsonManifestString);
+            const info = {
+              // health: parseInt(currentPosition.player.health),
+              position: { x: currentPosition.x, y: currentPosition.y },
+              //contract: await readContracts.Game.yourContract(worldPlayerData.data[p]),
+              image: jsonManifest.image,
+              // gold: parseInt(currentPosition.player.token),
+              address: currentPosition.player1.address,
+              nftId: currentPosition.player1.nftId,
+              health: 0,
+              gold: 0,
+            };
+            playerInfo[currentPosition.player1.nftId] = info;
+            if (activeNftId && currentPosition.player1.nftId == activeNftId) {
+              console.log("current player: ", info);
+              setcurrentPlayer(info);
+            }
+          }
+          if (currentPosition.player2) {
+            const tokenURI = await readContracts.Game.tokenURIOf(currentPosition.player2.nftId);
+            const jsonManifestString = atob(tokenURI.substring(29));
+            const jsonManifest = JSON.parse(jsonManifestString);
+            const info = {
+              // health: parseInt(currentPosition.player.health),
+              position: { x: currentPosition.x, y: currentPosition.y },
+              //contract: await readContracts.Game.yourContract(worldPlayerData.data[p]),
+              image: jsonManifest.image,
+              // gold: parseInt(currentPosition.player.token),
+              address: currentPosition.player2.address,
+              nftId: currentPosition.player2.nftId,
+              health: 0,
+              gold: 0,
+            };
+            playerInfo[currentPosition.player2.nftId] = info;
+            if (activeNftId && currentPosition.player2.nftId == activeNftId) {
+              console.log("current player: ", info);
+              setcurrentPlayer(info);
+            }
           }
         }
         console.log("final player info", playerInfo);

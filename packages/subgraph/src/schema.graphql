@@ -2,7 +2,8 @@ type WorldMatrix @entity {
   id: ID!
   x: Int!
   y: Int!
-  player: Player
+  player1: Player
+  player2: Player
   tokenAmountToCollect: BigInt!
   healthAmountToCollect: BigInt!
 }

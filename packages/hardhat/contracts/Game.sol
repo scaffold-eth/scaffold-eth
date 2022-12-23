@@ -32,7 +32,8 @@ contract Game is Ownable  {
     event NewDrop(bool indexed isHealth, uint256 amount, uint8 x, uint8 y);
 
     struct Field {
-        uint256 player;
+        uint256 player1;
+        uint256 player2;
         uint256 tokenAmountToCollect;
         uint256 healthAmountToCollect;
     }
@@ -95,7 +96,7 @@ contract Game is Ownable  {
     function restart() public onlyOwner {
         for (uint i=0; i<players.length; i++) {
             Position memory playerPosition = yourPosition[players[i]];
-            worldMatrix[playerPosition.x][playerPosition.y] = Field(0,0,0);
+            worldMatrix[playerPosition.x][playerPosition.y] = Field(0,0,0,0);
             yourPosition[players[i]] = Position(0,0);
             lastCollectAttempt[players[i]] = 0;
         }
@@ -131,14 +132,25 @@ contract Game is Ownable  {
 
         Field memory field = worldMatrix[x][y];
 
-        while(field.player != 0){
+        while(field.player1 != 0 && field.player2 != 0){
             x  = uint8(predictableRandom[index++])%width;
             y  = uint8(predictableRandom[index++])%height;
             field = worldMatrix[x][y];
         }
 
-        worldMatrix[x][y].player = nftId;
-        worldMatrix[yourPosition[nftId].x][yourPosition[nftId].y].player = 0;
+        if (field.player1 == 0) {
+            worldMatrix[x][y].player1 = nftId;
+        } else {
+            worldMatrix[x][y].player2 = nftId;
+        }
+
+        // if the function is only used at registed, this can be removed
+        if (worldMatrix[yourPosition[nftId].x][yourPosition[nftId].y].player1 == nftId) {
+            worldMatrix[yourPosition[nftId].x][yourPosition[nftId].y].player1 = 0;
+        } else {
+            worldMatrix[yourPosition[nftId].x][yourPosition[nftId].y].player2 = 0;
+        }
+
         yourPosition[nftId] = Position(x, y);
 
         emit Move(nftId, tx.origin, x, y);
@@ -205,16 +217,25 @@ contract Game is Ownable  {
 
         Field memory field = worldMatrix[x][y];
 
-        require(field.player == 0, "ANOTHER PLAYER ON THIS POSITION");
-
-        bytes32 predictableRandom = keccak256(abi.encodePacked( blockhash(block.number-1), msg.sender, nftId, address(this)));
+        require(field.player1 == 0 || field.player2 == 0, "ANOTHER TWO PLAYERS ON THIS POSITION");
 
         // TODO: make it based on nft attribute
         nftContract.decreaseHealth(nftId, healthByMove);
 
-        worldMatrix[x][y].player = nftId;
-        worldMatrix[yourPosition[nftId].x][yourPosition[nftId].y].player = 0;
+        if (field.player1 == 0) {
+            worldMatrix[x][y].player1 = nftId;
+        } else {
+            worldMatrix[x][y].player2 = nftId;
+        }
+
+        if (worldMatrix[yourPosition[nftId].x][yourPosition[nftId].y].player1 == nftId) {
+            worldMatrix[yourPosition[nftId].x][yourPosition[nftId].y].player1 = 0;
+        } else {
+            worldMatrix[yourPosition[nftId].x][yourPosition[nftId].y].player2 = 0;
+        }
+
         yourPosition[nftId] = Position(x, y);
+
         emit Move(nftId, tx.origin, x, y);
     }
 

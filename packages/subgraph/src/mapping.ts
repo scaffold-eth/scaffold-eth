@@ -18,12 +18,14 @@ export function handleRestart(event: Restart): void {
         field = new WorldMatrix(fieldId);
         field.x = i;
         field.y = j;
-        field.player = null;
+        field.player1 = null;
+        field.player2 = null;
         field.tokenAmountToCollect = BigInt.fromI32(0);
         field.healthAmountToCollect = BigInt.fromI32(0);
       } else {
         // clean player data
-        field.player = null;
+        field.player1 = null;
+        field.player2 = null;
         field.tokenAmountToCollect = BigInt.fromI32(0);
         field.healthAmountToCollect = BigInt.fromI32(0);
       }
@@ -53,7 +55,11 @@ export function handleRegister(event: Register): void {
   const fieldId = event.params.x.toString() + "-" + event.params.y.toString();
   let field = WorldMatrix.load(fieldId);
   if (field !== null) {
-    field.player = playerString;
+    if (field.player1 === null) {
+      field.player1 = playerString;
+    } else {
+      field.player2 = playerString;
+    }
     field.save();
   }
 }
@@ -70,7 +76,11 @@ export function handleMove(event: Move): void {
     const oldFieldId = oldX.toString() + "-" + oldY.toString();
     let oldField = WorldMatrix.load(oldFieldId);
     if (oldField !== null) {
-      oldField.player = null;
+      if (oldField.player1 == playerString) {
+        oldField.player1 = null;
+      } else {
+        oldField.player2 = null;
+      }
       oldField.save();
     }
 
@@ -81,7 +91,11 @@ export function handleMove(event: Move): void {
     const fieldId = event.params.x.toString() + "-" + event.params.y.toString();
     let field = WorldMatrix.load(fieldId);
     if (field !== null) {
-      field.player = playerString;
+      if (field.player1 === null) {
+        field.player1 = playerString;
+      } else {
+        field.player2 = playerString;
+      }
       field.save();
     }
   }
