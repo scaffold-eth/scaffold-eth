@@ -36,6 +36,7 @@ import { useStaticJsonRPC } from "./hooks";
 import NavBar from "./components/Navbar";
 import ScaffoldIcon from "./components/Icons/ScaffoldIcon";
 import ForkIcon from "./components/Icons/ForkIcon";
+import axios from "axios";
 
 const { ethers } = require("ethers");
 /*
@@ -59,6 +60,9 @@ const { ethers } = require("ethers");
 
 /// 📡 What chain are your contracts deployed to?
 const initialNetwork = NETWORKS.optimism; // <------- select your target frontend network (localhost, goerli, xdai, mainnet)
+
+const serverUrl = "https://indexer.buidlguidl.com:32889";
+// const serverUrl = "http://localhost:32889";
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -187,13 +191,36 @@ function App(props) {
   const loogiesLeft = 3728 - totalSupply;
 
   // keep track of a variable from the contract in the local React state:
-  const balance = useContractReader(readContracts, "YourCollectible", "balanceOf", [address], localProviderPollingTime);
-  if (DEBUG) console.log("🤗 address: ", address, " balance:", balance);
+  // const balance = useContractReader(readContracts, "YourCollectible", "balanceOf", [address], localProviderPollingTime);
+  // if (DEBUG) console.log("🤗 address: ", address, " balance:", balance);
+
+  const [balance, setBalance] = useState();
+
+  useEffect(() => {
+    const updateBalance = async () => {
+      if (address) {
+        axios
+          .get(`${serverUrl}/loogies/${address}/balance`)
+          .then(function (response) {
+            if (DEBUG) console.log("balanceFromServer: ", response);
+            setBalance(response.data);
+          })
+          .catch(async function (error) {
+            console.log("Error getting balance from indexer: ", error.message);
+            if (readContracts.YourCollectible) {
+              const balanceFromContract = await readContracts.YourCollectible.balanceOf(address);
+              if (DEBUG) console.log("balanceFromContract: ", balanceFromContract.toNumber());
+              setBalance(balanceFromContract.toNumber());
+            }
+          });
+      }
+    };
+    updateBalance();
+  }, [address, readContracts.YourCollectible]);
 
   //
   // 🧠 This effect will update yourCollectibles by polling when your balance changes
   //
-  const yourBalance = balance && balance.toNumber && balance.toNumber();
   const [yourCollectibles, setYourCollectibles] = useState();
   const [isYourCollectibleLoading, setIsYourCollectibleLoading] = useState(false);
   const [transferToAddresses, setTransferToAddresses] = useState({});
@@ -201,31 +228,46 @@ function App(props) {
   useEffect(() => {
     const updateYourCollectibles = async () => {
       setIsYourCollectibleLoading(true);
-      const collectibleUpdate = [];
-      for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
-        try {
-          if (DEBUG) console.log("Getting token index", tokenIndex);
-          const tokenId = await readContracts.YourCollectible.tokenOfOwnerByIndex(address, tokenIndex);
-          if (DEBUG) console.log("Getting Loogie tokenId: ", tokenId);
-          const tokenURI = await readContracts.YourCollectible.tokenURI(tokenId);
-          if (DEBUG) console.log("tokenURI: ", tokenURI);
-          const jsonManifestString = atob(tokenURI.substring(29));
+      if (address) {
+        axios
+          .get(`${serverUrl}/loogies/${address}`)
+          .then(function (response) {
+            if (DEBUG) console.log("loogiesData: ", response);
+            const collectibleUpdate = response.data;
+            setYourCollectibles(collectibleUpdate);
+            setIsYourCollectibleLoading(false);
+          })
+          .catch(async function (error) {
+            console.log("Error getting your loogies from indexer: ", error.message);
+            if (readContracts.YourCollectible) {
+              const collectibleUpdate = [];
+              for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
+                try {
+                  if (DEBUG) console.log("Getting token index", tokenIndex);
+                  const tokenId = await readContracts.YourCollectible.tokenOfOwnerByIndex(address, tokenIndex);
+                  if (DEBUG) console.log("Getting Loogie tokenId: ", tokenId);
+                  const tokenURI = await readContracts.YourCollectible.tokenURI(tokenId);
+                  if (DEBUG) console.log("tokenURI: ", tokenURI);
+                  const jsonManifestString = atob(tokenURI.substring(29));
 
-          try {
-            const jsonManifest = JSON.parse(jsonManifestString);
-            collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
-          } catch (e) {
-            console.log(e);
-          }
-        } catch (e) {
-          console.log(e);
-        }
-        setIsYourCollectibleLoading(false);
+                  try {
+                    const jsonManifest = JSON.parse(jsonManifestString);
+                    collectibleUpdate.push({ id: tokenId, owner: address, ...jsonManifest });
+                  } catch (e) {
+                    console.log(e);
+                  }
+                } catch (e) {
+                  console.log(e);
+                }
+              }
+              setYourCollectibles(collectibleUpdate.reverse());
+              setIsYourCollectibleLoading(false);
+            }
+          });
       }
-      setYourCollectibles(collectibleUpdate.reverse());
     };
     updateYourCollectibles();
-  }, [address, yourBalance]);
+  }, [address, balance, readContracts.YourCollectible]);
   //
   // 🧫 DEBUG 👨🏻‍🔬
   //
@@ -333,6 +375,9 @@ function App(props) {
             tx={tx}
             writeContracts={writeContracts}
             loogiesLeft={loogiesLeft}
+            serverUrl={serverUrl}
+            address={address}
+            setBalance={setBalance}
           />
         </Route>
         <div className="App__page-content-wrapper">

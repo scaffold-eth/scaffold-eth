@@ -38,10 +38,10 @@ function YourLoogies({
           }}
           dataSource={yourCollectibles}
           renderItem={item => {
-            const id = item.id.toNumber();
+            const id = item.id;
 
             return (
-              <List.Item key={id + "_" + item.uri + "_" + item.owner} style={{ maxWidth: "320px" }}>
+              <List.Item key={id + "_" + "_" + item.owner} style={{ maxWidth: "320px" }}>
                 <LoogieCard
                   image={item.image}
                   id={id}

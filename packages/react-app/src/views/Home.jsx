@@ -1,6 +1,7 @@
 import "../styles/homepage.css";
 import Loogies from "./Loogies";
 import { ethers } from "ethers";
+import axios from "axios";
 
 function Home({
   readContracts,
@@ -12,12 +13,29 @@ function Home({
   writeContracts,
   priceToMint,
   loogiesLeft,
+  serverUrl,
+  setBalance,
+  address,
 }) {
   const mintLoogie = async () => {
     const priceRightNow = await readContracts.YourCollectible.price();
     try {
       const txCur = await tx(writeContracts.YourCollectible.mintItem({ value: priceRightNow, gasLimit: 300000 }));
       await txCur.wait();
+      axios
+        .get(`${serverUrl}/loogies/${address}/balance`)
+        .then(function (response) {
+          if (DEBUG) console.log("balanceFromServer: ", response);
+          setBalance(response.data);
+        })
+        .catch(async function (error) {
+          console.log("Error getting balance from indexer: ", error.message);
+          if (readContracts.YourCollectible) {
+            const balanceFromContract = await readContracts.YourCollectible.balanceOf(address);
+            if (DEBUG) console.log("balanceFromContract: ", balanceFromContract.toNumber());
+            setBalance(balanceFromContract.toNumber());
+          }
+        });
     } catch (e) {
       console.log("mint failed", e);
     }
@@ -67,6 +85,7 @@ function Home({
         blockExplorer={blockExplorer}
         totalSupply={totalSupply}
         DEBUG={DEBUG}
+        serverUrl={serverUrl}
       />
     </>
   );
