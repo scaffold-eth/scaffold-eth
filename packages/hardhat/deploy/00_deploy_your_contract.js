@@ -60,6 +60,16 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
     gameAddress
   );
 
+  await emotilon.grantRole(
+    ethers.utils.keccak256(ethers.utils.toUtf8Bytes("COINS_ROLE")),
+    gameAddress
+  );
+
+  await emotilon.grantRole(
+    ethers.utils.keccak256(ethers.utils.toUtf8Bytes("KILL_ROLE")),
+    gameAddress
+  );
+
 /*
   const eyelash = await deploy("Eyelash", {
     from: deployer,

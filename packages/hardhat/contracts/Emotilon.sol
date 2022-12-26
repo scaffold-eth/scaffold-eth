@@ -20,7 +20,12 @@ error NftAlreadyExists();
 
 contract Emotilon is ERC721Enumerable, IERC721Receiver, Ownable, AccessControl {
 
+  event UpdateCoins(uint256 indexed id, uint256 amount);
+  event Killed(uint256 indexed killerId, uint256 indexed id);
+
   bytes32 public constant HEALTH_ROLE = keccak256("HEALTH_ROLE");
+  bytes32 public constant COINS_ROLE = keccak256("COINS_ROLE");
+  bytes32 public constant KILL_ROLE = keccak256("KILL_ROLE");
 
   uint256 public currentId;
 
@@ -39,6 +44,10 @@ contract Emotilon is ERC721Enumerable, IERC721Receiver, Ownable, AccessControl {
   mapping (uint256 => bytes32) public genes;
 
   mapping (uint256 => uint256) public breedingCount;
+
+  mapping (uint256 => uint256) public coins;
+
+  mapping (uint256 => bool) public dead;
 
   constructor(address emoticoin) ERC721("Emotilon", "EMON") {
     _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
@@ -93,6 +102,18 @@ contract Emotilon is ERC721Enumerable, IERC721Receiver, Ownable, AccessControl {
       healthTimestamp[currentId] = block.timestamp;
 
       return currentId;
+  }
+
+  function giveCoins(uint256 id, uint256 amount) public onlyRole(COINS_ROLE) {
+    coins[id] += amount;
+
+    emit UpdateCoins(id, coins[id]);
+  }
+
+  function kill(uint256 killerId, uint256 id) public onlyRole(KILL_ROLE) {
+    dead[id] = true;
+
+    emit Killed(killerId, id);
   }
 
   function rechargeHealth(uint256 id, uint256 amount) public onlyRole(HEALTH_ROLE) {
