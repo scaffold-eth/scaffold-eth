@@ -91,6 +91,7 @@ contract Emotilon is ERC721Enumerable, IERC721Receiver, Ownable, AccessControl {
   }
 
   function breeding(uint256 fatherId, uint256 motherId) public payable returns (uint256) {
+      // TODO: check owner
       // TODO: check breedingCount
       // TODO: price?
 
