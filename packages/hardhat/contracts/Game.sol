@@ -15,11 +15,28 @@ abstract contract TokenContract {
 }
 
 abstract contract NFTContract {
+
+  struct StatsStruct {
+      uint8 speed;
+      uint8 strength;
+      uint8 iq;
+      uint8 skill;
+      uint8 evil;
+      uint8 accuracy;
+      uint8 stamina;
+      uint8 beauty;
+  }
+
   function tokenURI(uint256 id) external virtual view returns (string memory);
   function ownerOf(uint256 id) external virtual view returns (address);
   function rechargeHealth(uint256 id, uint256 amount) public virtual;
   function decreaseHealth(uint256 id, uint256 amount) public virtual;
   function healthStatus(uint256 id) public virtual view returns (uint256);
+  function giveCoins(uint256 id, uint256 amount) public virtual;
+  function statsById(uint256 id) public virtual view returns (StatsStruct memory);
+  function dead(uint256 id) public virtual view returns (bool);
+  function kill(uint256 killerId, uint256 id) public virtual;
+  function coins(uint256 id) public virtual view returns (uint256);
 }
 
 contract Game is Ownable  {
@@ -164,6 +181,62 @@ contract Game is Ownable  {
         return nftContract.tokenURI(nftId);
     }
 
+    function fight(uint256 nftId) public onlyNftOwner(nftId) {
+        require(nftContract.healthStatus(nftId) > 0, "NO HEALTH");
+        require(block.timestamp - lastCollectAttempt[nftId] >= collectInterval, "TOO EARLY");
+        lastCollectAttempt[nftId] = block.timestamp;
+
+        Position memory position = yourPosition[nftId];
+        Field memory field = worldMatrix[position.x][position.y];
+        require(field.player1 > 0 && field.player2 > 0, "YOU ARE ALONE");
+        require(!nftContract.dead(field.player1) && !nftContract.dead(field.player2), "DEAD PLAYER");
+
+        NFTContract.StatsStruct memory fighterStats = nftContract.statsById(nftId);
+        NFTContract.StatsStruct memory opponentStats;
+
+        uint256 opponentId;
+
+        if (field.player1 == nftId) {
+            opponentStats = nftContract.statsById(field.player2);
+            opponentId = field.player2;
+        } else {
+            opponentStats = nftContract.statsById(field.player1);
+            opponentId = field.player1;
+        }
+
+        uint256 fighterTotalStats = uint256(fighterStats.strength) * 2 + uint256(fighterStats.speed) + uint256(fighterStats.evil);
+        uint256 opponentTotalStats = uint256(opponentStats.stamina) * 2 + uint256(opponentStats.skill) + uint256(opponentStats.iq);
+
+        nftContract.decreaseHealth(nftId, opponentTotalStats);
+        nftContract.decreaseHealth(opponentId, fighterTotalStats);
+    }
+
+    function kill(uint256 nftId) public onlyNftOwner(nftId) {
+        require(nftContract.healthStatus(nftId) > 0, "NO HEALTH");
+        require(block.timestamp - lastCollectAttempt[nftId] >= collectInterval, "TOO EARLY");
+        lastCollectAttempt[nftId] = block.timestamp;
+
+        Position memory position = yourPosition[nftId];
+        Field memory field = worldMatrix[position.x][position.y];
+        require(field.player1 > 0 && field.player2 > 0, "YOU ARE ALONE");
+        require(!nftContract.dead(field.player1) && !nftContract.dead(field.player2), "DEAD PLAYER");
+
+        uint256 opponentId;
+
+        if (field.player1 == nftId) {
+            opponentId = field.player2;
+        } else {
+            opponentId = field.player1;
+        }
+
+        require(nftContract.healthStatus(opponentId) == 0, "OPPONENT HAVE HEALTH");
+
+        nftContract.kill(nftId, opponentId);
+
+        uint256 opponentCoins = nftContract.coins(opponentId);
+        nftContract.giveCoins(nftId, opponentCoins);
+    }
+
     function collectTokens(uint256 nftId) public onlyNftOwner(nftId) {
         require(nftContract.healthStatus(nftId) > 0, "NO HEALTH");
         require(block.timestamp - lastCollectAttempt[nftId] >= collectInterval, "TOO EARLY");
@@ -177,6 +250,7 @@ contract Game is Ownable  {
             uint256 amount = field.tokenAmountToCollect;
             // mint tokens to tx.origin
             tokenContract.mint(tx.origin, amount);
+            nftContract.giveCoins(nftId, amount);
             worldMatrix[position.x][position.y].tokenAmountToCollect = 0;
             emit CollectedTokens(tx.origin, nftId, amount);
             if (dropOnCollect) {

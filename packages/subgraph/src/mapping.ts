@@ -47,6 +47,7 @@ export function handleRegister(event: Register): void {
   player.nftId = event.params.nftId;
   player.x = event.params.x;
   player.y = event.params.y;
+  player.coins = BigInt.fromI32(0);
   player.createdAt = event.block.timestamp;
   player.lastSeenAt = event.block.timestamp;
   player.transactionHash = event.transaction.hash.toHex();

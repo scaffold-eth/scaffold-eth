@@ -14,6 +14,7 @@ type Player @entity {
   y: Int!
   address: Bytes!
   nftId: BigInt!
+  coins: BigInt!
   createdAt: BigInt!
   lastSeenAt: BigInt!
   transactionHash: String!
