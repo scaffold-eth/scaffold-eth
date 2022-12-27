@@ -227,7 +227,8 @@ function App(props) {
   ]);
 
   const loadWeb3Modal = useCallback(async () => {
-    const provider = await web3Modal.connect();
+    //const provider = await web3Modal.connect();
+    const provider = await web3Modal.requestProvider();
     setInjectedProvider(new ethers.providers.Web3Provider(provider));
 
     provider.on("chainChanged", chainId => {
@@ -252,6 +253,13 @@ function App(props) {
     if (web3Modal.cachedProvider) {
       loadWeb3Modal();
     }
+    //automatically connect if it is a safe app
+    const checkSafeApp = async () => {
+      if (await web3Modal.isSafeApp()) {
+        loadWeb3Modal();
+      }
+    };
+    checkSafeApp();
   }, [loadWeb3Modal]);
 
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
