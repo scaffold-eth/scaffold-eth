@@ -56,7 +56,7 @@ function Footer() {
   const useStyles = useMakeStyles(payload)
 
   return (
-    <Paper component={'footer'} sx={{ marginTop: 5, display: 'flex', flexDirection: 'column' }}>
+    <Paper component={'footer'} sx={{ marginTop: 'auto', display: 'flex', flexDirection: 'column' }}>
       <Grid container spacing={0.5} pl={mobileResponsiveMatch ? 6 : 1}>
         <Grid item xs={12} md={3} lg={3} sx={{ marginBottom: mobileResponsiveMatch ? 3 : 0 }}>
           <Logo useStyles={useStyles} textLeftMargin={5} />

@@ -17,6 +17,27 @@ export type EventBadge = {
   transactionHash: string
 }
 
+export type RewardNames =
+  | 'Beta Tester'
+  | 'Contributor'
+  | 'Dev Connector'
+  | 'Release Manager'
+  | 'Remixer'
+  | 'UX Champion'
+  | 'Specials'
+
+export type Badge = {
+  address: string
+  blockHash: string
+  blockNumber: string
+  data: string
+  logIndex: string
+  removed: boolean
+  topics: string[]
+  transactionHash: string
+  transactionIndex: string
+}
+
 export type RewardKey = keyof Reward
 
 export type RewardGroups = {
@@ -84,4 +105,9 @@ export interface BadgeContextProps {
   showWrongNetworkToast: any
   setShowWrongNetworkToast: any
   targetNetwork: any
+}
+
+export interface MenuItemsProps {
+  tabValue: number
+  setTabValue: Dispatch<React.SetStateAction<number>>
 }

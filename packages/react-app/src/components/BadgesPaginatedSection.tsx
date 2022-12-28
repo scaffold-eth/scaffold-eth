@@ -1,9 +1,8 @@
 import Grid from '@mui/material/Grid'
-import NftCard from './NftCard'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import DownloadingRoundedIcon from '@mui/icons-material/DownloadingRounded'
-import { ethers } from 'ethers'
+// import { ethers } from 'ethers'
 import { useContext, useEffect, useState } from 'react'
 import { BadgeContext } from '../contexts/BadgeContext'
 import Fab from '@mui/material/Fab'
@@ -11,7 +10,7 @@ import useMediaQuery from '@mui/material/useMediaQuery'
 import { useCallback } from 'react'
 import AddressedCard from './AddressedCard'
 import RewardGroupCard from './RewardGroupCard'
-import { BadgesPaginatedSectionProps, EventBadge } from '../types/rewardTypes'
+import { BadgesPaginatedSectionProps } from '../types/rewardTypes'
 
 export default function BadgesPaginatedSection({
   badges,
@@ -22,8 +21,8 @@ export default function BadgesPaginatedSection({
 }: BadgesPaginatedSectionProps) {
   const pageSize = 10
   // @ts-ignore
-  const { contractRef, localProvider, mainnet } = useContext(BadgeContext)
-  const contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
+  const { mainnet } = useContext(BadgeContext)
+  // const contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
   const [pageNumber, setPageNumber] = useState(1)
   const [pagedBadges, setPagedBadges] = useState<Array<any>>([])
   const mobileResponsiveMatch = useMediaQuery('(min-width:600px)')

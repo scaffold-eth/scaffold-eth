@@ -8,6 +8,7 @@ import IconButton from '@mui/material/IconButton'
 import Toast from './components/Toast'
 import { BadgeContext } from './contexts/BadgeContext'
 import externalContracts from './contracts/external_contracts'
+import AboutPage from './views/AboutPage'
 const { ethers } = require('ethers')
 const temmainnet = new ethers.providers.StaticJsonRpcProvider(
   'https://mainnet.infura.io/v3/1b3241e53c8d422aab3c7c0e4101de9c',
@@ -33,11 +34,7 @@ function App() {
   let providerRef: any
   //@ts-ignore
   const extContract: any = externalContracts[selectedChainId]
-  if (
-    extContract &&
-    extContract.contracts &&
-    extContract.contracts.REMIX_REWARD
-  ) {
+  if (extContract && extContract.contracts && extContract.contracts.REMIX_REWARD) {
     contractRef = extContract.contracts.REMIX_REWARD
     providerRef = extContract.provider
   }
@@ -106,6 +103,8 @@ function App() {
           {loaded && tabValue === 0 && <BrowseBadges />}
 
           {tabValue === 1 && <MintingPage />}
+
+          {tabValue === 2 && <AboutPage />}
           <Toast
             showToast={showToast}
             closeToast={closeToast}

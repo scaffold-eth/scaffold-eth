@@ -24,7 +24,9 @@ export default function Layout(props: LayoutProps) {
   return (
     <Fragment>
       <Navbar tabValue={tabValue} setTabValue={setTabValue} useStyles={useStyles} />
-      <Container maxWidth={false}>{children}</Container>
+      <Container maxWidth={false} sx={{ marginBottom: 5 }}>
+        {children}
+      </Container>
       <Footer />
     </Fragment>
   )

@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react'
 import externalContracts from '../contracts/external_contracts'
 import { getAllRewards } from '../helpers/getAllRewards'
-import { EventBadge, RewardGroups } from '../types/rewardTypes'
+import { Badge, EventBadge, RewardGroups } from '../types/rewardTypes'
 
 import { ethers } from 'ethers'
 import InputLabel from '@mui/material/InputLabel'
@@ -159,8 +159,9 @@ export default function BrowseBadges() {
       setEventBadges([])
       return
     }
-    let badges = await getAllRewards(contractRef.address, providerRef)
-    badges = badges.map(badge => {
+    let rawBadges: Badge[] = await getAllRewards(contractRef.address, providerRef)
+    console.log({ rawBadges })
+    const badges = rawBadges.map(badge => {
       return {
         id: ethers.utils.hexStripZeros(badge.topics[3]),
         to: ethers.utils.hexZeroPad(ethers.utils.hexStripZeros(badge.topics[2]), 20),
@@ -211,7 +212,7 @@ export default function BrowseBadges() {
     <>
       <Box sx={{ paddingTop: '76px' }}>
         <Box sx={{ textAlign: 'left', padding: '10px', color: '#007aa6', marginLeft: 5 }}>
-          <Typography variant={'h3'} fontWeight={700} sx={{ marginBottom: 5 }} color={'black'} fontFamily={'Noah'}>
+          <Typography variant={'h3'} fontWeight={700} sx={{ marginBottom: 5 }} color={'#333333'} fontFamily={'Noah'}>
             Remix Rewards
           </Typography>
           <Box>
