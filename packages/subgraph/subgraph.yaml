@@ -3,23 +3,34 @@ schema:
   file: ./src/schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: YourContract
+    name: EmotilonBoardGame
     network: localhost
     source:
-      address: "0x5FbDB2315678afecb367f032d93F642f64180aa3"
-      abi: YourContract
+      address: "0x63fea6E447F120B8Faf85B53cdaD8348e645D80E"
+      abi: EmotilonBoardGame
       startBlock: 1
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
-        - Purpose
-        - Sender
+        - Player
+        - Token
+        - Health
       abis:
-        - name: YourContract
-          file: ./abis/localhost_YourContract.json
+        - name: EmotilonBoardGame
+          file: ./abis/localhost_EmotilonBoardGame.json
       eventHandlers:
-        - event: SetPurpose(address,string)
-          handler: handleSetPurpose
+        - event: Restart(uint8,uint8)
+          handler: handleRestart
+        - event: Register(indexed address,indexed address,uint8,uint8,indexed uint256)
+          handler: handleRegister
+        - event: Move(indexed uint256,indexed address,uint8,uint8)
+          handler: handleMove
+        - event: CollectedTokens(indexed address,indexed uint256,uint256,uint8,uint8)
+          handler: handleCollectedTokens
+        - event: CollectedHealth(indexed address,indexed uint256,uint256,uint8,uint8)
+          handler: handleCollectedHealth
+        - event: NewDrop(indexed bool,uint256,uint8,uint8)
+          handler: handleNewDrop
       file: ./src/mapping.ts

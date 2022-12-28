@@ -1,33 +1,115 @@
 import { BigInt, Address } from "@graphprotocol/graph-ts";
 import {
-  YourContract,
-  SetPurpose,
-} from "../generated/YourContract/YourContract";
-import { Purpose, Sender } from "../generated/schema";
+  Restart,
+  Register,
+  Move,
+  CollectedTokens,
+  CollectedHealth,
+  NewDrop,
+} from "../generated/EmotilonBoardGame/EmotilonBoardGame";
+import { Player, Token, Health } from "../generated/schema";
 
-export function handleSetPurpose(event: SetPurpose): void {
-  let senderString = event.params.sender.toHexString();
+export function handleRestart(event: Restart): void {
+  // TODO
+  /*
+  for (let i=0; i<event.params.width; i++) {
+    for (let j=0; j<event.params.height; j++) {
+      const fieldId = i.toString() + "-" + j.toString();
+      let field = WorldMatrix.load(fieldId);
+      if (field === null) {
+        field = new WorldMatrix(fieldId);
+        field.x = i;
+        field.y = j;
+        field.tokenAmountToCollect = BigInt.fromI32(0);
+        field.healthAmountToCollect = BigInt.fromI32(0);
+      } else {
+        // clean player data
+        field.player1 = null;
+        field.player2 = null;
+        field.tokenAmountToCollect = BigInt.fromI32(0);
+        field.healthAmountToCollect = BigInt.fromI32(0);
+      }
+      field.save();
+    }
+  }
+  */
+}
 
-  let sender = Sender.load(senderString);
+export function handleRegister(event: Register): void {
+  let playerString = event.params.nftId.toHexString();
 
-  if (sender === null) {
-    sender = new Sender(senderString);
-    sender.address = event.params.sender;
-    sender.createdAt = event.block.timestamp;
-    sender.purposeCount = BigInt.fromI32(1);
-  } else {
-    sender.purposeCount = sender.purposeCount.plus(BigInt.fromI32(1));
+  let player = Player.load(playerString);
+
+  if (player === null) {
+    player = new Player(playerString);
+    player.address = event.params.txOrigin;
   }
 
-  let purpose = new Purpose(
-    event.transaction.hash.toHex() + "-" + event.logIndex.toString()
-  );
+  player.nftId = event.params.nftId;
+  player.x = event.params.x;
+  player.y = event.params.y;
+  player.coins = BigInt.fromI32(0);
+  player.createdAt = event.block.timestamp;
+  player.lastSeenAt = event.block.timestamp;
+  player.transactionHash = event.transaction.hash.toHex();
+  player.save();
+}
 
-  purpose.purpose = event.params.purpose;
-  purpose.sender = senderString;
-  purpose.createdAt = event.block.timestamp;
-  purpose.transactionHash = event.transaction.hash.toHex();
+export function handleMove(event: Move): void {
+  let playerString = event.params.nftId.toHexString();
 
-  purpose.save();
-  sender.save();
+  let player = Player.load(playerString);
+
+  if (player !== null) {
+    player.x = event.params.x;
+    player.y = event.params.y;
+    player.save();
+  }
+}
+
+export function handleCollectedTokens(event: CollectedTokens): void {
+  const fieldId = event.params.x.toString() + "-" + event.params.y.toString();
+
+  let token = Token.load(fieldId);
+  if (token !== null) {
+    // TODO: unset
+    token.amount = BigInt.fromI32(0);
+    token.save();
+  }
+}
+
+export function handleCollectedHealth(event: CollectedHealth): void {
+  const fieldId = event.params.x.toString() + "-" + event.params.y.toString();
+
+  let health = Health.load(fieldId);
+  if (health !== null) {
+    // TODO: unset
+    health.amount = BigInt.fromI32(0);
+    health.save();
+  }
+}
+
+export function handleNewDrop(event: NewDrop): void {
+  const fieldId = event.params.x.toString() + "-" + event.params.y.toString();
+  if (event.params.isHealth) {
+    let field = Health.load(fieldId);
+    if (!field) {
+      field = new Health(fieldId);
+      field.x = event.params.x;
+      field.y = event.params.y;
+      field.amount = BigInt.fromI32(0);
+    }
+    field.amount = field.amount.plus(event.params.amount);
+    field.save();
+  } else {
+    let field = Token.load(fieldId);
+    if (!field) {
+      field = new Token(fieldId);
+      field.x = event.params.x;
+      field.y = event.params.y;
+      field.amount = BigInt.fromI32(0);
+    }
+    field.amount = field.amount.plus(event.params.amount);
+    field.save();
+  }
 }

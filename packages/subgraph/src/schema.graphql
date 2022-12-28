@@ -1,15 +1,26 @@
-type Purpose @entity {
+type Player @entity {
   id: ID!
-  sender: Sender!
-  purpose: String!
+  x: Int!
+  y: Int!
+  address: Bytes!
+  nftId: BigInt!
+  coins: BigInt!
   createdAt: BigInt!
+  lastSeenAt: BigInt!
   transactionHash: String!
 }
 
-type Sender @entity {
+type Token @entity {
   id: ID!
-  address: Bytes!
-  purposes: [Purpose!] @derivedFrom(field: "sender")
-  createdAt: BigInt!
-  purposeCount: BigInt!
+  x: Int!
+  y: Int!
+  amount: BigInt!
 }
+
+type Health @entity {
+  id: ID!
+  x: Int!
+  y: Int!
+  amount: BigInt!
+}
+

@@ -17,27 +17,79 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const { deployer } = await getNamedAccounts();
   const chainId = await getChainId();
 
-  await deploy("YourContract", {
-    // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
+  const collectInterval = 60; // 1 minute, block.timestamp is in UNIX seconds
+
+  const emoticoin = await deploy("Emoticoin", {
     from: deployer,
-    // args: [ "Hello", ethers.utils.parseEther("1.5") ],
     log: true,
-    waitConfirmations: 5,
   });
 
-  // Getting a previously deployed contract
-  const YourContract = await ethers.getContract("YourContract", deployer);
-  /*  await YourContract.setPurpose("Hello");
-  
-    // To take ownership of yourContract using the ownable library uncomment next line and add the 
-    // address you want to be the owner. 
-    
-    await YourContract.transferOwnership(
-      "ADDRESS_HERE"
-    );
+  const renderEyes = await deploy("EmotilonRenderEyes", {
+    from: deployer,
+    log: true,
+  });
 
-    //const YourContract = await ethers.getContractAt('YourContract', "0xaAC799eC2d00C013f1F11c37E654e59B0429DF6A") //<-- if you want to instantiate a version of a contract at a specific address!
-  */
+  const renderMouth = await deploy("EmotilonRenderMouth", {
+    from: deployer,
+    log: true,
+  });
+
+  const metadata = await deploy("EmotilonMetadata", {
+    from: deployer,
+    libraries: {
+      EmotilonRenderEyes: renderEyes.address,
+      EmotilonRenderMouth: renderMouth.address,
+    },
+    log: true,
+  });
+
+  const emotilon = await deploy("Emotilon", {
+    from: deployer,
+    args: [emoticoin.address],
+    libraries: { EmotilonMetadata: metadata.address },
+    log: true,
+  });
+
+  const game = await deploy("EmotilonBoardGame", {
+    from: deployer,
+    args: [collectInterval, emotilon.address, emoticoin.address],
+    log: true,
+  });
+
+  const gameAddress = game.address;
+
+  const emoticoinContract = await ethers.getContract("Emoticoin", deployer);
+  const emotilonContract = await ethers.getContract("Emotilon", deployer);
+
+  await emoticoinContract.grantRole(
+    ethers.utils.keccak256(ethers.utils.toUtf8Bytes("MINTER_ROLE")),
+    gameAddress
+  );
+
+  await emotilonContract.grantRole(
+    ethers.utils.keccak256(ethers.utils.toUtf8Bytes("HEALTH_ROLE")),
+    gameAddress
+  );
+
+  await emotilonContract.grantRole(
+    ethers.utils.keccak256(ethers.utils.toUtf8Bytes("COINS_ROLE")),
+    gameAddress
+  );
+
+  await emotilonContract.grantRole(
+    ethers.utils.keccak256(ethers.utils.toUtf8Bytes("KILL_ROLE")),
+    gameAddress
+  );
+
+  const GameContract = await ethers.getContract("EmotilonBoardGame", deployer);
+
+  await GameContract.start();
+
+  await GameContract.setDropOnCollect(true);
+
+  await GameContract.transferOwnership(
+    "0x5dCb5f4F39Caa6Ca25380cfc42280330b49d3c93"
+  );
 
   /*
   //If you want to send value to an address from the deployer

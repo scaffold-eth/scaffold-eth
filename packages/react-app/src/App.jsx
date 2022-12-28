@@ -30,7 +30,7 @@ import externalContracts from "./contracts/external_contracts";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { getRPCPollTime, Transactor, Web3ModalSetup } from "./helpers";
-import { Home, ExampleUI, Hints, Subgraph } from "./views";
+import { Subgraph, Collection, YourCollection, Board } from "./views";
 import { useStaticJsonRPC } from "./hooks";
 
 const { ethers } = require("ethers");
@@ -167,22 +167,41 @@ function App(props) {
   //   console.log(`⛓ A new mainnet block is here: ${mainnetProvider._lastBlockNumber}`);
   // });
 
-  // Then read your DAI balance like:
-  const myMainnetDAIBalance = useContractReader(
-    mainnetContracts,
-    "DAI",
-    "balanceOf",
-    ["0x34aA3F359A9D614239015126635CE7732c18fDF3"],
-    mainnetProviderPollingTime,
-  );
+  const [yourNfts, setYourNfts] = useState();
+  const [loadingYourNfts, setLoadingYourNfts] = useState(true);
 
-  // keep track of a variable from the contract in the local React state:
-  const purpose = useContractReader(readContracts, "YourContract", "purpose", [], localProviderPollingTime);
+  const balance = useContractReader(readContracts, "Emotilon", "balanceOf", [address], localProviderPollingTime);
+  if (DEBUG) console.log("🤗 address: ", address, " balance:", balance);
 
-  /*
-  const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
-  console.log("🏷 Resolved austingriffith.eth as:", addressFromENS)
-  */
+  useEffect(() => {
+    const updateYourCollectibles = async () => {
+      setLoadingYourNfts(true);
+      const nftUpdate = [];
+      if (balance && balance.toNumber && balance.toNumber() > 0) {
+        for (let tokenIndex = 0; tokenIndex < balance.toNumber(); tokenIndex++) {
+          try {
+            const tokenId = await readContracts.Emotilon.tokenOfOwnerByIndex(address, tokenIndex);
+            if (DEBUG) console.log("Getting NFT tokenId: ", tokenId.toNumber());
+            const tokenURI = await readContracts.Emotilon.tokenURI(tokenId);
+            if (DEBUG) console.log("tokenURI: ", tokenURI);
+            const jsonManifestString = atob(tokenURI.substring(29));
+
+            try {
+              const jsonManifest = JSON.parse(jsonManifestString);
+              nftUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+            } catch (e) {
+              console.log(e);
+            }
+          } catch (e) {
+            console.log(e);
+          }
+        }
+      }
+      setYourNfts(nftUpdate.reverse());
+      setLoadingYourNfts(false);
+    };
+    updateYourCollectibles();
+  }, [address, balance, DEBUG, readContracts.Emotilon]);
 
   //
   // 🧫 DEBUG 👨🏻‍🔬
@@ -208,7 +227,6 @@ function App(props) {
       console.log("💵 yourMainnetBalance", yourMainnetBalance ? ethers.utils.formatEther(yourMainnetBalance) : "...");
       console.log("📝 readContracts", readContracts);
       console.log("🌍 DAI contract on mainnet:", mainnetContracts);
-      console.log("💵 yourMainnetDAIBalance", myMainnetDAIBalance);
       console.log("🔐 writeContracts", writeContracts);
     }
   }, [
@@ -221,7 +239,6 @@ function App(props) {
     writeContracts,
     mainnetContracts,
     localChainId,
-    myMainnetDAIBalance,
   ]);
 
   const loadWeb3Modal = useCallback(async () => {
@@ -308,37 +325,53 @@ function App(props) {
         <Menu.Item key="/">
           <Link to="/">App Home</Link>
         </Menu.Item>
-        <Menu.Item key="/debug">
-          <Link to="/debug">Debug Contracts</Link>
+        <Menu.Item key="/yourEmotilons">
+          <Link to="/yourEmotilons">Your Emotilons</Link>
         </Menu.Item>
-        <Menu.Item key="/hints">
-          <Link to="/hints">Hints</Link>
-        </Menu.Item>
-        <Menu.Item key="/exampleui">
-          <Link to="/exampleui">ExampleUI</Link>
-        </Menu.Item>
-        <Menu.Item key="/mainnetdai">
-          <Link to="/mainnetdai">Mainnet DAI</Link>
-        </Menu.Item>
-        <Menu.Item key="/subgraph">
-          <Link to="/subgraph">Subgraph</Link>
+        <Menu.Item key="/board">
+          <Link to="/board">Board Game</Link>
         </Menu.Item>
       </Menu>
 
       <Switch>
         <Route exact path="/">
-          {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
-          <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} />
+          <Collection
+            readContracts={readContracts}
+            mainnetProvider={mainnetProvider}
+            blockExplorer={blockExplorer}
+            DEBUG={DEBUG}
+            localProviderPollingTime={localProviderPollingTime}
+          />
+        </Route>
+        <Route exact path="/yourEmotilons">
+          <YourCollection
+            readContracts={readContracts}
+            DEBUG={DEBUG}
+            localProviderPollingTime={localProviderPollingTime}
+            writeContracts={writeContracts}
+            tx={tx}
+            address={address}
+            yourNfts={yourNfts}
+            loadingYourNfts={loadingYourNfts}
+          />
+        </Route>
+        <Route exact path="/board">
+          <Board
+            readContracts={readContracts}
+            writeContracts={writeContracts}
+            tx={tx}
+            mainnetProvider={mainnetProvider}
+            blockExplorer={blockExplorer}
+            DEBUG={DEBUG}
+            localProviderPollingTime={localProviderPollingTime}
+            yourNfts={yourNfts}
+            loadingYourNfts={loadingYourNfts}
+            address={address}
+          />
         </Route>
         <Route exact path="/debug">
-          {/*
-                🎛 this scaffolding is full of commonly used components
-                this <Contract/> component will automatically parse your ABI
-                and give you a form to interact with it locally
-            */}
-
           <Contract
-            name="YourContract"
+            name="Emotilon"
             price={price}
             signer={userSigner}
             provider={localProvider}
@@ -346,50 +379,15 @@ function App(props) {
             blockExplorer={blockExplorer}
             contractConfig={contractConfig}
           />
-        </Route>
-        <Route path="/hints">
-          <Hints
-            address={address}
-            yourLocalBalance={yourLocalBalance}
-            mainnetProvider={mainnetProvider}
-            price={price}
-          />
-        </Route>
-        <Route path="/exampleui">
-          <ExampleUI
-            address={address}
-            userSigner={userSigner}
-            mainnetProvider={mainnetProvider}
-            localProvider={localProvider}
-            yourLocalBalance={yourLocalBalance}
-            price={price}
-            tx={tx}
-            writeContracts={writeContracts}
-            readContracts={readContracts}
-            purpose={purpose}
-          />
-        </Route>
-        <Route path="/mainnetdai">
           <Contract
-            name="DAI"
-            customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.DAI}
+            name="EmotilonBoardGame"
+            price={price}
             signer={userSigner}
-            provider={mainnetProvider}
+            provider={localProvider}
             address={address}
-            blockExplorer="https://etherscan.io/"
+            blockExplorer={blockExplorer}
             contractConfig={contractConfig}
-            chainId={1}
           />
-          {/*
-            <Contract
-              name="UNI"
-              customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.UNI}
-              signer={userSigner}
-              provider={mainnetProvider}
-              address={address}
-              blockExplorer="https://etherscan.io/"
-            />
-            */}
         </Route>
         <Route path="/subgraph">
           <Subgraph
