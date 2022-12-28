@@ -3,15 +3,10 @@ const { utils } = require("ethers");
 const fs = require("fs");
 const chalk = require("chalk");
 
-require("@nomiclabs/hardhat-waffle");
+require("@nomicfoundation/hardhat-chai-matchers");
 require("@tenderly/hardhat-tenderly");
-
+require("@nomicfoundation/hardhat-toolbox");
 require("hardhat-deploy");
-require("hardhat-gas-reporter");
-require("hardhat-abi-exporter");
-
-require("@nomiclabs/hardhat-ethers");
-require("@nomiclabs/hardhat-etherscan");
 
 const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 
@@ -29,8 +24,6 @@ const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 //
 const defaultNetwork = "localhost";
 
-const mainnetGwei = 21;
-
 function mnemonic() {
   try {
     return fs.readFileSync("./mnemonic.txt").toString().trim();
@@ -46,7 +39,6 @@ function mnemonic() {
 
 module.exports = {
   defaultNetwork,
-
   /**
    * gas reporter configuration that let's you know
    * an estimate of gas for contract deployments and function calls
@@ -55,6 +47,7 @@ module.exports = {
   gasReporter: {
     currency: "USD",
     coinmarketcap: process.env.COINMARKETCAP || null,
+    enabled: true,
   },
 
   // if you want to deploy to a testnet, mainnet, or xdai, you will need to configure:
@@ -67,37 +60,15 @@ module.exports = {
   networks: {
     localhost: {
       url: "http://localhost:8545",
-      /*      
+      /*
         notice no mnemonic here? it will just use account 0 of the hardhat node to deploy
         (you can put in a mnemonic here to set the deployer locally)
-      
+
       */
-    },
-    rinkeby: {
-      url: "https://rinkeby.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", // <---- YOUR INFURA ID! (or it won't work)
-      //    url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXX/eth/rinkeby", // <---- YOUR MORALIS ID! (not limited to infura)
-      accounts: {
-        mnemonic: mnemonic(),
-      },
-    },
-    kovan: {
-      url: "https://kovan.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", // <---- YOUR INFURA ID! (or it won't work)
-      //    url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXX/eth/kovan", // <---- YOUR MORALIS ID! (not limited to infura)
-      accounts: {
-        mnemonic: mnemonic(),
-      },
     },
     mainnet: {
       url: "https://mainnet.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", // <---- YOUR INFURA ID! (or it won't work)
       //      url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXXXX/eth/mainnet", // <---- YOUR MORALIS ID! (not limited to infura)
-      gasPrice: mainnetGwei * 1000000000,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
-    },
-    ropsten: {
-      url: "https://ropsten.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", // <---- YOUR INFURA ID! (or it won't work)
-      //      url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXXXX/eth/ropsten",// <---- YOUR MORALIS ID! (not limited to infura)
       accounts: {
         mnemonic: mnemonic(),
       },
@@ -111,7 +82,6 @@ module.exports = {
     },
     xdai: {
       url: "https://rpc.xdaichain.com/",
-      gasPrice: 1000000000,
       accounts: {
         mnemonic: mnemonic(),
       },
@@ -133,7 +103,6 @@ module.exports = {
     polygon: {
       url: "https://polygon-rpc.com",
       // url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXx/polygon/mainnet", // <---- YOUR MORALIS ID! (not limited to infura)
-      gasPrice: 3200000000,
       accounts: {
         mnemonic: mnemonic(),
       },
@@ -141,14 +110,12 @@ module.exports = {
     mumbai: {
       url: "https://rpc-mumbai.maticvigil.com",
       // url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXX/polygon/mumbai", // <---- YOUR MORALIS ID! (not limited to infura)
-      gasPrice: 3200000000,
       accounts: {
         mnemonic: mnemonic(),
       },
     },
     matic: {
       url: "https://rpc-mainnet.maticvigil.com/",
-      gasPrice: 1000000000,
       accounts: {
         mnemonic: mnemonic(),
       },
@@ -162,13 +129,13 @@ module.exports = {
         l1: "mainnet",
       },
     },
-    kovanOptimism: {
-      url: "https://kovan.optimism.io",
+    goerliOptimism: {
+      url: "https://goerli.optimism.io/",
       accounts: {
         mnemonic: mnemonic(),
       },
       companionNetworks: {
-        l1: "kovan",
+        l1: "goerli",
       },
     },
     localOptimism: {
@@ -231,56 +198,56 @@ module.exports = {
       },
     },
     moonbeam: {
-      url: 'https://rpc.api.moonbeam.network',
+      url: "https://rpc.api.moonbeam.network",
       chainId: 1284,
       accounts: {
         mnemonic: mnemonic(),
       },
     },
     moonriver: {
-      url: 'https://rpc.api.moonriver.moonbeam.network',
+      url: "https://rpc.api.moonriver.moonbeam.network",
       chainId: 1285,
       accounts: {
         mnemonic: mnemonic(),
       },
     },
     moonbaseAlpha: {
-      url: 'https://rpc.api.moonbase.moonbeam.network',
+      url: "https://rpc.api.moonbase.moonbeam.network",
       chainId: 1287,
       accounts: {
         mnemonic: mnemonic(),
       },
     },
     moonbeamDevNode: {
-      url: 'http://127.0.0.1:9933',
+      url: "http://127.0.0.1:9933",
       chainId: 1281,
       accounts: {
         mnemonic: mnemonic(),
       },
     },
     godwoken: {
-      url: 'https://godwoken-testnet-v1.ckbapp.dev',
+      url: "https://godwoken-testnet-v1.ckbapp.dev",
       chainId: 71401,
       accounts: {
         mnemonic: mnemonic(),
       },
     },
     arbitrum: {
-      url: 'https://arb1.arbitrum.io/rpc',
+      url: "https://arb1.arbitrum.io/rpc",
       chainId: 42161,
       accounts: {
         mnemonic: mnemonic(),
       },
     },
-    rinkebyArbitrum: {
-      url: 'https://rinkeby.arbitrum.io/rpc',
-      chainId: 421611,
+    goerliArbitrum: {
+      url: "https://goerli-rollup.arbitrum.io/rpc/",
+      chainId: 421613,
       accounts: {
         mnemonic: mnemonic(),
       },
     },
     devnetArbitrum: {
-      url: 'https://nitro-devnet.arbitrum.io/rpc',
+      url: "https://nitro-devnet.arbitrum.io/rpc",
       chainId: 421612,
       accounts: {
         mnemonic: mnemonic(),
@@ -320,6 +287,10 @@ module.exports = {
   etherscan: {
     apiKey: {
       mainnet: "DNXJA8RX2Q3VZ4URQIWP7Z68CJXQZSC6AW",
+      goerli: "DNXJA8RX2Q3VZ4URQIWP7Z68CJXQZSC6AW",
+      kovan: "DNXJA8RX2Q3VZ4URQIWP7Z68CJXQZSC6AW",
+      rinkeby: "DNXJA8RX2Q3VZ4URQIWP7Z68CJXQZSC6AW",
+      ropsten: "DNXJA8RX2Q3VZ4URQIWP7Z68CJXQZSC6AW",
       // add other network's API key here
     },
   },
