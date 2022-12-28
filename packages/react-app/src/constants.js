@@ -10,7 +10,7 @@ export const ETHERSCAN_KEY = process.env.REACT_APP_ETHERSCAN_API_KEY ?? "DNXJA8R
 export const BLOCKNATIVE_DAPPID = process.env.REACT_APP_BLOCKNATIVE_DAPP_ID ?? "0b58206a-f3c0-4701-a62f-73c7243e8c77";
 
 // Docker Hardhat Host
-export const HARDHAT_HOST = process.env.REACT_APP_HARDHAT_HOST ?? "http://localhost:8545";
+export const HARDHAT_HOST = process.env.REACT_APP_HARDHAT_HOST ?? "http://localhost";
 
 /*
 Decrease the number of RPC calls by passing this value to hooks
