@@ -40,6 +40,7 @@ export default function Main({
   readContracts,
   contractConfig,
   YourContract,
+  setSelectedNetwork,
 }) {
   const { currentTheme } = useThemeSwitcher();
 
@@ -48,7 +49,8 @@ export default function Main({
   useEffect(() => {
     console.log("useEffect");
     try {
-      let newprovider = new ethers.providers.JsonRpcProvider("http://localhost:8545");
+      let newprovider = new ethers.providers.JsonRpcProvider("http://localhost:8545/");
+      console.log("SETTING newprovider", newprovider);
       if (newprovider) {
         setlocalhostProvider(newprovider);
       }
@@ -67,7 +69,9 @@ export default function Main({
   const [gameContractObj, setGameContractObj] = useState();
 
   usePoller(() => {
+    console.log("POLLER!");
     const doCheck = async () => {
+      console.log("DOCHEKC!!");
       console.log("localhostProvider", localhostProvider);
       if (localhostProvider) {
         try {
@@ -196,18 +200,23 @@ export default function Main({
           }
 
           setShowLocalWallet(true);
+          setSelectedNetwork("localhost");
         } catch (e) {
+          setGameContract("");
+          setGameContractObj(null);
           setStructureRender([]);
           setAgentRender([]);
           setShowLocalWallet(false);
           console.log(e);
           setFound(false);
           setTheState("📡 connecting again...");
+          setSelectedNetwork("mainnet");
         }
       }
     };
-    if (address) doCheck();
-  }, 1000);
+
+    if (true) doCheck();
+  }, 2500);
 
   console.log("gameContractObj", gameContractObj);
 
@@ -221,7 +230,7 @@ export default function Main({
       >
         🫡
       </div>
-      <div style={{ position: "absolute", left: 0, top: 0, width: "100%", height: "100%", zIndex: 1 }}>
+      <div style={{ position: "absolute", left: 0, top: 0, width: "100%", height: "100%", zIndex: -1 }}>
         {structureRender}
         {agentRender}
         <div style={{ margin: "auto", marginTop: "25%", width: 500 }}>
