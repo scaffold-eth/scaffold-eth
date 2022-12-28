@@ -261,6 +261,10 @@ export default function Hints({ yourLocalBalance, mainnetProvider, price, addres
           <a target="_blank" rel="noopener noreferrer" href="https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA">
             Telegram Chat
           </a>
+          &nbsp; or &nbsp;
+          <a target="_blank" rel="noopener noreferrer" href="https://discord.gg/pRsr6rwG">
+            Discord
+          </a>
         </span>
       </div>
       <div style={{ padding: 128 }}>
