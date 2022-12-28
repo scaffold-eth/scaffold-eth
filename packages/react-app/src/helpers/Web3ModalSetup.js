@@ -3,7 +3,7 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import Authereum from "authereum";
 import Fortmatic from "fortmatic";
 import WalletLink from "walletlink";
-import { ALCHEMY_KEY, INFURA_ID } from "../constants";
+import { ALCHEMY_KEY, INFURA_ID, HARDHAT_HOST } from "../constants";
 import { SafeAppWeb3Modal } from "@gnosis.pm/safe-apps-web3modal";
 
 // Coinbase walletLink init
@@ -33,7 +33,7 @@ const web3ModalSetup = () =>
             10: "https://mainnet.optimism.io", // xDai
             100: "https://rpc.gnosischain.com", // xDai
             137: "https://polygon-rpc.com",
-            31337: `http://${process.env.HARDHAT_HOST || "localhost"}:8545`,
+            31337: `http://${HARDHAT_HOST || "localhost"}:8545`,
             42161: "https://arb1.arbitrum.io/rpc",
             80001: "https://rpc-mumbai.maticvigil.com",
             71401: "https://godwoken-testnet-v1.ckbapp.dev",
