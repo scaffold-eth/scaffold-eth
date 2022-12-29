@@ -147,7 +147,11 @@ function Subgraph(props) {
           packages/subgraph/src
         </span>
         (learn more about subgraph definition{" "}
-        <a href="https://thegraph.com/docs/define-a-subgraph" target="_blank" rel="noopener noreferrer">
+        <a
+          href="https://thegraph.com/docs/en/developer/define-subgraph-hosted/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           here
         </a>
         )

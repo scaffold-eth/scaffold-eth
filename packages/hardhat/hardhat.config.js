@@ -3,15 +3,10 @@ const { utils } = require("ethers");
 const fs = require("fs");
 const chalk = require("chalk");
 
-require("@nomiclabs/hardhat-waffle");
+require("@nomicfoundation/hardhat-chai-matchers");
 require("@tenderly/hardhat-tenderly");
-
+require("@nomicfoundation/hardhat-toolbox");
 require("hardhat-deploy");
-require("hardhat-gas-reporter");
-require("hardhat-abi-exporter");
-
-require("@nomiclabs/hardhat-ethers");
-require("@nomiclabs/hardhat-etherscan");
 
 const EthUtil = require("ethereumjs-util");
 
@@ -56,7 +51,6 @@ if (PRIVATE_KEY) {
 
 module.exports = {
   defaultNetwork,
-
   /**
    * gas reporter configuration that let's you know
    * an estimate of gas for contract deployments and function calls
@@ -65,6 +59,7 @@ module.exports = {
   gasReporter: {
     currency: "USD",
     coinmarketcap: process.env.COINMARKETCAP || null,
+    enabled: true,
   },
 
   // if you want to deploy to a testnet, mainnet, or xdai, you will need to configure:
@@ -77,10 +72,10 @@ module.exports = {
   networks: {
     localhost: {
       url: "http://localhost:8545",
-      /*      
+      /*
         notice no mnemonic here? it will just use account 0 of the hardhat node to deploy
         (you can put in a mnemonic here to set the deployer locally)
-      
+
       */
     },
     rinkeby: {
@@ -152,7 +147,7 @@ module.exports = {
       url: "https://kovan.optimism.io",
       ...sharedNetworkConfig,
       companionNetworks: {
-        l1: "kovan",
+        l1: "goerli",
       },
     },
     localOptimism: {
@@ -201,32 +196,32 @@ module.exports = {
       ...sharedNetworkConfig,
     },
     moonbeam: {
-      url: 'https://rpc.api.moonbeam.network',
+      url: "https://rpc.api.moonbeam.network",
       chainId: 1284,
       ...sharedNetworkConfig,
     },
     moonriver: {
-      url: 'https://rpc.api.moonriver.moonbeam.network',
+      url: "https://rpc.api.moonriver.moonbeam.network",
       chainId: 1285,
       ...sharedNetworkConfig,
     },
     moonbaseAlpha: {
-      url: 'https://rpc.api.moonbase.moonbeam.network',
+      url: "https://rpc.api.moonbase.moonbeam.network",
       chainId: 1287,
       ...sharedNetworkConfig,
     },
     moonbeamDevNode: {
-      url: 'http://127.0.0.1:9933',
+      url: "http://127.0.0.1:9933",
       chainId: 1281,
       ...sharedNetworkConfig,
     },
     godwoken: {
-      url: 'https://godwoken-testnet-v1.ckbapp.dev',
+      url: "https://godwoken-testnet-v1.ckbapp.dev",
       chainId: 71401,
       ...sharedNetworkConfig,
     },
     arbitrum: {
-      url: 'https://arb1.arbitrum.io/rpc',
+      url: "https://arb1.arbitrum.io/rpc",
       chainId: 42161,
       ...sharedNetworkConfig,
     },
@@ -236,7 +231,7 @@ module.exports = {
       ...sharedNetworkConfig,
     },
     devnetArbitrum: {
-      url: 'https://nitro-devnet.arbitrum.io/rpc',
+      url: "https://nitro-devnet.arbitrum.io/rpc",
       chainId: 421612,
       ...sharedNetworkConfig,
     },
@@ -274,6 +269,10 @@ module.exports = {
   etherscan: {
     apiKey: {
       mainnet: "DNXJA8RX2Q3VZ4URQIWP7Z68CJXQZSC6AW",
+      goerli: "DNXJA8RX2Q3VZ4URQIWP7Z68CJXQZSC6AW",
+      kovan: "DNXJA8RX2Q3VZ4URQIWP7Z68CJXQZSC6AW",
+      rinkeby: "DNXJA8RX2Q3VZ4URQIWP7Z68CJXQZSC6AW",
+      ropsten: "DNXJA8RX2Q3VZ4URQIWP7Z68CJXQZSC6AW",
       // add other network's API key here
     },
   },

@@ -19,7 +19,8 @@
     "@apollo/client": "^3.3.21",
     "@apollo/react-hooks": "^4.0.0",
     "@arbitrum/sdk": "^2.0.0",
-    "@eth-optimism/sdk": "^1.0.0",
+    "@gnosis.pm/safe-apps-sdk": "^7.8.0",
+    "@gnosis.pm/safe-apps-web3modal": "^17.0.4",
     "@portis/web3": "^4.0.5",
     "@ramp-network/ramp-instant-sdk": "^2.2.0",
     "@testing-library/jest-dom": "^5.11.4",
@@ -37,7 +38,7 @@
     "bl": "^5.0.0",
     "bnc-notify": "^1.5.0",
     "dotenv": "^8.2.0",
-    "eth-hooks": "2.3.16",
+    "eth-hooks": "2.3.19",
     "ethers": "^5.4.1",
     "fortmatic": "^2.2.1",
     "graphiql": "^1.4.7",
@@ -56,7 +57,7 @@
     "react-scripts": "4.0.1",
     "searchico": "^1.2.1",
     "walletlink": "^2.1.5",
-    "web3modal": "^1.9.1"
+    "web3modal": "^1.9.10"
   },
   "devDependencies": {
     "@apollo/client": "^3.3.21",
@@ -86,12 +87,12 @@
     }
   },
   "scripts": {
-    "build": "react-scripts build",
+    "build": "react-scripts --openssl-legacy-provider build",
     "eject": "react-scripts eject",
     "prestart": "node ./scripts/create_contracts.js",
-    "start": "react-scripts start",
+    "start": "react-scripts --openssl-legacy-provider start",
     "test": "react-scripts test",
-    "lint": "eslint --config ./.eslintrc.js --ignore-path ./.eslintignore ./src/**/*",
+    "lint": "eslint ./src/**/*.{js,jsx} --ignore-path ./.eslintignore --max-warnings=0",
     "ipfs": "node ./scripts/ipfs.js",
     "surge": "cp build/index.html build/200.html && surge ./build",
     "s3": "node ./scripts/s3.js",
