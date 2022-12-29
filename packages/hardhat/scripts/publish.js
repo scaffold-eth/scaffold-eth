@@ -2,7 +2,7 @@ const fs = require("fs");
 const chalk = require("chalk");
 
 const graphDir = "../subgraph";
-const deploymentsDir = "./deployments";
+const deploymentsDir = "./.openzeppelin";
 
 function publishContract(contractName, networkName) {
   try {
@@ -65,6 +65,8 @@ function publishContract(contractName, networkName) {
 }
 
 async function main() {
+  /*
+  console.log("📡  Publishing contracts to the subgraph package...");
   const directories = fs.readdirSync(deploymentsDir);
   directories.forEach(function (directory) {
     const files = fs.readdirSync(`${deploymentsDir}/${directory}`);
@@ -76,6 +78,7 @@ async function main() {
     });
   });
   console.log("✅  Published contracts to the subgraph package.");
+  */
 }
 main()
   .then(() => process.exit(0))

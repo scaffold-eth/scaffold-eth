@@ -1,8 +1,10 @@
 // deploy/00_deploy_your_contract.js
 
-const { ethers } = require("hardhat");
+const { ethers, upgrades } = require("hardhat");
 
 const localChainId = "31337";
+
+// eslint-disable-next-line no-unused-vars
 
 // const sleep = (ms) =>
 //   new Promise((r) =>
@@ -25,8 +27,11 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
     waitConfirmations: 5,
   });
 
-  // Getting a previously deployed contract
-  const YourContract = await ethers.getContract("YourContract", deployer);
+  const YourContract = await ethers.getContractFactory("YourContract");
+  const yourcontract = await upgrades.deployProxy(YourContract, []);
+  await yourcontract.deployed;
+  console.log("YourContract Proxy deployed to:", yourcontract.address);
+
   /*  await YourContract.setPurpose("Hello");
   
     // To take ownership of yourContract using the ownable library uncomment next line and add the 

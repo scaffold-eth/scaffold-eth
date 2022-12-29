@@ -2,17 +2,19 @@ pragma solidity >=0.8.0 <0.9.0;
 //SPDX-License-Identifier: MIT
 
 import "hardhat/console.sol";
-// import "@openzeppelin/contracts/access/Ownable.sol"; 
-// https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol
+import '@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol';
+import '@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol';
+// https://docs.openzeppelin.com/contracts/3.x/api/proxy#UpgradeableProxy
 
-contract YourContract {
+contract YourContract is UUPSUpgradeable, OwnableUpgradeable {
 
   event SetPurpose(address sender, string purpose);
 
-  string public purpose = "Building Unstoppable Apps!!!";
+  string public purpose;
 
-  constructor() payable {
-    // what should we do on deploy?
+  function initialize() public initializer {
+    __Ownable_init();
+    purpose = "Building Unstoppable Apps";
   }
 
   function setPurpose(string memory newPurpose) public payable {
@@ -24,4 +26,8 @@ contract YourContract {
   // to support receiving ETH by default
   receive() external payable {}
   fallback() external payable {}
+
+  function _authorizeUpgrade(
+      address newImplementation
+  ) internal override onlyOwner {}
 }
