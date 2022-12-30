@@ -68,6 +68,8 @@ export default function Main({
 
   const [gameContractObj, setGameContractObj] = useState();
 
+  const [distExample, setDistExample] = useState();
+
   usePoller(() => {
     console.log("POLLER!");
     const doCheck = async () => {
@@ -89,7 +91,7 @@ export default function Main({
           const timestamp = (await localhostProvider.getBlock(blockNumber)).timestamp;
           console.log("timestamp", timestamp);
 
-          if (!gameContract) {
+          if (!gameContract || (await localhostProvider.getCode(gameContract)) === "0x") {
             console.log("🧘‍♂️ DEPLOYING");
 
             //console.log("GET BYTECOE AND INTEFARECE FROM ",contractConfig.deployedContracts['31337'].localhost.contracts.YourContract)
@@ -129,7 +131,7 @@ export default function Main({
             //console.log("contract", contract)
 
             const Structures = await contract.queryFilter(
-              { topics: [ethers.utils.id("Structure(address,uint16,uint16,string)")] },
+              { topics: [ethers.utils.id("StructureRender(address,uint16,uint16,string)")] },
               0,
               blockNumber,
             );
@@ -149,7 +151,7 @@ export default function Main({
             setStructureRender(structureRenderUpdate);
 
             const Agents = await contract.queryFilter(
-              { topics: [ethers.utils.id("Agent(address,uint16,uint16,int8,int8,string,uint64,uint64)")] },
+              { topics: [ethers.utils.id("AgentRender(address,uint16,uint16,int8,int8,string,uint64,uint64)")] },
               0,
               blockNumber,
             );
@@ -191,6 +193,8 @@ export default function Main({
               );
             }
             setAgentRender(agentRenderUpdate);
+
+            setDistExample(await contract.agentDistanceFromStructure(0, 0));
 
             GameLoop({
               provider: localhostProvider,
@@ -234,7 +238,9 @@ export default function Main({
         {structureRender}
         {agentRender}
         <div style={{ margin: "auto", marginTop: "25%", width: 500 }}>
-          <div style={{ padding: 16, position: "fixed", bottom: 16, left: 16 }}>{theState}</div>
+          <div style={{ padding: 16, position: "fixed", bottom: 16, left: 16 }}>
+            {theState} (🏎 is {distExample && distExample.toNumber()} from 🏠)
+          </div>
         </div>
         <div style={{ margin: "auto", marginTop: "100%", paddingBottom: 800 }}>
           {gameContract && (
