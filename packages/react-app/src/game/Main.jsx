@@ -194,7 +194,7 @@ export default function Main({
             }
             setAgentRender(agentRenderUpdate);
 
-            setDistExample(await contract.agentDistanceFromStructure(0, 0));
+            setDistExample(await contract.agentDistanceFromStructure(3, 2));
 
             GameLoop({
               provider: localhostProvider,

@@ -1,6 +1,6 @@
 {
     "version": "2.0.0",
-    "tasks": [
+    /*"tasks": [
         {
             "type": "npm",
             "script": "start",
@@ -61,5 +61,5 @@
             "group": "none",
             "dependsOn": ["yarn: chain"],
         }
-    ]
+    ]*/
 }
