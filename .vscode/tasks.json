@@ -1,5 +1,6 @@
 {
     "version": "2.0.0",
+    /* opt-in by uncommenting: 
     "tasks": [
         {
             "type": "npm",
@@ -61,5 +62,5 @@
             "group": "none",
             "dependsOn": ["yarn: chain"],
         }
-    ]
+    ]*/
 }
