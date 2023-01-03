@@ -80,8 +80,16 @@ module.exports = {
         mnemonic: mnemonic(),
       },
     },
-    xdai: {
-      url: "https://rpc.xdaichain.com/",
+    gnosis: {
+      url: 'https://rpc.gnosischain.com/',
+      gasPrice: 1000000000,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
+    chiado: {
+      url: 'https://rpc.chiadochain.net',
+      gasPrice: 1000000000,
       accounts: {
         mnemonic: mnemonic(),
       },
