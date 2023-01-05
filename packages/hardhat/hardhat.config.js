@@ -13,7 +13,9 @@ const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 /*
       📡 This is where you configure your deploy configuration for 🏗 scaffold-eth
 
-      check out `packages/scripts/deploy.js` to customize your deployment
+      Scaffold-Eth uses `hardhat-deploy` to manage deployments (see the <./deploy> dir); 
+      and learn more at <https://www.npmjs.com/package/hardhat-deploy>.
+      Also there is deprecated <./scripts/deploy.js> left for reference.
 
       out of the box it will auto deploy anything in the `contracts` folder and named *.sol
       plus it will use *.args for constructor args
