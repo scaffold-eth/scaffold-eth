@@ -47,7 +47,7 @@ function Collection({ readContracts, mainnetProvider, blockExplorer, DEBUG, loca
 
   return (
     <>
-      <div style={{ width: "auto", margin: "auto", paddingBottom: 25, minHeight: 800 }}>
+      <div style={{ width: "auto", paddingBottom: 25, minHeight: 800, margin: 20, paddingTop: 20 }}>
         <div>
           <List
             grid={{

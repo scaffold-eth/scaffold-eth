@@ -2,7 +2,7 @@
 pragma solidity 0.8.17;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "hardhat/console.sol";
+// import "hardhat/console.sol";
 
 enum MoveDirection {
     Up,
@@ -41,13 +41,13 @@ abstract contract NFTContract {
 }
 
 contract EmotilonBoardGame is Ownable  {
-    event Restart(uint8 width, uint8 height);
-    event Register(address indexed txOrigin, address indexed msgSender, uint8 x, uint8 y, uint256 indexed nftId);
+    event Register(address indexed txOrigin, address indexed msgSender, uint8 x, uint8 y, uint256 indexed nftId, uint256 fighterStats, uint256 opponentStats);
     event Move(uint256 indexed nftId, address indexed txOrigin, uint8 x, uint8 y);
-    event GameOver(address indexed player);
     event CollectedTokens(address indexed player, uint256 indexed nftId, uint256 amount, uint8 x, uint8 y);
     event CollectedHealth(address indexed player, uint256 indexed nftId, uint256 amount, uint8 x, uint8 y);
     event NewDrop(bool indexed isHealth, uint256 amount, uint8 x, uint8 y);
+    event Fight(uint256 indexed fighterId, uint256 indexed opponentId, uint256 fighterStats, uint256 opponentStats);
+    event Kill(uint256 indexed fighterId, uint256 indexed opponentId, uint256 opponentCoins);
 
     struct Field {
         uint256 player1;
@@ -64,7 +64,6 @@ contract EmotilonBoardGame is Ownable  {
     NFTContract public nftContract;
     TokenContract public tokenContract;
 
-    bool public gameOn;
     uint public collectInterval;
 
     uint8 public constant width = 4;
@@ -75,7 +74,6 @@ contract EmotilonBoardGame is Ownable  {
     mapping(uint256 => uint256) public lastCollectAttempt;
     uint256[] public players;
 
-    uint256 public restartBlockNumber;
     bool public dropOnCollect;
     uint256 public attritionDivider = 50;
     uint256 public healthByMove = 50;
@@ -90,9 +88,6 @@ contract EmotilonBoardGame is Ownable  {
         collectInterval = _collectInterval;
         nftContract = NFTContract(_nftContractAddress);
         tokenContract = TokenContract(_tokenContractAddress);
-        restartBlockNumber = block.number;
-
-        emit Restart(width, height);
     }
 
     function setCollectInterval(uint256 _collectInterval) public onlyOwner {
@@ -103,42 +98,19 @@ contract EmotilonBoardGame is Ownable  {
         dropOnCollect = _dropOnCollect;
     }
 
-    function start() public onlyOwner {
-        gameOn = true;
-    }
-
-    function end() public onlyOwner {
-        gameOn = false;
-    }
-
-    function restart() public onlyOwner {
-        for (uint i=0; i<players.length; i++) {
-            Position memory playerPosition = yourPosition[players[i]];
-            worldMatrix[playerPosition.x][playerPosition.y] = Field(0,0,0,0);
-            yourPosition[players[i]] = Position(0,0);
-            lastCollectAttempt[players[i]] = 0;
-        }
-
-        delete players;
-
-        restartBlockNumber = block.number;
-
-        emit Restart(width, height);
-    }
-
     function getPlayers() public view returns(uint256[] memory) {
         return players;
     }
 
-    function register(uint256 nftId) public onlyNftOwner(nftId) {
-        require(gameOn, "TOO LATE");
+    function register(uint256 nftId) public {
+        require(address(nftContract) == msg.sender, "ONLY NFT CONTRACT");
         require(players.length <= 50, "MAX 50 PLAYERS REACHED");
 
         players.push(nftId);
 
         randomlyPlace(nftId);
 
-        emit Register(tx.origin, msg.sender, yourPosition[nftId].x, yourPosition[nftId].y, nftId);
+        emit Register(tx.origin, msg.sender, yourPosition[nftId].x, yourPosition[nftId].y, nftId, fighterStats(nftId), opponentStats(nftId));
     }
 
     function randomlyPlace(uint256 nftId) internal {
@@ -191,25 +163,37 @@ contract EmotilonBoardGame is Ownable  {
         Field memory field = worldMatrix[position.x][position.y];
         require(field.player1 > 0 && field.player2 > 0, "YOU ARE ALONE");
         require(!nftContract.dead(field.player1) && !nftContract.dead(field.player2), "DEAD PLAYER");
+        require(nftContract.ownerOf(field.player1) != nftContract.ownerOf(field.player2), "CAN'T FIGHT WITH YOURSELF");
 
-        NFTContract.StatsStruct memory fighterStats = nftContract.statsById(nftId);
-        NFTContract.StatsStruct memory opponentStats;
+        uint256 fighterTotalStats = fighterStats(nftId);
+        uint256 opponentTotalStats;
 
         uint256 opponentId;
 
         if (field.player1 == nftId) {
-            opponentStats = nftContract.statsById(field.player2);
+            opponentTotalStats = opponentStats(field.player2);
             opponentId = field.player2;
         } else {
-            opponentStats = nftContract.statsById(field.player1);
+            opponentTotalStats = opponentStats(field.player1);
             opponentId = field.player1;
         }
 
-        uint256 fighterTotalStats = uint256(fighterStats.strength) * 2 + uint256(fighterStats.speed) + uint256(fighterStats.evil);
-        uint256 opponentTotalStats = uint256(opponentStats.stamina) * 2 + uint256(opponentStats.skill) + uint256(opponentStats.iq);
+        require(nftContract.healthStatus(opponentId) > 0, "OPPONENT WITH NO HEALTH. FINISH HIM!");
 
         nftContract.decreaseHealth(nftId, opponentTotalStats);
         nftContract.decreaseHealth(opponentId, fighterTotalStats);
+
+        emit Fight(nftId, opponentId, fighterTotalStats, opponentTotalStats);
+    }
+
+    function fighterStats(uint256 nftId) public view returns(uint256) {
+        NFTContract.StatsStruct memory stats = nftContract.statsById(nftId);
+        return uint256(stats.strength) * 2 + uint256(stats.speed) + uint256(stats.evil);
+    }
+
+    function opponentStats(uint256 nftId) public view returns(uint256) {
+        NFTContract.StatsStruct memory stats = nftContract.statsById(nftId);
+        return uint256(stats.stamina) * 2 + uint256(stats.skill) + uint256(stats.iq);
     }
 
     function kill(uint256 nftId) public onlyNftOwner(nftId) {
@@ -221,6 +205,7 @@ contract EmotilonBoardGame is Ownable  {
         Field memory field = worldMatrix[position.x][position.y];
         require(field.player1 > 0 && field.player2 > 0, "YOU ARE ALONE");
         require(!nftContract.dead(field.player1) && !nftContract.dead(field.player2), "DEAD PLAYER");
+        require(nftContract.ownerOf(field.player1) != nftContract.ownerOf(field.player2), "CAN'T KILL EMOTILON OWNED");
 
         uint256 opponentId;
 
@@ -236,6 +221,8 @@ contract EmotilonBoardGame is Ownable  {
 
         uint256 opponentCoins = nftContract.coins(opponentId);
         nftContract.giveCoins(nftId, opponentCoins);
+
+        emit Kill(nftId, opponentId, opponentCoins);
     }
 
     function collectTokens(uint256 nftId) public onlyNftOwner(nftId) {
@@ -258,7 +245,6 @@ contract EmotilonBoardGame is Ownable  {
                 dropToken(amount);
             }
         }
-
     }
 
     function collectHealth(uint256 nftId) public onlyNftOwner(nftId) {

@@ -1,6 +1,5 @@
 import { BigInt, Address } from "@graphprotocol/graph-ts";
 import {
-  Restart,
   Register,
   Move,
   CollectedTokens,
@@ -8,32 +7,6 @@ import {
   NewDrop,
 } from "../generated/EmotilonBoardGame/EmotilonBoardGame";
 import { Player, Token, Health } from "../generated/schema";
-
-export function handleRestart(event: Restart): void {
-  // TODO
-  /*
-  for (let i=0; i<event.params.width; i++) {
-    for (let j=0; j<event.params.height; j++) {
-      const fieldId = i.toString() + "-" + j.toString();
-      let field = WorldMatrix.load(fieldId);
-      if (field === null) {
-        field = new WorldMatrix(fieldId);
-        field.x = i;
-        field.y = j;
-        field.tokenAmountToCollect = BigInt.fromI32(0);
-        field.healthAmountToCollect = BigInt.fromI32(0);
-      } else {
-        // clean player data
-        field.player1 = null;
-        field.player2 = null;
-        field.tokenAmountToCollect = BigInt.fromI32(0);
-        field.healthAmountToCollect = BigInt.fromI32(0);
-      }
-      field.save();
-    }
-  }
-  */
-}
 
 export function handleRegister(event: Register): void {
   let playerString = event.params.nftId.toHexString();
@@ -49,6 +22,8 @@ export function handleRegister(event: Register): void {
   player.x = event.params.x;
   player.y = event.params.y;
   player.coins = BigInt.fromI32(0);
+  player.fighterStats = event.params.fighterStats;
+  player.opponentStats = event.params.opponentStats;
   player.createdAt = event.block.timestamp;
   player.lastSeenAt = event.block.timestamp;
   player.transactionHash = event.transaction.hash.toHex();

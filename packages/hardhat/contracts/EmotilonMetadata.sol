@@ -27,6 +27,8 @@ library EmotilonMetadata {
     string memory name = string.concat('Emotilon #', id.toString());
     string memory image = Base64.encode(bytes(svg));
 
+    // TODO: add attributes
+
     return
       string.concat(
         'data:application/json;base64,',
@@ -37,7 +39,7 @@ library EmotilonMetadata {
                       name,
                       '", "description":"',
                       name,
-                      '", "external_url":"https://www.roboto-svg.com/roboto/',
+                      '", "external_url":"https://www.emotilon.com/emotilon/',
                       id.toString(),
                       '", "attributes": [{"trait_type": "Eyes Color", "value": "#',
                       'FFFFFF',
@@ -82,13 +84,17 @@ library EmotilonMetadata {
     ];
   }
 
-  function renderEmotilonById(uint256 id, bytes32 genes, uint256 healthStatus) public pure returns (string memory) {
+  function renderEmotilonByGenes(bytes32 genes, uint256 healthStatus, bool dead) public pure returns (string memory) {
 
     string memory mouth = EmotilonRenderMouth.render(uint8(genes[8]), uint8(genes[9]), healthStatus);
 
     string memory eyes = EmotilonRenderEyes.render(uint8(genes[10]), uint8(genes[11]), healthStatus);
 
     string memory color = colors()[uint8(genes[12]) % 7];
+
+    if (dead) {
+      color = 'bd1613';
+    }
 
     string memory render = string.concat(
       '<g>',
@@ -101,15 +107,9 @@ library EmotilonMetadata {
   }
 
   function breedingGenes(uint256 fatherId, uint256 motherId, bytes32 fatherGenes, bytes32 motherGenes) public view returns (bytes32) {
-    bytes32 pseudoRandomFather = keccak256(abi.encodePacked( fatherId, motherId, blockhash(block.number-1), msg.sender, address(this) ));
-    bytes32 pseudoRandomMother = keccak256(abi.encodePacked( motherId, fatherId, blockhash(block.number-1), msg.sender, address(this) ));
-
     bytes32 newGenes = keccak256(abi.encodePacked( blockhash(block.number-1), msg.sender, address(this), fatherId, motherId ));
 
     bytes memory newGenesArray = abi.encodePacked(newGenes);
-
-    StatsStruct memory fatherStats = statsByGenes(fatherGenes);
-    StatsStruct memory motherStats = statsByGenes(motherGenes);
 
     for (uint8 i = 0; i < 8; i++) {
       uint8 newGen = uint8((uint16(uint8(fatherGenes[i])) + uint16(uint8(motherGenes[i]))) / 2);

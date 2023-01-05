@@ -9,11 +9,15 @@ import './EmotilonMetadata.sol';
 
 abstract contract NFTContract {
   function renderTokenById(uint256 id) external virtual view returns (string memory);
-  function transferFrom(address from, address to, uint256 id) external virtual;
 }
 
 abstract contract EmoticoinContract {
-  function transferFrom(address from, address to, uint256 amount) external virtual returns (bool) ;
+  function balanceOf(address account) public view virtual returns (uint256);
+  function burn(address from, uint256 amount) virtual public;
+}
+
+abstract contract EmotilonBoardGameContract {
+  function register(uint256 nftId) virtual public;
 }
 
 error NftAlreadyExists();
@@ -30,6 +34,7 @@ contract Emotilon is ERC721Enumerable, IERC721Receiver, Ownable, AccessControl {
   uint256 public currentId;
 
   EmoticoinContract emoticoinContract;
+  EmotilonBoardGameContract emotilonBoardGameContract;
 
   NFTContract[] public nftContracts;
   mapping(address => bool) nftContractsAvailables;
@@ -54,8 +59,8 @@ contract Emotilon is ERC721Enumerable, IERC721Receiver, Ownable, AccessControl {
     emoticoinContract = EmoticoinContract(emoticoin);
   }
 
-  function contractURI() public pure returns (string memory) {
-      return "https://www.roboto-svg.com/roboto-metadata.json";
+  function setEmotilonBoardGameContract(address contractAddress) public onlyOwner {
+    emotilonBoardGameContract = EmotilonBoardGameContract(contractAddress);
   }
 
   function addNft(address nft) public onlyOwner {
@@ -80,29 +85,42 @@ contract Emotilon is ERC721Enumerable, IERC721Receiver, Ownable, AccessControl {
   }
 
   function mintItem() public returns (uint256) {
-      currentId++;
+    currentId++;
 
-      _mint(msg.sender, currentId);
+    _mint(msg.sender, currentId);
 
-      genes[currentId] = keccak256(abi.encodePacked( currentId, blockhash(block.number-1), msg.sender, address(this) ));
-      healthTimestamp[currentId] = block.timestamp;
+    genes[currentId] = keccak256(abi.encodePacked( currentId, blockhash(block.number-1), msg.sender, address(this) ));
+    healthTimestamp[currentId] = block.timestamp;
 
-      return currentId;
+    emotilonBoardGameContract.register(currentId);
+
+    return currentId;
   }
 
   function breeding(uint256 fatherId, uint256 motherId) public payable returns (uint256) {
-      // TODO: check owner
-      // TODO: check breedingCount
-      // TODO: price?
+    // TODO: check breedingCount
+    // TODO: check same board position
 
-      currentId++;
+    require(ownerOf(fatherId) == msg.sender && ownerOf(motherId) == msg.sender, "ONLY SAME OWNER BREEDING ALLOWED");
+    require(healthStatus(fatherId) > 0 && healthStatus(motherId) > 0, "NO HEALTH");
 
-      _mint(msg.sender, currentId);
+    uint256 totalCoins = coins[fatherId] + coins[motherId];
 
-      genes[currentId] = EmotilonMetadata.breedingGenes(fatherId, motherId, genes[fatherId], genes[motherId]);
-      healthTimestamp[currentId] = block.timestamp;
+    require(emoticoinContract.balanceOf(msg.sender) >= totalCoins, "BREEDING COSTS FATHER COINS + MOTHER COINS");
 
-      return currentId;
+    emoticoinContract.burn(msg.sender, totalCoins);
+
+    currentId++;
+
+    _mint(msg.sender, currentId);
+
+    genes[currentId] = EmotilonMetadata.breedingGenes(fatherId, motherId, genes[fatherId], genes[motherId]);
+    healthTimestamp[currentId] = block.timestamp;
+    coins[currentId] = totalCoins;
+
+    emotilonBoardGameContract.register(currentId);
+
+    return currentId;
   }
 
   function giveCoins(uint256 id, uint256 amount) public onlyRole(COINS_ROLE) {
@@ -167,7 +185,7 @@ contract Emotilon is ERC721Enumerable, IERC721Receiver, Ownable, AccessControl {
   }
 
   function renderEmotilonById(uint256 id) public view returns (string memory) {
-    return EmotilonMetadata.renderEmotilonById(id, genes[id], healthStatus(id));
+    return EmotilonMetadata.renderEmotilonByGenes(genes[id], healthStatus(id), dead[id]);
   }
 
   // Visibility is `public` to enable it being called by other contracts for composition.

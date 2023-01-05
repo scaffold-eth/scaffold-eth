@@ -57,6 +57,7 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   });
 
   const gameAddress = game.address;
+  const emotilonAddress = emotilon.address;
 
   const emoticoinContract = await ethers.getContract("Emoticoin", deployer);
   const emotilonContract = await ethers.getContract("Emotilon", deployer);
@@ -64,6 +65,11 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   await emoticoinContract.grantRole(
     ethers.utils.keccak256(ethers.utils.toUtf8Bytes("MINTER_ROLE")),
     gameAddress
+  );
+
+  await emoticoinContract.grantRole(
+    ethers.utils.keccak256(ethers.utils.toUtf8Bytes("BURNER_ROLE")),
+    emotilonAddress
   );
 
   await emotilonContract.grantRole(
@@ -81,11 +87,14 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
     gameAddress
   );
 
+  await emotilonContract.setEmotilonBoardGameContract(gameAddress);
+
   const GameContract = await ethers.getContract("EmotilonBoardGame", deployer);
 
-  await GameContract.start();
-
   await GameContract.setDropOnCollect(true);
+
+  await GameContract.shufflePrizes(1, 1);
+  await GameContract.shufflePrizes(2, 2);
 
   await GameContract.transferOwnership(
     "0x5dCb5f4F39Caa6Ca25380cfc42280330b49d3c93"

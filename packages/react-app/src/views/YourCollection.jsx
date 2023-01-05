@@ -11,9 +11,10 @@ function YourCollection({
   loadingYourNfts,
 }) {
   return (
-    <>
+    <div style={{ width: "auto", paddingBottom: 25, minHeight: 800, margin: 20 }}>
       <div style={{ maxWidth: 515, margin: "0 auto" }}>
         <Button
+          style={{ width: 300, height: 40, fontSize: 20 }}
           type="primary"
           onClick={async () => {
             try {
@@ -28,7 +29,7 @@ function YourCollection({
           MINT
         </Button>
       </div>
-      <div style={{ width: "auto", margin: "auto", paddingBottom: 25, minHeight: 800 }}>
+      <div style={{ width: "auto", margin: "auto", paddingBottom: 25, minHeight: 800, paddingTop: 20 }}>
         <List
           grid={{
             gutter: 16,
@@ -62,7 +63,7 @@ function YourCollection({
           }}
         />
       </div>
-    </>
+    </div>
   );
 }
 

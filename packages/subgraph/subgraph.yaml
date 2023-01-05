@@ -6,7 +6,7 @@ dataSources:
     name: EmotilonBoardGame
     network: localhost
     source:
-      address: "0x63fea6E447F120B8Faf85B53cdaD8348e645D80E"
+      address: "0x5e6CB7E728E1C320855587E1D9C6F7972ebdD6D5"
       abi: EmotilonBoardGame
       startBlock: 1
     mapping:
@@ -21,9 +21,7 @@ dataSources:
         - name: EmotilonBoardGame
           file: ./abis/localhost_EmotilonBoardGame.json
       eventHandlers:
-        - event: Restart(uint8,uint8)
-          handler: handleRestart
-        - event: Register(indexed address,indexed address,uint8,uint8,indexed uint256)
+        - event: Register(indexed address,indexed address,uint8,uint8,indexed uint256,uint256,uint256)
           handler: handleRegister
         - event: Move(indexed uint256,indexed address,uint8,uint8)
           handler: handleMove

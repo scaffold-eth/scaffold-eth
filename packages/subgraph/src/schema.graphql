@@ -5,6 +5,8 @@ type Player @entity {
   address: Bytes!
   nftId: BigInt!
   coins: BigInt!
+  fighterStats: BigInt!
+  opponentStats: BigInt!
   createdAt: BigInt!
   lastSeenAt: BigInt!
   transactionHash: String!

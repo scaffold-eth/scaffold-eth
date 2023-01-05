@@ -23,7 +23,8 @@ function Board({
   const squareW = s;
   const squareH = s;
 
-  const [currentPlayer, setcurrentPlayer] = useState();
+  const [currentPlayer, setCurrentPlayer] = useState();
+  const [currentPlayerPosition, setCurrentPlayerPosition] = useState();
   const [page, setPage] = useState(1);
   const [activePlayer, setActivePlayer] = useState();
   const [playerData, setPlayerData] = useState();
@@ -87,7 +88,13 @@ function Board({
   if (DEBUG) console.log("worldHealthData: ", worldHealthData);
 
   useEffect(() => {
-    if (address && worldPlayerData.data.players.length > 0) {
+    if (
+      address &&
+      worldPlayerData &&
+      worldPlayerData.data &&
+      worldPlayerData.data.players &&
+      worldPlayerData.data.players.length > 0
+    ) {
       let active = false;
       for (let p in worldPlayerData.data.players) {
         if (worldPlayerData.data.players[p].address.toLowerCase() === address.toLowerCase()) {
@@ -104,44 +111,50 @@ function Board({
         console.log("PARSE PLAYERS:::", worldPlayerData);
         let playerInfo = {};
         let playerField = {};
-        const playersData = worldPlayerData.data.players;
-        for (let p in playersData) {
-          const currentPosition = playersData[p];
-          console.log("loading info for ", currentPosition);
-          const tokenURI = await readContracts.EmotilonBoardGame.tokenURIOf(currentPosition.nftId);
-          const jsonManifestString = atob(tokenURI.substring(29));
-          const jsonManifest = JSON.parse(jsonManifestString);
-          const info = {
-            // health: parseInt(currentPosition.player.health),
-            position: { x: currentPosition.x, y: currentPosition.y },
-            //contract: await readContracts.Game.yourContract(worldPlayerData.data[p]),
-            image: jsonManifest.image,
-            // gold: parseInt(currentPosition.player.token),
-            address: currentPosition.address,
-            nftId: currentPosition.nftId,
-            health: 0,
-            gold: 0,
-          };
-          if (playerField[currentPosition.x]) {
-            if (playerField[currentPosition.x][currentPosition.y]) {
-              playerField[currentPosition.x][currentPosition.y] += 1;
+        if (worldPlayerData && worldPlayerData.data && worldPlayerData.data.players) {
+          const playersData = worldPlayerData.data.players;
+          for (let p in playersData) {
+            const currentPosition = playersData[p];
+            console.log("loading info for ", currentPosition);
+            const tokenURI = await readContracts.EmotilonBoardGame.tokenURIOf(currentPosition.nftId);
+            const healthStatus = await readContracts.Emotilon.healthStatus(currentPosition.nftId);
+            const coins = await readContracts.Emotilon.coins(currentPosition.nftId);
+            const dead = await readContracts.Emotilon.dead(currentPosition.nftId);
+            const jsonManifestString = atob(tokenURI.substring(29));
+            const jsonManifest = JSON.parse(jsonManifestString);
+            const info = {
+              // health: parseInt(currentPosition.player.health),
+              position: { x: currentPosition.x, y: currentPosition.y },
+              //contract: await readContracts.Game.yourContract(worldPlayerData.data[p]),
+              image: jsonManifest.image,
+              // gold: parseInt(currentPosition.player.token),
+              address: currentPosition.address,
+              nftId: currentPosition.nftId,
+              health: healthStatus.toNumber(),
+              gold: coins.toNumber(),
+              dead: dead,
+            };
+            if (playerField[currentPosition.x]) {
+              if (playerField[currentPosition.x][currentPosition.y]) {
+                playerField[currentPosition.x][currentPosition.y] += 1;
+              } else {
+                playerField[currentPosition.x][currentPosition.y] = 1;
+              }
             } else {
+              playerField[currentPosition.x] = {};
               playerField[currentPosition.x][currentPosition.y] = 1;
             }
-          } else {
-            playerField[currentPosition.x] = {};
-            playerField[currentPosition.x][currentPosition.y] = 1;
+            playerInfo[currentPosition.nftId] = info;
+            if (activeNftId && currentPosition.nftId == activeNftId) {
+              console.log("current player: ", info);
+              setCurrentPlayer(info);
+            }
           }
-          playerInfo[currentPosition.nftId] = info;
-          if (activeNftId && currentPosition.nftId == activeNftId) {
-            console.log("current player: ", info);
-            setcurrentPlayer(info);
-          }
+          console.log("final player info", playerInfo);
+          setPlayerData(playerInfo);
+          console.log("playerField: ", playerField);
+          setPlayerFieldCount(playerField);
         }
-        console.log("final player info", playerInfo);
-        setPlayerData(playerInfo);
-        console.log("playerField: ", playerField);
-        setPlayerFieldCount(playerField);
       }
     };
     updatePlayersData();
@@ -305,6 +318,57 @@ function Board({
     }
   }, [squareH, squareW, worldTokenData.data, worldHealthData.data, playerData, playerFieldCount]);
 
+  useEffect(() => {
+    console.log("Getting current player position data...", currentPlayer);
+    if (currentPlayer) {
+      const x = currentPlayer.position.x;
+      const y = currentPlayer.position.y;
+      let hasToken = false;
+      let hasHealth = false;
+      if (worldTokenData.data) {
+        const tokenIndex = worldTokenData.data.tokens.findIndex(data => data.x === x && data.y === y);
+        if (tokenIndex >= 0) {
+          hasToken = true;
+        }
+      }
+      if (worldHealthData.data) {
+        const healthIndex = worldHealthData.data.healths.findIndex(data => data.x === x && data.y === y);
+        if (healthIndex >= 0) {
+          hasHealth = true;
+        }
+      }
+      let hasAnotherNft = false;
+      let sameOwner = false;
+      let dead = false;
+      let health = 0;
+      let otherNftId;
+      if (playerData) {
+        const playerDataArray = Object.values(playerData);
+        const nftIndex = playerDataArray.findIndex(
+          data => data.position.x === x && data.position.y === y && data.nftId !== currentPlayer.nftId,
+        );
+        if (nftIndex >= 0) {
+          hasAnotherNft = true;
+          sameOwner = playerDataArray[nftIndex].address === currentPlayer.address;
+          dead = playerDataArray[nftIndex].dead;
+          health = playerDataArray[nftIndex].health;
+          otherNftId = playerDataArray[nftIndex].nftId;
+        }
+      }
+      const currentPlayerPositionUpdate = {
+        hasToken: hasToken,
+        hasHealth: hasHealth,
+        hasAnotherNft: hasAnotherNft,
+        sameOwner: sameOwner,
+        dead: dead,
+        health: health,
+        otherNftId: otherNftId,
+      };
+      if (DEBUG) console.log("currentPlayerPositionUpdate: ", currentPlayerPositionUpdate);
+      setCurrentPlayerPosition(currentPlayerPositionUpdate);
+    }
+  }, [DEBUG, worldTokenData.data, worldHealthData.data, playerData, currentPlayer]);
+
   const rankingColumns = [
     {
       title: "Loogie",
@@ -357,20 +421,24 @@ function Board({
           />
         </Card>
       </div>
-      <div style={{ position: "absolute", right: 50, top: 150, width: 600 }}>
+      <div style={{ position: "absolute", right: 50, top: 100, width: 620 }}>
         {activePlayer && activeNftId ? (
           <div style={{ display: "flex" }}>
             {currentPlayer ? (
               <>
                 <div style={{ marginRight: 30, paddingTop: 5 }}>
                   <div>
-                    <span style={{ margin: 16 }}>{currentPlayer.gold}🏵</span>
-                    <span style={{ margin: 16, opacity: 0.77 }}>{currentPlayer.health}❤️</span>
+                    <span style={{ margin: 16, minWidth: 65, margin: 0, display: "inline-block" }}>
+                      {currentPlayer.gold}🏵
+                    </span>
+                    <span style={{ margin: 16, opacity: 0.77, minWidth: 65, margin: 0, display: "inline-block" }}>
+                      {currentPlayer.health}❤️
+                    </span>
                   </div>
-                  <div style={{ overflow: "hidden", width: 130, height: 130 }}>
+                  <div style={{ width: 130, height: 130 }}>
                     <img
                       src={currentPlayer.image}
-                      alt="Current Loogie"
+                      alt="Current Emotilon"
                       style={{
                         transform: "scale(0.7,0.7)",
                         width: 400,
@@ -390,15 +458,14 @@ function Board({
                   </div>
                 </div>
                 <div style={{ width: 400 }}>
-                  <Joystick writeContracts={writeContracts} tx={tx} nftId={currentPlayer.nftId} />
-                  <Button
-                    onClick={() => {
-                      setActiveNftId(null);
-                      setcurrentPlayer(null);
-                    }}
-                  >
-                    Switch to another Emotilon
-                  </Button>
+                  <Joystick
+                    writeContracts={writeContracts}
+                    tx={tx}
+                    nftId={currentPlayer.nftId}
+                    currentPlayerPosition={currentPlayerPosition}
+                    setActiveNftId={setActiveNftId}
+                    setCurrentPlayer={setCurrentPlayer}
+                  />
                 </div>
               </>
             ) : (
@@ -409,7 +476,7 @@ function Board({
           <div>
             <div style={{ padding: 4 }}>
               {loadingYourNfts || (yourNfts && yourNfts.length > 0) ? (
-                <div id="your-loogies" style={{ paddingTop: 20 }}>
+                <div id="your-emotilons">
                   <div>
                     <List
                       grid={{
@@ -449,25 +516,13 @@ function Board({
                               title={
                                 <div>
                                   <span style={{ fontSize: 16, marginRight: 8 }}>{item.name}</span>
-                                  {playerData && playerData[id] ? (
-                                    <Button
-                                      onClick={() => {
-                                        setActiveNftId(id);
-                                      }}
-                                    >
-                                      Select
-                                    </Button>
-                                  ) : (
-                                    <Button
-                                      onClick={async () => {
-                                        tx(writeContracts.EmotilonBoardGame.register(id), function (transaction) {
-                                          setActiveNftId(id);
-                                        });
-                                      }}
-                                    >
-                                      Register
-                                    </Button>
-                                  )}
+                                  <Button
+                                    onClick={() => {
+                                      setActiveNftId(id);
+                                    }}
+                                  >
+                                    Select
+                                  </Button>
                                 </div>
                               }
                             >
@@ -493,25 +548,28 @@ function Board({
                     }}
                     title={
                       <div>
-                        <span style={{ fontSize: 18, marginRight: 8, fontWeight: "bold" }}>
-                          Do you need some FancyLoogies?
-                        </span>
+                        <span style={{ fontSize: 18, marginRight: 8, fontWeight: "bold" }}>No Emotilons!</span>
                       </div>
                     }
                   >
                     <div>
+                      <p>You need at least one Emotilon to play.</p>
                       <p>
-                        You can mint <strong>OptmisticLoogies</strong> and <strong>FancyLoogies</strong> at
-                      </p>
-                      <p>
-                        <a
-                          style={{ fontSize: 22 }}
-                          href="https://www.fancyloogies.com"
-                          target="_blank"
-                          rel="noreferrer"
+                        <Button
+                          style={{ width: 300, height: 40, fontSize: 20 }}
+                          type="primary"
+                          onClick={async () => {
+                            try {
+                              tx(writeContracts.Emotilon.mintItem({ gasLimit: 400000 }), function (transaction) {
+                                // TODO
+                              });
+                            } catch (e) {
+                              console.log("mint failed", e);
+                            }
+                          }}
                         >
-                          www.fancyloogies.com
-                        </a>
+                          MINT
+                        </Button>
                       </p>
                     </div>
                   </Card>
