@@ -50,6 +50,6 @@
     "generate": "hardhat generate",
     "account": "hardhat account",
     "verify": "hardhat verify",
-    "upgrade": "node scripts/upgrade.js"
+    "contracts-upgrade": "node scripts/upgrade.js"
   }
 }
