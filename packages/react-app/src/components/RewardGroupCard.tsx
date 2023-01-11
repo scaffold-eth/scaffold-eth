@@ -162,6 +162,7 @@ export default function RewardGroupCard(props: any) {
                   paddingBottom: '5px !important',
                   borderBottomLeftRadius: '5px !important',
                   borderBottomRightRadius: '5px !important',
+                  overflow: 'scroll',
                 }}
               >
                 <List sx={{ backgroundColor: 'white' }}>
