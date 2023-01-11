@@ -10,22 +10,25 @@ contract YourContract is UUPSUpgradeable, OwnableUpgradeable {
 
   event SetPurpose(address sender, string purpose);
 
-  string public purpose;
+  address king;
+  uint public prize;
 
   function initialize() public initializer {
     __Ownable_init();
-    purpose = "Building Unstoppable Apps";
+    king = msg.sender;
+    prize = msg.value;
   }
 
-  function setPurpose(string memory newPurpose) public payable {
-      purpose = newPurpose;
-      console.log(msg.sender,"set purpose to",purpose);
-      emit SetPurpose(msg.sender, purpose);
+  receive() external payable {
+    require(msg.value >= prize || msg.sender == owner);
+    payable(king).transfer(msg.value);
+    king = msg.sender;
+    prize = msg.value;
   }
 
-  // to support receiving ETH by default
-  receive() external payable {}
-  fallback() external payable {}
+  function _king() public view returns (address) {
+    return king;
+  }
 
   function version() public pure returns(string memory) {
     return "v1.0.0";

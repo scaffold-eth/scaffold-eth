@@ -1,7 +1,7 @@
 const { ethers, upgrades } = require("hardhat");
 
 // Plug in the address of the contract you want to upgrade
-const YourContractAddress = "0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82";
+const YourContractAddress = "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0";
 
 async function main() {
   const YourContractV2Factory = await ethers.getContractFactory(
