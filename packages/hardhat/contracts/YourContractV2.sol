@@ -4,33 +4,41 @@ pragma solidity >=0.8.0 <0.9.0;
 import "hardhat/console.sol";
 import '@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol';
 import '@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol';
+
+import './IWETH9.sol';
 // https://docs.openzeppelin.com/contracts/3.x/api/proxy#UpgradeableProxy
 
 contract YourContractV2 is UUPSUpgradeable, OwnableUpgradeable {
 
   event SetPurpose(address sender, string purpose);
 
-  // States are preserved as a part of an upgrade. 
-  // Function implmeentations change, but this should be whatever it is you set previously.
-  string public purpose;
+  address king;
+  uint public prize;
 
-  function initialize() public initializer {
-    // This doesn't actually do anything. 
-    // Changing the initialization implementation of a contract that has already been initialized doesn't really make sense.
-    // As a result, purpose should still be "Building Unstoppable Apps", or whatever it was changed to from V1.
+  function initialize() public payable initializer {
     __Ownable_init();
-    purpose = "Building Stoppable Apps";
+    king = msg.sender;
+    prize = msg.value;
   }
 
-  function setPurpose(string memory newPurpose) public payable {
-      purpose = newPurpose;
-      console.log(msg.sender,"set purpose to",purpose);
-      emit SetPurpose(msg.sender, purpose);
+  receive() external payable {
+    require(msg.value >= prize || msg.sender == owner());
+    // In order to fix the issue, we use a low-level call to send the prize to the king.
+    // Generally speaking, pull-over-push designs should be favored, where the old king should be able to call a withdraw function to get funds
+    // However, 
+    bool success = payable(king).send(prize) ;
+    if (!success) {
+      IWETH9 weth = IWETH9(0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6);
+      weth.deposit{value: prize}();
+      weth.transfer(king, prize);
+    }
+    king = msg.sender;
+    prize = msg.value;
   }
 
-  // to support receiving ETH by default
-  receive() external payable {}
-  fallback() external payable {}
+  function _king() public view returns (address) {
+    return king;
+  }
 
   function version() public pure returns(string memory) {
     return "v2.0.0";

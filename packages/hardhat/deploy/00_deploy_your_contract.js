@@ -27,10 +27,10 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
     waitConfirmations: 5,
   });
 
-  const YourContract = await ethers.getContractFactory("YourContract");
-  const yourcontract = await upgrades.deployProxy(YourContract, []);
-  await yourcontract.deployed;
-  console.log("YourContract Proxy deployed to:", yourcontract.address);
+  const YourContractFactory = await ethers.getContractFactory("YourContract");
+  const YourContract = await upgrades.deployProxy(YourContractFactory, []);
+  await YourContract.deployed;
+  console.log("YourContract Proxy deployed to:", YourContract.address);
 
   /*  await YourContract.setPurpose("Hello");
   

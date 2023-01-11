@@ -13,14 +13,19 @@ contract YourContract is UUPSUpgradeable, OwnableUpgradeable {
   address king;
   uint public prize;
 
-  function initialize() public initializer {
+  function initialize() public payable initializer {
     __Ownable_init();
     king = msg.sender;
     prize = msg.value;
   }
 
   receive() external payable {
-    require(msg.value >= prize || msg.sender == owner);
+    // This require statement is already a huge issue: msg.sender can just be the owner
+    // and the owner can literally reset everything by sending any arbitrary amount (including zero).
+    require(msg.value >= prize || msg.sender == owner());
+    // The real issue though is here, where the recipient of the transfer can be a contract.
+    // In the case that a contract is the recipient, it can revert the transfer and DoS the game.
+    // See Attacker.sol for an example implementation of this exploit.
     payable(king).transfer(msg.value);
     king = msg.sender;
     prize = msg.value;
