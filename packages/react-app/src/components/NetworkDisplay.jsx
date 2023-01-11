@@ -52,7 +52,7 @@ function NetworkDisplay({
                         blockExplorerUrls: [targetNetwork.blockExplorer],
                       },
                     ];
-                    console.log("data", data);
+                    //console.log("data", data);
 
                     let switchTx;
                     // https://docs.metamask.io/guide/rpc-api.html#other-rpc-methods
@@ -96,7 +96,7 @@ function NetworkDisplay({
     );
   }
 
-  console.log({ networkDisplay });
+  //console.log({ networkDisplay });
 
   return networkDisplay;
 }

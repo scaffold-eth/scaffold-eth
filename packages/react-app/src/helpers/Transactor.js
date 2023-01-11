@@ -9,7 +9,7 @@ const { ethers } = require("ethers");
 // https://docs.blocknative.com/notify
 const callbacks = {};
 
-const DEBUG = true;
+const DEBUG = false;
 
 export default function Transactor(providerOrSigner, gasPrice, etherscan, SILENT) {
   if (typeof providerOrSigner !== "undefined") {
@@ -28,7 +28,7 @@ export default function Transactor(providerOrSigner, gasPrice, etherscan, SILENT
         network = await providerOrSigner.getNetwork();
       }
 
-      console.log("network", network);
+      if (DEBUG) console.log("network", network);
       var options = null;
       var notify = null;
       options = {

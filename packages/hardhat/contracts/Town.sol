@@ -5,41 +5,65 @@ import "hardhat/console.sol";
 import "@openzeppelin/contracts/access/Ownable.sol"; 
 // https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol
 
-contract YourContract is Ownable {
+contract Town is Ownable {
 
   //idk it's a map of 0,0 to 65535,65535
   //it'll rollover if we use unchecked math 
 
-  event StructureRender(address owner, uint16 x, uint16 y, string emoji);
-  event AgentRender(address owner, uint16 x, uint16 y, int8 dx, int8 dy, string emoji, uint64 stopAfter, uint64 startTime);
+  event StructureRender(uint256 id, address owner, uint16 x, uint16 y, string emoji, uint64 startTime);
+  event AgentRender(uint256 id, address owner, uint16 x, uint16 y, int8 dx, int8 dy, string emoji, uint64 stopAfter, uint64 startTime);
 
-  uint256 public someAgentId;
 
   constructor() payable {
-    structure(2000, 20000, unicode"🏢");
-    agent(3000, 20000, -127, 0, unicode"🚗", 10000);
-    someAgentId = agent(4000, 40000, 77, 0, unicode"👉", 10000);
+
   }
 
   struct Structure {
+    address owner;
     uint16 x;
     uint16 y;
-    string emoji;
+  }
+/*
+  function stringToBytes(string memory s) public pure returns (bytes4){
+    bytes memory temp = bytes(s);
+    return bytes4(temp[0]) | bytes4(temp[1]) << 8 | bytes4(temp[2]) << 16 | bytes4(temp[3]) << 24;
   }
 
+  function bytesToString(bytes4 b) public pure returns (string memory){
+    bytes memory temp = new bytes(4);
+    temp[0] = b[0];
+    temp[1] = b[1];
+    temp[2] = b[2];
+    temp[3] = b[3];
+    return string(temp);
+  }
+*/
   Structure[] public structures;
 
-  function structure(uint16 x, uint16 y, string memory emoji) public onlyOwner returns (uint256) {
+  function structure(address owner, uint16 x, uint16 y, string memory emoji) internal returns (uint256) {
+      
+      emit StructureRender(structures.length,owner, x, y, emoji, uint64(block.timestamp));
+
       structures.push(Structure({
+        owner: owner,
         x: x, 
-        y: y, 
-        emoji: emoji
+        y: y
       }));
-      emit StructureRender(msg.sender, x, y, emoji);
+      
       return structures.length - 1;
   }
 
+  function structureUpdate(uint256 structureId, uint16 x, uint16 y, string memory emoji) internal {
+    Structure storage theStructure = structures[structureId];
+    //require(theAgent.owner == msg.sender, "You do not own this agent");
+    theStructure.x = x;
+    theStructure.y = y;
+    
+    emit StructureRender(structureId, theStructure.owner, theStructure.x, theStructure.y, emoji, uint64(block.timestamp));
+  }
+
   struct Agent {
+    address owner;
     uint16 x;
     uint16 y;
     int8 dx;
@@ -51,8 +75,12 @@ contract YourContract is Ownable {
 
   Agent[] public agents;
 
-  function agent(uint16 x, uint16 y, int8 dx, int8 dy, string memory emoji, uint64 stopAfter) public onlyOwner returns (uint256) {
+  function agent(address owner, uint16 x, uint16 y, int8 dx, int8 dy, string memory emoji, uint64 stopAfter) internal returns (uint256) {
+
+      emit AgentRender(agents.length, owner, x, y, dx, dy, emoji, stopAfter, uint64(block.timestamp));
+
       agents.push(Agent({
+        owner:owner,
         x: x, 
         y: y, 
         dx: dx, 
@@ -61,8 +89,22 @@ contract YourContract is Ownable {
         stopAfter: stopAfter, 
         startTime: uint64(block.timestamp)
       }));
-      emit AgentRender(msg.sender, x, y, dx, dy, emoji, stopAfter, uint64(block.timestamp));
+      
       return agents.length - 1;
+  }
+
+  function agentUpdate(uint256 agentId, uint16 x, uint16 y, int8 dx, int8 dy, string memory emoji, uint64 stopAfter) internal {
+    Agent storage theAgent = agents[agentId];
+    //require(theAgent.owner == msg.sender, "You do not own this agent");
+    theAgent.x = x;
+    theAgent.y = y;
+    theAgent.dx = dx;
+    theAgent.dy = dy;
+    theAgent.emoji = emoji;
+    theAgent.stopAfter = stopAfter;
+    theAgent.startTime = uint64(block.timestamp);
+
+    emit AgentRender(agentId, theAgent.owner, x, y, dx, dy, emoji, stopAfter, uint64(block.timestamp));
   }
 
   function agentLocation(uint256 agentId) public view returns (uint16, uint16) {
@@ -104,6 +146,7 @@ contract YourContract is Ownable {
   }
 
   function agentDistanceFromStructure(uint256 agentId, uint256 structureId) public view returns (uint256) {
+    //require(agentId < agents.length, "Agent does not exist");
     uint16 x;
     uint16 y;
     (x,y) = agentLocation(agentId);
@@ -111,6 +154,7 @@ contract YourContract is Ownable {
   }
 
   function distanceFromStructure(uint16 x, uint16 y, uint256 structureId) public view returns (uint256) {
+    //require(structureId < structures.length, "Structure does not exist");
     Structure memory theStructure = structures[structureId];
     return distance(x, y, theStructure.x, theStructure.y);
   }
@@ -146,7 +190,21 @@ contract YourContract is Ownable {
     } else if (y != 0) {
         z = 1;
     }
-}
+  }
+
+  function getNextRandom(uint256 index, bytes32 currentSeed) internal pure returns (uint256,bytes32,uint16) {
+    bytes2 firstBytes = bytes2(currentSeed[index++]) >> 8;
+    if(index>=32) {
+        currentSeed = keccak256(abi.encodePacked(currentSeed));
+        index=0;
+    }
+    bytes2 r =  firstBytes | ( bytes2(currentSeed[index++]) );
+    if(index>=32) {
+        currentSeed = keccak256(abi.encodePacked(currentSeed));
+        index=0;
+    }
+    return (index,currentSeed,uint16(r));
+  }
 
   // to support receiving ETH by default
   receive() external payable {}

@@ -35,8 +35,6 @@ import { getRPCPollTime, Transactor, Web3ModalSetup } from "./helpers";
 import { Home, ExampleUI, Hints, Subgraph } from "./views";
 import { useStaticJsonRPC } from "./hooks";
 
-import YourContract from "./YourContract.json";
-
 import { Main } from "./game";
 
 const { ethers } = require("ethers");
@@ -63,7 +61,7 @@ const { ethers } = require("ethers");
 const initialNetwork = NETWORKS.mainnet; // <------- select your target frontend network (localhost, goerli, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
-const DEBUG = true;
+const DEBUG = false;
 const NETWORKCHECK = true;
 const USE_BURNER_WALLET = true; // toggle burner wallet feature
 const USE_NETWORK_SELECTOR = false;
@@ -328,7 +326,6 @@ function App(props) {
         // bring these in so we can dynamically get the contract artifacts
         contractConfig={contractConfig}
         readContracts={readContracts}
-        YourContract={YourContract}
         setSelectedNetwork={setSelectedNetwork}
       />
 
