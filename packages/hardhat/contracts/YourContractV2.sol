@@ -20,20 +20,32 @@ contract YourContractV2 is UUPSUpgradeable, OwnableUpgradeable {
     king = msg.sender;
     prize = msg.value;
   }
+  
+  mapping (address => uint) public refunds;
 
-  receive() external payable {
-    require(msg.value >= prize || msg.sender == owner());
-    // In order to fix the issue, we use a low-level call to send the prize to the king.
-    // Generally speaking, pull-over-push designs should be favored, where the old king should be able to call a withdraw function to get funds
-    // However, 
-    bool success = payable(king).send(prize) ;
+  // The V2 contract uses a pull model for the king to receive ETH back. 
+  function claimThrone() public payable {
+    require(msg.value >= prize, "Invalid value");
+    king = msg.sender;
+    refunds[king] += prize;
+    prize = msg.value;
+    bool success = payable(address(this)).send(prize);
     if (!success) {
       IWETH9 weth = IWETH9(0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6);
       weth.deposit{value: prize}();
-      weth.transfer(king, prize);
+      weth.transfer(address(this), prize);
     }
-    king = msg.sender;
-    prize = msg.value;
+  }
+
+  function claimRefunds() public {
+    uint refund = refunds[msg.sender];
+    refunds[msg.sender] = 0;
+    bool success = payable(msg.sender).send(refund);
+    if (!success) {
+      IWETH9 weth = IWETH9(0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6);
+      payable(address(weth)).transfer(refund);
+      weth.transfer(msg.sender, refund);
+    }
   }
 
   function _king() public view returns (address) {
