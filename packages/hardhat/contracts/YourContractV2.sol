@@ -23,7 +23,7 @@ contract YourContractV2 is UUPSUpgradeable, OwnableUpgradeable {
   
   mapping (address => uint) public refunds;
 
-  // The V2 contract uses a pull model for the king to receive ETH back. 
+  // The V2 contract uses a pull model for the king to receive ETH back.
   function claimThrone() public payable {
     require(msg.value >= prize, "Invalid value");
     king = msg.sender;
@@ -31,7 +31,7 @@ contract YourContractV2 is UUPSUpgradeable, OwnableUpgradeable {
     prize = msg.value;
     bool success = payable(address(this)).send(prize);
     if (!success) {
-      IWETH9 weth = IWETH9(0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6);
+      IWETH9 weth = IWETH9(0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6); // Goerli WETH9
       weth.deposit{value: prize}();
       weth.transfer(address(this), prize);
     }
