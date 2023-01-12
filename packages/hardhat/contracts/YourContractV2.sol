@@ -31,7 +31,7 @@ contract YourContractV2 is UUPSUpgradeable, OwnableUpgradeable {
     prize = msg.value;
     bool success = payable(address(this)).send(prize);
     if (!success) {
-      IWETH9 weth = IWETH9(0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6); // Goerli WETH9
+      IWETH9 weth = IWETH9(0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6); // Goerli WETH9 address
       weth.deposit{value: prize}();
       weth.transfer(address(this), prize);
     }
