@@ -33,7 +33,7 @@ import externalContracts from "./contracts/external_contracts";
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { getRPCPollTime, Transactor, Web3ModalSetup } from "./helpers";
 import { Home, ExampleUI, Hints, Subgraph } from "./views";
-import { useStaticJsonRPC } from "./hooks";
+import { useStaticJsonRPC, useLocalStorage } from "./hooks";
 
 import { Main } from "./game";
 
@@ -316,18 +316,52 @@ function App(props) {
         />
       )}
 
-      <Main
-        address={address}
-        userSigner={userSigner}
-        localProvider={localProvider}
-        mainnetProvider={mainnetProvider}
-        price={price}
-        setShowLocalWallet={setShowLocalWallet}
-        // bring these in so we can dynamically get the contract artifacts
-        contractConfig={contractConfig}
-        readContracts={readContracts}
-        setSelectedNetwork={setSelectedNetwork}
-      />
+      <Switch>
+        <Route exact path="/">
+          <Main
+            address={address}
+            userSigner={userSigner}
+            localProvider={localProvider}
+            mainnetProvider={mainnetProvider}
+            price={price}
+            setShowLocalWallet={setShowLocalWallet}
+            // bring these in so we can dynamically get the contract artifacts
+            contractConfig={contractConfig}
+            readContracts={readContracts}
+            setSelectedNetwork={setSelectedNetwork}
+          />
+        </Route>
+        <Route exact path="/:incomingContractAddress">
+          <Main
+            address={address}
+            userSigner={userSigner}
+            localProvider={localProvider}
+            mainnetProvider={mainnetProvider}
+            price={price}
+            setShowLocalWallet={setShowLocalWallet}
+            // bring these in so we can dynamically get the contract artifacts
+            contractConfig={contractConfig}
+            readContracts={readContracts}
+            setSelectedNetwork={setSelectedNetwork}
+          />
+        </Route>
+        <Route exact path="/debug">
+          {/*
+                🎛 this scaffolding is full of commonly used components
+                this <Contract/> component will automatically parse your ABI
+                and give you a form to interact with it locally
+            */}
+          <Contract
+            name="YourContract"
+            price={price}
+            signer={userSigner}
+            provider={localProvider}
+            address={address}
+            blockExplorer={blockExplorer}
+            contractConfig={contractConfig}
+          />
+        </Route>
+      </Switch>
 
       <ThemeSwitch />
 

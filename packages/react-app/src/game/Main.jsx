@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useThemeSwitcher } from "react-css-theme-switcher";
 import { ethers } from "ethers";
 import { getRPCPollTime, Transactor, Web3ModalSetup } from "../helpers";
+import { useParams } from "react-router-dom";
 import {
   useBalance,
   useContractLoader,
@@ -51,6 +52,17 @@ export default function Main({
 }) {
   const { currentTheme } = useThemeSwitcher();
 
+  const [gameContract, setGameContract] = useLocalStorage("gameContract");
+
+  let { incomingContractAddress } = useParams();
+
+  useEffect(() => {
+    if (incomingContractAddress) {
+      console.log(" 🚒🚒🚒 incomingContractAddress", incomingContractAddress);
+      setGameContract(incomingContractAddress);
+    }
+  }, [incomingContractAddress]);
+
   const [errors, setErrors] = useState([]);
 
   const [localhostProvider, setlocalhostProvider] = useState();
@@ -58,7 +70,15 @@ export default function Main({
   useEffect(() => {
     console.log("useEffect");
     try {
-      let newprovider = new ethers.providers.JsonRpcProvider("http://localhost:8545/");
+      let newprovider;
+      if (window.location.hostname === "stage.ether.town") {
+        console.log(" 📡 using RPC provider for stage.ether.town");
+        newprovider = new ethers.providers.JsonRpcProvider("https://chain.ether.town5");
+      } else {
+        console.log(" 📡 using RPC provider for localhost");
+        newprovider = new ethers.providers.JsonRpcProvider("http://localhost:8545");
+      }
+
       console.log("SETTING newprovider", newprovider);
       if (newprovider) {
         setlocalhostProvider(newprovider);
@@ -75,8 +95,6 @@ export default function Main({
   const [knownAgents, setKnownAgents] = useState([]);
 
   const [agentRender, setAgentRender] = useState([]);
-
-  const [gameContract, setGameContract] = useLocalStorage("gameContract");
 
   if (DEBUG) console.log("📦 gameContract from localStorage:", gameContract);
 
@@ -126,6 +144,39 @@ export default function Main({
     return finalVisibleStructures;
   });
 
+  const doContractDeployment = async () => {
+    console.log("🧘‍♂️ DEPLOYING");
+
+    //console.log("GET BYTECOE AND INTEFARECE FROM ",contractConfig.deployedContracts['31337'].localhost.contracts.YourContract)
+    //console.log("MAYBE FROM ",readContracts)
+    //console.log("or even ",YourContract)
+
+    let deployer = new ethers.ContractFactory(Level1.abi, Level1.bytecode, localhostProvider.getSigner(0));
+    console.log("deployer", deployer);
+
+    let result = await deployer.deploy();
+
+    console.log("result", result);
+    if (result && result.address) {
+      console.log("Setting game contract...", result.address);
+      setGameContract(result.address);
+      const contract = new ethers.Contract(result.address, Level1.abi, localhostProvider.getSigner(0));
+
+      setGameContractObj(contract);
+
+      /*
+      await (await contract.agent(30000, 30000, -40, 0, "🚜", 300)).wait();
+      await (await contract.agent(30000, 31000, -120, 0, "🏎", 0)).wait();
+
+      await (await contract.structure(8000, 31000, "🏠")).wait();
+      await (await contract.structure(8000, 30000, "🏚")).wait();
+      */
+      await (await contract.generate()).wait();
+      //await (await contract.generate()).wait();
+      //await (await contract.generate()).wait();
+    }
+  };
+
   usePoller(() => {
     //console.log("POLLER!");
     const doCheck = async () => {
@@ -157,38 +208,21 @@ export default function Main({
 
           if (DEBUG) console.log("👀 looking for gameContract at", gameContract);
           if (!gameContract || (await localhostProvider.getCode(gameContract)) === "0x") {
-            console.log("🧘‍♂️ DEPLOYING");
-
-            //console.log("GET BYTECOE AND INTEFARECE FROM ",contractConfig.deployedContracts['31337'].localhost.contracts.YourContract)
-            //console.log("MAYBE FROM ",readContracts)
-            //console.log("or even ",YourContract)
-
-            let deployer = new ethers.ContractFactory(Level1.abi, Level1.bytecode, localhostProvider.getSigner(0));
-            console.log("deployer", deployer);
-
-            let result = await deployer.deploy();
-
-            console.log("result", result);
-            if (result && result.address) {
-              console.log("Setting game contract...", result.address);
-              setGameContract(result.address);
-              const contract = new ethers.Contract(result.address, Level1.abi, localhostProvider.getSigner(0));
-
-              setGameContractObj(contract);
-
-              /*
-              await (await contract.agent(30000, 30000, -40, 0, "🚜", 300)).wait();
-              await (await contract.agent(30000, 31000, -120, 0, "🏎", 0)).wait();
-
-              await (await contract.structure(8000, 31000, "🏠")).wait();
-              await (await contract.structure(8000, 30000, "🏚")).wait();
-              */
-              await (await contract.generate()).wait();
-              //await (await contract.generate()).wait();
-              //await (await contract.generate()).wait();
+            console.log(" 💻 ", window.location.hostname);
+            if (window.location.hostname === "localhost" /*&& !incomingContractAddress*/) {
+              doContractDeployment();
+            } else {
+              console.log(" 🕰 waiting for a game contract...");
             }
           } else {
             if (DEBUG) console.log("🥊 gameContract", gameContract);
+
+            //let's keep the url up to date with the selected game contract so it's easy to share and obvious what you are looking at
+            console.log("incomingContractAddress", incomingContractAddress);
+            console.log("gameContract", gameContract);
+            if (incomingContractAddress !== gameContract) {
+              window.history.replaceState(null, gameContract, "/" + gameContract);
+            }
 
             console.log("🏡 my house is ", myHouseObject);
 
@@ -421,6 +455,7 @@ export default function Main({
           setGameContract("");
           setMyHouseObject(null);
           setMyHouse(null);
+          window.history.replaceState(null, "LOADING...", "/");
         }}
       >
         🫡
@@ -428,13 +463,13 @@ export default function Main({
       <div
         style={{ position: "absolute", left: 20, top: 0, width: "25", height: "25", zIndex: 2 }}
         onClick={() => {
-          console.log("⏳ advancing time!?");
-
+          console.log("🛰 force deploy");
+          doContractDeployment();
           //setGameContract("");
           //setMyHouseObject(null)
         }}
       >
-        ⏳
+        🛰
       </div>
       <div style={{ margin: "auto", marginTop: "25%", width: 500 }}>
         <div style={{ padding: 16, position: "fixed", bottom: 16, left: 16, zIndex: 5 }}>
