@@ -1,8 +1,10 @@
 // deploy/00_deploy_your_contract.js
 
-const { ethers } = require("hardhat");
+const { ethers, upgrades } = require("hardhat");
 
 const localChainId = "31337";
+
+// eslint-disable-next-line no-unused-vars
 
 // const sleep = (ms) =>
 //   new Promise((r) =>
@@ -17,6 +19,7 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const { deployer } = await getNamedAccounts();
   const chainId = await getChainId();
 
+  // Deploying contracts to export their interfaces to frontend
   await deploy("YourContract", {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
@@ -25,8 +28,19 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
     waitConfirmations: 5,
   });
 
-  // Getting a previously deployed contract
-  const YourContract = await ethers.getContract("YourContract", deployer);
+  await deploy("YourContractV2", {
+    // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
+    from: deployer,
+    // args: [ "Hello", ethers.utils.parseEther("1.5") ],
+    log: true,
+    waitConfirmations: 5,
+  });
+
+  const YourContractFactory = await ethers.getContractFactory("YourContract");
+  const YourContract = await upgrades.deployProxy(YourContractFactory, []);
+  await YourContract.deployed;
+  console.log("YourContract Proxy deployed to:", YourContract.address);
+
   /*  await YourContract.setPurpose("Hello");
   
     // To take ownership of yourContract using the ownable library uncomment next line and add the 

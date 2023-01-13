@@ -47,6 +47,11 @@ cd scaffold-eth
 yarn deploy
 ```
 
+After deploying, you'll have to manually plug in a few addresses:
+
+- In `packages/hardhat/deployments/YourContract.json` change `address` to the address of your proxy, which will be outputted in the terminal.
+- Then, do the same with the `address` for both contracts located in `react-app/src/contracts/hardhat.contracts.json`: paste in the address of your proxy.
+
 🔏 Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
 
 📝 Edit your frontend `App.jsx` in `packages/react-app/src`

@@ -2,26 +2,44 @@ pragma solidity >=0.8.0 <0.9.0;
 //SPDX-License-Identifier: MIT
 
 import "hardhat/console.sol";
-// import "@openzeppelin/contracts/access/Ownable.sol"; 
-// https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol
+import '@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol';
+import '@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol';
+// https://docs.openzeppelin.com/contracts/3.x/api/proxy#UpgradeableProxy
 
-contract YourContract {
+contract YourContract is UUPSUpgradeable, OwnableUpgradeable {
 
   event SetPurpose(address sender, string purpose);
 
-  string public purpose = "Building Unstoppable Apps!!!";
+  address king;
+  uint public prize;
 
-  constructor() payable {
-    // what should we do on deploy?
+  function initialize() public payable initializer {
+    __Ownable_init();
+    king = msg.sender;
+    prize = msg.value;
   }
 
-  function setPurpose(string memory newPurpose) public payable {
-      purpose = newPurpose;
-      console.log(msg.sender,"set purpose to",purpose);
-      emit SetPurpose(msg.sender, purpose);
+  receive() external payable {
+    // This require statement is already a huge issue: msg.sender can just be the owner
+    // and the owner can literally reset everything by sending any arbitrary amount (including zero).
+    require(msg.value >= prize || msg.sender == owner());
+    // The real issue though is here, where the recipient of the transfer can be a contract.
+    // In the case that a contract is the recipient, it can revert the transfer and DoS the game.
+    // See Attacker.sol for an example implementation of this exploit.
+    payable(king).transfer(msg.value);
+    king = msg.sender;
+    prize = msg.value;
   }
 
-  // to support receiving ETH by default
-  receive() external payable {}
-  fallback() external payable {}
+  function _king() public view returns (address) {
+    return king;
+  }
+
+  function version() public pure returns(string memory) {
+    return "v1.0.0";
+  }
+
+  function _authorizeUpgrade(
+      address newImplementation
+  ) internal override onlyOwner {}
 }

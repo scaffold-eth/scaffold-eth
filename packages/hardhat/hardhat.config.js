@@ -7,6 +7,7 @@ require("@nomicfoundation/hardhat-chai-matchers");
 require("@tenderly/hardhat-tenderly");
 require("@nomicfoundation/hardhat-toolbox");
 require("hardhat-deploy");
+require("@openzeppelin/hardhat-upgrades");
 
 const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 
