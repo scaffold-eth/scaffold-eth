@@ -14,7 +14,9 @@ const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 /*
       📡 This is where you configure your deploy configuration for 🏗 scaffold-eth
 
-      check out `packages/scripts/deploy.js` to customize your deployment
+      Scaffold-Eth uses `hardhat-deploy` to manage deployments (see the <./deploy> dir); 
+      and learn more at <https://www.npmjs.com/package/hardhat-deploy>.
+      Also there is deprecated <./scripts/deploy.js> left for reference.
 
       out of the box it will auto deploy anything in the `contracts` folder and named *.sol
       plus it will use *.args for constructor args
@@ -60,7 +62,7 @@ module.exports = {
 
   networks: {
     localhost: {
-      url: "http://localhost:8545",
+      url: "http://127.0.0.1:8545/",
       /*
         notice no mnemonic here? it will just use account 0 of the hardhat node to deploy
         (you can put in a mnemonic here to set the deployer locally)
@@ -81,8 +83,16 @@ module.exports = {
         mnemonic: mnemonic(),
       },
     },
-    xdai: {
-      url: "https://rpc.xdaichain.com/",
+    gnosis: {
+      url: 'https://rpc.gnosischain.com/',
+      gasPrice: 1000000000,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
+    chiado: {
+      url: 'https://rpc.chiadochain.net',
+      gasPrice: 1000000000,
       accounts: {
         mnemonic: mnemonic(),
       },
