@@ -22,6 +22,7 @@ contract Town is Ownable {
     address owner;
     uint16 x;
     uint16 y;
+    bool isMarket; // lololol make this more generic like a type variable or something
   }
 /*
   function stringToBytes(string memory s) public pure returns (bytes4){
@@ -47,7 +48,8 @@ contract Town is Ownable {
       structures.push(Structure({
         owner: owner,
         x: x, 
-        y: y
+        y: y,
+        isMarket: keccak256(abi.encodePacked(emoji)) == keccak256(abi.encodePacked(unicode"🏪"))
       }));
       
       return structures.length - 1;
@@ -157,6 +159,72 @@ contract Town is Ownable {
     //require(structureId < structures.length, "Structure does not exist");
     Structure memory theStructure = structures[structureId];
     return distance(x, y, theStructure.x, theStructure.y);
+  }
+
+  function calculateRoute(uint16 fromX, uint16 fromY, uint16 toX, uint16 toY) public view returns (int8, int8, uint64){
+
+    //lololololololololololololol
+
+    bool flipX;
+    bool flipY;
+
+    uint256 xdist;
+    if(fromX > toX) {
+        flipX=true;
+        xdist = uint256(fromX) - uint256(toX);
+        if(xdist > 32768){
+            xdist = 65536 - xdist;
+        }
+    } else {
+        xdist = uint256(toX) - uint256(fromX);
+        if(xdist > 32768){
+            xdist = 65536 - xdist;
+        }
+    }
+    uint256 ydist;
+    if(fromY > toY) {
+        flipY=true;
+        ydist = uint256(fromY) - uint256(toY);
+        if(ydist > 32768){
+            ydist = 65536 - ydist;
+        }
+    } else {
+        ydist = uint256(toY) - uint256(fromY);
+        if(ydist > 32768){
+            ydist = 65536 - ydist;
+        }
+    }
+
+    uint256 dist = sqrt(xdist * xdist + ydist * ydist);
+
+    uint256 speed = 100;
+
+    uint256 time = dist / speed;
+
+    uint256 dx = xdist / time;
+    uint256 dy = ydist / time;
+
+    console.log(dx);
+    console.log(dy);
+
+    int8 fdx = int8(uint8(dx));
+    int8 fdy = int8(uint8(dy));
+
+
+    console.log(uint8(fdx));
+    console.log(uint8(fdy));
+
+    if(flipX){
+        fdx = -fdx;
+    }
+    if(flipY){
+        fdy = -fdy;
+    }
+
+    console.log(fdx<0);
+    console.log(fdy<0);
+
+    return (fdx, fdy, uint64(time));
   }
 
   function distance(uint16 x1, uint16 y1, uint16 x2, uint16 y2) public pure returns (uint256) {

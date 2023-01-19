@@ -5,11 +5,14 @@ let counter = 0;
 
 let cars = [];
 
+// the game loop will be full of different agents with different strategies
+
 export default async function GameLoop({ provider, address, setTheState }) {
   let faucetTx = Transactor(provider, null, null, true);
-  //console.log("🔖 address", address);
+  console.log("🔖 address", address);
 
   let balance = await provider.getBalance(address);
+  console.log("balance", balance);
 
   // keep the player full of eth for gas
   if (balance.gt(ethers.utils.parseEther("0.1"))) {

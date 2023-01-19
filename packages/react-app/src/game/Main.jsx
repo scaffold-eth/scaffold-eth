@@ -39,6 +39,8 @@ import { useLocalStorage } from "../hooks";
 
 const DEBUG = false;
 
+const POLL_TIME = 2000;
+
 export default function Main({
   address,
   userSigner,
@@ -58,7 +60,7 @@ export default function Main({
 
   useEffect(() => {
     if (incomingContractAddress) {
-      console.log(" 🚒🚒🚒 incomingContractAddress", incomingContractAddress);
+      //console.log(" 🚒🚒🚒 incomingContractAddress", incomingContractAddress);
       setGameContract(incomingContractAddress);
     }
   }, [incomingContractAddress]);
@@ -72,8 +74,8 @@ export default function Main({
     try {
       let newprovider;
       if (window.location.hostname === "stage.ether.town") {
-        console.log(" 📡 using RPC provider for stage.ether.town");
-        newprovider = new ethers.providers.JsonRpcProvider("https://chain.ether.town5");
+        console.log(" 📡 using PUBLIC RPC provider for stage.ether.town");
+        newprovider = new ethers.providers.JsonRpcProvider("https://chain.ether.town");
       } else {
         console.log(" 📡 using RPC provider for localhost");
         newprovider = new ethers.providers.JsonRpcProvider("http://localhost:8545");
@@ -218,8 +220,8 @@ export default function Main({
             if (DEBUG) console.log("🥊 gameContract", gameContract);
 
             //let's keep the url up to date with the selected game contract so it's easy to share and obvious what you are looking at
-            console.log("incomingContractAddress", incomingContractAddress);
-            console.log("gameContract", gameContract);
+            //console.log("incomingContractAddress", incomingContractAddress);
+            //console.log("gameContract", gameContract);
             if (incomingContractAddress !== gameContract) {
               window.history.replaceState(null, gameContract, "/" + gameContract);
             }
@@ -247,8 +249,9 @@ export default function Main({
                   id={"structure" + i}
                   style={{
                     position: "absolute",
-                    left: "calc(" + xPercent + "% - 4px)",
-                    top: "calc(" + yPercent + "% - 6px)",
+                    transform: "scale(2)",
+                    left: "calc(" + xPercent + "%)",
+                    top: "calc(" + yPercent + "% - 4px)",
                   }}
                 >
                   {finalVisibleStructures[i].args.emoji}
@@ -324,8 +327,9 @@ export default function Main({
                   id={"agent" + agent.id.toNumber()}
                   style={{
                     position: "absolute",
-                    left: "calc(" + xPercent + "% - 5px)",
-                    top: "calc(" + yPercent + "% - 5px)" /*,transform:"scaleX(-1)"*/,
+                    transform: "scale(2)",
+                    left: "calc(" + xPercent + "% )",
+                    top: "calc(" + yPercent + "% - 4px)" /*,transform:"scaleX(-1)"*/,
                     /*backgroundColor: waitingClick==2 ? "red" : "white",*/
                   }}
                 >
@@ -385,9 +389,21 @@ export default function Main({
               //"SUP"+(myHouseId?myHouseId.toNumber():"...")
 
               let myTrucks = await contract.houseBalanceOfTrucks(myHouseId);
+              let myCargoTrucks = await contract.houseBalanceOfCargoTrucks(myHouseId);
               let myWood = await contract.houseBalanceOfWood(myHouseId);
 
-              setTheState("🚙" + myTrucks?.toNumber() + "  🪵" + myWood?.toNumber());
+              let myGold = await contract.balanceOf(address);
+
+              setTheState(
+                "⭐️" +
+                  myGold?.toNumber() +
+                  " 🚛" +
+                  myCargoTrucks?.toNumber() +
+                  " 🚙" +
+                  myTrucks?.toNumber() +
+                  "  🪵" +
+                  myWood?.toNumber(),
+              );
             } else {
               setTheState("👆 Click anywhere to start 🏕");
             }
@@ -422,7 +438,7 @@ export default function Main({
     };
 
     if (true) doCheck();
-  }, 1000);
+  }, POLL_TIME);
 
   //console.log("gameContractObj", gameContractObj);
 
@@ -445,11 +461,260 @@ export default function Main({
     }
   }
 
+  const handleClick = async clickEvent => {
+    // ============================================================================ ------------------------------------------------------
+    // ============================================================================ ------------------------------------------------------
+    // ==========================  click          ================================= ------------------------------------------------------
+    // ============================================================================ ------------------------------------------------------
+    // ============================================================================ ------------------------------------------------------
+
+    const currentTarget = clickEvent.currentTarget;
+
+    console.log("currentTarget", currentTarget);
+
+    const button = currentTarget;
+    const circle = document.createElement("div");
+    circle.classList.add("ripple");
+    button.appendChild(circle);
+
+    const diameter = Math.max(button.clientWidth, button.clientHeight);
+    circle.style.width = diameter + "px";
+    circle.style.height = diameter + "px";
+    circle.style.left = clickEvent.clientX - button.offsetLeft - diameter / 2 + "px";
+    circle.style.top = clickEvent.clientY - button.offsetTop - diameter / 2 + "px";
+
+    circle.addEventListener("animationend", function () {
+      button.removeChild(circle);
+    });
+
+    console.log("CLICK", clickEvent.clientX, clickEvent.clientY);
+    console.log("window.screen.width", window.innerWidth, window.innerHeight);
+    let mapX = Math.floor((clickEvent.clientX * 65535) / window.innerWidth);
+    let mapY = Math.floor((clickEvent.clientY * 65535) / window.innerHeight);
+
+    let userWally = userSigner.connect(localhostProvider);
+    console.log("👨‍🏫 connecting to contract as ", userWally);
+    const contract = new ethers.Contract(gameContract, Level1.abi, userWally);
+
+    const attemptAction = async action => {
+      try {
+        let result = await action;
+        console.log("result", result);
+        console.log("wait:", await result.wait());
+      } catch (er) {
+        console.log("error", er);
+        setErrors([...errors, { x: clickEvent.clientX, y: clickEvent.clientY, error: er, timestamp: Date.now() }]);
+      }
+    };
+
+    if (!myHouse) {
+      console.log("🥩", mapX, mapY);
+
+      await attemptAction(contract.stake(mapX, mapY));
+
+      let blockNumber = await localhostProvider.getBlockNumber();
+      console.log("at this point our house should be deployed, let's find it and save it in localstorage");
+      let finalVisibleStructures = await loadVisibleStructures(contract, blockNumber);
+      for (let i = 0; i < finalVisibleStructures.length; i++) {
+        //console.log(finalVisibleStructures[i].args)
+        if (
+          finalVisibleStructures[i].args.emoji == "⛺️" &&
+          finalVisibleStructures[i].args.owner == address &&
+          finalVisibleStructures[i].args.x == mapX &&
+          finalVisibleStructures[i].args.y == mapY
+        ) {
+          console.log("🏠 found my house at", finalVisibleStructures[i].args.x, finalVisibleStructures[i].args.y);
+          setMyHouseObject({
+            x: finalVisibleStructures[i].args.x,
+            y: finalVisibleStructures[i].args.y,
+            emoji: finalVisibleStructures[i].args.emoji,
+            owner: finalVisibleStructures[i].args.owner,
+          });
+          setMyHouse([mapX, mapY]);
+        }
+      }
+    } else {
+      console.log("USER CLICKED AT ", mapX, mapY);
+      console.log("already have a house so find the nearest tree and send a truck to it");
+
+      console.log(
+        "either you clicked a truck and you want to send it home or you clicked a sturcture to send a truck to",
+      );
+
+      //lets search all structures for a truck near the mapx,mapy
+
+      const dist = (x1, y1, x2, y2) => {
+        let xDiff = Math.abs(x1 - x2);
+        let yDiff = Math.abs(y1 - y2);
+        let distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+        return distance;
+      };
+
+      const nearestStructure = (knownStructures, x, y, emoji) => {
+        let nearest;
+        let nearestDistance = 65535;
+        for (let i = 0; i < knownStructures.length; i++) {
+          //console.log("rndering structure");
+          if (knownStructures[i].args.emoji == emoji) {
+            let xDiff = Math.abs(knownStructures[i].args.x - x);
+            let yDiff = Math.abs(knownStructures[i].args.y - y);
+            let distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+            if (distance < nearestDistance) {
+              nearest = knownStructures[i];
+              nearestDistance = distance;
+              nearest.distance = distance;
+            }
+          } else {
+            //console.log("not a tree",knownStructures[i])
+          }
+        }
+        return nearest;
+      };
+
+      const nearestAgent = (knownAgents, x, y, emoji, owner) => {
+        let nearest;
+        let nearestDistance = 65535;
+        for (let i = 0; i < knownAgents.length; i++) {
+          //console.log("rndering structure");
+          if (knownAgents[i].args.emoji == emoji && knownAgents[i].args.owner == owner) {
+            let timePassed = currentTimestamp - knownAgents[i].args.startTime;
+            if (knownAgents[i].args.stopAfter > 0 && timePassed > knownAgents[i].args.stopAfter) {
+              timePassed = knownAgents[i].args.stopAfter;
+            }
+
+            let xOffset = (knownAgents[i].args.dx * timePassed) % 65535;
+            let yOffset = (knownAgents[i].args.dy * timePassed) % 65535;
+
+            let xDiff = Math.abs(knownAgents[i].args.x + xOffset - x);
+            let yDiff = Math.abs(knownAgents[i].args.y + yOffset - y);
+            let distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+            if (distance < nearestDistance) {
+              nearest = knownAgents[i];
+              nearest.actualLocation = [knownAgents[i].args.x + xOffset, knownAgents[i].args.y + yOffset];
+              nearest.distance = distance;
+              //nearestTruckId = i
+              nearestDistance = distance;
+            }
+          }
+        }
+        return nearest;
+      };
+
+      const CLICKDISTANCEFUDGE = 800;
+
+      let myHouseId;
+      for (let i = 0; i < knownStructures.length; i++) {
+        //console.log("rndering structure");
+        if (
+          knownStructures[i].args.x == myHouse[0] &&
+          knownStructures[i].args.y == myHouse[1] &&
+          knownStructures[i].args.owner == address
+        ) {
+          myHouseId = knownStructures[i].args.id;
+        }
+      }
+
+      console.log("myHouseId", myHouseId);
+
+      if (knownStructures) {
+        let nearestCargoTruck = nearestAgent(knownAgents, mapX, mapY, "🚛", address);
+        let nearestTruck = nearestAgent(knownAgents, mapX, mapY, "🛻", address);
+        let nearestTree = nearestStructure(knownStructures, mapX, mapY, "🌲");
+        let theMarket = nearestStructure(knownStructures, mapX, mapY, "🏪");
+
+        console.log("theMarket distance ", theMarket.distance);
+        if (nearestCargoTruck?.distance < CLICKDISTANCEFUDGE) {
+          console.log("🚛 cargo truck clicked", nearestCargoTruck.args);
+
+          let distanceToMarket = dist(
+            nearestCargoTruck.actualLocation[0],
+            nearestCargoTruck.actualLocation[1],
+            theMarket.args.x,
+            theMarket.args.y,
+          );
+
+          if (distanceToMarket < 500) {
+            //sell cargo
+            await attemptAction(contract.sellCargo(nearestCargoTruck.args.id, theMarket.args.id));
+          }
+
+          let distanceFromHome = dist(
+            nearestCargoTruck.actualLocation[0],
+            nearestCargoTruck.actualLocation[1],
+            myHouse[0],
+            myHouse[1],
+          );
+
+          console.log("distanceFromHome", distanceFromHome);
+
+          if (distanceFromHome < 500) {
+            console.log("🚛=>🏠 +🪵");
+            console.log("collectcollectcollectcollectcollect", nearestCargoTruck.args.id, myHouseId);
+            await attemptAction(contract.collectCargoTruck(nearestCargoTruck.args.id, myHouseId));
+          } else {
+            // go home
+            await attemptAction(contract.returnCargoTruckTo(nearestCargoTruck.args.id, myHouse[0], myHouse[1]));
+          }
+        } else if (theMarket?.distance < CLICKDISTANCEFUDGE) {
+          console.log("MARKET CLICKED", theMarket);
+          console.log("🚛 🚛🚛 SHIP IT", theMarket.args.id);
+
+          await attemptAction(contract.sendCargoTruckTo(myHouseId, theMarket.args.x, theMarket.args.y));
+        } else if (nearestTruck?.distance < CLICKDISTANCEFUDGE) {
+          console.log("TRUCK CLICKED", nearestTruck.args.id);
+          console.log(nearestTruck);
+
+          let truckCargo = await contract.truckBalanceOfWood(nearestTruck.args.id);
+          console.log("truckCargo", truckCargo);
+
+          let distanceFromHome = dist(
+            nearestTruck.actualLocation[0],
+            nearestTruck.actualLocation[1],
+            myHouse[0],
+            myHouse[1],
+          );
+
+          console.log("distanceFromHome", distanceFromHome);
+
+          if (distanceFromHome < 500) {
+            console.log("🛻=>🏠 +🪵");
+            console.log("collectcollectcollectcollectcollect", nearestTruck.args.id, myHouseId);
+            await attemptAction(contract.collect(nearestTruck.args.id, myHouseId));
+          } else {
+            console.log("🛻🫡🪚👀 delivery truck is out searching for wood... ");
+            console.log("finding nearest tree to harvest");
+
+            let nearestTreeToTruck = nearestStructure(
+              knownStructures,
+              nearestTruck.actualLocation[0],
+              nearestTruck.actualLocation[1],
+              "🌲",
+            );
+
+            console.log("nearest tree to this truck is ", nearestTreeToTruck);
+            if (nearestTreeToTruck?.distance < 300) {
+              console.log("Calling HARVEST:", nearestTruck.args.id, nearestTreeToTruck.args.id);
+              await attemptAction(contract.harvest(nearestTruck.args.id, nearestTreeToTruck.args.id));
+            }
+
+            attemptAction(contract.returnTruckTo(nearestTruck.args.id, myHouse[0], myHouse[1]));
+          }
+        } else if (nearestTree?.distance < CLICKDISTANCEFUDGE) {
+          console.log("TREE CLICKED");
+
+          await attemptAction(contract.sendTruckTo(myHouseId, nearestTree.args.x, nearestTree.args.y));
+        } else {
+          console.log("☁️ ☁️ ☁️ CANT FIND A TREE NEARBY ☁️ ☁️ ☁️ ");
+        }
+      }
+    }
+  };
+
   return (
     <div>
       {errorRender}
       <div
-        style={{ position: "absolute", left: 0, top: 0, width: "25", height: "25", zIndex: 2 }}
+        style={{ position: "absolute", left: 0, top: 100, width: "250", height: "250", zIndex: 99 }}
         onClick={() => {
           console.log("🫡 clearing local storage");
           setGameContract("");
@@ -461,7 +726,7 @@ export default function Main({
         🫡
       </div>
       <div
-        style={{ position: "absolute", left: 20, top: 0, width: "25", height: "25", zIndex: 2 }}
+        style={{ position: "absolute", left: 20, top: 0, width: "25", height: "25", zIndex: 99 }}
         onClick={() => {
           console.log("🛰 force deploy");
           doContractDeployment();
@@ -479,7 +744,7 @@ export default function Main({
       <div style={{ position: "absolute", left: 0, top: 0, width: "100%", height: "100%", zIndex: -1 }}>
         {structureRender}
         {agentRender}
-
+        {/*
         <div style={{ margin: "auto", marginTop: "100%", paddingBottom: 800 }}>
           {gameContract && (
             <Contract
@@ -491,6 +756,7 @@ export default function Main({
             />
           )}
         </div>
+        */}
       </div>
       <div
         id="townRenderThing"
@@ -504,355 +770,12 @@ export default function Main({
           background: "#666666",
           cursor: "pointer",
         }}
-        onClick={async clickEvent => {
-          // ============================================================================ ------------------------------------------------------
-          // ============================================================================ ------------------------------------------------------
-          // ==========================  click          ================================= ------------------------------------------------------
-          // ============================================================================ ------------------------------------------------------
-          // ============================================================================ ------------------------------------------------------
-
-          const currentTarget = clickEvent.currentTarget;
-
-          console.log("currentTarget", currentTarget);
-
-          const button = currentTarget;
-          const circle = document.createElement("div");
-          circle.classList.add("ripple");
-          button.appendChild(circle);
-
-          const diameter = Math.max(button.clientWidth, button.clientHeight);
-          circle.style.width = diameter + "px";
-          circle.style.height = diameter + "px";
-          circle.style.left = clickEvent.clientX - button.offsetLeft - diameter / 2 + "px";
-          circle.style.top = clickEvent.clientY - button.offsetTop - diameter / 2 + "px";
-
-          circle.addEventListener("animationend", function () {
-            button.removeChild(circle);
-          });
-
-          console.log("CLICK", clickEvent.clientX, clickEvent.clientY);
-          console.log("window.screen.width", window.innerWidth, window.innerHeight);
-          let mapX = Math.floor((clickEvent.clientX * 65535) / window.innerWidth);
-          let mapY = Math.floor((clickEvent.clientY * 65535) / window.innerHeight);
-          const contract = new ethers.Contract(gameContract, Level1.abi, userSigner);
-
-          if (!myHouse) {
-            console.log("🥩", mapX, mapY);
-            try {
-              let stakeResult = await contract.stake(mapX, mapY);
-              console.log("stakeResult", stakeResult);
-              console.log("result:", await stakeResult.wait());
-              setMyHouse([mapX, mapY]);
-
-              let blockNumber = await localhostProvider.getBlockNumber();
-
-              console.log("at this point our house should be deployed, let's find it and save it in localstorage");
-              let finalVisibleStructures = await loadVisibleStructures(contract, blockNumber);
-              for (let i = 0; i < finalVisibleStructures.length; i++) {
-                //console.log(finalVisibleStructures[i].args)
-                if (
-                  finalVisibleStructures[i].args.emoji == "⛺️" &&
-                  finalVisibleStructures[i].args.owner == address &&
-                  finalVisibleStructures[i].args.x == mapX &&
-                  finalVisibleStructures[i].args.y == mapY
-                ) {
-                  console.log(
-                    "🏠 found my house at",
-                    finalVisibleStructures[i].args.x,
-                    finalVisibleStructures[i].args.y,
-                  );
-                  setMyHouseObject({
-                    x: finalVisibleStructures[i].args.x,
-                    y: finalVisibleStructures[i].args.y,
-                    emoji: finalVisibleStructures[i].args.emoji,
-                    owner: finalVisibleStructures[i].args.owner,
-                  });
-                }
-              }
-            } catch (er) {
-              console.log("error", er);
-              setErrors([
-                ...errors,
-                { x: clickEvent.clientX, y: clickEvent.clientY, error: er, timestamp: Date.now() },
-              ]);
-            }
-          } else {
-            console.log("USER CLICKED AT ", mapX, mapY);
-            console.log("already have a house so find the nearest tree and send a truck to it");
-
-            console.log(
-              "either you clicked a truck and you want to send it home or you clicked a sturcture to send a truck to",
-            );
-
-            //lets search all structures for a truck near the mapx,mapy
-
-            const nearestStructure = (knownStructures, x, y, emoji) => {
-              let nearest;
-              let nearestDistance = 65535;
-              for (let i = 0; i < knownStructures.length; i++) {
-                //console.log("rndering structure");
-                if (knownStructures[i].args.emoji == emoji) {
-                  let xDiff = Math.abs(knownStructures[i].args.x - x);
-                  let yDiff = Math.abs(knownStructures[i].args.y - y);
-                  let distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
-                  if (distance < nearestDistance) {
-                    nearest = knownStructures[i];
-                    nearestDistance = distance;
-                    nearest.distance = distance;
-                  }
-                } else {
-                  //console.log("not a tree",knownStructures[i])
-                }
-              }
-              return nearest;
-            };
-
-            const nearestAgent = (knownAgents, x, y, emoji, owner) => {
-              let nearest;
-              let nearestDistance = 65535;
-              for (let i = 0; i < knownAgents.length; i++) {
-                //console.log("rndering structure");
-                if (knownAgents[i].args.emoji == emoji && knownAgents[i].args.owner == owner) {
-                  let timePassed = currentTimestamp - knownAgents[i].args.startTime;
-                  if (knownAgents[i].args.stopAfter > 0 && timePassed > knownAgents[i].args.stopAfter) {
-                    timePassed = knownAgents[i].args.stopAfter;
-                  }
-
-                  let xOffset = (knownAgents[i].args.dx * timePassed) % 65535;
-                  let yOffset = (knownAgents[i].args.dy * timePassed) % 65535;
-
-                  let xDiff = Math.abs(knownAgents[i].args.x + xOffset - x);
-                  let yDiff = Math.abs(knownAgents[i].args.y + yOffset - y);
-                  let distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
-                  if (distance < nearestDistance) {
-                    nearest = knownAgents[i];
-                    nearest.actualLocation = [knownAgents[i].args.x + xOffset, knownAgents[i].args.y + yOffset];
-                    nearest.distance = distance;
-                    //nearestTruckId = i
-                    nearestDistance = distance;
-                  }
-                }
-              }
-              return nearest;
-            };
-
-            const CLICKDISTANCEFUDGE = 800;
-
-            if (knownStructures) {
-              let nearestTruck = nearestAgent(knownAgents, mapX, mapY, "🛻", address);
-              let nearestTree = nearestStructure(knownStructures, mapX, mapY, "🌲");
-
-              if (nearestTruck?.distance < CLICKDISTANCEFUDGE) {
-                console.log("TRUCK CLICKED", nearestTruck.args.id);
-                console.log(nearestTruck);
-
-                const dist = (x1, y1, x2, y2) => {
-                  let xDiff = Math.abs(x1 - x2);
-                  let yDiff = Math.abs(y1 - y2);
-                  let distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
-                  return distance;
-                };
-
-                //if the truck is home, we need to destroy the agent and collect the timber
-
-                let truckCargo = await contract.truckBalanceOfWood(nearestTruck.args.id);
-                console.log("truckCargo", truckCargo);
-
-                let distanceFromHome = dist(
-                  nearestTruck.actualLocation[0],
-                  nearestTruck.actualLocation[1],
-                  myHouse[0],
-                  myHouse[1],
-                );
-
-                console.log("distanceFromHome", distanceFromHome);
-
-                if (distanceFromHome < 1000) {
-                  console.log("🚛🚛🚛🚛 delivery truck is near home and was clicked ");
-
-                  console.log("Calling collect:");
-
-                  let myHouseId;
-                  for (let i = 0; i < knownStructures.length; i++) {
-                    //console.log("rndering structure");
-                    if (
-                      knownStructures[i].args.x == myHouse[0] &&
-                      knownStructures[i].args.y == myHouse[1] &&
-                      knownStructures[i].args.owner == address
-                    ) {
-                      myHouseId = knownStructures[i].args.id;
-                    }
-                  }
-
-                  console.log("myHouseId", myHouseId);
-
-                  console.log("collectcollectcollectcollectcollect", nearestTruck.args.id, myHouseId);
-                  try {
-                    let truckResult = await contract.collect(nearestTruck.args.id, myHouseId);
-
-                    console.log("truckResult", truckResult);
-                    console.log("result:", await truckResult.wait());
-                  } catch (er) {
-                    console.log("error", er);
-                    setErrors([
-                      ...errors,
-                      { x: clickEvent.clientX, y: clickEvent.clientY, error: er, timestamp: Date.now() },
-                    ]);
-                  }
-                } else {
-                  console.log("🛻🫡🪚👀 delivery truck is out searching for wood... ");
-
-                  console.log("finding nearest tree to harvest");
-
-                  let nearestTreeToTruck = nearestStructure(
-                    knownStructures,
-                    nearestTruck.actualLocation[0],
-                    nearestTruck.actualLocation[1],
-                    "🌲",
-                  );
-
-                  console.log("nearest tree to this truck is ", nearestTreeToTruck);
-
-                  //let truckId = nearestTruck.args.id
-                  //let truckResult = await contract.sendTruckHome(truckId);
-                  //console.log("truckResult",truckResult)
-                  //console.log("result:",await truckResult.wait())
-
-                  /*  let xdir = myHouse[0]-nearestTruck.actualLocation[0]
-                  let ydir = myHouse[1]-nearestTruck.actualLocation[1]
-
-                  let distance = Math.sqrt(xdir*xdir+ydir*ydir)
-                  let speed = 127
-
-                  let time = Math.floor(distance/speed)
-
-                  let dx = Math.floor((xdir*speed)/distance)
-                  let dy = Math.floor((ydir*speed)/distance)
-
-                  console.log("dx,dy",dx,dy)
-
-                  console.log("go for ",time,"seconds")*/
-
-                  /*let myHouseId
-                  //last we need to find the ID for my house 
-                  for (let i = 0; i < knownStructures.length; i++) {
-                    //console.log("rndering structure");
-                    if(knownStructures[i].args.emoji=="⛺️"&&knownStructures[i].args.x==myHouse[0]&&knownStructures[i].args.y==myHouse[1]){
-                      myHouseId = i
-                    }
-                  }*/
-
-                  //console.log("MY HOUSE ID IS ",myHouseId)
-
-                  //uint16 x, uint16 y, int8 dx, int8 dy, uint64 stopAfter)
-                  //truck(myHouseId,dx,dy,time);
-                  //let truckResult = await contract.update(nearestTruckId, dx, dy, "🚛", time)
-
-                  if (nearestTreeToTruck?.distance < 300) {
-                    console.log("Calling HARVEST:", nearestTruck.args.id, nearestTreeToTruck.args.id);
-                    try {
-                      let truckResult = await contract.harvest(nearestTruck.args.id, nearestTreeToTruck.args.id);
-
-                      console.log("truckResult", truckResult);
-                      console.log("result:", await truckResult.wait());
-                    } catch (er) {
-                      console.log("error", er);
-                      setErrors([
-                        ...errors,
-                        { x: clickEvent.clientX, y: clickEvent.clientY, error: er, timestamp: Date.now() },
-                      ]);
-                    }
-                  }
-
-                  //great now we need to send the truck home
-
-                  let xdir = myHouse[0] - nearestTruck.actualLocation[0];
-                  let ydir = myHouse[1] - nearestTruck.actualLocation[1];
-
-                  let distance = Math.sqrt(xdir * xdir + ydir * ydir);
-                  let speed = 127;
-
-                  let time = Math.floor(distance / speed);
-
-                  let dx = Math.floor((xdir * speed) / distance);
-                  let dy = Math.floor((ydir * speed) / distance);
-
-                  console.log("dx,dy", dx, dy);
-
-                  console.log("go for ", time, "seconds");
-
-                  console.log("🏎 🏎 🏎  updating nearestTruckId  ", nearestTruck.args.id);
-
-                  try {
-                    // this should really happen inthe contract right?
-                    let truckHomeResult = await contract.updateTruck(nearestTruck.args.id, dx, dy, time);
-                    //let truckHomeResult = await contract.returnToHome(nearestTruck.args.id, dx, dy, "🛻", time)
-                    console.log("truckHomeResult", truckHomeResult);
-                    console.log("result:", await truckHomeResult.wait());
-                  } catch (er) {
-                    console.log("error", er);
-                    setErrors([
-                      ...errors,
-                      { x: clickEvent.clientX, y: clickEvent.clientY, error: er, timestamp: Date.now() },
-                    ]);
-                  }
-                }
-              } else if (nearestTree?.distance < CLICKDISTANCEFUDGE) {
-                console.log("TREE CLICKED");
-                console.log("myHouse", myHouse);
-                //we need to calculate the dx and dy to get to the tree
-                //starting from myHouse[0], myHouse[1]
-                //and ending at nearest.args.x, nearest.args.y
-
-                let xdir = nearestTree.args.x - myHouse[0];
-                let ydir = nearestTree.args.y - myHouse[1];
-
-                let distance = Math.sqrt(xdir * xdir + ydir * ydir);
-                let speed = 127;
-
-                let time = Math.floor(distance / speed);
-
-                let dx = Math.floor((xdir * speed) / distance);
-                let dy = Math.floor((ydir * speed) / distance);
-
-                console.log("dx,dy", dx, dy);
-
-                console.log("go for ", time, "seconds");
-
-                //we need to find my house's id by searching for sturctures with the same x and y and owner
-                let myHouseId;
-                for (let i = 0; i < knownStructures.length; i++) {
-                  //console.log("rndering structure");
-                  if (
-                    knownStructures[i].args.x == myHouse[0] &&
-                    knownStructures[i].args.y == myHouse[1] &&
-                    knownStructures[i].args.owner == address
-                  ) {
-                    myHouseId = knownStructures[i].args.id;
-                  }
-                }
-
-                console.log("myHouseId", myHouseId);
-
-                try {
-                  //uint16 x, uint16 y, int8 dx, int8 dy, uint64 stopAfter)
-                  let truckResult = await contract.truck(myHouseId, dx, dy, time);
-
-                  console.log("truckResult", truckResult);
-                  console.log("result:", await truckResult.wait());
-                } catch (er) {
-                  console.log("error", er);
-                  setErrors([
-                    ...errors,
-                    { x: clickEvent.clientX, y: clickEvent.clientY, error: er, timestamp: Date.now() },
-                  ]);
-                }
-              } else {
-                console.log("☁️ ☁️ ☁️ CANT FIND A TREE NEARBY ☁️ ☁️ ☁️ ");
-              }
-            }
-          }
+        onTouchStart={async e => {
+          ///prevent default:
+          e.preventDefault();
+          handleClick(e);
         }}
+        onClick={handleClick}
       ></div>
     </div>
   );

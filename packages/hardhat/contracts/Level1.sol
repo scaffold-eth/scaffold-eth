@@ -5,12 +5,17 @@ import "hardhat/console.sol";
 import "./Town.sol"; 
 // https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol
 
-contract Level1 is Town {
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol"; 
+
+
+contract Level1 is Town, ERC20("Gold", "GOLD"){
 
     mapping(uint256 => uint256) public treeBalanceOfWood;
     mapping(uint256 => uint256) public truckBalanceOfWood;
+    mapping(uint256 => uint256) public cargoTruckBalanceOfWood;
     mapping(uint256 => uint256) public houseBalanceOfWood;
     mapping(uint256 => uint256) public houseBalanceOfTrucks;
+    mapping(uint256 => uint256) public houseBalanceOfCargoTrucks;
     
 
     bytes32 someSavedSeedIdk;
@@ -24,6 +29,10 @@ contract Level1 is Town {
 
     uint256[] public cars;
     function generate() public {
+
+        someSavedSeedIdk = addRandomForest(someSavedSeedIdk, 30);
+
+        
         someSavedSeedIdk = addRandomForest(someSavedSeedIdk, 250);
         uint256 index=0;
         for(uint16 i=0;i<33;i++){
@@ -59,6 +68,7 @@ contract Level1 is Town {
             cars.push(agent(msg.sender, uint16(i*2000), 31000, -50, 0, emoji, 0));
         }
         
+        
     }
 
     function addRandomForest(bytes32 seed, uint256 amount) internal returns (bytes32) {
@@ -79,7 +89,7 @@ contract Level1 is Town {
             uint256 treeId = structure(msg.sender, x, y, unicode"🌲");
             uint16 treeSize;
             (index,currentSeed,treeSize) = getNextRandom(index,currentSeed);
-            treeBalanceOfWood[treeId] = 1;//2+treeSize%4;
+            treeBalanceOfWood[treeId] = 1+treeSize%3;
         }
        
         return keccak256(abi.encodePacked(currentSeed));
@@ -90,39 +100,114 @@ contract Level1 is Town {
         uint256 houseId = structure(msg.sender, x, y, unicode"⛺️");
 
         houseBalanceOfTrucks[houseId] = 3;
+        houseBalanceOfCargoTrucks[houseId] = 2;
+
+        //houseBalanceOfWood[houseId] = 10;
         //require(msg.value >= 0.01 ether, "You must stake at least 1 ether");
         return houseId;
     }
 
-    function truck(uint256 structureId, int8 dx, int8 dy, uint64 stopAfter) public payable returns (uint256) {
-        //agent(address owner, uint16 x, uint16 y, int8 dx, int8 dy, string memory emoji, uint64 stopAfter)
 
-        require( houseBalanceOfTrucks[structureId] > 0, "You don't have any trucks left");
+    function returnCargoTruckTo(uint256 cargoTruckId, uint16 toX, uint16 toY) public payable {
 
-        houseBalanceOfTrucks[structureId] = houseBalanceOfTrucks[structureId] - 1; 
+        Agent memory cargoTruck = agents[cargoTruckId];
+
+        require(cargoTruck.owner == msg.sender, "You must own the agent");
+
+        uint16 x;
+        uint16 y;
+        (x,y) = agentLocation(cargoTruckId);
+
+        (int8 dx, int8 dy, uint64 stopAfter) = calculateRoute(x, y, toX, toY);
+        
+        agentUpdate(cargoTruckId, x, y, dx, dy, cargoTruck.emoji, stopAfter);
+
+    }
+
+    function sellCargo(uint256 agentId, uint256 structureId) public returns (uint256){
+
+        require( agentDistanceFromStructure(agentId,structureId)<500, "too far away");
 
         Structure memory structure = structures[structureId];
 
-        require(structure.owner == msg.sender, "You must own the structure");
+        require( structure.isMarket , "not a market");
 
-        return agent(msg.sender, structure.x, structure.y, dx, dy, unicode"🛻", stopAfter);
+        require( cargoTruckBalanceOfWood[agentId] > 0, "no wood to sell");
+
+        Agent memory agent = agents[agentId];
+
+        require(agent.owner == msg.sender, "You must own the agent");
+
+        uint256 mintAmount = cargoTruckBalanceOfWood[agentId];
+
+        cargoTruckBalanceOfWood[agentId] = 0;
+
+        _mint(msg.sender, mintAmount);
+
+        return mintAmount;
+    }
+
+
+    function sendCargoTruckTo(uint256 fromStructureId, uint16 toX, uint16 toY) public payable returns (uint256) {
+
+        require( houseBalanceOfWood[fromStructureId] > 0, "You don't have any wood");
+
+        require( houseBalanceOfCargoTrucks[fromStructureId] >0 , "You don't have any cargo trucks left");
+
+        houseBalanceOfCargoTrucks[fromStructureId] = houseBalanceOfCargoTrucks[fromStructureId] - 1; 
+
+        Structure memory fromStructure = structures[fromStructureId];
+
+        require(fromStructure.owner == msg.sender, "You must own the structure");
+
+        (int8 dx, int8 dy, uint64 stopAfter) = calculateRoute(fromStructure.x, fromStructure.y, toX, toY);
+
+        uint256 cargoTruckId = agent(msg.sender, fromStructure.x, fromStructure.y, dx, dy, unicode"🚛", stopAfter);
+
+        if(houseBalanceOfWood[fromStructureId]<=3){
+            cargoTruckBalanceOfWood[cargoTruckId] = houseBalanceOfWood[fromStructureId];
+            houseBalanceOfWood[fromStructureId] = 0;
+        }else{
+            houseBalanceOfWood[fromStructureId] = houseBalanceOfWood[fromStructureId] - 3;
+            cargoTruckBalanceOfWood[cargoTruckId] = 3;
+        }       
+
+        return cargoTruckId;
+    }
+
+    function sendTruckTo(uint256 fromStructureId, uint16 toX, uint16 toY) public payable returns (uint256) {
+
+        require( houseBalanceOfTrucks[fromStructureId] > 0, "You don't have any trucks left");
+
+        houseBalanceOfTrucks[fromStructureId] = houseBalanceOfTrucks[fromStructureId] - 1; 
+
+        Structure memory fromStructure = structures[fromStructureId];
+
+        require(fromStructure.owner == msg.sender, "You must own the structure");
+
+        (int8 dx, int8 dy, uint64 stopAfter) = calculateRoute(fromStructure.x, fromStructure.y, toX, toY);
+
+        return agent(msg.sender, fromStructure.x, fromStructure.y, dx, dy, unicode"🛻", stopAfter);
     }
 
     function car() public payable returns (uint256) {
         return agent(msg.sender, 65535, 30000, -127, 0, unicode"🚗", 0);
     }
 
-    function updateTruck(uint256 agentId, int8 dx, int8 dy, uint64 stopAfter) public payable {
+    function returnTruckTo(uint256 truckId, uint16 toX, uint16 toY) public payable {
 
-        Agent memory agent = agents[agentId];
+        Agent memory truck = agents[truckId];
 
-        require(agent.owner == msg.sender, "You must own the agent");
+        require(truck.owner == msg.sender, "You must own the agent");
 
         uint16 x;
         uint16 y;
-        (x,y) = agentLocation(agentId);
+        (x,y) = agentLocation(truckId);
+
+        (int8 dx, int8 dy, uint64 stopAfter) = calculateRoute(x, y, toX, toY);
         
-        agentUpdate(agentId, x, y, dx, dy, agent.emoji, stopAfter);
+        agentUpdate(truckId, x, y, dx, dy, truck.emoji, stopAfter);
+
     }
 
     function harvest(uint256 agentId,uint256 structureId) public {
@@ -150,7 +235,7 @@ contract Level1 is Town {
         agentUpdate(agentId, structure.x, structure.y, 0, 0, agent.emoji, 0);
 
         if(treeBalanceOfWood[structureId]<=0){
-            structureUpdate(structureId, 65535, 65535, unicode"🪚");
+            structureUpdate(structureId, 0, 0, "");
         }
 
         console.log("harvested wood from tree %s", structureId);
@@ -166,6 +251,12 @@ contract Level1 is Town {
 
         require(agent.owner == msg.sender, "You must own the agent");
 
+
+        // lol you need to require that this is a truck 
+
+        // any other agent cant be collected and count as a truck
+
+
         if(truckBalanceOfWood[agentId]==1){
             truckBalanceOfWood[agentId] = 0;
             houseBalanceOfWood[structureId]++;
@@ -173,9 +264,32 @@ contract Level1 is Town {
 
         houseBalanceOfTrucks[structureId]++;
 
-        Structure memory structure = structures[structureId];//this is the tree
+        //Structure memory structure = structures[structureId];//this is the tree
         
-        agentUpdate(agentId, 65535, 65535, 0, 0, "", 0);
+        agentUpdate(agentId, 0, 0, 0, 0, "", 0);
+
+    }
+
+
+
+    function collectCargoTruck(uint256 agentId,uint256 structureId) public {
+
+        require(agentDistanceFromStructure(agentId,structureId)<500, "too far away");
+
+        Agent memory agent = agents[agentId];
+
+        require(agent.owner == msg.sender, "You must own the agent");
+
+        if(cargoTruckBalanceOfWood[agentId]>0){
+            houseBalanceOfWood[structureId] += cargoTruckBalanceOfWood[agentId];
+            cargoTruckBalanceOfWood[agentId] = 0;
+        }
+
+        houseBalanceOfCargoTrucks[structureId]++;
+
+        //Structure memory structure = structures[structureId];//this is the tree
+        
+        agentUpdate(agentId, 0, 0, 0, 0, "", 0);
 
     }
 
