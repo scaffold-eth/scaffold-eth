@@ -23237,3 +23237,8 @@ zen-observable@^0.8.0, zen-observable@^0.8.14:
   version "0.8.15"
   resolved "https://registry.yarnpkg.com/zen-observable/-/zen-observable-0.8.15.tgz#96415c512d8e3ffd920afd3889604e30b9eaac15"
   integrity sha512-PQ2PC7R9rslx84ndNBZB/Dkv8V8fZEpk83RLgXtYd0fwUgEjseMn1Dgajh2x6S8QbZAFa9p2qVCEuYZNgve0dQ==
+
+zksync-web3@^0.12.5:
+  version "0.12.5"
+  resolved "https://registry.yarnpkg.com/zksync-web3/-/zksync-web3-0.12.5.tgz#f6dd9adee0dad9d176c0e5a42e8140b4d4b5c4b8"
+  integrity sha512-WGobdAj1nBGnRTWPKLjUCA3KSk1U2zlB7silVX/FMpv8o7LQMvxY7vIGiA+Y+d1ND6PLWyLs3859kQKgrVwEGQ==

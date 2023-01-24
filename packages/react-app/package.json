@@ -57,7 +57,8 @@
     "react-scripts": "4.0.1",
     "searchico": "^1.2.1",
     "walletlink": "^2.1.5",
-    "web3modal": "^1.9.10"
+    "web3modal": "^1.9.10",
+    "zksync-web3": "^0.12.5"
   },
   "devDependencies": {
     "@apollo/client": "^3.3.21",
