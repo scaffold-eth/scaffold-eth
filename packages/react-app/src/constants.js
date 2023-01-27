@@ -57,6 +57,14 @@ export const NETWORKS = {
     faucet: "https://gnosisfaucet.com",
     blockExplorer: "https://gnosisscan.io",
   },
+  zksyncalpha: {
+    name: "zksyncalpha",
+    color: "#45488f",
+    chainId: 280,
+    rpcUrl: "https://zksync2-testnet.zksync.dev",
+    blockExplorer: "https://goerli.explorer.zksync.io/",
+    gasPrice: 100000000,
+  },
   chiado: {
     name: "chiado",
     color: "#48a9a6",

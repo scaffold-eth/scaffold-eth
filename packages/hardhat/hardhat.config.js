@@ -13,7 +13,9 @@ const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 /*
       📡 This is where you configure your deploy configuration for 🏗 scaffold-eth
 
-      check out `packages/scripts/deploy.js` to customize your deployment
+      Scaffold-Eth uses `hardhat-deploy` to manage deployments (see the <./deploy> dir); 
+      and learn more at <https://www.npmjs.com/package/hardhat-deploy>.
+      Also there is deprecated <./scripts/deploy.js> left for reference.
 
       out of the box it will auto deploy anything in the `contracts` folder and named *.sol
       plus it will use *.args for constructor args
@@ -59,7 +61,7 @@ module.exports = {
 
   networks: {
     localhost: {
-      url: "http://localhost:8545",
+      url: "http://127.0.0.1:8545/",
       /*
         notice no mnemonic here? it will just use account 0 of the hardhat node to deploy
         (you can put in a mnemonic here to set the deployer locally)
@@ -73,6 +75,29 @@ module.exports = {
         mnemonic: mnemonic(),
       },
     },
+    optimism: {
+      url: "https://mainnet.optimism.io",
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+      companionNetworks: {
+        l1: "mainnet",
+      },
+    },
+    gnosis: {
+      url: 'https://rpc.gnosischain.com/',
+      gasPrice: 1000000000,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
+    polygon: {
+      url: "https://polygon-rpc.com",
+      // url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXx/polygon/mainnet", // <---- YOUR MORALIS ID! (not limited to infura)
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
     goerli: {
       url: "https://goerli.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", // <---- YOUR INFURA ID! (or it won't work)
       //      url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXXXX/eth/goerli", // <---- YOUR MORALIS ID! (not limited to infura)
@@ -80,9 +105,16 @@ module.exports = {
         mnemonic: mnemonic(),
       },
     },
-    gnosis: {
-      url: 'https://rpc.gnosischain.com/',
-      gasPrice: 1000000000,
+    sepolia: {
+      url: "https://rpc.sepolia.org", // <---- YOUR INFURA ID! (or it won't work)
+      //      url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXXXX/eth/goerli", // <---- YOUR MORALIS ID! (not limited to infura)
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
+    zksyncalpha: {
+      url: "https://zksync2-testnet.zksync.dev",
+      gasPrice: 100000000,
       accounts: {
         mnemonic: mnemonic(),
       },
@@ -108,13 +140,6 @@ module.exports = {
         mnemonic: mnemonic(),
       },
     },
-    polygon: {
-      url: "https://polygon-rpc.com",
-      // url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXx/polygon/mainnet", // <---- YOUR MORALIS ID! (not limited to infura)
-      accounts: {
-        mnemonic: mnemonic(),
-      },
-    },
     mumbai: {
       url: "https://rpc-mumbai.maticvigil.com",
       // url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXX/polygon/mumbai", // <---- YOUR MORALIS ID! (not limited to infura)
@@ -126,15 +151,6 @@ module.exports = {
       url: "https://rpc-mainnet.maticvigil.com/",
       accounts: {
         mnemonic: mnemonic(),
-      },
-    },
-    optimism: {
-      url: "https://mainnet.optimism.io",
-      accounts: {
-        mnemonic: mnemonic(),
-      },
-      companionNetworks: {
-        l1: "mainnet",
       },
     },
     goerliOptimism: {
