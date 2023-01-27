@@ -70,8 +70,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "husky": "^7.0.2",
-    "lint-staged": "^13.0.3"
+    "husky": "^7.0.2"
   },
   "lint-staged": {
     "packages/react-app/src/**/*.{js,jsx}": [
