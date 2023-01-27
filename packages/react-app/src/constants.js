@@ -32,6 +32,13 @@ export const NETWORKS = {
     blockExplorer: "",
     rpcUrl: localRpcUrl,
   },
+  localhostzk: {
+    name: "localhostzk",
+    color: "#666666",
+    chainId: 9,
+    blockExplorer: "",
+    rpcUrl: "http://localhost:3050",
+  },
   mainnet: {
     name: "mainnet",
     color: "#ff8b9e",

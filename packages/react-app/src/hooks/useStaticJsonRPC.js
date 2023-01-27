@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
-import { ethers } from "ethers";
+// import { ethers } from "ethers";
+import { Provider } from "zksync-web3";
 
 const createProvider = async url => {
-  const p = new ethers.providers.StaticJsonRpcProvider(url);
+  // const p = new ethers.providers.StaticJsonRpcProvider(url);
+  const p = new Provider(url);
 
   await p.ready;
 
