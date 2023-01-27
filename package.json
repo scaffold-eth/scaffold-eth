@@ -14,6 +14,7 @@
     "react-app:eject": "yarn workspace @scaffold-eth/react-app eject",
     "react-app:start": "yarn workspace @scaffold-eth/react-app start",
     "react-app:test": "yarn workspace @scaffold-eth/react-app test",
+    "react-app:lint": "yarn workspace @scaffold-eth/react-app lint",
     "build": "yarn workspace @scaffold-eth/react-app build --max-old-space-size=12288",
     "prettier": "yarn workspace @scaffold-eth/react-app prettier",
     "chain": "yarn workspace @scaffold-eth/hardhat chain",
@@ -51,7 +52,8 @@
     "deploy-and-graph": "yarn deploy && yarn graph-ship-local",
     "theme": "yarn workspace @scaffold-eth/react-app theme",
     "watch-theme": "yarn workspace @scaffold-eth/react-app watch",
-    "postinstall": "husky install"
+    "postinstall": "husky install",
+    "prepare": "husky install"
   },
   "workspaces": {
     "packages": [
@@ -68,6 +70,13 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "husky": "^7.0.2"
+    "husky": "^7.0.2",
+    "lint-staged": "^13.0.3"
+  },
+  "lint-staged": {
+    "packages/react-app/src/**/*.{js,jsx}": [
+      "prettier --write",
+      "eslint --fix"
+    ]
   }
 }

@@ -9,15 +9,17 @@
 
 # 🏄‍♂️ Quick Start
 
-Prerequisites: [Node (v16 LTS)](https://nodejs.org/en/download/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
+Prerequisites: [Node (v18 LTS)](https://nodejs.org/en/download/) plus [Yarn (v1.x)](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
 
-> clone/fork 🏗 scaffold-eth:
+🚨 If you are using a version < v18 you will need to remove `openssl-legacy-provider` from the `start` script in `package.json`
+
+> 1️⃣ clone/fork 🏗 scaffold-eth:
 
 ```bash
 git clone https://github.com/scaffold-eth/scaffold-eth.git
 ```
 
-> install and start your 👷‍ Hardhat chain:
+> 2️⃣ install and start your 👷‍ Hardhat chain:
 
 ```bash
 cd scaffold-eth
@@ -25,14 +27,20 @@ yarn install
 yarn chain
 ```
 
-> in a second terminal window, start your 📱 frontend:
+> 3️⃣ in a second terminal window, start your 📱 frontend:
+
+🚨 if your contracts are not deployed to localhost, you will need to update the default network in `App.jsx` to match your default network in `hardhat-config.js`.
 
 ```bash
 cd scaffold-eth
 yarn start
 ```
 
-> in a third terminal window, 🛰 deploy your contract:
+> 4️⃣ in a third terminal window, 🛰 deploy your contract:
+
+🚨 if you are not deploying to localhost, you will need to run `yarn generate` (using node v16.x) first and then fund the deployer account. To view account balances, run `yarn account`. You will aslo need to update `hardhat-config.js` with the correct default network.
+
+👀 Side Quest: we need to update this process to use node v18.x 🪄
 
 ```bash
 cd scaffold-eth
@@ -46,6 +54,8 @@ yarn deploy
 💼 Edit your deployment scripts in `packages/hardhat/deploy`
 
 📱 Open http://localhost:3000 to see the app
+
+🚨📡 To deploy to a public domain, use `yarn surge`. You will need to have a surge account and have the surge CLI installed. There is also the option to deploy to IPFS using `yarn ipfs` and `yarn s3` to deploy to an AWS bucket 🪣 There are scripts in the `packages/react-app/src/scripts` folder to help with this.`
 
 # 📚 Documentation
 
@@ -111,7 +121,7 @@ Register as a builder [here](https://speedrunethereum.com) and start on some of 
 
 # 💬 Support Chat
 
-Join the telegram [support chat 💬](https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA) to ask questions and find others building with 🏗 scaffold-eth!
+Join the telegram [support chat 💬](https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA) or buidlguidl [discord](https://discord.gg/pRsr6rwG) to ask questions and find others building with 🏗 scaffold-eth!
 
 ---
 
