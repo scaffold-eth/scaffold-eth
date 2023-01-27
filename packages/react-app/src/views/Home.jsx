@@ -3,12 +3,9 @@ import React, { useState } from "react";
 import Lit from "../helpers/Lit";
 
 /**
- * web3 props can be passed from '../App.jsx' into your local view component for use
- * @param {*} yourLocalBalance balance on current network
- * @param {*} readContracts contracts from current chain already pre-loaded using ethers contract module. More here https://docs.ethers.io/v5/api/contract/contract/
- * @returns react component
+ * @returns react Home view component with Lit encryption and decryption example
  **/
-function Home({ yourLocalBalance, readContracts }) {
+function Home() {
   const [message, setMessage] = useState();
   const [decryptedMessage, setDecryptedMessage] = useState();
   const [encryptedFile, setEncryptedFile] = useState();
@@ -31,8 +28,14 @@ function Home({ yourLocalBalance, readContracts }) {
     let decrypted = await Lit.decryptString(encryptedFile, encryptedSymmetricKey);
     setDecryptedMessage(decrypted);
     // this should be the decrypted message
-    console.log("Decrypted message: ", JSON.parse(decrypted));
-    document.getElementById("decrypted-message").innerHTML = "Decrypted message: " + JSON.parse(decrypted);
+    const message = JSON.parse(decryptedMessage);
+    if (message !== undefined && message !== null) {
+      console.log("Decrypted message: ", message);
+      document.getElementById("decrypted-message").innerHTML = "Decrypted message: " + message;
+    } else {
+      console.log("Decryption failed");
+      document.getElementById("decrypted-message").innerHTML = "Decryption failed";
+    }
   };
 
   const btnStyle = {

@@ -12,7 +12,6 @@ export default function useGasPrice(targetNetwork, speed, pollTime = 39999) {
       axios
         .get("https://api.etherscan.io/api?module=gastracker&action=gasoracle&apikey=" + ETHERSCAN_KEY)
         .then(response => {
-          console.log("response gas: ", response);
           const newGasPrice = response.data.result[speed || "FastGasPrice"] * 1000000000;
           if (newGasPrice !== gasPrice) {
             setGasPrice(newGasPrice);

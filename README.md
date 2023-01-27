@@ -63,6 +63,7 @@ const accessControlConditions = [
   },
 ];
 ```
+![Screenshot 2023-01-27 at 6 02 18 PM](https://user-images.githubusercontent.com/9419140/215222197-5ada486e-a230-4b3d-a52a-f00f1ec3c82e.png)
 
 🔏 Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
 
