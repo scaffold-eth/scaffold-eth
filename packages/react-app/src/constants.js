@@ -39,6 +39,14 @@ export const NETWORKS = {
     rpcUrl: `https://mainnet.infura.io/v3/${INFURA_ID}`,
     blockExplorer: "https://etherscan.io/",
   },
+  buidlguidl: {
+    name: "buidlguidl",
+    color: "#9fc4ff",
+    price: 1,
+    chainId: 80216,
+    rpcUrl: `https://chain.buidlguidl.com:8545`,
+    blockExplorer: "https://etherscan.io/",
+  },
   goerli: {
     name: "goerli",
     color: "#0975F6",
