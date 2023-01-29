@@ -31,6 +31,7 @@ import deployedContracts from "./contracts/hardhat_contracts.json";
 import { getRPCPollTime, Transactor, Web3ModalSetup } from "./helpers";
 import { Home, ExampleUI, Hints, Subgraph, Send, SendLocalProvider } from "./views";
 import { useStaticJsonRPC, useGasPrice } from "./hooks";
+import { Web3Provider } from "zksync-web3";
 
 const { ethers } = require("ethers");
 /*
@@ -226,16 +227,16 @@ function App(props) {
   const loadWeb3Modal = useCallback(async () => {
     //const provider = await web3Modal.connect();
     const provider = await web3Modal.requestProvider();
-    setInjectedProvider(new ethers.providers.Web3Provider(provider));
+    setInjectedProvider(new Web3Provider(provider));
 
     provider.on("chainChanged", chainId => {
       console.log(`chain changed to ${chainId}! updating providers`);
-      setInjectedProvider(new ethers.providers.Web3Provider(provider));
+      setInjectedProvider(new Web3Provider(provider));
     });
 
     provider.on("accountsChanged", () => {
       console.log(`account changed!`);
-      setInjectedProvider(new ethers.providers.Web3Provider(provider));
+      setInjectedProvider(new Web3Provider(provider));
     });
 
     // Subscribe to session disconnection
@@ -329,7 +330,7 @@ function App(props) {
           {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
           <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} />
           <Send />
-          <SendLocalProvider provider={localProvider} />
+          <SendLocalProvider provider={localProvider} injectedProvider={injectedProvider} />
         </Route>
         <Route exact path="/debug">
           {/*
