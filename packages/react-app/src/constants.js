@@ -64,6 +64,13 @@ export const NETWORKS = {
     faucet: "https://gnosisfaucet.com",
     blockExplorer: "https://gnosisscan.io",
   },
+  zksync: {
+    name: "zksync",
+    color: "#70458f",
+    chainId: 324,
+    rpcUrl: "https://zksync2-mainnet.zksync.io",
+    blockExplorer: "https://explorer.zksync.io/",
+  },
   zksyncalpha: {
     name: "zksyncalpha",
     color: "#45488f",
