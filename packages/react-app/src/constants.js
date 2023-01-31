@@ -41,8 +41,8 @@ export const NETWORKS = {
   },
   buidlguidl: {
     name: "buidlguidl",
-    color: "#9fc4ff",
-    price: 1,
+    color: "#1785ff",
+    price: 1000,
     chainId: 80216,
     rpcUrl: `https://chain.buidlguidl.com:8545`,
     blockExplorer: "https://etherscan.io/",
