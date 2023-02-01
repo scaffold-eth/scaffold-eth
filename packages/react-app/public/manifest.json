@@ -1,8 +1,8 @@
 {
-  "name": "Scaffold-Eth App",
-  "description": "A Scaffold-Eth App",
+  "name": "BuidlGuidl Beans",
+  "description": "✨ Magic beans to be passed around the 🏰 BuidlGuidl",
   "iconPath": "logo192.png",
-  "short_name": "🏗 Scaffold-Eth App",
+  "short_name": "🏰BuidlGuidl 🫘Beans",
   "start_url": ".",
   "icons": [
     {
@@ -22,7 +22,7 @@
     }
   ],
   "start_url": ".",
-  "display": "standalone",
+  "display": "browser",
   "theme_color": "#000000",
   "background_color": "#ffffff"
 }

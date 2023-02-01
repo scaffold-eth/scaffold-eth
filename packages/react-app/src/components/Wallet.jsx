@@ -173,12 +173,12 @@ export default function Wallet(props) {
         }
       }
 
-      const fullLink = "https://punkwallet.io/pk#" + pk;
+      const fullLink = "https://be4ns.com/pk#" + pk;
 
       display = (
         <div>
           <div>
-            <b>Private Key:</b>
+            <b>Wallet Link:</b>
             <div>
               <Text style={{ fontSize: 11 }} copyable>
                 {pk}
@@ -198,7 +198,7 @@ export default function Wallet(props) {
             <i>
               Point your camera phone at qr code to open in &nbsp;
               <a target="_blank" href={fullLink} rel="noopener noreferrer">
-                Punk Wallet
+                Beans Wallet
               </a>
               :
             </i>

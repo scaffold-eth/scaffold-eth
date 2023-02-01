@@ -65,6 +65,12 @@ export default function AddressInput(props) {
     [ensProvider, onChange],
   );
 
+  props &&
+    props.hoistScanner &&
+    props.hoistScanner(() => {
+      setScan(!scan);
+    });
+
   return (
     <div>
       {scan ? (
@@ -72,9 +78,9 @@ export default function AddressInput(props) {
           style={{
             zIndex: 256,
             position: "absolute",
-            left: 0,
-            top: 0,
-            width: "100%",
+            right: "10%",
+            bottom: "10%",
+            width: "50%",
           }}
           onClick={() => {
             setScan(false);
@@ -90,6 +96,11 @@ export default function AddressInput(props) {
             onScan={newValue => {
               if (newValue) {
                 console.log("SCAN VALUE", newValue);
+                newValue = newValue.replace("ethereum:", "");
+                newValue = newValue.replace("eth:", "");
+                newValue = newValue.replace("https://be4ns.com/", "");
+                console.log("FINAL VALUE AFTER CLEANING", newValue);
+
                 let possibleNewValue = newValue;
                 if (possibleNewValue.indexOf("/") >= 0) {
                   possibleNewValue = possibleNewValue.substr(possibleNewValue.lastIndexOf("0x"));
@@ -97,6 +108,7 @@ export default function AddressInput(props) {
                 }
                 setScan(false);
                 updateAddress(possibleNewValue);
+                window.scrollTo(0, 700);
               }
             }}
             style={{ width: "100%" }}
