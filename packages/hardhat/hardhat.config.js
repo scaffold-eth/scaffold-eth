@@ -310,6 +310,7 @@ module.exports = {
       kovan: "DNXJA8RX2Q3VZ4URQIWP7Z68CJXQZSC6AW",
       rinkeby: "DNXJA8RX2Q3VZ4URQIWP7Z68CJXQZSC6AW",
       ropsten: "DNXJA8RX2Q3VZ4URQIWP7Z68CJXQZSC6AW",
+      sepolia: "DNXJA8RX2Q3VZ4URQIWP7Z68CJXQZSC6AW",
       // add other network's API key here
     },
     customChains: [

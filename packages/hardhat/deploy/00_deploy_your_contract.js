@@ -66,17 +66,18 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   // Verify from the command line by running `yarn verify`
 
   // You can also Verify your contracts with Etherscan here...
-  // You don't want to verify on localhost
-  // try {
-  //   if (chainId !== localChainId) {
-  //     await run("verify:verify", {
-  //       address: YourContract.address,
-  //       contract: "contracts/YourContract.sol:YourContract",
-  //       constructorArguments: [],
-  //     });
-  //   }
-  // } catch (error) {
-  //   console.error(error);
-  // }
+  // **** Note: you may need to run this twice if you get bytecode not found error ****
+  // **** just comment out the deploy above so it just rus the verify ****
+  try {
+    if (chainId !== localChainId) {
+      await run("verify:verify", {
+        address: YourContract.address,
+        contract: "contracts/YourContract.sol:YourContract",
+        constructorArguments: [],
+      });
+    }
+  } catch (error) {
+    console.error(error);
+  }
 };
 module.exports.tags = ["YourContract"];
