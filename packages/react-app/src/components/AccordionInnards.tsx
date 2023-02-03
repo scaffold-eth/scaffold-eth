@@ -24,7 +24,7 @@ export default function AccordionInnards(props: AccordionInnardsProps) {
   const { state, handleTooltipOpen, setHoverActive } = props
   return (
     <Fragment>
-            <AccordionDetails
+      <AccordionDetails
         sx={{
           paddingLeft: '5px',
           paddingRight: '5px',
