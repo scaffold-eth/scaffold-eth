@@ -22,10 +22,11 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
     from: deployer,
     // args: [ "Hello", ethers.utils.parseEther("1.5") ],
     log: true,
+    // waitConfirmations: 5,
   });
 
   // Getting a previously deployed contract
-  const YourContract = await ethers.getContract("YourContract", deployer);
+  // const YourContract = await ethers.getContract("YourContract", deployer);
   /*  await YourContract.setPurpose("Hello");
   
     // To take ownership of yourContract using the ownable library uncomment next line and add the 
@@ -64,19 +65,17 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
 
   // Verify from the command line by running `yarn verify`
 
-  // You can also Verify your contracts with Etherscan here...
-  // **** Note: you may need to run this twice if you get bytecode not found error ****
-  // **** just comment out the deploy above so it just rus the verify ****
+  // You can also Verify your contracts with Etherscan here during the deployment process
   try {
     if (chainId !== localChainId) {
-      await run("verify:verify", {
-        address: YourContract.address,
-        contract: "contracts/YourContract.sol:YourContract",
-        constructorArguments: [],
-      });
+      // await run("verify:verify", {
+      //   address: YourContract.address,
+      //   contract: "contracts/YourContract.sol:YourContract",
+      //   constructorArguments: [],
+      // });
     }
   } catch (error) {
-    console.error(error);
+    console.error("Verification Error =>", error);
   }
 };
 module.exports.tags = ["YourContract"];

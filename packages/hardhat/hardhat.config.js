@@ -104,6 +104,7 @@ module.exports = {
     },
     sepolia: {
       url: "https://rpc.sepolia.org",
+      // "https://sepolia.infura.io/v3/INFURA_ID",
       accounts: {
         mnemonic: mnemonic(),
       },
@@ -313,16 +314,6 @@ module.exports = {
       sepolia: "DNXJA8RX2Q3VZ4URQIWP7Z68CJXQZSC6AW",
       // add other network's API key here
     },
-    customChains: [
-      {
-        network: "sepolia",
-        chainId: 11155111,
-        urls: {
-          apiURL: "https://api-sepolia.etherscan.io/api",
-          browserURL: "https://sepolia.etherscan.io",
-        },
-      },
-    ],
   },
   abiExporter: {
     path: "../react-app/src/contracts/ABI",
