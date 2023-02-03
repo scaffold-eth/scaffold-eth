@@ -1,5 +1,7 @@
 import { Button, Col, Menu, Row } from "antd";
 
+import { UserSwitchOutlined, CloseOutlined } from "@ant-design/icons";
+
 import "antd/dist/antd.css";
 import {
   useBalance,
@@ -259,6 +261,8 @@ function App(props) {
     checkSafeApp();
   }, [loadWeb3Modal]);
 
+  const [showSettings, setShowSettings] = useState(false);
+
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
 
   return (
@@ -277,32 +281,58 @@ function App(props) {
                 />
               </div>
             )}
-            <Account
-              useBurner={USE_BURNER_WALLET}
-              address={address}
-              localProvider={localProvider}
-              userSigner={userSigner}
-              mainnetProvider={mainnetProvider}
-              price={price}
-              web3Modal={web3Modal}
-              loadWeb3Modal={loadWeb3Modal}
-              logoutOfWeb3Modal={logoutOfWeb3Modal}
-              blockExplorer={blockExplorer}
-            />
+            {showSettings && (
+              <>
+                <Account
+                  useBurner={USE_BURNER_WALLET}
+                  address={address}
+                  localProvider={localProvider}
+                  userSigner={userSigner}
+                  mainnetProvider={mainnetProvider}
+                  price={price}
+                  web3Modal={web3Modal}
+                  loadWeb3Modal={loadWeb3Modal}
+                  logoutOfWeb3Modal={logoutOfWeb3Modal}
+                  blockExplorer={blockExplorer}
+                />
+                <div
+                  onClick={() => {
+                    setShowSettings(!showSettings);
+                  }}
+                  style={{ cursor: "pointer", fontSize: 18, paddingTop: 4, paddingLeft: 8 }}
+                >
+                  <CloseOutlined />
+                </div>
+              </>
+            )}
+
+            {!showSettings && (
+              <div
+                onClick={() => {
+                  setShowSettings(!showSettings);
+                }}
+                style={{ cursor: "pointer", fontSize: 18 }}
+              >
+                {" "}
+                <UserSwitchOutlined />{" "}
+              </div>
+            )}
           </div>
         </div>
       </Header>
       {yourLocalBalance.lte(ethers.BigNumber.from("0")) && (
         <FaucetHint localProvider={localProvider} targetNetwork={targetNetwork} address={address} />
       )}
-      <NetworkDisplay
-        NETWORKCHECK={NETWORKCHECK}
-        localChainId={localChainId}
-        selectedChainId={selectedChainId}
-        targetNetwork={targetNetwork}
-        logoutOfWeb3Modal={logoutOfWeb3Modal}
-        USE_NETWORK_SELECTOR={USE_NETWORK_SELECTOR}
-      />
+      {showSettings && (
+        <NetworkDisplay
+          NETWORKCHECK={NETWORKCHECK}
+          localChainId={localChainId}
+          selectedChainId={selectedChainId}
+          targetNetwork={targetNetwork}
+          logoutOfWeb3Modal={logoutOfWeb3Modal}
+          USE_NETWORK_SELECTOR={USE_NETWORK_SELECTOR}
+        />
+      )}
 
       <Switch>
         <Route exact path="/">

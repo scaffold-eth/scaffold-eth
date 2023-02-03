@@ -10,6 +10,8 @@ import AddressInput from "../components/AddressInput";
 import QRPunkBlockie from "../components/QRPunkBlockie";
 import { useEffect } from "react";
 
+import { Address } from "../components";
+
 /*
 /**
  * web3 props can be passed from '../App.jsx' into your local view component for use
@@ -102,6 +104,7 @@ function Home({ yourLocalBalance, address, readContracts, mainnetProvider, selec
 
       <div style={{ margin: "auto", position: "relative", backgroundColor: "#ffffff", padding: 8, width: 400 }}>
         <QRPunkBlockie withQr={true} address={address} />
+        <Address address={address} ensProvider={mainnetProvider} hideBlockie={true} fontSize={18} />
       </div>
 
       <div style={{ margin: "auto", marginTop: 96, width: 300 }}>
