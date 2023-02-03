@@ -4,11 +4,11 @@ import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
-import { OverlayScrollbarsComponent } from 'overlayscrollbars-react'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import { Reward } from '../types/rewardTypes'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import SearchIcon from '@mui/icons-material/Search'
+import { Fragment } from 'react'
 
 export interface AccordionInnardsProps {
   state: any
@@ -21,10 +21,10 @@ export interface AccordionInnardsProps {
 }
 
 export default function AccordionInnards(props: AccordionInnardsProps) {
-  const { state, handleTooltipOpen, handleTooltipClose, open, setHoverActive, etherscan, event } = props
+  const { state, handleTooltipOpen, setHoverActive } = props
   return (
-    <OverlayScrollbarsComponent defer>
-      <AccordionDetails
+    <Fragment>
+            <AccordionDetails
         sx={{
           paddingLeft: '5px',
           paddingRight: '5px',
@@ -103,6 +103,6 @@ export default function AccordionInnards(props: AccordionInnardsProps) {
           ))}
         </List>
       </AccordionDetails>
-    </OverlayScrollbarsComponent>
+    </Fragment>
   )
 }

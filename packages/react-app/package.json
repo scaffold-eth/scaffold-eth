@@ -61,8 +61,6 @@
     "ipfs-http-client": "^55.0.0",
     "isomorphic-fetch": "^3.0.0",
     "node-watch": "^0.7.1",
-    "overlayscrollbars": "^2.0.3",
-    "overlayscrollbars-react": "^0.5.0",
     "postcss": "^8.2.6",
     "prop-types": "^15.8.1",
     "qrcode.react": "^1.0.0",
