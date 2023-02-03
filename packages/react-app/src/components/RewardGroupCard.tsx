@@ -6,7 +6,6 @@ import Accordion from '@mui/material/Accordion'
 import multihash from 'multihashes'
 import Snackbar from '@mui/material/Snackbar'
 import MuiAlert, { AlertProps } from '@mui/material/Alert'
-import 'overlayscrollbars/overlayscrollbars.css'
 import AccordionInnards from './AccordionInnards'
 
 export const toBase58 = (contentHash: any) => {

@@ -29,10 +29,28 @@ export default function AccordionInnards(props: AccordionInnardsProps) {
           paddingLeft: '5px',
           paddingRight: '5px',
           maxHeight: '24vh',
-          overflow: 'scroll',
+          overflowY: 'scroll',
+          overflowX: 'hidden',
           paddingBottom: '5px !important',
+          '::-webkit-scrollbar': {
+            width: '0.4em',
+            border: 'red',
+          },
           '::-webkit-scrollbar-track': {
+            background: '#1976d2',
+            width: '2.5em',
+            borderRadius: '100vw',
+            marginBlock: '0.5em',
+          },
+          '::-webkit-scrollbar-track:hover': {
+            background: '#1976d2',
+            borderRadius: '100vw',
+            marginBlock: '.5em',
+          },
+          '::-webkit-scrollbar-thumb': {
             background: 'pink',
+            borderRadius: '100vw',
+            width: '2em',
           },
         }}
       >
