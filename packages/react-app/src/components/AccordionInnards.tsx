@@ -33,7 +33,7 @@ export default function AccordionInnards(props: AccordionInnardsProps) {
           overflowX: 'hidden',
           paddingBottom: '5px !important',
           '::-webkit-scrollbar': {
-            width: '0.4em',
+            width: '0.6em',
           },
           '::-webkit-scrollbar-track': {
             background: 'inherit',
@@ -47,9 +47,9 @@ export default function AccordionInnards(props: AccordionInnardsProps) {
             marginBlock: '.5em',
           },
           '::-webkit-scrollbar-thumb': {
-            background: 'pink',
+            background: '#d7ddf0',
             borderRadius: '100vw',
-            width: '2em',
+            width: '3em',
           },
         }}
       >
