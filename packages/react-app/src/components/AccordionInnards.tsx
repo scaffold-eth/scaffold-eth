@@ -34,10 +34,9 @@ export default function AccordionInnards(props: AccordionInnardsProps) {
           paddingBottom: '5px !important',
           '::-webkit-scrollbar': {
             width: '0.4em',
-            border: 'red',
           },
           '::-webkit-scrollbar-track': {
-            background: '#1976d2',
+            background: 'inherit',
             width: '2.5em',
             borderRadius: '100vw',
             marginBlock: '0.5em',
@@ -57,6 +56,9 @@ export default function AccordionInnards(props: AccordionInnardsProps) {
         <List
           sx={{
             backgroundColor: 'white',
+            paddingLeft: '2px',
+            paddingRight: '0px',
+            marginLeft: '3px',
             borderBottomLeftRadius: '15px !important',
             borderBottomRightRadius: '15px !important',
           }}

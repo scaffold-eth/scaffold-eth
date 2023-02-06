@@ -131,6 +131,7 @@ export default function RewardGroupCard(props: any) {
               ':hover': { background: '#1976d2', color: '#fff' },
               borderBottomLeftRadius: '15px !important',
               borderBottomRightRadius: '15px !important',
+              paddingBottom: '5px',
             }}
           >
             <AccordionSummary sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
