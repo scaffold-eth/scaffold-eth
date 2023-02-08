@@ -8,7 +8,8 @@
     "eslint-config-airbnb": "^18.2.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-babel": "^5.3.1",
-    "eslint-plugin-prettier": "^3.4.0"
+    "eslint-plugin-prettier": "^3.4.0",
+    "hardhat": "^2.12.6"
   },
   "dependencies": {
     "@nomicfoundation/hardhat-chai-matchers": "^1.0.3",
