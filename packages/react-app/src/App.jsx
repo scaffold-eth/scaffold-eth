@@ -6,7 +6,7 @@ import {
   useContractLoader,
   useContractReader,
   // useOnBlock,
-  useUserProviderAndSigner,
+  // useUserProviderAndSigner,
 } from "eth-hooks";
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
 import React, { useCallback, useEffect, useState } from "react";
@@ -30,7 +30,7 @@ import externalContracts from "./contracts/external_contracts";
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { getRPCPollTime, Transactor, Web3ModalSetup } from "./helpers";
 import { Home, ExampleUI, Hints, Subgraph, Send, SendLocalProvider } from "./views";
-import { useStaticJsonRPC, useGasPrice } from "./hooks";
+import { useStaticJsonRPC, useGasPrice, useUserProviderAndSigner } from "./hooks";
 import { Web3Provider } from "zksync-web3";
 
 const { ethers } = require("ethers");
@@ -330,7 +330,7 @@ function App(props) {
           {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
           <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} />
           <Send />
-          <SendLocalProvider provider={localProvider} injectedProvider={injectedProvider} />
+          <SendLocalProvider provider={localProvider} injectedProvider={injectedProvider} userSigner={userSigner} />
         </Route>
         <Route exact path="/debug">
           {/*

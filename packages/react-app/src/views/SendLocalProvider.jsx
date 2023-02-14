@@ -3,7 +3,7 @@ import React from "react";
 import { Wallet, Contract, utils } from "zksync-web3";
 import externalContracts from "../contracts/external_contracts";
 
-function SendLocalProvider({ provider, injectedProvider }) {
+function SendLocalProvider({ provider, injectedProvider, userSigner }) {
   const BUIDLBUXX_PAYMASTER_ADDRESS = "0x628e8b27F0c5c443a68297893c920328dD18e611";
 
   // TODO: use chainId from provider
@@ -16,7 +16,8 @@ function SendLocalProvider({ provider, injectedProvider }) {
         console.log("provider: ", provider);
         console.log("injectedProvider: ", injectedProvider);
 
-        const signer = injectedProvider.getSigner();
+        // const signer = injectedProvider.getSigner();
+        const signer = userSigner;
         console.log("signer: ", signer);
 
         const wallet3 = new Wallet("0xd293c684d884d56f8d6abd64fc76757d3664904e309a0645baf8522ab6366d9e");
