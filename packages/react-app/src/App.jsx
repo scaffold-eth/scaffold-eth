@@ -330,7 +330,7 @@ function App(props) {
           {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
           <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} />
           <Send />
-          <SendLocalProvider provider={localProvider} injectedProvider={injectedProvider} userSigner={userSigner} />
+          <SendLocalProvider provider={localProvider} userSigner={userSigner} />
         </Route>
         <Route exact path="/debug">
           {/*
