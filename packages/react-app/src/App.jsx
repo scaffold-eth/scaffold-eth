@@ -29,7 +29,18 @@ import externalContracts from "./contracts/external_contracts";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { getRPCPollTime, Transactor, Web3ModalSetup } from "./helpers";
-import { Home, ExampleUI, Hints, Subgraph, Send, SendLocalProvider, PayToVendor } from "./views";
+import {
+  Home,
+  ExampleUI,
+  Hints,
+  Subgraph,
+  Send,
+  SendLocalProvider,
+  PayToVendor,
+  ClaimTokens,
+  MintTokens,
+  TransferTokens,
+} from "./views";
 import { useStaticJsonRPC, useGasPrice, useUserProviderAndSigner } from "./hooks";
 import { Web3Provider } from "zksync-web3";
 
@@ -152,7 +163,7 @@ function App(props) {
   const contractConfig = { deployedContracts: deployedContracts || {}, externalContracts: externalContracts || {} };
 
   // Load in your local 📝 contract and read a value from it:
-  const readContracts = useContractLoader(localProvider, contractConfig);
+  const readContracts = useContractLoader(localProvider, contractConfig, localChainId);
 
   // If you want to make 🔐 write transactions to your contracts, use the userSigner:
   const writeContracts = useContractLoader(userSigner, contractConfig, localChainId);
@@ -305,6 +316,9 @@ function App(props) {
       <Switch>
         <Route exact path="/">
           <PayToVendor provider={localProvider} userSigner={userSigner} />
+          <ClaimTokens />
+          <MintTokens address={address} />
+          <TransferTokens provider={localProvider} userSigner={userSigner} mainnetProvider={mainnetProvider} />
         </Route>
         <Route exact path="/debug">
           {/*
@@ -314,7 +328,7 @@ function App(props) {
             */}
 
           <Contract
-            name="YourContract"
+            name="BuidlBuxx"
             price={price}
             signer={userSigner}
             provider={localProvider}
