@@ -1217,4 +1217,12 @@ module.exports = {
       },
     },
   },
+  280: {
+    contracts: {
+      BuidlBuxx: {
+        address: "0xf551954D449eA3Ae4D6A2656a42d9B9081B137b4",
+        abi: buidlBuxxAbi,
+      },
+    },
+  },
 };
