@@ -42,7 +42,7 @@ import {
   TransferTokens,
 } from "./views";
 import { useStaticJsonRPC, useGasPrice, useUserProviderAndSigner } from "./hooks";
-import { Web3Provider } from "zksync-web3";
+import { Web3Provider, Contract as ContractZK } from "zksync-web3";
 
 const { ethers } = require("ethers");
 /*
@@ -270,6 +270,35 @@ function App(props) {
 
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
 
+  const [contractBuidl, setContractBuidl] = useState();
+  const [balance, setBalance] = useState();
+
+  const abi = externalContracts[localChainId]?.contracts.BuidlBuxx.abi;
+  const BUIDLBUXX_ADDRESS = externalContracts[localChainId]?.contracts.BuidlBuxx.address;
+
+  useEffect(() => {
+    const updateContractBuidl = async () => {
+      if (BUIDLBUXX_ADDRESS && abi) {
+        const newContractBuidl = new ContractZK(BUIDLBUXX_ADDRESS, abi, userSigner);
+        console.log("newContractBuidl: ", newContractBuidl);
+        setContractBuidl(newContractBuidl);
+      }
+    };
+    updateContractBuidl();
+  }, [BUIDLBUXX_ADDRESS, abi, userSigner]);
+
+  const updateBalanceBuidl = async () => {
+    if (contractBuidl && address) {
+      const newBalance = await contractBuidl.balanceOf(address);
+      console.log("newBalance: ", (newBalance / 100).toString());
+      setBalance((newBalance / 100).toString());
+    }
+  };
+
+  useEffect(() => {
+    updateBalanceBuidl();
+  }, [contractBuidl, address]);
+
   return (
     <div className="App">
       {/* ✏️ Edit the header and change the title to your project name */}
@@ -315,10 +344,21 @@ function App(props) {
 
       <Switch>
         <Route exact path="/">
-          <PayToVendor provider={localProvider} userSigner={userSigner} />
-          <ClaimTokens />
-          <MintTokens address={address} />
-          <TransferTokens provider={localProvider} userSigner={userSigner} mainnetProvider={mainnetProvider} />
+          <h2>Buidl Balance: {balance}</h2>
+          <PayToVendor
+            provider={localProvider}
+            userSigner={userSigner}
+            updateBalanceBuidl={updateBalanceBuidl}
+            contractBuidl={contractBuidl}
+          />
+          <ClaimTokens userSigner={userSigner} address={address} updateBalanceBuidl={updateBalanceBuidl} />
+          <TransferTokens
+            provider={localProvider}
+            userSigner={userSigner}
+            mainnetProvider={mainnetProvider}
+            updateBalanceBuidl={updateBalanceBuidl}
+            contractBuidl={contractBuidl}
+          />
         </Route>
         <Route exact path="/debug">
           {/*

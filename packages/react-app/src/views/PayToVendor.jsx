@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Wallet, Contract, utils } from "zksync-web3";
 import externalContracts from "../contracts/external_contracts";
 
-function PayToVendor({ provider, userSigner }) {
+function PayToVendor({ provider, userSigner, updateBalanceBuidl, contractBuidl }) {
   // local
   // const BUIDLBUXX_PAYMASTER_ADDRESS = "0x628e8b27F0c5c443a68297893c920328dD18e611";
   // testnet
@@ -24,38 +24,6 @@ function PayToVendor({ provider, userSigner }) {
 
   const [vendorAddress, setVendorAddress] = useState();
   const [amount, setAmount] = useState();
-  const [contractBuidl, setContractBuidl] = useState();
-  const [balance, setBalance] = useState();
-
-  // TODO: use chainId from provider
-
-  // local
-  //const chanId = 270;
-  // testnet
-  const chanId = 280;
-
-  const abi = externalContracts[chanId].contracts.BuidlBuxx.abi;
-  const BUIDLBUXX_ADDRESS = externalContracts[chanId].contracts.BuidlBuxx.address;
-
-  useEffect(() => {
-    const updateContractBuidl = async () => {
-      const newContractBuidl = new Contract(BUIDLBUXX_ADDRESS, abi, userSigner);
-      console.log("newContractBuidl: ", newContractBuidl);
-      setContractBuidl(newContractBuidl);
-    };
-    updateContractBuidl();
-  }, [BUIDLBUXX_ADDRESS, abi, userSigner]);
-
-  useEffect(() => {
-    const updateBalanceBuidl = async () => {
-      if (contractBuidl && userSigner && userSigner.address) {
-        const newBalance = await contractBuidl.balanceOf(userSigner.address);
-        console.log("newBalance: ", newBalance);
-        setBalance((newBalance / 100).toString());
-      }
-    };
-    updateBalanceBuidl();
-  }, [contractBuidl, userSigner && userSigner.address]);
 
   const handleChangeVendor = value => {
     console.log(`selected ${value}`);
@@ -69,7 +37,6 @@ function PayToVendor({ provider, userSigner }) {
 
   return (
     <div>
-      <h2>Buidl Balance: {balance}</h2>
       <h2>Pay to Vendor</h2>
       <Select
         placeholder="Select vendor"
@@ -95,7 +62,7 @@ function PayToVendor({ provider, userSigner }) {
           const gasLimit = 300000;
 
           if (amount > 0) {
-            const amountToSend = amount; // * 100;
+            const amountToSend = amount * 100;
             const result = await (
               await contractBuidl.transfer(vendorAddress, amountToSend, {
                 gasLimit,
@@ -114,9 +81,7 @@ function PayToVendor({ provider, userSigner }) {
               });
               setAmount(0);
               setVendorAddress("");
-              const newBalance = await contractBuidl.balanceOf(userSigner.address);
-              console.log("newBalance: ", newBalance);
-              setBalance((newBalance / 100).toString());
+              updateBalanceBuidl();
             } else {
               notification.error({
                 message: "Error sending payment!",
