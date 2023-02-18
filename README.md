@@ -17,12 +17,11 @@ yarn install
 ```bash
 # 1. Terminal
 # start local chain
-$ yarn
-$ yarn chain
+yarn chain
 
 # 2. Terminal
 # start eth.dev app
-$ yarn start
+yarn start
 ```
 
 ## Create a new level
