@@ -21,9 +21,11 @@ function PayToVendor({ provider, userSigner, updateBalanceBuidl, contractBuidl }
     console.log("location: ", location);
     const qr = qs.parse(location.search, { ignoreQueryPrefix: true }).qr;
     console.log("qr: ", qr);
-    const parsedQr = parse(qr);
-    console.log("parsedQr: ", parsedQr);
-    setVendorAddress(parsedQr.parameters.address);
+    if (qr) {
+      const parsedQr = parse(qr);
+      console.log("parsedQr: ", parsedQr);
+      setVendorAddress(parsedQr.parameters.address);
+    }
   }, [location]);
 
   const handleChangeAmount = value => {
@@ -34,57 +36,63 @@ function PayToVendor({ provider, userSigner, updateBalanceBuidl, contractBuidl }
   return (
     <div>
       <h2>Pay to Vendor</h2>
-      <h3>Vendor: {vendorAddress}</h3>
-      <InputNumber onChange={handleChangeAmount} value={amount} />
-      <Button
-        type="primary"
-        onClick={async () => {
-          console.log("provider: ", provider);
-          console.log("userSigner: ", userSigner);
+      {vendorAddress ? (
+        <div>
+          <h3>Vendor: {vendorAddress}</h3>
+          <InputNumber onChange={handleChangeAmount} value={amount} />
+          <Button
+            type="primary"
+            onClick={async () => {
+              console.log("provider: ", provider);
+              console.log("userSigner: ", userSigner);
 
-          const paymasterParams = utils.getPaymasterParams(BUIDLBUXX_PAYMASTER_ADDRESS, {
-            type: "General",
-            innerInput: new Uint8Array(),
-          });
-
-          console.log("contractBuidl: ", contractBuidl);
-
-          const gasLimit = 300000;
-
-          if (amount > 0) {
-            const amountToSend = amount * 100;
-            const result = await (
-              await contractBuidl.transfer(vendorAddress, amountToSend, {
-                gasLimit,
-                customData: {
-                  paymasterParams,
-                  gasPerPubdata: utils.DEFAULT_GAS_PER_PUBDATA_LIMIT,
-                },
-              })
-            ).wait();
-            console.log("Result transfer: ", result);
-            if (result.confirmations > 0) {
-              notification.success({
-                message: "Payment Sent!",
-                description: `${amount} Buidl Tokens sent.`,
-                placement: "topRight",
+              const paymasterParams = utils.getPaymasterParams(BUIDLBUXX_PAYMASTER_ADDRESS, {
+                type: "General",
+                innerInput: new Uint8Array(),
               });
-              setAmount(0);
-              updateBalanceBuidl();
-            } else {
-              notification.error({
-                message: "Error sending payment!",
-                description: `${result}`,
-                placement: "topRight",
-              });
-            }
-          } else {
-            alert("Amount should be > 0!");
-          }
-        }}
-      >
-        Transfer
-      </Button>
+
+              console.log("contractBuidl: ", contractBuidl);
+
+              const gasLimit = 300000;
+
+              if (amount > 0) {
+                const amountToSend = amount * 100;
+                const result = await (
+                  await contractBuidl.transfer(vendorAddress, amountToSend, {
+                    gasLimit,
+                    customData: {
+                      paymasterParams,
+                      gasPerPubdata: utils.DEFAULT_GAS_PER_PUBDATA_LIMIT,
+                    },
+                  })
+                ).wait();
+                console.log("Result transfer: ", result);
+                if (result.confirmations > 0) {
+                  notification.success({
+                    message: "Payment Sent!",
+                    description: `${amount} Buidl Tokens sent.`,
+                    placement: "topRight",
+                  });
+                  setAmount(0);
+                  updateBalanceBuidl();
+                } else {
+                  notification.error({
+                    message: "Error sending payment!",
+                    description: `${result}`,
+                    placement: "topRight",
+                  });
+                }
+              } else {
+                alert("Amount should be > 0!");
+              }
+            }}
+          >
+            Transfer
+          </Button>
+        </div>
+      ) : (
+        <h3>No vendor selected</h3>
+      )}
     </div>
   );
 }
