@@ -1,17 +1,18 @@
-import { Button, Select, InputNumber, notification, ConfigProvider } from "antd";
+import { Button, Select, InputNumber, notification } from "antd";
 import React, { useCallback, useEffect, useState } from "react";
 import { utils } from "zksync-web3";
 import { useLocation } from "react-router-dom";
 import qs from "qs";
 import { parse } from "eth-url-parser";
 
-function PayToVendor({ provider, userSigner, updateBalanceBuidl, contractBuidl }) {
+function PayToVendor({ provider, userSigner, updateBalanceBuidl, contractBuidl, vendors }) {
   // local
   // const BUIDLBUXX_PAYMASTER_ADDRESS = "0x628e8b27F0c5c443a68297893c920328dD18e611";
   // testnet
   const BUIDLBUXX_PAYMASTER_ADDRESS = "0x7F904e350F27aF4D4A70994AE1f3bBC1dAfEe665";
 
   const [vendorAddress, setVendorAddress] = useState();
+  const [vendorLabel, setVendorLabel] = useState();
   const [amount, setAmount] = useState();
   const [qr, setQr] = useState();
 
@@ -28,6 +29,14 @@ function PayToVendor({ provider, userSigner, updateBalanceBuidl, contractBuidl }
     }
   }, [location]);
 
+  useEffect(() => {
+    console.log("vendorAddress: ", vendorAddress);
+    const vendorIndex = vendors.findIndex(element => element.value == vendorAddress);
+    if (vendorIndex >= 0) {
+      setVendorLabel(vendors[vendorIndex].label);
+    }
+  }, [vendorAddress]);
+
   const handleChangeAmount = value => {
     console.log("changed", value);
     setAmount(value);
@@ -35,11 +44,12 @@ function PayToVendor({ provider, userSigner, updateBalanceBuidl, contractBuidl }
 
   return (
     <div>
-      <h2>Pay to Vendor</h2>
-      {vendorAddress ? (
+      <h2>Purchase Food</h2>
+      {vendorAddress && vendorLabel ? (
         <div>
-          <h3>Vendor: {vendorAddress}</h3>
-          <InputNumber onChange={handleChangeAmount} value={amount} />
+          <h3>Food Truck: {vendorLabel}</h3>
+          <h4>Address: {vendorAddress}</h4>
+          <InputNumber placeholder="amount..." onChange={handleChangeAmount} value={amount} />
           <Button
             type="primary"
             onClick={async () => {

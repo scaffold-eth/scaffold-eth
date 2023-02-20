@@ -37,7 +37,7 @@ import {
   Send,
   SendLocalProvider,
   PayToVendor,
-  PayToVendorSelect,
+  SelectVendor,
   ClaimTokens,
   MintTokens,
   TransferTokens,
@@ -271,6 +271,19 @@ function App(props) {
 
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
 
+  // local
+  /*
+  const vendors = [
+    { label: "Vendor1", value: "0x0D43eB5B8a47bA8900d84AA36656c92024e9772e" },
+    { label: "Vendor2", value: "0x7f1A8F0811Bf6700c3bc98342758145113c58E4A" },
+  ];
+  */
+  // testnet
+  const vendors = [
+    { label: "Vendor1", value: "0x0dc01C03207fB73937B4aC88d840fBBB32e8026d" },
+    { label: "Vendor2", value: "0x7EBa38e027Fa14ecCd87B8c56a49Fa75E04e7B6e" },
+  ];
+
   const [contractBuidl, setContractBuidl] = useState();
   const [balance, setBalance] = useState();
 
@@ -347,11 +360,12 @@ function App(props) {
         <Route exact path="/">
           <h2>Buidl Balance: {balance}</h2>
           {balance > 0 && (
-            <PayToVendorSelect
+            <SelectVendor
               provider={localProvider}
               userSigner={userSigner}
               updateBalanceBuidl={updateBalanceBuidl}
               contractBuidl={contractBuidl}
+              vendors={vendors}
             />
           )}
           <ClaimTokens userSigner={userSigner} address={address} updateBalanceBuidl={updateBalanceBuidl} />
@@ -372,6 +386,7 @@ function App(props) {
             userSigner={userSigner}
             updateBalanceBuidl={updateBalanceBuidl}
             contractBuidl={contractBuidl}
+            vendors={vendors}
           />
         </Route>
         <Route exact path="/claim">
