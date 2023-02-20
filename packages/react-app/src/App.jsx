@@ -32,6 +32,10 @@ import { getRPCPollTime, Transactor, Web3ModalSetup } from "./helpers";
 import { Home, ExampleUI, Hints, Subgraph } from "./views";
 import { useStaticJsonRPC, useGasPrice } from "./hooks";
 
+import { Main } from "./game";
+
+import Level1 from "./Level1.json";
+
 const { ethers } = require("ethers");
 /*
     Welcome to 🏗 scaffold-eth !
@@ -261,6 +265,8 @@ function App(props) {
 
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
 
+  const [showLocalWallet, setShowLocalWallet] = useState();
+
   return (
     <div className="App">
       {/* ✏️ Edit the header and change the title to your project name */}
@@ -303,31 +309,67 @@ function App(props) {
         logoutOfWeb3Modal={logoutOfWeb3Modal}
         USE_NETWORK_SELECTOR={USE_NETWORK_SELECTOR}
       />
-      <Menu style={{ textAlign: "center", marginTop: 20 }} selectedKeys={[location.pathname]} mode="horizontal">
-        <Menu.Item key="/">
-          <Link to="/">App Home</Link>
-        </Menu.Item>
-        <Menu.Item key="/debug">
-          <Link to="/debug">Debug Contracts</Link>
-        </Menu.Item>
-        <Menu.Item key="/hints">
-          <Link to="/hints">Hints</Link>
-        </Menu.Item>
-        <Menu.Item key="/exampleui">
-          <Link to="/exampleui">ExampleUI</Link>
-        </Menu.Item>
-        <Menu.Item key="/mainnetdai">
-          <Link to="/mainnetdai">Mainnet DAI</Link>
-        </Menu.Item>
-        <Menu.Item key="/subgraph">
-          <Link to="/subgraph">Subgraph</Link>
-        </Menu.Item>
-      </Menu>
 
       <Switch>
         <Route exact path="/">
-          {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
-          <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} />
+          <div>this will be what loads on your phone</div>
+          <div>it will show your inventory and let you buys and sell stuff?</div>
+          <div>it will contain interfaces for contracts and addresses stuff </div>
+          <div>it will also have some kind of registry where you can paste in your contract address </div>
+
+          <Button
+            onClick={async () => {
+              console.log("🧘‍♂️ DEPLOYING");
+
+              const deployer = new ethers.ContractFactory(Level1.abi, Level1.bytecode, userSigner);
+
+              let result = await deployer.deploy();
+
+              console.log("result", result);
+              if (result && result.address) {
+                console.log("🍄 Contract deployed to:", result.address);
+                //console.log("Setting game contract...", result.address);
+
+                const contract = new ethers.Contract(result.address, Level1.abi, userSigner);
+
+                console.log(" 🌲🌲🌲 generating.......");
+                await (await contract.generate()).wait();
+                //await (await contract.generate()).wait();
+                //await (await contract.generate()).wait();
+              }
+            }}
+          >
+            DEPLOY
+          </Button>
+
+          {/*
+          <Main
+            address={address}
+            userSigner={userSigner}
+            localProvider={localProvider}
+            mainnetProvider={mainnetProvider}
+            price={price}
+            setShowLocalWallet={setShowLocalWallet}
+            // bring these in so we can dynamically get the contract artifacts
+            contractConfig={contractConfig}
+            readContracts={readContracts}
+            setSelectedNetwork={setSelectedNetwork}
+          />
+      */}
+        </Route>
+        <Route exact path="/:incomingContractAddress">
+          <Main
+            address={address}
+            userSigner={userSigner}
+            localProvider={localProvider}
+            mainnetProvider={mainnetProvider}
+            price={price}
+            setShowLocalWallet={setShowLocalWallet}
+            // bring these in so we can dynamically get the contract artifacts
+            contractConfig={contractConfig}
+            readContracts={readContracts}
+            setSelectedNetwork={setSelectedNetwork}
+          />
         </Route>
         <Route exact path="/debug">
           {/*
@@ -337,7 +379,7 @@ function App(props) {
             */}
 
           <Contract
-            name="YourContract"
+            name="Level1"
             price={price}
             signer={userSigner}
             provider={localProvider}
@@ -404,30 +446,6 @@ function App(props) {
 
       {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
       <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
-        <Row align="middle" gutter={[4, 4]}>
-          <Col span={8}>
-            <Ramp price={price} address={address} networks={NETWORKS} />
-          </Col>
-
-          <Col span={8} style={{ textAlign: "center", opacity: 0.8 }}>
-            <GasGauge gasPrice={gasPrice} />
-          </Col>
-          <Col span={8} style={{ textAlign: "center", opacity: 1 }}>
-            <Button
-              onClick={() => {
-                window.open("https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA");
-              }}
-              size="large"
-              shape="round"
-            >
-              <span style={{ marginRight: 8 }} role="img" aria-label="support">
-                💬
-              </span>
-              Support
-            </Button>
-          </Col>
-        </Row>
-
         <Row align="middle" gutter={[4, 4]}>
           <Col span={24}>
             {

@@ -21,7 +21,33 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <title>Ethereum App</title>
+    <title>ether town</title>
+
+    <style>
+      .ripple {
+        position: absolute;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.5);
+        transform: scale(0);
+        animation: ripple 0.4s ease-out;
+      }
+
+      .error {
+        position: absolute;
+        border-radius: 50%;
+        background-color: rgba(255, 0, 0, 1);
+        width: 100px;
+        height: 100px;
+      }
+
+
+      @keyframes ripple {
+        to {
+          transform: scale(0.0777);
+          opacity: 0;
+        }
+      }
+    </style>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
