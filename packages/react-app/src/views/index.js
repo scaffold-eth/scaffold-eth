@@ -5,6 +5,7 @@ export { default as Subgraph } from "./Subgraph";
 export { default as Send } from "./Send";
 export { default as SendLocalProvider } from "./SendLocalProvider";
 export { default as PayToVendor } from "./PayToVendor";
+export { default as PayToVendorSelect } from "./PayToVendorSelect";
 export { default as ClaimTokens } from "./ClaimTokens";
 export { default as MintTokens } from "./MintTokens";
 export { default as TransferTokens } from "./TransferTokens";

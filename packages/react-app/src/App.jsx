@@ -37,6 +37,7 @@ import {
   Send,
   SendLocalProvider,
   PayToVendor,
+  PayToVendorSelect,
   ClaimTokens,
   MintTokens,
   TransferTokens,
@@ -345,7 +346,7 @@ function App(props) {
       <Switch>
         <Route exact path="/">
           <h2>Buidl Balance: {balance}</h2>
-          <PayToVendor
+          <PayToVendorSelect
             provider={localProvider}
             userSigner={userSigner}
             updateBalanceBuidl={updateBalanceBuidl}
@@ -359,6 +360,19 @@ function App(props) {
             updateBalanceBuidl={updateBalanceBuidl}
             contractBuidl={contractBuidl}
           />
+        </Route>
+        <Route exact path="/pay">
+          <h2>Buidl Balance: {balance}</h2>
+          <PayToVendor
+            provider={localProvider}
+            userSigner={userSigner}
+            updateBalanceBuidl={updateBalanceBuidl}
+            contractBuidl={contractBuidl}
+          />
+        </Route>
+        <Route exact path="/claim">
+          <h2>Buidl Balance: {balance}</h2>
+          <ClaimTokens userSigner={userSigner} address={address} updateBalanceBuidl={updateBalanceBuidl} />
         </Route>
         <Route exact path="/debug">
           {/*
