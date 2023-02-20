@@ -346,20 +346,24 @@ function App(props) {
       <Switch>
         <Route exact path="/">
           <h2>Buidl Balance: {balance}</h2>
-          <PayToVendorSelect
-            provider={localProvider}
-            userSigner={userSigner}
-            updateBalanceBuidl={updateBalanceBuidl}
-            contractBuidl={contractBuidl}
-          />
+          {balance > 0 && (
+            <PayToVendorSelect
+              provider={localProvider}
+              userSigner={userSigner}
+              updateBalanceBuidl={updateBalanceBuidl}
+              contractBuidl={contractBuidl}
+            />
+          )}
           <ClaimTokens userSigner={userSigner} address={address} updateBalanceBuidl={updateBalanceBuidl} />
-          <TransferTokens
-            provider={localProvider}
-            userSigner={userSigner}
-            mainnetProvider={mainnetProvider}
-            updateBalanceBuidl={updateBalanceBuidl}
-            contractBuidl={contractBuidl}
-          />
+          {balance > 0 && (
+            <TransferTokens
+              provider={localProvider}
+              userSigner={userSigner}
+              mainnetProvider={mainnetProvider}
+              updateBalanceBuidl={updateBalanceBuidl}
+              contractBuidl={contractBuidl}
+            />
+          )}
         </Route>
         <Route exact path="/pay">
           <h2>Buidl Balance: {balance}</h2>
