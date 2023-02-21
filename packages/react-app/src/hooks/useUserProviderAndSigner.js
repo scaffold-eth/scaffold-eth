@@ -51,7 +51,7 @@ export default function useUserProviderAndSigner(injectedProviderOrSigner, local
     } else {
       console.log("burner is off");
     }
-  }, [injectedProviderOrSigner, localProvider, burnerSigner]);
+  }, [injectedProviderOrSigner, localProvider, burnerSigner, useBurnerWallet]);
   useMemo(() => {
     if (signer) {
       const result = parseProviderOrSigner(signer);

@@ -1,6 +1,5 @@
-import { Button, Select, InputNumber, notification, Badge, List } from "antd";
-import React, { useCallback, useEffect, useState } from "react";
-import { utils } from "zksync-web3";
+import { Button, notification, Badge, List } from "antd";
+import React, { useState } from "react";
 import QrReader from "react-qr-reader";
 import { CameraOutlined, QrcodeOutlined } from "@ant-design/icons";
 import { useHistory } from "react-router-dom";
@@ -10,7 +9,6 @@ function SelectVendor({ provider, userSigner, updateBalanceBuidl, contractBuidl,
 
   const history = useHistory();
   const [scan, setScan] = useState(false);
-  const [data, setData] = useState("No result");
 
   return (
     <div>

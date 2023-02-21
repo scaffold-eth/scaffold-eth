@@ -1,16 +1,17 @@
-import { Button, Select, Input, notification, ConfigProvider } from "antd";
-import React, { useCallback, useEffect, useState } from "react";
-import { Wallet, Contract, utils } from "zksync-web3";
+import { Button, Input, notification, Spin } from "antd";
+import React, { useState } from "react";
 import axios from "axios";
-import externalContracts from "../contracts/external_contracts";
 
 function ClaimTokens({ userSigner, address, updateBalanceBuidl }) {
   const [orderID, setOrderID] = useState();
+  const [loading, setLoading] = useState(false);
 
   const handleClaim = async () => {
     const token = "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8";
 
     try {
+      setLoading(true);
+
       const resultRegister = await axios.post(
         `https://staging.ethdenver2023.zksync.dev/v1/registrationEvent?token=${token}`,
         {
@@ -48,6 +49,7 @@ function ClaimTokens({ userSigner, address, updateBalanceBuidl }) {
         });
         await new Promise(r => setTimeout(r, 10000));
         updateBalanceBuidl();
+        setLoading(false);
       } catch (error) {
         if (error?.response) {
           console.log(`n-🔴 => error?.response?.data`, error?.response?.data);
@@ -57,6 +59,7 @@ function ClaimTokens({ userSigner, address, updateBalanceBuidl }) {
             placement: "topRight",
           });
         }
+        setLoading(false);
       }
     } catch (error) {
       if (error?.response) {
@@ -67,6 +70,7 @@ function ClaimTokens({ userSigner, address, updateBalanceBuidl }) {
           placement: "topRight",
         });
       }
+      setLoading(false);
     }
   };
 
@@ -80,9 +84,10 @@ function ClaimTokens({ userSigner, address, updateBalanceBuidl }) {
         }}
         placeholder="OrderID"
       />
-      <Button type="primary" onClick={handleClaim}>
+      <Button type="primary" disabled={loading} onClick={handleClaim}>
         Claim
       </Button>
+      {loading && <Spin />}
     </div>
   );
 }

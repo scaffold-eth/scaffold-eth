@@ -1,5 +1,5 @@
-import { Button, Select, InputNumber, notification } from "antd";
-import React, { useCallback, useEffect, useState } from "react";
+import { Button, InputNumber, notification, Spin } from "antd";
+import React, { useEffect, useState } from "react";
 import { utils } from "zksync-web3";
 import { useLocation } from "react-router-dom";
 import qs from "qs";
@@ -14,7 +14,7 @@ function PayToVendor({ provider, userSigner, updateBalanceBuidl, contractBuidl, 
   const [vendorAddress, setVendorAddress] = useState();
   const [vendorLabel, setVendorLabel] = useState();
   const [amount, setAmount] = useState();
-  const [qr, setQr] = useState();
+  const [loading, setLoading] = useState(false);
 
   let location = useLocation();
 
@@ -31,11 +31,11 @@ function PayToVendor({ provider, userSigner, updateBalanceBuidl, contractBuidl, 
 
   useEffect(() => {
     console.log("vendorAddress: ", vendorAddress);
-    const vendorIndex = vendors.findIndex(element => element.value == vendorAddress);
+    const vendorIndex = vendors.findIndex(element => element.value === vendorAddress);
     if (vendorIndex >= 0) {
       setVendorLabel(vendors[vendorIndex].label);
     }
-  }, [vendorAddress]);
+  }, [vendorAddress, vendors]);
 
   const handleChangeAmount = value => {
     console.log("changed", value);
@@ -52,6 +52,7 @@ function PayToVendor({ provider, userSigner, updateBalanceBuidl, contractBuidl, 
           <InputNumber placeholder="amount..." onChange={handleChangeAmount} value={amount} />
           <Button
             type="primary"
+            disabled={loading}
             onClick={async () => {
               console.log("provider: ", provider);
               console.log("userSigner: ", userSigner);
@@ -64,6 +65,7 @@ function PayToVendor({ provider, userSigner, updateBalanceBuidl, contractBuidl, 
               console.log("contractBuidl: ", contractBuidl);
 
               if (amount > 0) {
+                setLoading(true);
                 const amountToSend = amount * 100;
                 try {
                   const result = await (
@@ -83,12 +85,14 @@ function PayToVendor({ provider, userSigner, updateBalanceBuidl, contractBuidl, 
                     });
                     setAmount(0);
                     updateBalanceBuidl();
+                    setLoading(false);
                   } else {
                     notification.error({
                       message: "Error sending payment!",
                       description: `${result}`,
                       placement: "topRight",
                     });
+                    setLoading(false);
                   }
                 } catch (error) {
                   console.log("error name: ", error.name);
@@ -101,12 +105,14 @@ function PayToVendor({ provider, userSigner, updateBalanceBuidl, contractBuidl, 
                     });
                     setAmount(0);
                     updateBalanceBuidl();
+                    setLoading(false);
                   } else {
                     notification.error({
                       message: "Error sending payment!",
                       description: `${error}`,
                       placement: "topRight",
                     });
+                    setLoading(false);
                   }
                 }
               } else {
@@ -116,6 +122,7 @@ function PayToVendor({ provider, userSigner, updateBalanceBuidl, contractBuidl, 
           >
             Transfer
           </Button>
+          {loading && <Spin />}
         </div>
       ) : (
         <h3>No vendor selected</h3>

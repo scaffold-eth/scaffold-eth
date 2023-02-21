@@ -1,16 +1,11 @@
-import { Button, Input, InputNumber, notification, ConfigProvider } from "antd";
-import React, { useCallback, useEffect, useState } from "react";
-import { Wallet, Contract, utils } from "zksync-web3";
+import { Button, InputNumber, notification, Spin } from "antd";
+import React, { useState } from "react";
 import AddressInput from "../components/AddressInput";
 
 function TransferTokens({ provider, userSigner, mainnetProvider, updateBalanceBuidl, contractBuidl }) {
   const [addressTo, setAddressTo] = useState();
   const [amount, setAmount] = useState();
-
-  const handleChangeAddressTo = value => {
-    console.log(`changed address to ${value}`);
-    setAddressTo(value);
-  };
+  const [loading, setLoading] = useState(false);
 
   const handleChangeAmount = value => {
     console.log("changed", value);
@@ -31,13 +26,14 @@ function TransferTokens({ provider, userSigner, mainnetProvider, updateBalanceBu
       <InputNumber onChange={handleChangeAmount} value={amount} />
       <Button
         type="primary"
+        disabled={loading}
         onClick={async () => {
           console.log("provider: ", provider);
           console.log("userSigner: ", userSigner);
 
-          const gasLimit = 300000;
-
           if (amount > 0) {
+            setLoading(true);
+
             const amountToSend = amount * 100;
             const result = await (await contractBuidl.transfer(addressTo, amountToSend)).wait();
             console.log("Result transfer: ", result);
@@ -50,12 +46,14 @@ function TransferTokens({ provider, userSigner, mainnetProvider, updateBalanceBu
               setAmount(0);
               setAddressTo("");
               updateBalanceBuidl();
+              setLoading(false);
             } else {
               notification.error({
                 message: "Error sending payment!",
                 description: `${result}`,
                 placement: "topRight",
               });
+              setLoading(false);
             }
           } else {
             alert("Amount should be > 0!");
@@ -64,6 +62,7 @@ function TransferTokens({ provider, userSigner, mainnetProvider, updateBalanceBu
       >
         Transfer
       </Button>
+      {loading && <Spin />}
     </div>
   );
 }

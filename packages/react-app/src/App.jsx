@@ -1,4 +1,4 @@
-import { Button, Col, Menu, Row } from "antd";
+import { Button, Col, Row } from "antd";
 
 import "antd/dist/antd.css";
 import {
@@ -10,7 +10,7 @@ import {
 } from "eth-hooks";
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
 import React, { useCallback, useEffect, useState } from "react";
-import { Link, Route, Switch, useLocation } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 import "./App.css";
 import {
   Account,
@@ -28,20 +28,8 @@ import { NETWORKS, ALCHEMY_KEY } from "./constants";
 import externalContracts from "./contracts/external_contracts";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
-import { getRPCPollTime, Transactor, Web3ModalSetup } from "./helpers";
-import {
-  Home,
-  ExampleUI,
-  Hints,
-  Subgraph,
-  Send,
-  SendLocalProvider,
-  PayToVendor,
-  SelectVendor,
-  ClaimTokens,
-  MintTokens,
-  TransferTokens,
-} from "./views";
+import { getRPCPollTime, Web3ModalSetup } from "./helpers";
+import { PayToVendor, SelectVendor, ClaimTokens, TransferTokens } from "./views";
 import { useStaticJsonRPC, useGasPrice, useUserProviderAndSigner } from "./hooks";
 import { Web3Provider, Contract as ContractZK } from "zksync-web3";
 
@@ -91,7 +79,6 @@ function App(props) {
   const [injectedProvider, setInjectedProvider] = useState();
   const [address, setAddress] = useState();
   const [selectedNetwork, setSelectedNetwork] = useState(networkOptions[0]);
-  const location = useLocation();
 
   const targetNetwork = NETWORKS[selectedNetwork];
 
@@ -151,7 +138,7 @@ function App(props) {
   // For more hooks, check out 🔗eth-hooks at: https://www.npmjs.com/package/eth-hooks
 
   // The transactor wraps transactions and provides notificiations
-  const tx = Transactor(userSigner, gasPrice);
+  // const tx = Transactor(userSigner, gasPrice);
 
   // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
   const yourLocalBalance = useBalance(localProvider, address, localProviderPollingTime);
@@ -180,6 +167,7 @@ function App(props) {
   // });
 
   // Then read your DAI balance like:
+  /*
   const myMainnetDAIBalance = useContractReader(
     mainnetContracts,
     "DAI",
@@ -187,6 +175,7 @@ function App(props) {
     ["0x34aA3F359A9D614239015126635CE7732c18fDF3"],
     mainnetProviderPollingTime,
   );
+  */
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -217,7 +206,6 @@ function App(props) {
       console.log("💵 yourMainnetBalance", yourMainnetBalance ? ethers.utils.formatEther(yourMainnetBalance) : "...");
       console.log("📝 readContracts", readContracts);
       console.log("🌍 DAI contract on mainnet:", mainnetContracts);
-      console.log("💵 yourMainnetDAIBalance", myMainnetDAIBalance);
       console.log("🔐 writeContracts", writeContracts);
     }
   }, [
@@ -230,7 +218,6 @@ function App(props) {
     writeContracts,
     mainnetContracts,
     localChainId,
-    myMainnetDAIBalance,
   ]);
 
   const loadWeb3Modal = useCallback(async () => {
