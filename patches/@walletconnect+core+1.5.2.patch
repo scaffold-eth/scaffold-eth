@@ -1,0 +1,13 @@
+diff --git a/node_modules/@walletconnect/core/dist/esm/index.js b/node_modules/@walletconnect/core/dist/esm/index.js
+index 4cfb8e6..b9350e9 100644
+--- a/node_modules/@walletconnect/core/dist/esm/index.js
++++ b/node_modules/@walletconnect/core/dist/esm/index.js
+@@ -469,7 +469,7 @@ class Connector {
+             throw new Error(ERROR_SESSION_DISCONNECTED);
+         }
+         const request = this._formatRequest({
+-            method: "eth_signTypedData",
++            method: "eth_signTypedData_v4",
+             params,
+         });
+         const result = await this._sendCallRequest(request);
