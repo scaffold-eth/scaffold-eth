@@ -63,34 +63,54 @@ function PayToVendor({ provider, userSigner, updateBalanceBuidl, contractBuidl, 
 
               console.log("contractBuidl: ", contractBuidl);
 
-              const gasLimit = 300000;
+              const gasLimit = 3000000;
 
               if (amount > 0) {
                 const amountToSend = amount * 100;
-                const result = await (
-                  await contractBuidl.transfer(vendorAddress, amountToSend, {
-                    gasLimit,
-                    customData: {
-                      paymasterParams,
-                      gasPerPubdata: utils.DEFAULT_GAS_PER_PUBDATA_LIMIT,
-                    },
-                  })
-                ).wait();
-                console.log("Result transfer: ", result);
-                if (result.confirmations > 0) {
-                  notification.success({
-                    message: "Payment Sent!",
-                    description: `${amount} Buidl Tokens sent.`,
-                    placement: "topRight",
-                  });
-                  setAmount(0);
-                  updateBalanceBuidl();
-                } else {
-                  notification.error({
-                    message: "Error sending payment!",
-                    description: `${result}`,
-                    placement: "topRight",
-                  });
+                try {
+                  const result = await (
+                    await contractBuidl.transfer(vendorAddress, amountToSend, {
+                      gasLimit,
+                      customData: {
+                        paymasterParams,
+                        gasPerPubdata: utils.DEFAULT_GAS_PER_PUBDATA_LIMIT,
+                      },
+                    })
+                  ).wait();
+                  console.log("Result transfer: ", result);
+                  if (result.confirmations > 0) {
+                    notification.success({
+                      message: "Payment Sent!",
+                      description: `${amount} Buidl Tokens sent.`,
+                      placement: "topRight",
+                    });
+                    setAmount(0);
+                    updateBalanceBuidl();
+                  } else {
+                    notification.error({
+                      message: "Error sending payment!",
+                      description: `${result}`,
+                      placement: "topRight",
+                    });
+                  }
+                } catch (error) {
+                  console.log("error name: ", error.name);
+                  console.log("error message: ", error.message);
+                  if (error.message === "invalid remainder") {
+                    notification.success({
+                      message: "Payment Sent!",
+                      description: `${amount} Buidl Tokens sent.`,
+                      placement: "topRight",
+                    });
+                    setAmount(0);
+                    updateBalanceBuidl();
+                  } else {
+                    notification.error({
+                      message: "Error sending payment!",
+                      description: `${error}`,
+                      placement: "topRight",
+                    });
+                  }
                 }
               } else {
                 alert("Amount should be > 0!");
