@@ -63,14 +63,11 @@ function PayToVendor({ provider, userSigner, updateBalanceBuidl, contractBuidl, 
 
               console.log("contractBuidl: ", contractBuidl);
 
-              const gasLimit = 3000000;
-
               if (amount > 0) {
                 const amountToSend = amount * 100;
                 try {
                   const result = await (
                     await contractBuidl.transfer(vendorAddress, amountToSend, {
-                      gasLimit,
                       customData: {
                         paymasterParams,
                         gasPerPubdata: utils.DEFAULT_GAS_PER_PUBDATA_LIMIT,
