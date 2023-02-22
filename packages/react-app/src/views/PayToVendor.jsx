@@ -5,12 +5,7 @@ import { useLocation } from "react-router-dom";
 import qs from "qs";
 import { parse } from "eth-url-parser";
 
-function PayToVendor({ provider, userSigner, updateBalanceBuidl, contractBuidl, vendors }) {
-  // local
-  // const BUIDLBUXX_PAYMASTER_ADDRESS = "0x628e8b27F0c5c443a68297893c920328dD18e611";
-  // testnet
-  const BUIDLBUXX_PAYMASTER_ADDRESS = "0x7F904e350F27aF4D4A70994AE1f3bBC1dAfEe665";
-
+function PayToVendor({ provider, userSigner, updateBalanceBuidl, contractBuidl, vendors, paymasterAddress }) {
   const [vendorAddress, setVendorAddress] = useState();
   const [vendorLabel, setVendorLabel] = useState();
   const [amount, setAmount] = useState();
@@ -58,7 +53,7 @@ function PayToVendor({ provider, userSigner, updateBalanceBuidl, contractBuidl, 
               console.log("provider: ", provider);
               console.log("userSigner: ", userSigner);
 
-              const paymasterParams = utils.getPaymasterParams(BUIDLBUXX_PAYMASTER_ADDRESS, {
+              const paymasterParams = utils.getPaymasterParams(paymasterAddress, {
                 type: "General",
                 innerInput: new Uint8Array(),
               });

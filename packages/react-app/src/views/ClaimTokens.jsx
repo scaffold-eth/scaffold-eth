@@ -2,7 +2,7 @@ import { Button, Input, notification, Spin } from "antd";
 import React, { useState } from "react";
 import axios from "axios";
 
-function ClaimTokens({ userSigner, address, updateBalanceBuidl }) {
+function ClaimTokens({ userSigner, address, updateBalanceBuidl, apiUrl, localChainId }) {
   const [orderID, setOrderID] = useState();
   const [loading, setLoading] = useState(false);
 
@@ -12,9 +12,9 @@ function ClaimTokens({ userSigner, address, updateBalanceBuidl }) {
     try {
       setLoading(true);
 
-      const resultRegister = await axios.post(
-        `https://staging.ethdenver2023.zksync.dev/v1/registrationEvent?token=${token}`,
-        {
+      // do not register orderID on prod
+      if (localChainId !== 324) {
+        const resultRegister = await axios.post(`${apiUrl}/v1/registrationEvent?token=${token}`, {
           name: "Test",
           lastName: "Damu",
           email: "damu@gmail.com",
@@ -25,18 +25,19 @@ function ClaimTokens({ userSigner, address, updateBalanceBuidl }) {
           access: "granted",
           attempt: 0,
           previousAttemptTimestamp: "2023-01-18T17:51:30.344Z",
-        },
-      );
+        });
 
-      console.log("register result: ", resultRegister);
+        console.log("register result: ", resultRegister);
+      }
 
+      // TODO: get message to sign from API
       const messageToSign = "Please sign this message to validate you are the owner of your wallet";
 
       const signature = await userSigner.signMessage(messageToSign);
       console.log("signature: ", signature);
 
       try {
-        const resultClaim = await axios.post(`https://staging.ethdenver2023.zksync.dev/v1/tickets/${orderID}/claim`, {
+        const resultClaim = await axios.post(`${apiUrl}/v1/tickets/${orderID}/claim`, {
           publicAddress: address,
           signature: signature,
         });

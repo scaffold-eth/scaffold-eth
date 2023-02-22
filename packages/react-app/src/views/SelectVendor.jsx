@@ -82,7 +82,7 @@ function SelectVendor({ provider, userSigner, updateBalanceBuidl, contractBuidl,
           return (
             <List.Item style={{ margin: 20 }} key={vendor.value}>
               <Button
-                style={{ width: 300, height: 300, fontSize: 32 }}
+                style={{ width: 300, height: 300, fontSize: 32, whiteSpace: "normal" }}
                 onClick={() => {
                   history.push(payUrl + vendor.value);
                 }}

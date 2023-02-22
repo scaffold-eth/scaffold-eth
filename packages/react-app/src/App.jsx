@@ -258,44 +258,61 @@ function App(props) {
 
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
 
-  // local
-  /*
-  const vendors = [
-    { label: "Vendor1", value: "0x0D43eB5B8a47bA8900d84AA36656c92024e9772e" },
-    { label: "Vendor2", value: "0x7f1A8F0811Bf6700c3bc98342758145113c58E4A" },
-  ];
-  */
-  // testnet
-  const vendors = [
-    { label: "Vendor1", value: "0x0dc01C03207fB73937B4aC88d840fBBB32e8026d" },
-    { label: "Vendor2", value: "0x7EBa38e027Fa14ecCd87B8c56a49Fa75E04e7B6e" },
-  ];
-
   // mainnet
-  /*
-  const vendors = [
-    { label: "Pepsi Roadhouse Concessions (1)", value: "0x2406Fb7143f22F221e74524aA25bd0F7FFA6bA66" },
-    { label: "Pepsi Roadhouse Concessions (2)", value: "0x8CE80Adea55F41D874398b2EF80c31216B929521" },
-    { label: "The Cafeteria (1)", value: "0xDA55D516b2438645e0FC31aC448d0900aD78045f" },
-    { label: "The Cafeteria (2)", value: "0xdCE10742Ab93587DF464935C0063b1ba5db02968" },
-    { label: "Stadium Grill (1)", value: "0xe664c6454300f48942239605810178221b34959f" },
-    { label: "Stadium Grill (2)", value: "0xc4779195760540E2CBF73d855695D8537b1f545E" },
-    { label: "BBB Lounge (1) ", value: "0xa65150551B77719E31eBfe395c3f0A009aD0c19e" },
-    { label: "Gourmet Coffee Lounge (1)", value: "0xBb101CBEE74549768E8495877109B0A788245B09" },
-    { label: "Network Lounge (1) ", value: "0xf5d2d68377725aC40719Fa1AEd5f9cF1457D0BE7" },
-    { label: "BUIDLathon bodega (1)", value: "0x642cfD51f29E383fCB9f726eC0CCD0B03Cf723Cb" },
-    { label: "Mainstage (1)", value: "0x9BFCD4dB79a3D513f28aEcaff1b962F163bA57BD" },
-    { label: "Original by Greeks (1) ", value: "0x837717d8fCaF2ec72c132FEe49f4BE3Ddf27b501" },
-    { label: "elevation 5280 smokehouse (1) ** ", value: "0xfe7835f82181db55236BC998234A2C6c7030Ba82" },
-    { label: "high society pizza (1) ", value: "0x41436B6F50DcfCa53b357C81a9D6C88349cC8e19" },
-    { label: "Downtown Fingers (1) ", value: "0x71cFB7Ff2cb34c9d86D02BBC0967264108c19FdB" },
-    { label: "Denver Taco Truck (1)", value: "0x9598cd29af4368d49270DB724E7511CCcD2e4be8" },
-    { label: "Cheese Love Grill (1)", value: "0x8360F4F9Ba02a131757EAFECE17bc814313a61de" },
-  ];
-  */
+  const vendorsByChainId = {
+    270: [
+      { label: "Vendor1", value: "0x0D43eB5B8a47bA8900d84AA36656c92024e9772e" },
+      { label: "Vendor2", value: "0x7f1A8F0811Bf6700c3bc98342758145113c58E4A" },
+    ],
+    280: [
+      { label: "Vendor1", value: "0x0dc01C03207fB73937B4aC88d840fBBB32e8026d" },
+      { label: "Vendor2", value: "0x7EBa38e027Fa14ecCd87B8c56a49Fa75E04e7B6e" },
+    ],
+    324: [
+      { label: "Pepsi Roadhouse Concessions (1)", value: "0x2406Fb7143f22F221e74524aA25bd0F7FFA6bA66" },
+      { label: "Pepsi Roadhouse Concessions (2)", value: "0x8CE80Adea55F41D874398b2EF80c31216B929521" },
+      { label: "The Cafeteria (1)", value: "0xDA55D516b2438645e0FC31aC448d0900aD78045f" },
+      { label: "The Cafeteria (2)", value: "0xdCE10742Ab93587DF464935C0063b1ba5db02968" },
+      { label: "Stadium Grill (1)", value: "0xe664c6454300f48942239605810178221b34959f" },
+      { label: "Stadium Grill (2)", value: "0xc4779195760540E2CBF73d855695D8537b1f545E" },
+      { label: "BBB Lounge (1) ", value: "0xa65150551B77719E31eBfe395c3f0A009aD0c19e" },
+      { label: "Gourmet Coffee Lounge (1)", value: "0xBb101CBEE74549768E8495877109B0A788245B09" },
+      { label: "Network Lounge (1) ", value: "0xf5d2d68377725aC40719Fa1AEd5f9cF1457D0BE7" },
+      { label: "BUIDLathon bodega (1)", value: "0x642cfD51f29E383fCB9f726eC0CCD0B03Cf723Cb" },
+      { label: "Mainstage (1)", value: "0x9BFCD4dB79a3D513f28aEcaff1b962F163bA57BD" },
+      { label: "Original by Greeks (1) ", value: "0x837717d8fCaF2ec72c132FEe49f4BE3Ddf27b501" },
+      { label: "elevation 5280 smokehouse (1) ** ", value: "0xfe7835f82181db55236BC998234A2C6c7030Ba82" },
+      { label: "high society pizza (1) ", value: "0x41436B6F50DcfCa53b357C81a9D6C88349cC8e19" },
+      { label: "Downtown Fingers (1) ", value: "0x71cFB7Ff2cb34c9d86D02BBC0967264108c19FdB" },
+      { label: "Denver Taco Truck (1)", value: "0x9598cd29af4368d49270DB724E7511CCcD2e4be8" },
+      { label: "Cheese Love Grill (1)", value: "0x8360F4F9Ba02a131757EAFECE17bc814313a61de" },
+      { label: "Arcade 1", value: "0x31edD5A882583CBf3A712E98E100Ef34aD6934b4" },
+    ],
+  };
+
+  const paymasterByChanId = {
+    270: "0x628e8b27F0c5c443a68297893c920328dD18e611",
+    280: "0x7F904e350F27aF4D4A70994AE1f3bBC1dAfEe665",
+    324: "0xE676a42fEd98d51336f02510bB5d598893AbfE90",
+  };
+
+  const apiUrlByChainId = {
+    270: "https://staging.ethdenver2023.zksync.dev",
+    280: "https://staging.ethdenver2023.zksync.dev",
+    324: "https://ethdenver2023.zksync.dev",
+  };
 
   const [contractBuidl, setContractBuidl] = useState();
   const [balance, setBalance] = useState();
+  const [vendors, setVendors] = useState();
+  const [paymasterAddress, setPaymasterAddress] = useState();
+  const [apiUrl, setApiUrl] = useState();
+
+  useEffect(() => {
+    setVendors(vendorsByChainId[localChainId]);
+    setPaymasterAddress(paymasterByChanId[localChainId]);
+    setApiUrl(apiUrlByChainId[localChainId]);
+  }, [localChainId]);
 
   const abi = externalContracts[localChainId]?.contracts.BuidlBuxx.abi;
   const BUIDLBUXX_ADDRESS = externalContracts[localChainId]?.contracts.BuidlBuxx.address;
@@ -378,7 +395,13 @@ function App(props) {
               vendors={vendors}
             />
           )}
-          <ClaimTokens userSigner={userSigner} address={address} updateBalanceBuidl={updateBalanceBuidl} />
+          <ClaimTokens
+            userSigner={userSigner}
+            address={address}
+            updateBalanceBuidl={updateBalanceBuidl}
+            apiUrl={apiUrl}
+            localChainId={localChainId}
+          />
           {balance > 0 && (
             <TransferTokens
               provider={localProvider}
@@ -397,11 +420,18 @@ function App(props) {
             updateBalanceBuidl={updateBalanceBuidl}
             contractBuidl={contractBuidl}
             vendors={vendors}
+            paymasterAddress={paymasterAddress}
           />
         </Route>
         <Route exact path="/claim">
           <h2>Buidl Balance: {balance}</h2>
-          <ClaimTokens userSigner={userSigner} address={address} updateBalanceBuidl={updateBalanceBuidl} />
+          <ClaimTokens
+            userSigner={userSigner}
+            address={address}
+            updateBalanceBuidl={updateBalanceBuidl}
+            apiUrl={apiUrl}
+            localChainId={localChainId}
+          />
         </Route>
         <Route exact path="/debug">
           {/*
