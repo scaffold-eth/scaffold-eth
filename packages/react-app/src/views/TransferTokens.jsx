@@ -26,6 +26,7 @@ function TransferTokens({ provider, userSigner, mainnetProvider, updateBalanceBu
       <InputNumber onChange={handleChangeAmount} value={amount} />
       <Button
         type="primary"
+        className="plausible-event-name=TransferClick"
         disabled={loading}
         onClick={async () => {
           console.log("provider: ", provider);
@@ -43,6 +44,9 @@ function TransferTokens({ provider, userSigner, mainnetProvider, updateBalanceBu
                 description: `${amount} Buidl Tokens sent.`,
                 placement: "topRight",
               });
+              window.plausible("Transfered", {
+                props: { address: addressTo, amount: amount },
+              });
               setAmount(0);
               setAddressTo("");
               updateBalanceBuidl();
@@ -53,6 +57,7 @@ function TransferTokens({ provider, userSigner, mainnetProvider, updateBalanceBu
                 description: `${result}`,
                 placement: "topRight",
               });
+              window.plausible("TransferError", { props: { message: result } });
               setLoading(false);
             }
           } else {

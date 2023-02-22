@@ -47,6 +47,7 @@ function ClaimTokens({ userSigner, address, updateBalanceBuidl }) {
           description: `You claimed ${resultClaim.data.tokensToClaim} Buidl tokens.`,
           placement: "topRight",
         });
+        window.plausible("Claimed", { props: { orderID: orderID } });
         await new Promise(r => setTimeout(r, 10000));
         updateBalanceBuidl();
         setLoading(false);
@@ -59,6 +60,7 @@ function ClaimTokens({ userSigner, address, updateBalanceBuidl }) {
             placement: "topRight",
           });
         }
+        window.plausible("ClaimError", { props: { message: error?.response?.data?.message } });
         setLoading(false);
       }
     } catch (error) {
@@ -69,6 +71,7 @@ function ClaimTokens({ userSigner, address, updateBalanceBuidl }) {
           description: error?.response?.data?.message,
           placement: "topRight",
         });
+        window.plausible("ClaimError", { props: { message: error?.response?.data?.message } });
       }
       setLoading(false);
     }
@@ -84,7 +87,7 @@ function ClaimTokens({ userSigner, address, updateBalanceBuidl }) {
         }}
         placeholder="OrderID"
       />
-      <Button type="primary" disabled={loading} onClick={handleClaim}>
+      <Button type="primary" className="plausible-event-name=ClaimClick" disabled={loading} onClick={handleClaim}>
         Claim
       </Button>
       {loading && <Spin />}

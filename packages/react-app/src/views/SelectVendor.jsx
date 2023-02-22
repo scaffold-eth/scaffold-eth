@@ -62,7 +62,7 @@ function SelectVendor({ provider, userSigner, updateBalanceBuidl, contractBuidl,
       ) : (
         <div
           style={{ marginTop: 4, cursor: "pointer" }}
-          class="ant-btn ant-btn-primary"
+          className="ant-btn ant-btn-primary"
           onClick={() => {
             setScan(!scan);
           }}

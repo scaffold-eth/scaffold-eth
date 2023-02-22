@@ -52,6 +52,7 @@ function PayToVendor({ provider, userSigner, updateBalanceBuidl, contractBuidl, 
           <InputNumber placeholder="amount..." onChange={handleChangeAmount} value={amount} />
           <Button
             type="primary"
+            className="plausible-event-name=TransferToVendorClick"
             disabled={loading}
             onClick={async () => {
               console.log("provider: ", provider);
@@ -83,6 +84,9 @@ function PayToVendor({ provider, userSigner, updateBalanceBuidl, contractBuidl, 
                       description: `${amount} Buidl Tokens sent.`,
                       placement: "topRight",
                     });
+                    window.plausible("TransferedToVendor", {
+                      props: { vendor: vendorLabel, address: vendorAddress, amount: amount },
+                    });
                     setAmount(0);
                     updateBalanceBuidl();
                     setLoading(false);
@@ -92,6 +96,7 @@ function PayToVendor({ provider, userSigner, updateBalanceBuidl, contractBuidl, 
                       description: `${result}`,
                       placement: "topRight",
                     });
+                    window.plausible("TransferToVendorError", { props: { message: result } });
                     setLoading(false);
                   }
                 } catch (error) {
@@ -103,6 +108,9 @@ function PayToVendor({ provider, userSigner, updateBalanceBuidl, contractBuidl, 
                       description: `${amount} Buidl Tokens sent.`,
                       placement: "topRight",
                     });
+                    window.plausible("TransferedToVendor", {
+                      props: { vendor: vendorLabel, address: vendorAddress, amount: amount },
+                    });
                     setAmount(0);
                     updateBalanceBuidl();
                     setLoading(false);
@@ -112,6 +120,7 @@ function PayToVendor({ provider, userSigner, updateBalanceBuidl, contractBuidl, 
                       description: `${error}`,
                       placement: "topRight",
                     });
+                    window.plausible("TransferToVendorError", { props: { message: error } });
                     setLoading(false);
                   }
                 }
