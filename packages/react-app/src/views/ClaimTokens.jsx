@@ -31,7 +31,11 @@ function ClaimTokens({ userSigner, address, updateBalanceBuidl, apiUrl, localCha
       }
 
       // TODO: get message to sign from API
-      const messageToSign = "Please sign this message to validate you are the owner of your wallet";
+      const resultMessage = await axios.get(`${apiUrl}/v1/tickets/${orderID}/message`);
+
+      console.log("resultMessage: ", resultMessage);
+
+      const messageToSign = resultMessage.data.messageToSign;
 
       const signature = await userSigner.signMessage(messageToSign);
       console.log("signature: ", signature);
