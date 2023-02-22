@@ -1,0 +1,16 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": [
+          "MDN888GSU8.com.myetherwallet.mewwallet"
+        ],
+        "components": [
+          {
+            "/": "/pay"
+          }
+        ]
+      }
+    ]
+  }
+}
