@@ -24,6 +24,7 @@ function TransferTokens({ provider, userSigner, mainnetProvider, updateBalanceBu
     [ shadow-black/70 shadow-2xl ]"
     >
       <h2>Transfer Buidl</h2>
+
       <AddressInput
         ensProvider={mainnetProvider}
         placeholder="transfer to address"
@@ -32,7 +33,10 @@ function TransferTokens({ provider, userSigner, mainnetProvider, updateBalanceBu
           setAddressTo(newValue);
         }}
       />
-      <InputNumber onChange={handleChangeAmount} value={amount} />
+      <div className="w-full">
+        <span>Amount: </span>
+        <InputNumber onChange={handleChangeAmount} value={amount} />
+      </div>
       <Button
         type="primary"
         className="plausible-event-name=TransferClick"
@@ -74,7 +78,7 @@ function TransferTokens({ provider, userSigner, mainnetProvider, updateBalanceBu
           }
         }}
       >
-        Transfer
+        <span>Transfer</span>
       </Button>
       {loading && <Spin />}
     </div>

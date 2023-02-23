@@ -55,7 +55,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const initialNetwork = NETWORKS.zksync; // <------- select your target frontend network (localhost, goerli, xdai, mainnet)
+const initialNetwork = NETWORKS.zksyncalpha; // <------- select your target frontend network (localhost, goerli, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -399,8 +399,9 @@ function App(props) {
 
       <Switch>
         <Route exact path="/">
-          <div className=" px-4">
+          <div className="px-4">
             <h2 className="text-xl shadow-sm font-bold font-mono">Buidl Balance: {balance}</h2>
+
             {balance > 0 && (
               <SelectVendor
                 provider={localProvider}
