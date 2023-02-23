@@ -1,15 +1,17 @@
-import { Button, Input, notification, Spin } from "antd";
+import { Button, Input, notification, Spin, Progress } from "antd";
 import React, { useState } from "react";
 import axios from "axios";
 
 function ClaimTokens({ userSigner, address, updateBalanceBuidl, apiUrl, localChainId }) {
   const [orderID, setOrderID] = useState();
   const [loading, setLoading] = useState(false);
+  const [progressCount, setProgressCount] = useState(0);
 
   const handleClaim = async () => {
     const token = "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8";
 
     try {
+      setProgressCount(10);
       setLoading(true);
 
       // do not register orderID on prod
@@ -29,7 +31,7 @@ function ClaimTokens({ userSigner, address, updateBalanceBuidl, apiUrl, localCha
 
         console.log("register result: ", resultRegister);
       }
-
+      setProgressCount(40);
       // TODO: get message to sign from API
       const resultMessage = await axios.get(`${apiUrl}/v1/tickets/${orderID}/message`);
 
@@ -39,6 +41,7 @@ function ClaimTokens({ userSigner, address, updateBalanceBuidl, apiUrl, localCha
 
       const signature = await userSigner.signMessage(messageToSign);
       console.log("signature: ", signature);
+      setProgressCount(70);
 
       try {
         const resultClaim = await axios.post(`${apiUrl}/v1/tickets/${orderID}/claim`, {
@@ -54,6 +57,7 @@ function ClaimTokens({ userSigner, address, updateBalanceBuidl, apiUrl, localCha
         });
         window.plausible("Claimed", { props: { orderID: orderID } });
         await new Promise(r => setTimeout(r, 10000));
+        setProgressCount(100);
         updateBalanceBuidl();
         setLoading(false);
       } catch (error) {
@@ -83,8 +87,9 @@ function ClaimTokens({ userSigner, address, updateBalanceBuidl, apiUrl, localCha
   };
 
   return (
-    <div style={{ width: 300, margin: "0 auto", marginBottom: 20 }}>
+    <div className="flex flex-col gap-3 max-w-[400px] my-0 mx-auto">
       <h2>Claim Buidl Tokens</h2>
+
       <Input
         value={orderID}
         onChange={e => {
@@ -92,10 +97,11 @@ function ClaimTokens({ userSigner, address, updateBalanceBuidl, apiUrl, localCha
         }}
         placeholder="OrderID"
       />
-      <Button type="primary" className="plausible-event-name=ClaimClick" disabled={loading} onClick={handleClaim}>
+
+      <Button type="primary" className=" plausible-event-name=ClaimClick" disabled={loading} onClick={handleClaim}>
         Claim
       </Button>
-      {loading && <Spin />}
+      {loading && <Progress percent={progressCount} status="active" />}
     </div>
   );
 }
