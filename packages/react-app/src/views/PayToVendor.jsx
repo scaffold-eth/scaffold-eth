@@ -26,9 +26,11 @@ function PayToVendor({ provider, userSigner, updateBalanceBuidl, contractBuidl, 
 
   useEffect(() => {
     console.log("vendorAddress: ", vendorAddress);
-    const vendorIndex = vendors.findIndex(element => element.value === vendorAddress);
-    if (vendorIndex >= 0) {
-      setVendorLabel(vendors[vendorIndex].label);
+    if (vendors) {
+      const vendorIndex = vendors.findIndex(element => element.value === vendorAddress);
+      if (vendorIndex >= 0) {
+        setVendorLabel(vendors[vendorIndex].label);
+      }
     }
   }, [vendorAddress, vendors]);
 
