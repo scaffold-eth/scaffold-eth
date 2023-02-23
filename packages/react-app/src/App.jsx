@@ -424,7 +424,7 @@ function App(props) {
           />
         </Route>
         <Route exact path="/claim">
-          <h2>Buidl Balance: {balance}</h2>
+          <span className="text-xl">Buidl Balance: {balance}</span>
           <ClaimTokens
             userSigner={userSigner}
             address={address}

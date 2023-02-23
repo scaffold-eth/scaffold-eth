@@ -2,7 +2,13 @@
 <html lang="en">
   <head>
     <script defer data-domain="denver-food.surge.sh" src="https://plausible.io/js/script.js"></script>
-    <script>window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }</script>
+    <script>
+      window.plausible =
+        window.plausible ||
+        function () {
+          (window.plausible.q = window.plausible.q || []).push(arguments);
+        };
+    </script>
 
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
@@ -25,6 +31,9 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <base href="/" />
+    <% if (process.env.NODE_ENV === 'development') { %>
+      <script src="https://cdn.tailwindcss.com"></script>
+    <% } %>
     <title>Ethereum App</title>
   </head>
   <body>
