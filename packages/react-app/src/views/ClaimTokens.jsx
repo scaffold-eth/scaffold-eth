@@ -1,6 +1,6 @@
-import { Button, Input, notification, Spin, Progress } from "antd";
-import React, { useState } from "react";
+import { Button, Input, notification, Progress } from "antd";
 import axios from "axios";
+import React, { useState } from "react";
 
 function ClaimTokens({ userSigner, address, updateBalanceBuidl, apiUrl, localChainId }) {
   const [orderID, setOrderID] = useState();
@@ -22,7 +22,7 @@ function ClaimTokens({ userSigner, address, updateBalanceBuidl, apiUrl, localCha
           email: "damu@gmail.com",
           // enter any random id and hit this api (from browser or any api client) this address will get registered with order id
           orderID: orderID,
-          walletAddress: "0x0fAb64624733a7020D332203568754EB1a37DB89",
+          walletAddress: "0xA4ca1b15fE81F57cb2d3f686c7B13309906cd37B",
           scanTimestamp: "2023-01-18T19:11:04.078Z",
           access: "granted",
           attempt: 0,
@@ -87,8 +87,8 @@ function ClaimTokens({ userSigner, address, updateBalanceBuidl, apiUrl, localCha
   };
 
   return (
-    <div className="flex flex-col gap-3 max-w-[400px] my-0 mx-auto">
-      <h2>Claim Buidl Tokens</h2>
+    <div className="flex flex-col gap-3 max-w-[400px] my-4 mx-auto border-[1px] border-white p-4 rounded-lg shadow-xl shadow-black">
+      <span className="text-2xl">Claim Buidl Tokens</span>
 
       <Input
         value={orderID}

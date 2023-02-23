@@ -22,8 +22,8 @@ function SelectVendor({
   }, [localChainId, paymasterAddress]);
 
   return (
-    <div>
-      <h2>Purchase Food</h2>
+    <div className="flex flex-col gap-3 max-w-[400px] my-4 mx-auto border-[1px] border-white p-4 rounded-lg shadow-xl shadow-black">
+      <span className="flex text-center items-center justify-center my-2 text-2xl">Purchase Food</span>
       {scan ? (
         <div
           style={{
@@ -81,17 +81,18 @@ function SelectVendor({
           <Badge count={<CameraOutlined style={{ fontSize: 9 }} />}>
             <QrcodeOutlined style={{ fontSize: 18 }} />
           </Badge>{" "}
-          Scan Food Truck QR Code
+          <span className="ml-4">Scan Food Truck QR Code</span>
         </div>
       )}
-      <List
+      {/* <List
+        className="flex flex-wrap justify-center"
         grid={{
           gutter: 2,
         }}
         dataSource={vendors}
         renderItem={vendor => {
           return (
-            <List.Item style={{ margin: 20 }} key={vendor.value}>
+            <List.Item className="m-5" key={vendor.value}>
               <Button
                 style={{ width: 300, height: 300, fontSize: 32, whiteSpace: "normal" }}
                 onClick={() => {
@@ -103,7 +104,7 @@ function SelectVendor({
             </List.Item>
           );
         }}
-      />
+      /> */}
     </div>
   );
 }
