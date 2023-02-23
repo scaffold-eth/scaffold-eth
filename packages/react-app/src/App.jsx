@@ -408,6 +408,8 @@ function App(props) {
                   updateBalanceBuidl={updateBalanceBuidl}
                   contractBuidl={contractBuidl}
                   vendors={vendors}
+                  localChainId={localChainId}
+                  paymasterAddress={paymasterAddress}
                 />
               )}
               <ClaimTokens
