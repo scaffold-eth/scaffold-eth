@@ -12,6 +12,7 @@ export default function Header({ link, title, subTitle, ...props }) {
       <div style={{ display: "flex", flexDirection: "column", flex: 1, alignItems: "start" }}>
         <img src={logo} className="w-12" />
       </div>
+
       {props.children}
     </div>
   );
