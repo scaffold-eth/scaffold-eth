@@ -1,14 +1,25 @@
 import { Button, notification, Badge, List } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import QrReader from "react-qr-reader";
 import { CameraOutlined, QrcodeOutlined } from "@ant-design/icons";
 import { useHistory } from "react-router-dom";
 
-function SelectVendor({ provider, userSigner, updateBalanceBuidl, contractBuidl, vendors }) {
-  const payUrl = "/pay?qr=ethereum%3Apay-0xf551954D449eA3Ae4D6A2656a42d9B9081B137b4%40280%2Ftransfer%3Faddress%3D";
-
+function SelectVendor({
+  provider,
+  userSigner,
+  updateBalanceBuidl,
+  contractBuidl,
+  vendors,
+  localChainId,
+  paymasterAddress,
+}) {
   const history = useHistory();
   const [scan, setScan] = useState(false);
+  const [payUrl, setPayUrl] = useState();
+
+  useEffect(() => {
+    setPayUrl(`/pay?qr=ethereum%3Apay-${paymasterAddress}%40${localChainId}%2Ftransfer%3Faddress%3D`);
+  }, [localChainId, paymasterAddress]);
 
   return (
     <div>
