@@ -54,12 +54,11 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const initialNetwork = NETWORKS.zksyncalpha; // <------- select your target frontend network (localhost, goerli, xdai, mainnet)
+const initialNetwork = NETWORKS.zksync; // <------- select your target frontend network (localhost, goerli, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
 const NETWORKCHECK = true;
-const USE_BURNER_WALLET = true; // toggle burner wallet feature
 const USE_NETWORK_SELECTOR = false;
 
 const web3Modal = Web3ModalSetup();
@@ -79,6 +78,8 @@ function App(props) {
   const [injectedProvider, setInjectedProvider] = useState();
   const [address, setAddress] = useState();
   const [selectedNetwork, setSelectedNetwork] = useState(networkOptions[0]);
+
+  const [useBurnerWallet, setUseBurnerWallet] = useState(localStorage.getItem("useBurnerWallet"));
 
   const targetNetwork = NETWORKS[selectedNetwork];
 
@@ -117,7 +118,7 @@ function App(props) {
   /* 🔥 This hook will get the price of Gas from ⛽️ EtherGasStation */
   const gasPrice = useGasPrice(targetNetwork, "FastGasPrice", localProviderPollingTime);
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
-  const userProviderAndSigner = useUserProviderAndSigner(injectedProvider, localProvider, USE_BURNER_WALLET);
+  const userProviderAndSigner = useUserProviderAndSigner(injectedProvider, localProvider, useBurnerWallet);
   const userSigner = userProviderAndSigner.signer;
 
   useEffect(() => {
@@ -347,6 +348,18 @@ function App(props) {
         {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
         <div style={{ position: "relative", display: "flex", flexDirection: "column" }}>
           <div style={{ display: "flex", flex: 1 }}>
+            {!useBurnerWallet && (
+              <div style={{ marginRight: 30 }}>
+                <Button
+                  onClick={() => {
+                    setUseBurnerWallet(true);
+                    localStorage.setItem("useBurnerWallet", true);
+                  }}
+                >
+                  Enable Burner Wallet
+                </Button>
+              </div>
+            )}
             {USE_NETWORK_SELECTOR && (
               <div style={{ marginRight: 20 }}>
                 <NetworkSwitch
@@ -357,7 +370,7 @@ function App(props) {
               </div>
             )}
             <Account
-              useBurner={USE_BURNER_WALLET}
+              useBurner={useBurnerWallet}
               address={address}
               localProvider={localProvider}
               userSigner={userSigner}
@@ -384,7 +397,7 @@ function App(props) {
       />
 
       <Switch>
-        <Route exact path="/">
+       <Route exact path="/">
           <div className="mt-20 px-4">
             <h2 className="text-lg">Buidl Balance: {balance}</h2>
             {balance > 0 && (
@@ -452,6 +465,7 @@ function App(props) {
             contractConfig={contractConfig}
           />
         </Route>
+
       </Switch>
 
       <ThemeSwitch />
