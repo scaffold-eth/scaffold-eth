@@ -1,0 +1,11 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.myetherwallet.mewwallet",
+      "sha256_cert_fingerprints":
+        ["1A:B3:92:19:B6:21:29:AD:94:23:54:48:B1:D0:46:EA:1B:9C:83:8F:C0:EB:5F:38:CC:C3:8D:DB:05:99:52:AE"]
+    }
+  }
+]
