@@ -13,8 +13,12 @@ function TransferTokens({ provider, userSigner, mainnetProvider, updateBalanceBu
   };
 
   return (
-    <div className="flex flex-col gap-3 max-w-[400px] mt-4 mb-12 mx-auto border-[1px] border-white p-4 rounded-lg shadow-xl shadow-black">
-      <span className="text-2xl">Transfer Buidl Tokens</span>
+    <div
+      className="mt-6 flex flex-col gap-3 max-w-[400px] my-0 mx-auto
+    "
+    >
+      <h2>Transfer Buidl</h2>
+
       <AddressInput
         ensProvider={mainnetProvider}
         placeholder="transfer to address"

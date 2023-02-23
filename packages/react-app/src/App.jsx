@@ -1,4 +1,4 @@
-import { Button, Col, Row } from "antd";
+import { Button } from "antd";
 
 import "antd/dist/antd.css";
 import {
@@ -398,8 +398,9 @@ function App(props) {
 
       <Switch>
         <Route exact path="/">
-          <div className="mx-20 px-4">
-            <span className="text-2xl">Buidl Balance: {balance}</span>
+          <div className="px-4">
+            <h2 className="text-xl shadow-sm font-bold font-mono">Buidl Balance: {balance}</h2>
+
             {balance > 0 && (
               <SelectVendor
                 provider={localProvider}

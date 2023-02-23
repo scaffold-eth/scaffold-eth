@@ -1,6 +1,7 @@
-import { Button, Input, notification, Progress } from "antd";
-import axios from "axios";
+import { Button, Input, notification, Spin, Progress } from "antd";
 import React, { useState } from "react";
+
+import axios from "axios";
 
 function ClaimTokens({ userSigner, address, updateBalanceBuidl, apiUrl, localChainId }) {
   const [orderID, setOrderID] = useState();
@@ -87,8 +88,11 @@ function ClaimTokens({ userSigner, address, updateBalanceBuidl, apiUrl, localCha
   };
 
   return (
-    <div className="flex flex-col gap-3 max-w-[400px] my-4 mx-auto border-[1px] border-white p-4 rounded-lg shadow-xl shadow-black">
-      <span className="text-2xl">Claim Buidl Tokens</span>
+    <div
+      className="flex flex-col gap-3 max-w-[400px] my-0 mx-auto
+   "
+    >
+      <h2 className="font-mono font-bold">Claim Buidl Tokens</h2>
 
       <Input
         value={orderID}
