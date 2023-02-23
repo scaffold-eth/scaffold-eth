@@ -398,10 +398,9 @@ function App(props) {
       />
 
       <Switch>
-       <Route exact path="/">
-          <div className="mt-20 px-4">
-            {/* <img className="absolute -z-40 inset-0 w-screen h-screen object-cover" src={rainbow_bg} alt="background" /> */}
-            <h2 className="text-xl text-white shadow-sm font-bold font-mono">Buidl Balance: {balance}</h2>
+        <Route exact path="/">
+          <div className=" px-4">
+            <h2 className="text-xl shadow-sm font-bold font-mono">Buidl Balance: {balance}</h2>
             {balance > 0 && (
               <SelectVendor
                 provider={localProvider}
@@ -467,7 +466,6 @@ function App(props) {
             contractConfig={contractConfig}
           />
         </Route>
-
       </Switch>
 
       <ThemeSwitch />
