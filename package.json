@@ -52,7 +52,7 @@
     "deploy-and-graph": "yarn deploy && yarn graph-ship-local",
     "theme": "yarn workspace @scaffold-eth/react-app theme",
     "watch-theme": "yarn workspace @scaffold-eth/react-app watch",
-    "postinstall": "husky install",
+    "postinstall": "husky install && npx patch-package",
     "prepare": "husky install"
   },
   "workspaces": {
