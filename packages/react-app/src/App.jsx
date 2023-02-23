@@ -1,4 +1,4 @@
-import { Button, Col, Row } from "antd";
+import { Button } from "antd";
 
 import "antd/dist/antd.css";
 import {
@@ -32,7 +32,6 @@ import { getRPCPollTime, Web3ModalSetup } from "./helpers";
 import { PayToVendor, SelectVendor, ClaimTokens, TransferTokens } from "./views";
 import { useStaticJsonRPC, useGasPrice, useUserProviderAndSigner } from "./hooks";
 import { Web3Provider, Contract as ContractZK } from "zksync-web3";
-import { rainbow_bg } from "./assets";
 
 const { ethers } = require("ethers");
 /*

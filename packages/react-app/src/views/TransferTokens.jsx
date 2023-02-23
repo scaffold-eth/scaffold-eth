@@ -15,13 +15,7 @@ function TransferTokens({ provider, userSigner, mainnetProvider, updateBalanceBu
   return (
     <div
       className="mt-6 flex flex-col gap-3 max-w-[400px] my-0 mx-auto
-    rounded-2xl
-    text-[#1A2421]
-    backdrop-blur-lg
-    [ p-8 ]
-    [ bg-gradient-to-b from-white/60 to-white/30 ]
-    [ border-[1px] border-solid border-white border-opacity-30 ]
-    [ shadow-black/70 shadow-2xl ]"
+    "
     >
       <h2>Transfer Buidl</h2>
 
