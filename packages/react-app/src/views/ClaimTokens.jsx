@@ -36,7 +36,7 @@ function ClaimTokens({ userSigner, address, updateBalanceBuidl, apiUrl, localCha
 
       // TODO: get message to sign from API
       const resultMessage = await axios.get(`${apiUrl}/v1/tickets/${orderID}/message`);
-      setProgressCount(40);
+      setProgressCount(30);
 
       console.log("resultMessage: ", resultMessage);
 
@@ -44,7 +44,7 @@ function ClaimTokens({ userSigner, address, updateBalanceBuidl, apiUrl, localCha
 
       const signature = await userSigner.signMessage(messageToSign);
       console.log("signature: ", signature);
-      setProgressCount(70);
+      setProgressCount(50);
 
       try {
         const resultClaim = await axios.post(`${apiUrl}/v1/tickets/${orderID}/claim`, {
@@ -59,7 +59,9 @@ function ClaimTokens({ userSigner, address, updateBalanceBuidl, apiUrl, localCha
           placement: "topRight",
         });
         window.plausible("Claimed", { props: { orderID: orderID } });
-        await new Promise(r => setTimeout(r, 10000));
+        await new Promise(r => setTimeout(r, 5000));
+        setProgressCount(75);
+        await new Promise(r => setTimeout(r, 5000));
         setProgressCount(100);
         updateBalanceBuidl();
         setLoading(false);
