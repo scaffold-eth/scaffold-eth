@@ -2,10 +2,33 @@
   text-align: center;
 }
 
+@font-face {
+  font-family: NotoSans;
+  src: url("NotoSans-Black.ttf");
+}
+
 body {
   margin: 0;
+  background-image: url(assets/background.png);
+  font-family: NotoSans;
+  color: white;
+}
+
+h2 {
+  color: white;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+
+.claim-button {
+  background: url(assets/button.png) no-repeat top left;
+  background-position-y: -5px;
+  background-position-x: -5px;
+  width: 150px;
+  height: 73px;
+  font-size: 22px;
+  border: none;
+  margin-top: 15px;
 }

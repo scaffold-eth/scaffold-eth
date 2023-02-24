@@ -348,6 +348,7 @@ function App(props) {
         {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
         <div style={{ position: "relative", display: "flex", flexDirection: "column" }}>
           <div style={{ display: "flex", flex: 1 }}>
+            {address && <h2 style={{ marginRight: 20 }}>Buidl Balance: {balance}</h2>}
             {!useBurnerWallet && (
               <div style={{ marginRight: 30 }}>
                 <Button
@@ -417,7 +418,6 @@ function App(props) {
         {address ? (
           <>
             <Route exact path="/">
-              <h2>Buidl Balance: {balance}</h2>
               {balance > 0 && (
                 <SelectVendor
                   provider={localProvider}
@@ -447,7 +447,6 @@ function App(props) {
               )}
             </Route>
             <Route exact path="/pay">
-              <h2>Buidl Balance: {balance}</h2>
               <PayToVendor
                 provider={localProvider}
                 userSigner={userSigner}
@@ -461,7 +460,6 @@ function App(props) {
               />
             </Route>
             <Route exact path="/claim">
-              <h2>Buidl Balance: {balance}</h2>
               <ClaimTokens
                 userSigner={userSigner}
                 address={address}

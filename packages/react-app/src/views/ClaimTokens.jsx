@@ -83,16 +83,31 @@ function ClaimTokens({ userSigner, address, updateBalanceBuidl, apiUrl, localCha
   };
 
   return (
-    <div style={{ width: 300, margin: "0 auto", marginBottom: 20 }}>
-      <h2>Claim Buidl Tokens</h2>
+    <div style={{ width: 550, margin: "0 auto", marginBottom: 20 }}>
+      <h2 style={{ fontSize: 48 }}>
+        Claim <img src="/assets/buidl.png" alt="Buidl" style={{ width: 160 }} /> Tokens
+      </h2>
       <Input
         value={orderID}
+        style={{
+          width: 400,
+          display: "block",
+          margin: "0 auto",
+          border: "2px solid black",
+          borderRadius: 5,
+        }}
         onChange={e => {
           setOrderID(e.target.value);
         }}
         placeholder="OrderID"
       />
-      <Button type="primary" className="plausible-event-name=ClaimClick" disabled={loading} onClick={handleClaim}>
+      <Button
+        type="primary"
+        className="plausible-event-name=ClaimClick"
+        disabled={loading}
+        onClick={handleClaim}
+        className="claim-button"
+      >
         Claim
       </Button>
       {loading && <Spin />}

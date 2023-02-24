@@ -10,13 +10,8 @@ export default function Header({ link, title, subTitle, ...props }) {
     <div style={{ display: "flex", justifyContent: "space-between", padding: "1.2rem" }}>
       <div style={{ display: "flex", flexDirection: "column", flex: 1, alignItems: "start" }}>
         <a href={"/"} rel="noopener noreferrer">
-          <Title level={4} style={{ margin: "0 0.5rem 0 0" }}>
-            {title}
-          </Title>
+          <img src="/assets/white_logo.png" alt="Buidl Logo" style={{ width: 150 }} />
         </a>
-        <Text type="secondary" style={{ textAlign: "left" }}>
-          {subTitle}
-        </Text>
       </div>
       {props.children}
     </div>

@@ -56,7 +56,7 @@ function PayToVendor({
     <div>
       {showConfirmation ? (
         <div>
-          <img src="bufficorn-taco.svg" alt="Bufficorn & Taco" />
+          <img src="assets/bufficorn-taco.svg" alt="Bufficorn & Taco" />
           <h2>{amount} BUILD</h2>
           <p>Sent to</p>
           <h3>{vendorLabel}</h3>
