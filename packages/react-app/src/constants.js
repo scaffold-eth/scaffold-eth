@@ -70,6 +70,7 @@ export const NETWORKS = {
     chainId: 324,
     rpcUrl: "https://zksync2-mainnet.zksync.io",
     blockExplorer: "https://explorer.zksync.io/",
+    gasPrice: 1000000000,
   },
   zksyncalpha: {
     name: "zksyncalpha",
