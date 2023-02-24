@@ -1,10 +1,11 @@
-import { Button, Input, notification, Spin } from "antd";
+import { Button, Input, notification, Progress } from "antd";
 import React, { useState } from "react";
 import axios from "axios";
 
 function ClaimTokens({ userSigner, address, updateBalanceBuidl, apiUrl, localChainId }) {
   const [orderID, setOrderID] = useState();
   const [loading, setLoading] = useState(false);
+  const [progressCount, setProgressCount] = useState(0);
 
   const handleClaim = async () => {
     const token = "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8";
@@ -12,6 +13,7 @@ function ClaimTokens({ userSigner, address, updateBalanceBuidl, apiUrl, localCha
     window.plausible("ClaimClick");
 
     try {
+      setProgressCount(10);
       setLoading(true);
 
       // do not register orderID on prod
@@ -34,6 +36,7 @@ function ClaimTokens({ userSigner, address, updateBalanceBuidl, apiUrl, localCha
 
       // TODO: get message to sign from API
       const resultMessage = await axios.get(`${apiUrl}/v1/tickets/${orderID}/message`);
+      setProgressCount(40);
 
       console.log("resultMessage: ", resultMessage);
 
@@ -41,6 +44,7 @@ function ClaimTokens({ userSigner, address, updateBalanceBuidl, apiUrl, localCha
 
       const signature = await userSigner.signMessage(messageToSign);
       console.log("signature: ", signature);
+      setProgressCount(70);
 
       try {
         const resultClaim = await axios.post(`${apiUrl}/v1/tickets/${orderID}/claim`, {
@@ -56,6 +60,7 @@ function ClaimTokens({ userSigner, address, updateBalanceBuidl, apiUrl, localCha
         });
         window.plausible("Claimed", { props: { orderID: orderID } });
         await new Promise(r => setTimeout(r, 10000));
+        setProgressCount(100);
         updateBalanceBuidl();
         setLoading(false);
       } catch (error) {
@@ -106,7 +111,11 @@ function ClaimTokens({ userSigner, address, updateBalanceBuidl, apiUrl, localCha
       <Button type="primary" className="claim-button" disabled={loading} onClick={handleClaim}>
         Claim
       </Button>
-      {loading && <Spin />}
+      {loading && (
+        <div style={{ width: 400, margin: "0 auto" }}>
+          <Progress percent={progressCount} status="active" />
+        </div>
+      )}
     </div>
   );
 }
