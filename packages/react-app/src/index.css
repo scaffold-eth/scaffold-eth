@@ -26,10 +26,10 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 
-#root .claim-button,
-#root .claim-button:hover,
-#root .claim-button:active,
-#root .claim-button:focus {
+.claim-button,
+.claim-button:hover,
+.claim-button:active,
+.claim-button:focus {
   background: url(assets/button.png) no-repeat top left;
   background-position-y: -5px;
   background-position-x: -5px;
