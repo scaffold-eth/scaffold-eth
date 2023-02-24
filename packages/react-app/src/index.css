@@ -22,7 +22,7 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 
-.claim-button {
+.claim-button, .claim-button:hover {
   background: url(assets/button.png) no-repeat top left;
   background-position-y: -5px;
   background-position-x: -5px;
