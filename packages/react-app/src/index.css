@@ -14,7 +14,7 @@ body {
   color: white;
 }
 
-h2 {
+h2, h3, h4 {
   color: white;
 }
 
@@ -22,7 +22,7 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 
-.claim-button, .claim-button:hover {
+.claim-button, .claim-button:hover, .claim-button:active, .claim-button:focus {
   background: url(assets/button.png) no-repeat top left;
   background-position-y: -5px;
   background-position-x: -5px;
@@ -31,4 +31,12 @@ code {
   font-size: 22px;
   border: none;
   margin-top: 15px;
+}
+
+.payment-confirmation {
+  width: 500px;
+  margin: 0 auto;
+  background-color: black;
+  padding: 30px;
+  border-radius: 40px;
 }
