@@ -1,11 +1,22 @@
 import { Button, InputNumber, notification, Spin } from "antd";
 import React, { useEffect, useState } from "react";
+import Address from "../components/Address";
 import { utils } from "zksync-web3";
 import { useLocation } from "react-router-dom";
 import qs from "qs";
 import { parse } from "eth-url-parser";
 
-function PayToVendor({ provider, userSigner, updateBalanceBuidl, contractBuidl, vendors, paymasterAddress }) {
+function PayToVendor({
+  provider,
+  userSigner,
+  updateBalanceBuidl,
+  contractBuidl,
+  vendors,
+  paymasterAddress,
+  mainnetProvider,
+  blockExplorer,
+  address,
+}) {
   const [vendorAddress, setVendorAddress] = useState();
   const [vendorLabel, setVendorLabel] = useState();
   const [amount, setAmount] = useState();
@@ -49,7 +60,11 @@ function PayToVendor({ provider, userSigner, updateBalanceBuidl, contractBuidl, 
           <h2>{amount} BUILD</h2>
           <p>Sent to</p>
           <h3>{vendorLabel}</h3>
-          <p>Order: {transactionHash.slice(-6)}</p>
+          <p>Order: {transactionHash ? transactionHash.slice(-6) : "N/A (please check customer address)"}</p>
+          <p>
+            Customer Address:{" "}
+            <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} fontSize={16} />
+          </p>
           <p>Show this confirmation to the vendor</p>
         </div>
       ) : (
@@ -122,7 +137,7 @@ function PayToVendor({ provider, userSigner, updateBalanceBuidl, contractBuidl, 
                         window.plausible("TransferedToVendor", {
                           props: { vendor: vendorLabel, address: vendorAddress, amount: amount },
                         });
-                        setAmount(0);
+                        setShowConfirmation(true);
                         updateBalanceBuidl();
                         setLoading(false);
                       } else {

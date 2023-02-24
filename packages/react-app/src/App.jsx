@@ -455,6 +455,9 @@ function App(props) {
                 contractBuidl={contractBuidl}
                 vendors={vendors}
                 paymasterAddress={paymasterAddress}
+                mainnetProvider={mainnetProvider}
+                blockExplorer={blockExplorer}
+                address={address}
               />
             </Route>
             <Route exact path="/claim">
