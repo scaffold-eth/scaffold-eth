@@ -31,8 +31,6 @@ code {
 .claim-button:active,
 .claim-button:focus {
   background: url(assets/button.png) no-repeat top left;
-  background-position-y: -5px;
-  background-position-x: -5px;
   width: 150px;
   height: 73px;
   font-size: 22px;
