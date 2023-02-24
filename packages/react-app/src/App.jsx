@@ -348,7 +348,16 @@ function App(props) {
         {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
         <div style={{ position: "relative", display: "flex", flexDirection: "column" }}>
           <div style={{ display: "flex", flex: 1 }}>
-            {address && <h2 style={{ marginRight: 20 }}>Buidl Balance: {balance}</h2>}
+            {address && (
+              <h2 style={{ marginRight: 20 }}>
+                Buidl Balance: {balance}
+                {balance > 0 && (
+                  <a href="/transfer" title="Transfer Buidl Tokens">
+                    ⇄
+                  </a>
+                )}
+              </h2>
+            )}
             {!useBurnerWallet && (
               <div style={{ marginRight: 30 }}>
                 <Button
@@ -436,15 +445,15 @@ function App(props) {
                 apiUrl={apiUrl}
                 localChainId={localChainId}
               />
-              {balance > 0 && (
-                <TransferTokens
-                  provider={localProvider}
-                  userSigner={userSigner}
-                  mainnetProvider={mainnetProvider}
-                  updateBalanceBuidl={updateBalanceBuidl}
-                  contractBuidl={contractBuidl}
-                />
-              )}
+            </Route>
+            <Route exact path="/transfer">
+              <TransferTokens
+                provider={localProvider}
+                userSigner={userSigner}
+                mainnetProvider={mainnetProvider}
+                updateBalanceBuidl={updateBalanceBuidl}
+                contractBuidl={contractBuidl}
+              />
             </Route>
             <Route exact path="/pay">
               <PayToVendor

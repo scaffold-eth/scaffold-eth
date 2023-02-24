@@ -13,8 +13,10 @@ function TransferTokens({ provider, userSigner, mainnetProvider, updateBalanceBu
   };
 
   return (
-    <div style={{ width: 400, margin: "0 auto" }}>
-      <h2>Transfer Buidl</h2>
+    <div style={{ width: 600, margin: "0 auto" }}>
+      <h2 style={{ fontSize: 48 }}>
+        Transfer <img src="/assets/buidl.png" alt="Buidl" style={{ width: 160 }} /> Tokens
+      </h2>
       <AddressInput
         ensProvider={mainnetProvider}
         placeholder="transfer to address"
@@ -23,16 +25,30 @@ function TransferTokens({ provider, userSigner, mainnetProvider, updateBalanceBu
           setAddressTo(newValue);
         }}
       />
-      <InputNumber onChange={handleChangeAmount} value={amount} />
+      <InputNumber
+        placeholder="amount..."
+        style={{
+          width: 200,
+          display: "block",
+          margin: "0 auto",
+          border: "2px solid black",
+          borderRadius: 5,
+          marginTop: 20,
+        }}
+        onChange={handleChangeAmount}
+        value={amount}
+      />
       <Button
         type="primary"
-        className="plausible-event-name=TransferClick"
+        className="claim-button"
         disabled={loading}
         onClick={async () => {
           console.log("provider: ", provider);
           console.log("userSigner: ", userSigner);
+          console.log("addressTo: ", addressTo);
 
-          if (amount > 0) {
+          if (amount > 0 && addressTo !== undefined) {
+            window.plausible("TransferClick", { props: { amount: amount } });
             setLoading(true);
 
             const amountToSend = amount * 100;
@@ -61,7 +77,12 @@ function TransferTokens({ provider, userSigner, mainnetProvider, updateBalanceBu
               setLoading(false);
             }
           } else {
-            alert("Amount should be > 0!");
+            window.plausible("TransferClickWithZero");
+            notification.error({
+              message: "Wrong amount!",
+              description: "Amount should be greater than 0",
+              placement: "topRight",
+            });
           }
         }}
       >

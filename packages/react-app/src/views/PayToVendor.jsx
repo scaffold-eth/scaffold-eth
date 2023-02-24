@@ -94,7 +94,6 @@ function PayToVendor({
               />
               <Button
                 type="primary"
-                className="plausible-event-name=TransferToVendorClick"
                 className="claim-button"
                 disabled={loading}
                 onClick={async () => {
