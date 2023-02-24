@@ -59,7 +59,6 @@ const initialNetwork = NETWORKS.zksync; // <------- select your target frontend 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
 const NETWORKCHECK = true;
-const USE_BURNER_WALLET = true; // toggle burner wallet feature
 const USE_NETWORK_SELECTOR = false;
 
 const web3Modal = Web3ModalSetup();
@@ -79,6 +78,8 @@ function App(props) {
   const [injectedProvider, setInjectedProvider] = useState();
   const [address, setAddress] = useState();
   const [selectedNetwork, setSelectedNetwork] = useState(networkOptions[0]);
+
+  const [useBurnerWallet, setUseBurnerWallet] = useState(localStorage.getItem("useBurnerWallet"));
 
   const targetNetwork = NETWORKS[selectedNetwork];
 
@@ -117,7 +118,7 @@ function App(props) {
   /* 🔥 This hook will get the price of Gas from ⛽️ EtherGasStation */
   const gasPrice = useGasPrice(targetNetwork, "FastGasPrice", localProviderPollingTime);
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
-  const userProviderAndSigner = useUserProviderAndSigner(injectedProvider, localProvider, USE_BURNER_WALLET);
+  const userProviderAndSigner = useUserProviderAndSigner(injectedProvider, localProvider, useBurnerWallet);
   const userSigner = userProviderAndSigner.signer;
 
   useEffect(() => {
@@ -347,6 +348,18 @@ function App(props) {
         {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
         <div style={{ position: "relative", display: "flex", flexDirection: "column" }}>
           <div style={{ display: "flex", flex: 1 }}>
+            {!useBurnerWallet && (
+              <div style={{ marginRight: 30 }}>
+                <Button
+                  onClick={() => {
+                    setUseBurnerWallet(true);
+                    localStorage.setItem("useBurnerWallet", true);
+                  }}
+                >
+                  Enable Burner Wallet
+                </Button>
+              </div>
+            )}
             {USE_NETWORK_SELECTOR && (
               <div style={{ marginRight: 20 }}>
                 <NetworkSwitch
@@ -357,7 +370,7 @@ function App(props) {
               </div>
             )}
             <Account
-              useBurner={USE_BURNER_WALLET}
+              useBurner={useBurnerWallet}
               address={address}
               localProvider={localProvider}
               userSigner={userSigner}
@@ -384,55 +397,66 @@ function App(props) {
       />
 
       <Switch>
-        <Route exact path="/">
-          <h2>Buidl Balance: {balance}</h2>
-          {balance > 0 && (
-            <SelectVendor
-              provider={localProvider}
-              userSigner={userSigner}
-              updateBalanceBuidl={updateBalanceBuidl}
-              contractBuidl={contractBuidl}
-              vendors={vendors}
-            />
-          )}
-          <ClaimTokens
-            userSigner={userSigner}
-            address={address}
-            updateBalanceBuidl={updateBalanceBuidl}
-            apiUrl={apiUrl}
-            localChainId={localChainId}
-          />
-          {balance > 0 && (
-            <TransferTokens
-              provider={localProvider}
-              userSigner={userSigner}
-              mainnetProvider={mainnetProvider}
-              updateBalanceBuidl={updateBalanceBuidl}
-              contractBuidl={contractBuidl}
-            />
-          )}
-        </Route>
-        <Route exact path="/pay">
-          <h2>Buidl Balance: {balance}</h2>
-          <PayToVendor
-            provider={localProvider}
-            userSigner={userSigner}
-            updateBalanceBuidl={updateBalanceBuidl}
-            contractBuidl={contractBuidl}
-            vendors={vendors}
-            paymasterAddress={paymasterAddress}
-          />
-        </Route>
-        <Route exact path="/claim">
-          <h2>Buidl Balance: {balance}</h2>
-          <ClaimTokens
-            userSigner={userSigner}
-            address={address}
-            updateBalanceBuidl={updateBalanceBuidl}
-            apiUrl={apiUrl}
-            localChainId={localChainId}
-          />
-        </Route>
+        {address ? (
+          <>
+            <Route exact path="/">
+              <h2>Buidl Balance: {balance}</h2>
+              {balance > 0 && (
+                <SelectVendor
+                  provider={localProvider}
+                  userSigner={userSigner}
+                  updateBalanceBuidl={updateBalanceBuidl}
+                  contractBuidl={contractBuidl}
+                  vendors={vendors}
+                  localChainId={localChainId}
+                  paymasterAddress={paymasterAddress}
+                />
+              )}
+              <ClaimTokens
+                userSigner={userSigner}
+                address={address}
+                updateBalanceBuidl={updateBalanceBuidl}
+                apiUrl={apiUrl}
+                localChainId={localChainId}
+              />
+              {balance > 0 && (
+                <TransferTokens
+                  provider={localProvider}
+                  userSigner={userSigner}
+                  mainnetProvider={mainnetProvider}
+                  updateBalanceBuidl={updateBalanceBuidl}
+                  contractBuidl={contractBuidl}
+                />
+              )}
+            </Route>
+            <Route exact path="/pay">
+              <h2>Buidl Balance: {balance}</h2>
+              <PayToVendor
+                provider={localProvider}
+                userSigner={userSigner}
+                updateBalanceBuidl={updateBalanceBuidl}
+                contractBuidl={contractBuidl}
+                vendors={vendors}
+                paymasterAddress={paymasterAddress}
+              />
+            </Route>
+            <Route exact path="/claim">
+              <h2>Buidl Balance: {balance}</h2>
+              <ClaimTokens
+                userSigner={userSigner}
+                address={address}
+                updateBalanceBuidl={updateBalanceBuidl}
+                apiUrl={apiUrl}
+                localChainId={localChainId}
+              />
+            </Route>
+          </>
+        ) : (
+          <Route path="/">
+            <h1>Connect Wallet or Enable Burner Wallet</h1>
+            <p>You can use a burner wallet but you can lose your Buidl tokens if...</p>
+          </Route>
+        )}
         <Route exact path="/debug">
           {/*
                 🎛 this scaffolding is full of commonly used components
