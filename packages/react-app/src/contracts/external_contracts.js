@@ -1228,7 +1228,8 @@ module.exports = {
   324: {
     contracts: {
       BuidlBuxx: {
-        address: "0xEd0994232328B470d44a88485B430b8bA965D434",
+        // address: "0xEd0994232328B470d44a88485B430b8bA965D434",
+        address: "0x1bbA25233556a7C3b41913F35A035916DbeD1664",
         abi: buidlBuxxAbi,
       },
     },
