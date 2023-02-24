@@ -397,6 +397,23 @@ function App(props) {
       />
 
       <Switch>
+        <Route exact path="/debug">
+          {/*
+                🎛 this scaffolding is full of commonly used components
+                this <Contract/> component will automatically parse your ABI
+                and give you a form to interact with it locally
+            */}
+          <Contract
+            name="BuidlBuxx"
+            price={price}
+            signer={userSigner}
+            provider={localProvider}
+            address={address}
+            blockExplorer={blockExplorer}
+            contractConfig={contractConfig}
+            chainId={localChainId}
+          />
+        </Route>
         {address ? (
           <>
             <Route exact path="/">
@@ -457,23 +474,6 @@ function App(props) {
             <p>You can use a burner wallet but you can lose your Buidl tokens if...</p>
           </Route>
         )}
-        <Route exact path="/debug">
-          {/*
-                🎛 this scaffolding is full of commonly used components
-                this <Contract/> component will automatically parse your ABI
-                and give you a form to interact with it locally
-            */}
-
-          <Contract
-            name="BuidlBuxx"
-            price={price}
-            signer={userSigner}
-            provider={localProvider}
-            address={address}
-            blockExplorer={blockExplorer}
-            contractConfig={contractConfig}
-          />
-        </Route>
       </Switch>
 
       <ThemeSwitch />
