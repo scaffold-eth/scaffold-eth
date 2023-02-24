@@ -28,8 +28,8 @@ import { NETWORKS, ALCHEMY_KEY } from "./constants";
 import externalContracts from "./contracts/external_contracts";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
-import { getRPCPollTime, Web3ModalSetup } from "./helpers";
-import { PayToVendor, SelectVendor, ClaimTokens, TransferTokens } from "./views";
+import { getRPCPollTime, Transactor, Web3ModalSetup } from "./helpers";
+import { PayToVendor, ScanVendor, ClaimTokens, TransferTokens } from "./views";
 import { useStaticJsonRPC, useGasPrice, useUserProviderAndSigner } from "./hooks";
 import { Web3Provider, Contract as ContractZK } from "zksync-web3";
 
@@ -419,7 +419,7 @@ function App(props) {
           <>
             <Route exact path="/">
               {balance > 0 && (
-                <SelectVendor
+                <ScanVendor
                   provider={localProvider}
                   userSigner={userSigner}
                   updateBalanceBuidl={updateBalanceBuidl}
