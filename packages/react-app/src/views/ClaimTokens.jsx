@@ -10,6 +10,8 @@ function ClaimTokens({ userSigner, address, updateBalanceBuidl, apiUrl, localCha
   const handleClaim = async () => {
     const token = "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8";
 
+    window.plausible("ClaimClick");
+
     try {
       setProgressCount(10);
       setLoading(true);
@@ -106,13 +108,7 @@ function ClaimTokens({ userSigner, address, updateBalanceBuidl, apiUrl, localCha
         }}
         placeholder="OrderID"
       />
-      <Button
-        type="primary"
-        className="plausible-event-name=ClaimClick"
-        disabled={loading}
-        onClick={handleClaim}
-        className="claim-button"
-      >
+      <Button type="primary" className="claim-button" disabled={loading} onClick={handleClaim}>
         Claim
       </Button>
       {loading && (

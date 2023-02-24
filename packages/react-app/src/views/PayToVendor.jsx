@@ -55,29 +55,47 @@ function PayToVendor({
   return (
     <div>
       {showConfirmation ? (
-        <div>
+        <div className="payment-confirmation">
           <img src="assets/bufficorn-taco.svg" alt="Bufficorn & Taco" />
-          <h2>{amount} BUILD</h2>
+          <h2 style={{ fontSize: 48 }}>{amount} BUILD</h2>
           <p>Sent to</p>
-          <h3>{vendorLabel}</h3>
-          <p>Order: {transactionHash ? transactionHash.slice(-6) : "N/A (please check customer address)"}</p>
-          <p>
-            Customer Address:{" "}
-            <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} fontSize={16} />
-          </p>
-          <p>Show this confirmation to the vendor</p>
+          <h3 style={{ fontSize: 36 }}>{vendorLabel}</h3>
+          <h3 style={{ fontSize: 36 }}>
+            Order #{transactionHash ? transactionHash.slice(-6) : "N/A (please check customer address)"}
+          </h3>
+          <p>Customer Address</p>
+          <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} fontSize={36} />
+          <p style={{ marginTop: 20 }}>Show this confirmation to the vendor</p>
         </div>
       ) : (
         <div>
-          <h2>Purchase Food</h2>
           {vendorAddress && vendorLabel ? (
             <div>
-              <h3>Food Truck: {vendorLabel}</h3>
-              <h4>Address: {vendorAddress}</h4>
-              <InputNumber placeholder="amount..." onChange={handleChangeAmount} value={amount} />
+              <h4 style={{ marginBottom: 0 }}>
+                <Address
+                  address={vendorAddress}
+                  ensProvider={mainnetProvider}
+                  blockExplorer={blockExplorer}
+                  fontSize={16}
+                />
+              </h4>
+              <h2 style={{ fontSize: 48 }}>{vendorLabel}</h2>
+              <InputNumber
+                placeholder="amount..."
+                style={{
+                  width: 200,
+                  display: "block",
+                  margin: "0 auto",
+                  border: "2px solid black",
+                  borderRadius: 5,
+                }}
+                onChange={handleChangeAmount}
+                value={amount}
+              />
               <Button
                 type="primary"
                 className="plausible-event-name=TransferToVendorClick"
+                className="claim-button"
                 disabled={loading}
                 onClick={async () => {
                   console.log("provider: ", provider);
@@ -91,6 +109,7 @@ function PayToVendor({
                   console.log("contractBuidl: ", contractBuidl);
 
                   if (amount > 0) {
+                    window.plausible("TransferToVendorClick", { props: { amount: amount } });
                     setLoading(true);
                     const amountToSend = amount * 100;
                     try {
@@ -151,7 +170,12 @@ function PayToVendor({
                       }
                     }
                   } else {
-                    alert("Amount should be > 0!");
+                    window.plausible("TransferToVendorClickWithZero");
+                    notification.error({
+                      message: "Wrong amount!",
+                      description: "Amount should be greater than 0",
+                      placement: "topRight",
+                    });
                   }
                 }}
               >
