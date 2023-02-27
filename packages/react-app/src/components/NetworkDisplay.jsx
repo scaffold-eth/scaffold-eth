@@ -80,6 +80,11 @@ function NetworkDisplay({
                 >
                   <b>{networkLocal && networkLocal.name}</b>
                 </Button>
+                <p>
+                  <a href="/zksync" target="_blank">
+                    zkSync Mainnet Network Info
+                  </a>
+                </p>
               </div>
             }
             type="error"

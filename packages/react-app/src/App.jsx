@@ -477,6 +477,40 @@ function App(props) {
                 localChainId={localChainId}
               />
             </Route>
+            <Route exact path="/zksync">
+              <div
+                style={{
+                  backgroundColor: "black",
+                  width: 500,
+                  margin: "0 auto",
+                  textAlign: "left",
+                  padding: 20,
+                  borderRadius: 20,
+                }}
+              >
+                <h2>zkSync Mainnet Network Info</h2>
+                <ul>
+                  <li>
+                    <strong>Network Name:</strong> zkSync Era Mainnet
+                  </li>
+                  <li>
+                    <strong>New RPC URL:</strong> https://zksync2-mainnet.zksync.io
+                  </li>
+                  <li>
+                    <strong>Chain ID:</strong> 324
+                  </li>
+                  <li>
+                    <strong>Currency Symbol:</strong> ETH
+                  </li>
+                  <li>
+                    <strong>Block Explorer URL:</strong> https://explorer.zksync.io/
+                  </li>
+                  <li>
+                    <strong>WebSocket URL:</strong> wss://zksync2-mainnet.zksync.io/ws
+                  </li>
+                </ul>
+              </div>
+            </Route>
           </>
         ) : (
           <Route path="/">
