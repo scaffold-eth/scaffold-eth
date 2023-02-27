@@ -40,7 +40,7 @@ function PayToVendor({
   useEffect(() => {
     console.log("vendorAddress: ", vendorAddress);
     if (vendors) {
-      const vendorIndex = vendors.findIndex(element => element.value === vendorAddress);
+      const vendorIndex = vendors.findIndex(element => element.value.toLowerCase() === vendorAddress.toLowerCase());
       if (vendorIndex >= 0) {
         setVendorLabel(vendors[vendorIndex].label);
       }
