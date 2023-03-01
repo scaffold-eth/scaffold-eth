@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import axios from "axios";
 
 function ClaimTokens({ userSigner, address, updateBalanceBuidl, apiUrl, localChainId }) {
-  const [orderID, setOrderID] = useState();
+  const [orderID, setOrderID] = useState(localStorage.getItem("orderID"));
   const [loading, setLoading] = useState(false);
   const [progressCount, setProgressCount] = useState(0);
 
@@ -107,6 +107,7 @@ function ClaimTokens({ userSigner, address, updateBalanceBuidl, apiUrl, localCha
         }}
         onChange={e => {
           setOrderID(e.target.value);
+          localStorage.setItem("orderID", e.target.value);
         }}
         placeholder="OrderID"
       />
