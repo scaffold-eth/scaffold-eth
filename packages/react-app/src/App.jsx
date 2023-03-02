@@ -288,7 +288,8 @@ function App(props) {
       { label: "Denver Taco Truck (1)", value: "0x9598cd29af4368d49270DB724E7511CCcD2e4be8" },
       { label: "Cheese Love Grill (1)", value: "0x8360F4F9Ba02a131757EAFECE17bc814313a61de" },
       { label: "Arcade 1", value: "0x31edD5A882583CBf3A712E98E100Ef34aD6934b4" },
-      { label: "bbb claw", value: "0x8F222727f18c390625ed2292e8E49D0217f314CE" },
+      { label: "BBB Claw", value: "0x8F222727f18c390625ed2292e8E49D0217f314CE" },
+      { label: "Tyler (merch sales)", value: "0xFd94117cCe62711472FD22A7A0b7438EA12D35C5" },
     ],
   };
 
