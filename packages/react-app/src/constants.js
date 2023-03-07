@@ -31,6 +31,11 @@ export const NETWORKS = {
     chainId: 31337,
     blockExplorer: "",
     rpcUrl: localRpcUrl,
+    nativeCurrency: {
+      name: "ETH",
+      symbol: "ETH",
+      decimals: 18,
+    },
   },
   mainnet: {
     name: "mainnet",

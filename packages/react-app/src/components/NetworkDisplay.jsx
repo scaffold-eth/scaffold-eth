@@ -43,13 +43,15 @@ function NetworkDisplay({
                 <Button
                   onClick={async () => {
                     const ethereum = window.ethereum;
+                    const blockExplorerUrls = targetNetwork.blockExplorer ? [targetNetwork.blockExplorer] : undefined;
+
                     const data = [
                       {
                         chainId: "0x" + targetNetwork.chainId.toString(16),
                         chainName: targetNetwork.name,
                         nativeCurrency: targetNetwork.nativeCurrency,
                         rpcUrls: [targetNetwork.rpcUrl],
-                        blockExplorerUrls: [targetNetwork.blockExplorer],
+                        blockExplorerUrls,
                       },
                     ];
                     console.log("data", data);
@@ -67,6 +69,7 @@ function NetworkDisplay({
                         switchTx = await ethereum.request({
                           method: "wallet_addEthereumChain",
                           params: data,
+                          blockExplorerUrls,
                         });
                       } catch (addError) {
                         // handle "add" error
