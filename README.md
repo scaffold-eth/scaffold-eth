@@ -1,11 +1,39 @@
-# 🏗 Scaffold-ETH
+# BuidlBuxx.com
 
-> everything you need to build on Ethereum! 🚀
+> Dapp to purchase food at ETHDenver using the Buidl tokens.
 
-🧪 Quickly experiment with Solidity using a frontend that adapts to your smart contract:
+ETHDenver promoted the [MEW wallet](https://www.myetherwallet.com) to use to claim the Buidl tokens and pay for the food. If anyone doesn't want to install this wallet can claim the tokens and pay for the food with this dapp, using Metamask or a burner wallet.
 
-![image](https://user-images.githubusercontent.com/2653167/124158108-c14ca380-da56-11eb-967e-69cde37ca8eb.png)
+The Buidl token is deployed at the ZKSync Era blockchain and it uses a custom paymaster that pays the fees when the user is paying to a registered vendor. In this way, the users do not need ZKSync ETH to be able to use the Buidl tokens.
 
+## ZKSync-web3
+
+🧪 The Dapp uses the zksync-web3 library as an ethers.js replacement to be able to work with the ZKSync paymasters.
+
+>    const paymasterParams = utils.getPaymasterParams(paymasterAddress, {
+>      type: "General",
+>      innerInput: new Uint8Array(),
+>    });
+>
+>    await contractBuidl.transfer(vendorAddress, amountToSend, {
+>      customData: {
+>        paymasterParams,
+>        gasPerPubdata: utils.DEFAULT_GAS_PER_PUBDATA_LIMIT,
+>      },
+>    })
+
+
+## Dapp Online
+
+The dapp is deployed at https://buidlbux.com
+
+<img src="https://user-images.githubusercontent.com/466652/225023004-8be0e8b2-bcd6-4eee-9a88-3909855bac2a.png"  alt="Claim tokens" title="Claim tokens" width="300">
+
+<img src="https://user-images.githubusercontent.com/466652/225023150-4f1b419e-ecec-405d-a8f1-2d884fa9c5e4.png"  alt="Purchase food" title="Purchase food" width="300">
+
+<img src="https://user-images.githubusercontent.com/466652/225023222-e9c196e7-d27f-4ec3-9986-b1a6e49fcf98.png"  alt="Purchase confirmation" title="Purchase confirmation" width="300">
+
+<img src="https://user-images.githubusercontent.com/466652/225023301-e5c6ac73-cdc4-446a-8fc9-6e5a1194f8e5.png"  alt="Buidl tokens transfer" title="Buidl tokens transfer" width="300">
 
 # 🏄‍♂️ Quick Start
 
