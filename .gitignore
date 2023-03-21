@@ -13,6 +13,7 @@ packages/react-app/src/contracts/*
 packages/hardhat/cache*
 packages/**/data
 !packages/react-app/src/contracts/contracts.js
+packages/buildbear/bb-scripts/nodes.json
 
 
 # ts
