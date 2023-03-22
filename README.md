@@ -1,5 +1,5 @@
 # 🏗 Scaffold-ETH
-
+https://docs.scaffoldeth.io/scaffold-eth/
 > everything you need to build on Ethereum! 🚀
 
 🧪 Quickly experiment with Solidity using a frontend that adapts to your smart contract:
