@@ -42,6 +42,8 @@ async function createNode() {
   // check for existing node
   let node = await checkExistingNode();
 
+  const mnemonic = ethers.Wallet.createRandom().mnemonic.phrase;
+
   if (node) {
     console.log("Node already exists");
     console.log(node);
@@ -54,7 +56,7 @@ async function createNode() {
         interval: 0,
       },
       accounts: {
-        mnemonic: ethers.Wallet.createRandom().mnemonic.phrase,
+        mnemonic,
       },
       options: {
         hardhat: {
@@ -118,7 +120,7 @@ async function createNode() {
     }
   }
 
-  if (node) createNewDeployment(node);
+  if (node) createNewDeployment(node, mnemonic);
 }
 
 createNode();

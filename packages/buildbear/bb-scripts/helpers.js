@@ -1,45 +1,14 @@
 const fs = require("fs");
 const path = require("path");
-const deployments = require("../../react-app/src/contracts/hardhat_contracts.json");
 
-function createNewDeployment(node) {
-  const hardhatDeployment = deployments["31337"];
-  deployments[node.chainId] = [
-    {
-      name: "buildbear",
-      chainId: node.chainId.toString(),
-      contracts: hardhatDeployment[0].contracts,
-    },
-  ];
-
-  // const jsonString = JSON.stringify(deployments);
-
-  fs.writeFile(
+function createNewDeployment(node, mnemonic) {
+  fs.writeFileSync(
     path.join(__dirname, "./nodes.json"),
-    JSON.stringify(node),
-    (err) => {
-      if (err) {
-        console.log("Error writing file", err);
-      } else {
-        console.log("Successfully wrote file");
-      }
-    }
+    JSON.stringify(node, null, 2)
   );
 
-  // fs.writeFile(
-  //   path.join(
-  //     __dirname,
-  //     "../../react-app/src/contracts/hardhat_contracts.json"
-  //   ),
-  //   jsonString,
-  //   (err) => {
-  //     if (err) {
-  //       console.log("Error writing file", err);
-  //     } else {
-  //       console.log("Successfully wrote file");
-  //     }
-  //   }
-  // );
+  if (mnemonic)
+    fs.writeFileSync(path.join(__dirname, "./mnemonic.txt"), mnemonic);
 }
 
 module.exports = { createNewDeployment };

@@ -2,6 +2,7 @@ require("dotenv").config();
 const { utils } = require("ethers");
 const fs = require("fs");
 const chalk = require("chalk");
+const bbNode = require("../buildbear/bb-scripts/nodes.json");
 
 require("@nomicfoundation/hardhat-chai-matchers");
 require("@tenderly/hardhat-tenderly");
@@ -24,10 +25,16 @@ const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 //
 // Select the network you want to deploy to here:
 //
-const defaultNetwork = "localhost";
+const defaultNetwork = "buildbear";
 
 function mnemonic() {
   try {
+    if (defaultNetwork === "buildbear")
+      return fs
+        .readFileSync("../buildbear/bb-scripts/mnemonic.txt")
+        .toString()
+        .trim();
+
     return fs.readFileSync("./mnemonic.txt").toString().trim();
   } catch (e) {
     if (defaultNetwork !== "localhost") {
@@ -67,6 +74,12 @@ module.exports = {
         (you can put in a mnemonic here to set the deployer locally)
 
       */
+    },
+    buildbear: {
+      url: `http://localhost:5000/node/${bbNode.nodeId}`,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
     },
     mainnet: {
       url: "https://mainnet.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", // <---- YOUR INFURA ID! (or it won't work)

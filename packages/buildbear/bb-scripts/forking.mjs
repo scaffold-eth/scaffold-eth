@@ -43,6 +43,8 @@ async function createFork() {
   let chainId;
   let rpc;
 
+  const mnemonic = ethers.Wallet.createRandom().mnemonic.phrase;
+
   await inquirer
     .prompt([
       {
@@ -82,7 +84,7 @@ async function createFork() {
       interval: 0,
     },
     accounts: {
-      mnemonic: ethers.Wallet.createRandom().mnemonic.phrase,
+      mnemonic,
     },
     options: {
       hardhat: {
@@ -151,7 +153,7 @@ async function createFork() {
     console.log("Error in creating node, Error: ", err);
   }
 
-  if (node) createNewDeployment(node);
+  if (node) createNewDeployment(node, mnemonic);
 }
 
 createFork();
