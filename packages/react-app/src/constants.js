@@ -29,8 +29,8 @@ export const NETWORKS = {
   buildbear: {
     name: "buildbear",
     color: "#666666",
-    // chainId: 31337,
-    // blockExplorer: "",
+    chainId: bbNode.chainId,
+    blockExplorer: `https://explorer.dev.buildbear.io/${bbNode.nodeId}`,
     rpcUrl: `http://localhost:5000/node/${bbNode.nodeId}`, //TODO
   },
   localhost: {
