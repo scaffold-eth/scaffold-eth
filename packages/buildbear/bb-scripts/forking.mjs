@@ -84,7 +84,8 @@ async function createFork() {
       interval: 0,
     },
     accounts: {
-      mnemonic,
+      // eslint-disable-next-line object-shorthand
+      mnemonic: mnemonic,
     },
     options: {
       hardhat: {
