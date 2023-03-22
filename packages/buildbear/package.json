@@ -17,8 +17,8 @@
     "inquirer": "^9.1.5"
   },
   "scripts": {
-    "chain": "node bb-scripts/chain.mjs",
-    "fork": "node bb-scripts/forking.mjs",
-    "faucet": "node bb-scripts/faucet.mjs"
+    "chain": "node chain.mjs",
+    "fork": "node forking.mjs",
+    "faucet": "node faucet.mjs"
   }
 }

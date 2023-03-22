@@ -2,7 +2,7 @@ require("dotenv").config();
 const { utils } = require("ethers");
 const fs = require("fs");
 const chalk = require("chalk");
-const bbNode = require("../buildbear/bb-scripts/nodes.json");
+const bbNode = require("../buildbear/nodes.json");
 
 require("@nomicfoundation/hardhat-chai-matchers");
 require("@tenderly/hardhat-tenderly");
@@ -37,10 +37,7 @@ const defaultNetwork = "buildbear";
 function mnemonic() {
   try {
     if (defaultNetwork === "buildbear")
-      return fs
-        .readFileSync("../buildbear/bb-scripts/mnemonic.txt")
-        .toString()
-        .trim();
+      return fs.readFileSync("../buildbear/mnemonic.txt").toString().trim();
 
     return fs.readFileSync("./mnemonic.txt").toString().trim();
   } catch (e) {

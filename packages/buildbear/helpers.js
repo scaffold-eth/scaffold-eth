@@ -22,7 +22,7 @@ function createNewDeployment(node, mnemonic) {
   );
 
   fs.writeFileSync(
-    path.join(__dirname, "../../react-app/src/nodes.json"),
+    path.join(__dirname, "../react-app/src/nodes.json"),
     JSON.stringify(node, null, 2)
   );
 
