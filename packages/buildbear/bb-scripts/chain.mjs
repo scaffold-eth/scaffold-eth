@@ -1,40 +1,44 @@
 import axios from "axios";
 import { ethers } from "ethers";
 import { BB_BACKEND_URL, BB_API_KEY } from "./constants.mjs";
-import { createNewDeployment } from "./helpers.js";
+import { readNodes, createNewDeployment } from "./helpers.js";
 
 async function checkExistingNode() {
-  const config = {
-    method: "get",
-    url: `${BB_BACKEND_URL}/user/container`,
-    headers: {
-      Authorization: `Bearer ${BB_API_KEY}`,
-      "Content-Type": "application/json",
-    },
-  };
+  const existingNode = readNodes();
 
-  try {
-    const response = await axios(config);
-    const data = response.data;
+  if (existingNode && existingNode.nodeId) {
+    const config = {
+      method: "get",
+      url: `${BB_BACKEND_URL}/user/container`,
+      headers: {
+        Authorization: `Bearer ${BB_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+    };
 
-    if (data.length > 0) {
-      const liveNodes = data.filter((node) => {
-        if (node.status === "live") return node;
-        return null;
-      });
+    try {
+      const response = await axios(config);
+      const data = response.data;
 
-      if (liveNodes.length > 0)
-        return {
-          nodeId: liveNodes[0].nodeId,
-          chainId: liveNodes[0].settings.chainId,
-        };
+      if (data.length > 0) {
+        let nodeIsLive = false;
+
+        // eslint-disable-next-line no-restricted-syntax
+        for (const node of data) {
+          if (node.nodeId === existingNode.nodeId && node.status === "live")
+            nodeIsLive = true;
+        }
+
+        if (nodeIsLive) return existingNode;
+      }
+
+      return null;
+    } catch (err) {
+      console.log(err);
     }
-
-    return null;
-  } catch (err) {
-    console.log(err);
-    return null;
   }
+
+  return null;
 }
 
 async function createNode() {

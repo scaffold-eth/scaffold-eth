@@ -1,4 +1,4 @@
-const bbNode = require("../../buildbear/bb-scripts/nodes.json");
+const bbNode = require("./nodes.json");
 // MY INFURA_ID, SWAP IN YOURS FROM https://infura.io/dashboard/ethereum
 export const INFURA_ID = process.env.REACT_APP_INFURA_KEY ?? "460f40a260564ac4a4f4b3fffb032dad";
 // My Alchemy Key, swap in yours from https://dashboard.alchemyapi.io/
@@ -31,7 +31,7 @@ export const NETWORKS = {
     color: "#666666",
     chainId: bbNode.chainId,
     blockExplorer: `https://explorer.dev.buildbear.io/${bbNode.nodeId}`,
-    rpcUrl: `http://localhost:5000/node/${bbNode.nodeId}`, //TODO
+    rpcUrl: `https://rpc.dev.buildbear.io/${bbNode.nodeId}`, //TODO
   },
   localhost: {
     name: "localhost",

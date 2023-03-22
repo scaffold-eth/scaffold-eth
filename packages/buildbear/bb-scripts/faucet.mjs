@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import axios from "axios";
-import { BB_API_KEY } from "./constants.mjs";
+import { BB_API_KEY, BB_BACKEND_URL } from "./constants.mjs";
 import nodesData from "./nodes.json" assert { type: "json" };
 
 const args = process.argv.slice(2);
@@ -16,7 +16,7 @@ function nativeFaucet() {
 
   const config = {
     method: "post",
-    url: `http://localhost:5000/node/faucet/native/${nodesData.nodeId}`,
+    url: `${BB_BACKEND_URL}/node/faucet/native/${nodesData.nodeId}`,
     headers: {
       Authorization: `Bearer ${BB_API_KEY}`,
       "Content-Type": "application/json",
@@ -46,7 +46,7 @@ function erc20Faucet() {
 
   const config = {
     method: "post",
-    url: `http://localhost:5000/node/faucet/erc20/${nodesData.nodeId}`,
+    url: `${BB_BACKEND_URL}/node/faucet/erc20/${nodesData.nodeId}`,
     headers: {
       Authorization: `Bearer ${BB_API_KEY}`,
       "Content-Type": "application/json",

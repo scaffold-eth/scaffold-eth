@@ -27,6 +27,13 @@ const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 //
 const defaultNetwork = "buildbear";
 
+// if (defaultNetwork === "buildbear") {
+//   fs.rmSync(path.join(__dirname, "./deployments/buildbear"), {
+//     recursive: true,
+//     force: true,
+//   });
+// }
+
 function mnemonic() {
   try {
     if (defaultNetwork === "buildbear")
@@ -76,7 +83,7 @@ module.exports = {
       */
     },
     buildbear: {
-      url: `http://localhost:5000/node/${bbNode.nodeId}`,
+      url: `https://rpc.dev.buildbear.io/${bbNode.nodeId}`,
       accounts: {
         mnemonic: mnemonic(),
       },

@@ -15,6 +15,7 @@ packages/**/data
 !packages/react-app/src/contracts/contracts.js
 packages/buildbear/bb-scripts/nodes.json
 packages/buildbear/bb-scripts/mnemonic.txt
+packages/react-app/src/nodes.json
 
 
 # ts
