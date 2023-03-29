@@ -5,6 +5,8 @@ import { useBalance, useGasPrice } from "eth-hooks";
 
 import { getRPCPollTime, Transactor } from "../helpers";
 
+import bbNode from "../nodes.json";
+
 function FaucetHint({ localProvider, targetNetwork, address }) {
   const [faucetClicked, setFaucetClicked] = useState(false);
 
@@ -25,7 +27,7 @@ function FaucetHint({ localProvider, targetNetwork, address }) {
     !faucetClicked &&
     localProvider &&
     localProvider._network &&
-    localProvider._network.chainId === 31337 &&
+    (localProvider._network.chainId === 31337 || localProvider._network.chainId === bbNode.chainId) &&
     yourLocalBalance &&
     ethers.utils.formatEther(yourLocalBalance) <= 0
   ) {

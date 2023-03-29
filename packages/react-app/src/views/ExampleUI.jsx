@@ -4,6 +4,7 @@ import { utils } from "ethers";
 import { SyncOutlined } from "@ant-design/icons";
 
 import { Address, Balance, Events } from "../components";
+import Transactions from "../components/Transactions";
 
 export default function ExampleUI({
   purpose,
@@ -162,6 +163,8 @@ export default function ExampleUI({
         mainnetProvider={mainnetProvider}
         startBlock={1}
       />
+
+      <Transactions />
 
       <div style={{ width: 600, margin: "auto", marginTop: 32, paddingBottom: 256 }}>
         <Card>

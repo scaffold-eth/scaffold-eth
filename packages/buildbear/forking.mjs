@@ -7,7 +7,7 @@ import {
   networks,
   networkData,
 } from "./constants.mjs";
-import { createNewDeployment } from "./helpers.js";
+import { createNewDeployment } from "./helpers.mjs";
 
 async function getBlockNumber(rpc) {
   const provider = new ethers.providers.JsonRpcProvider(rpc);
@@ -154,7 +154,7 @@ async function createFork() {
     console.log("Error in creating node, Error: ", err);
   }
 
-  if (node) createNewDeployment(node, mnemonic);
+  if (node) createNewDeployment(node, mnemonic, chainId);
 }
 
 createFork();

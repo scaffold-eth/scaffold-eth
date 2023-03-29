@@ -1,7 +1,7 @@
 import axios from "axios";
 import { ethers } from "ethers";
 import { BB_BACKEND_URL, BB_API_KEY } from "./constants.mjs";
-import { readNodes, createNewDeployment } from "./helpers.js";
+import { readNodes, createNewDeployment } from "./helpers.mjs";
 
 async function checkExistingNode() {
   const existingNode = readNodes();

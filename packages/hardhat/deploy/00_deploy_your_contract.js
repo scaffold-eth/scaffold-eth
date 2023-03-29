@@ -1,6 +1,7 @@
 // deploy/00_deploy_your_contract.js
 
 const { ethers } = require("hardhat");
+const bbNode = require("../../buildbear/nodes.json");
 
 const localChainId = "31337";
 
@@ -17,7 +18,7 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const { deployer } = await getNamedAccounts();
   const chainId = await getChainId();
 
-  await deploy("YourContract", {
+  const YourContract = await deploy("YourContract", {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
     // args: [ "Hello", ethers.utils.parseEther("1.5") ],
@@ -77,5 +78,11 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   } catch (error) {
     console.error("Verification Error =>", error);
   }
+
+  // if deploying on buildbear node print explorer link
+  console.log(
+    "Checkout the contract at: ",
+    `https://explorer.dev.buildbear.io/${bbNode.nodeId}/address/${YourContract.address}`
+  );
 };
 module.exports.tags = ["YourContract"];

@@ -1,7 +1,11 @@
-const fs = require("fs");
-const path = require("path");
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
-function readNodes() {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export function readNodes() {
   let nodes = null;
 
   try {
@@ -15,7 +19,10 @@ function readNodes() {
   return nodes;
 }
 
-function createNewDeployment(node, mnemonic) {
+export function createNewDeployment(node, mnemonic, forkingChainId) {
+  // eslint-disable-next-line no-param-reassign
+  node.forkingChainId = forkingChainId;
+
   fs.writeFileSync(
     path.join(__dirname, "./nodes.json"),
     JSON.stringify(node, null, 2)
@@ -29,5 +36,3 @@ function createNewDeployment(node, mnemonic) {
   if (mnemonic)
     fs.writeFileSync(path.join(__dirname, "./mnemonic.txt"), mnemonic);
 }
-
-module.exports = { readNodes, createNewDeployment };

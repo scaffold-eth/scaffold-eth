@@ -430,6 +430,7 @@ function App(props) {
 
         <Row align="middle" gutter={[4, 4]}>
           <Col span={24}>
+            {console.log("🤗 faucetAvailable", faucetAvailable)}
             {
               /*  if the local provider has a signer, let's show the faucet:  */
               faucetAvailable ? (
@@ -438,6 +439,11 @@ function App(props) {
                 ""
               )
             }
+            {selectedNetwork === "buildbear" ? (
+              <Faucet localProvider={localProvider} price={price} ensProvider={mainnetProvider} buildbear />
+            ) : (
+              ""
+            )}
           </Col>
         </Row>
       </div>
