@@ -1,7 +1,20 @@
 // deploy/00_deploy_your_contract.js
 
 const { ethers } = require("hardhat");
-const bbNode = require("../../buildbear/nodes.json");
+const fs = require("fs");
+const path = require("path");
+
+let bbNode;
+try {
+  bbNode = JSON.parse(
+    fs
+      .readFileSync(path.join(__dirname, "../../buildbear/nodes.json"))
+      .toString()
+      .trim()
+  );
+} catch (e) {
+  console.log("No buildbear node found");
+}
 
 const localChainId = "31337";
 

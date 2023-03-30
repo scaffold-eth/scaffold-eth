@@ -2,12 +2,24 @@ require("dotenv").config();
 const { utils } = require("ethers");
 const fs = require("fs");
 const chalk = require("chalk");
-const bbNode = require("../buildbear/nodes.json");
+const path = require("path");
 
 require("@nomicfoundation/hardhat-chai-matchers");
 require("@tenderly/hardhat-tenderly");
 require("@nomicfoundation/hardhat-toolbox");
 require("hardhat-deploy");
+
+let bbNode;
+try {
+  bbNode = JSON.parse(
+    fs
+      .readFileSync(path.join(__dirname, "../buildbear/nodes.json"))
+      .toString()
+      .trim()
+  );
+} catch (e) {
+  console.log("No buildbear node found");
+}
 
 const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 

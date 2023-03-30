@@ -1,12 +1,14 @@
 import { List } from "antd";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import bbNode from "../nodes.json";
+import { bbNode } from "../constants";
 
 export default function Transactions() {
   const [transactions, setTransactions] = useState([]);
 
   useEffect(() => {
+    if (!bbNode) return;
+
     var config = {
       method: "get",
       url: `https://backend.dev.buildbear.io/node/transaction/${bbNode.nodeId}?page=1&no=10`,

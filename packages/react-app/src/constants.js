@@ -1,4 +1,12 @@
-const bbNode = require("./nodes.json");
+import buildbearNode from "./nodes.json";
+
+let bbNode = null;
+if (buildbearNode.nodeId) {
+  bbNode = buildbearNode;
+}
+
+export { bbNode };
+
 // MY INFURA_ID, SWAP IN YOURS FROM https://infura.io/dashboard/ethereum
 export const INFURA_ID = process.env.REACT_APP_INFURA_KEY ?? "460f40a260564ac4a4f4b3fffb032dad";
 // My Alchemy Key, swap in yours from https://dashboard.alchemyapi.io/
@@ -32,9 +40,9 @@ export const NETWORKS = {
   buildbear: {
     name: "buildbear",
     color: "#666666",
-    chainId: bbNode.chainId,
-    blockExplorer: `https://explorer.dev.buildbear.io/${bbNode.nodeId}`,
-    rpcUrl: `https://rpc.dev.buildbear.io/${bbNode.nodeId}`, //TODO
+    chainId: bbNode ? bbNode.chainId : "",
+    blockExplorer: `https://explorer.dev.buildbear.io/${bbNode ? bbNode.nodeId : ""}`,
+    rpcUrl: `https://rpc.dev.buildbear.io/${bbNode ? bbNode.nodeId : ""}`, //TODO
   },
   localhost: {
     name: "localhost",

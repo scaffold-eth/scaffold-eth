@@ -5,6 +5,7 @@ import { SyncOutlined } from "@ant-design/icons";
 
 import { Address, Balance, Events } from "../components";
 import Transactions from "../components/Transactions";
+import { bbNode } from "../constants";
 
 export default function ExampleUI({
   purpose,
@@ -18,6 +19,7 @@ export default function ExampleUI({
   writeContracts,
 }) {
   const [newPurpose, setNewPurpose] = useState("loading...");
+  const isBuildbearNet = localProvider && localProvider.connection.url.startsWith("https://rpc.dev.buildbear.io");
 
   return (
     <div>
@@ -87,6 +89,7 @@ export default function ExampleUI({
         <Address
           address={readContracts && readContracts.YourContract ? readContracts.YourContract.address : null}
           ensProvider={mainnetProvider}
+          blockExplorer={isBuildbearNet ? `https://explorer.dev.buildbear.io/${bbNode.nodeId}/` : undefined}
           fontSize={16}
         />
         <Divider />
@@ -164,7 +167,7 @@ export default function ExampleUI({
         startBlock={1}
       />
 
-      <Transactions />
+      {isBuildbearNet ? <Transactions /> : null}
 
       <div style={{ width: 600, margin: "auto", marginTop: 32, paddingBottom: 256 }}>
         <Card>

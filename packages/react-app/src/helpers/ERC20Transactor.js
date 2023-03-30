@@ -1,7 +1,6 @@
 import { notification } from "antd";
 import axios from "axios";
-import { BB_BACKEND_URL } from "../constants";
-import bbNode from "../nodes.json";
+import { BB_BACKEND_URL, bbNode } from "../constants";
 
 /**
  * This ERC20Transactor is supposed to be used for buildbear nodes

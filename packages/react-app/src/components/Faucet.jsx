@@ -4,8 +4,7 @@ import Blockies from "react-blockies";
 import { SendOutlined } from "@ant-design/icons";
 import { Transactor, ERC20Transactor } from "../helpers";
 import Wallet from "./Wallet";
-import { bbSupportedERC20Tokens } from "../constants";
-import bbNode from "../nodes.json";
+import { bbSupportedERC20Tokens, bbNode } from "../constants";
 
 const { utils } = require("ethers");
 
@@ -76,7 +75,7 @@ export default function Faucet(props) {
 
   const tx = Transactor(localProvider);
 
-  const erc20Tokens = bbSupportedERC20Tokens[bbNode.forkingChainId];
+  const erc20Tokens = bbNode ? bbSupportedERC20Tokens[bbNode.forkingChainId] : {};
   let erc20Options = Object.keys(erc20Tokens).map((token, i) => {
     return {
       value: erc20Tokens[token].address,
