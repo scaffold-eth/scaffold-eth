@@ -44,6 +44,26 @@ function Home({ yourLocalBalance, readContracts }) {
         </span>
       </div>
       <div style={{ margin: 32 }}>
+        <span style={{ marginRight: 8 }}>🖥️</span>
+        Create a Buildbear node with{" "}
+        <span
+          className="highlight"
+          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
+        >
+          yarn chain-bb
+        </span>{" "}
+      </div>
+      <div style={{ margin: 32 }}>
+        <span style={{ marginRight: 8 }}>🍴</span>
+        Create a forked Buildbear node with{" "}
+        <span
+          className="highlight"
+          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
+        >
+          yarn fork-bb
+        </span>{" "}
+      </div>
+      <div style={{ margin: 32 }}>
         <span style={{ marginRight: 8 }}>🛰</span>
         Deploy your smart contract with{" "}
         <span
@@ -51,6 +71,16 @@ function Home({ yourLocalBalance, readContracts }) {
           style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
         >
           yarn deploy
+        </span>{" "}
+      </div>
+      <div style={{ margin: 32 }}>
+        <span style={{ marginRight: 8 }}>🚰</span>
+        You can access the faucet from terminal with{" "}
+        <span
+          className="highlight"
+          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
+        >
+          yarn faucet-bb
         </span>{" "}
       </div>
       {!purpose ? (

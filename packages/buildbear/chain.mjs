@@ -122,9 +122,9 @@ async function createNode() {
     } catch (err) {
       console.log("Error in creating node, Error: ", err);
     }
-  }
 
-  if (node) createNewDeployment(node, mnemonic);
+    if (node) createNewDeployment(node, mnemonic);
+  }
 }
 
 createNode();
