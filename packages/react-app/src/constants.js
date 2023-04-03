@@ -42,7 +42,12 @@ export const NETWORKS = {
     color: "#666666",
     chainId: bbNode ? bbNode.chainId : "",
     blockExplorer: `https://explorer.dev.buildbear.io/${bbNode ? bbNode.nodeId : ""}`,
-    rpcUrl: `https://rpc.dev.buildbear.io/${bbNode ? bbNode.nodeId : ""}`, //TODO
+    rpcUrl: `https://rpc.dev.buildbear.io/${bbNode ? bbNode.nodeId : ""}`,
+    nativeCurrency: {
+      name: "BB Ether",
+      symbol: "BB ETH",
+      decimals: 18,
+    },
   },
   localhost: {
     name: "localhost",

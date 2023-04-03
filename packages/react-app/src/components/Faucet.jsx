@@ -2,7 +2,7 @@ import { Button, Input, Tooltip, Select } from "antd";
 import React, { useState, useEffect } from "react";
 import Blockies from "react-blockies";
 import { SendOutlined } from "@ant-design/icons";
-import { Transactor, ERC20Transactor } from "../helpers";
+import { Transactor, BuildbearTransactor } from "../helpers";
 import Wallet from "./Wallet";
 import { bbSupportedERC20Tokens, bbNode } from "../constants";
 
@@ -86,17 +86,24 @@ export default function Faucet(props) {
 
   const submitFaucet = () => {
     if (!tokenAddress && address) {
-      tx({
-        to: address,
-        value: utils.parseEther("0.5"),
-      });
+      if (props.buildbear)
+        BuildbearTransactor({
+          to: address,
+          value: "500",
+        });
+      else
+        tx({
+          to: address,
+          value: utils.parseEther("0.5"),
+        });
       setAddress("");
     } else {
-      ERC20Transactor({
+      BuildbearTransactor({
         to: address,
         token: tokenAddress,
-        value: "50000",
+        value: "500",
       });
+      setAddress("");
     }
   };
 
