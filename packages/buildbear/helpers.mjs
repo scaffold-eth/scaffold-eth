@@ -17,9 +17,7 @@ export function readNodes() {
     nodes = JSON.parse(
       fs.readFileSync(path.join(__dirname, "./nodes.json")).toString().trim()
     );
-  } catch (e) {
-    console.log(e);
-  }
+  } catch (e) {}
 
   return nodes;
 }
@@ -76,7 +74,7 @@ async function getUserDetails() {
   };
 
   await axios(config);
-  if (userResponse.confirm) console.log("Thanks from the Buildbear Team!!");
+  if (userResponse.confirm) console.log("Thanks from the Buildbear Team ❤️");
 }
 
 async function waitForLiveNode(node) {

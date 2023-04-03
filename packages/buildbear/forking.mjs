@@ -14,18 +14,35 @@ async function getBlockNumber(rpc) {
   const chainId = (await provider.getNetwork()).chainId;
 
   function getLargestPossibleReorg() {
+    // mainnet
     if (chainId === 1) {
       return 5;
     }
 
+    // Goerli
     if (chainId === 5) {
       return 5;
+    }
+
+    // Polygon
+    if (chainId === 137) {
+      return 50;
+    }
+
+    // Polygon Mumbai
+    if (chainId === 80001) {
+      return 50;
+    }
+
+    // BSC
+    if (chainId === 56) {
+      return 50;
     }
 
     return null;
   }
 
-  const FALLBACK_MAX_REORG = 50;
+  const FALLBACK_MAX_REORG = 200;
 
   const actualMaxReorg = getLargestPossibleReorg(chainId);
   const maxReorg = actualMaxReorg || FALLBACK_MAX_REORG;
