@@ -1,8 +1,14 @@
 # 🏗 Scaffold-ETH x Buildbear
 
-> everything you need to build on Ethereum! 🚀
-
 🧪 Quickly experiment with Solidity using a frontend that adapts to your smart contract:
+
+The original flavor of **Scaffold-Eth** by default uses local hardhat nodes for its working. It is perfect for easy understanding and learning of Solidity.
+
+**Scaffold-Eth x Buildbear** does the same but instead use nodes running on [**Buildbear**](https://buildbear.io).
+
+# 🐻 Features of [Buildbear](https://buildbear.io)
+
+<!-- TODO -->
 
 ![image](https://user-images.githubusercontent.com/2653167/124158108-c14ca380-da56-11eb-967e-69cde37ca8eb.png)
 
@@ -12,7 +18,7 @@ Prerequisites: [Node (v18 LTS)](https://nodejs.org/en/download/) plus [Yarn (v1.
 
 🚨 If you are using a version < v18 you will need to remove `openssl-legacy-provider` from the `start` script in `package.json`
 
-> 1️⃣ clone/fork 🏗 scaffold-eth:
+> 1️⃣ clone/fork 🏗 scaffold-eth x buildbear:
 
 ```bash
 git clone https://github.com/BuildBearLabs/scaffold-eth.git
