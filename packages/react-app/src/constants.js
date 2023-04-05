@@ -41,6 +41,7 @@ export const NETWORKS = {
     name: "buildbear",
     color: "#666666",
     chainId: bbNode ? bbNode.chainId : "",
+    faucet: `https://faucet.dev.buildbear.io/${bbNode ? bbNode.nodeId : ""}`,
     blockExplorer: `https://explorer.dev.buildbear.io/${bbNode ? bbNode.nodeId : ""}`,
     rpcUrl: `https://rpc.dev.buildbear.io/${bbNode ? bbNode.nodeId : ""}`,
     nativeCurrency: {

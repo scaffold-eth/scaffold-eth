@@ -1,6 +1,7 @@
 import inquirer from "inquirer";
 import axios from "axios";
 import { ethers } from "ethers";
+import ora from "ora";
 import {
   BB_BACKEND_URL,
   BB_API_KEY,
@@ -91,7 +92,9 @@ async function createFork() {
         });
     });
 
-  console.log(`Creating a new ${network} fork on Buildbear...`);
+  const createNodeSpinner = ora(
+    `Creating a new ${network} fork on Buildbear...`
+  ).start();
 
   const data = JSON.stringify({
     checked: false,
@@ -162,7 +165,7 @@ async function createFork() {
 
     if (response.status === 200) {
       node = { nodeId: resData.nodeId, chainId: resData.chainId };
-      console.log("Node created successfully");
+      createNodeSpinner.succeed("Node created successfully");
       console.log(node);
     } else {
       console.log("Error in creating node, Error: ", resData);

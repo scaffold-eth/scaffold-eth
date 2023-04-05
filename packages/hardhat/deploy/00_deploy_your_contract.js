@@ -94,7 +94,7 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
 
   // if deploying on buildbear node print explorer link
   console.log(
-    "Checkout the contract at: ",
+    "Checkout YourContract at: ",
     `https://explorer.dev.buildbear.io/${bbNode.nodeId}/address/${YourContract.address}`
   );
 };
