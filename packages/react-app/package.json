@@ -21,6 +21,7 @@
     "@arbitrum/sdk": "^2.0.0",
     "@gnosis.pm/safe-apps-sdk": "^7.8.0",
     "@gnosis.pm/safe-apps-web3modal": "^17.0.4",
+    "@openzeppelin/contracts": "^4.8.2",
     "@portis/web3": "^4.0.5",
     "@ramp-network/ramp-instant-sdk": "^2.2.0",
     "@testing-library/jest-dom": "^5.11.4",

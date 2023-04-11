@@ -15,7 +15,8 @@ interface IUniswapV2Router02 {
 }
 
 contract TokenSwap {
-    address private uniswapV2RouterAddress;
+    address private constant uniswapV2RouterAddress =
+        0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
 
     event TokensSwapped(
         address tokenIn,
@@ -24,15 +25,18 @@ contract TokenSwap {
         uint tokenOut_amountInWei
     );
 
-    constructor(address _uniswapV2RouterAddress) {
-        uniswapV2RouterAddress = _uniswapV2RouterAddress;
-    }
-
     function swap(
         address tokenIn,
         address tokenOut,
         uint tokenIn_amountInWei
     ) external {
+        // Transfer erc20 tokens to this contract
+        IERC20(tokenIn).transferFrom(
+            msg.sender,
+            address(this),
+            tokenIn_amountInWei
+        );
+
         // Approve the UniswapV2 router to spend tokenIn
         IERC20(tokenIn).approve(uniswapV2RouterAddress, tokenIn_amountInWei);
 

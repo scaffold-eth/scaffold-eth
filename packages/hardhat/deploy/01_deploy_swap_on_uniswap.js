@@ -22,7 +22,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   const TokenSwap = await deploy("TokenSwap", {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
-    args: ["0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D"],
+    // args: ["0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D"],
     log: true,
     // waitConfirmations: 5,
   });

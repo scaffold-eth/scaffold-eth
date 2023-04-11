@@ -37,7 +37,13 @@ export default function Transactions() {
         renderItem={item => {
           return (
             <List.Item key={`transaction${item._id}`}>
-              <a href={`https://explorer.dev.buildbear.io/${bbNode.nodeId}/tx/${item.hash}`}>{item.hash}</a>
+              <a
+                href={`https://explorer.dev.buildbear.io/${bbNode.nodeId}/tx/${item.hash}`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {item.hash}
+              </a>
             </List.Item>
           );
         }}
