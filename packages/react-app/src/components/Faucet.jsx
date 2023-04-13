@@ -112,7 +112,7 @@ export default function Faucet(props) {
       <span>
         <Input
           size="large"
-          placeholder={placeholder ? placeholder : props.buildbear ? "buildbear faucet" : "local faucet"}
+          placeholder={placeholder ? placeholder : props.buildbear ? "insert wallet address" : "local faucet"}
           prefix={blockie}
           value={address}
           onChange={e => updateAddress(e.target.value)}
