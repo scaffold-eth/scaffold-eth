@@ -7,14 +7,21 @@
 # 🐻 Features of [Buildbear](https://buildbear.io)
 
 
-Creating your private testnet
+## Creating your private testnet
+
 ![image](./Your%20Private%20Testnet.png)
 
-Using you personal faucet
+## Using you personal faucet
+
 ![image](./Native%20Token%20Faucet.png)
 
-Using you personal ERC20 faucet
+## Using you personal ERC20 faucet
+
 ![image](./USDC%20Faucet.png)
+
+## Swap your tokens on Forked Uniswap
+
+![image](./Swap%20Tokens%20Using%20Forked%20Uniswap.png)
 
 # 🏄‍♂️ Quick Start
 
