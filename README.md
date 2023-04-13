@@ -60,7 +60,7 @@ yarn start
 ```
 
 
-> 4️⃣ you can use your 🚰 faucet directly from the terminal after creating your private tesnet:
+> 5️⃣ you can use your 🚰 faucet directly from the terminal after creating your private tesnet:
 
 ```bash
 # for native tokens
