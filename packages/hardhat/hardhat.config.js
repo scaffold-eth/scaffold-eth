@@ -2,11 +2,24 @@ require("dotenv").config();
 const { utils } = require("ethers");
 const fs = require("fs");
 const chalk = require("chalk");
+const path = require("path");
 
 require("@nomicfoundation/hardhat-chai-matchers");
 require("@tenderly/hardhat-tenderly");
 require("@nomicfoundation/hardhat-toolbox");
 require("hardhat-deploy");
+
+let bbNode;
+try {
+  bbNode = JSON.parse(
+    fs
+      .readFileSync(path.join(__dirname, "../buildbear/nodes.json"))
+      .toString()
+      .trim()
+  );
+} catch (e) {
+  console.log("No buildbear node found");
+}
 
 const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 
@@ -24,10 +37,20 @@ const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 //
 // Select the network you want to deploy to here:
 //
-const defaultNetwork = "localhost";
+const defaultNetwork = "buildbear";
+
+// if (defaultNetwork === "buildbear") {
+//   fs.rmSync(path.join(__dirname, "./deployments/buildbear"), {
+//     recursive: true,
+//     force: true,
+//   });
+// }
 
 function mnemonic() {
   try {
+    if (defaultNetwork === "buildbear")
+      return fs.readFileSync("../buildbear/mnemonic.txt").toString().trim();
+
     return fs.readFileSync("./mnemonic.txt").toString().trim();
   } catch (e) {
     if (defaultNetwork !== "localhost") {
@@ -67,6 +90,12 @@ module.exports = {
         (you can put in a mnemonic here to set the deployer locally)
 
       */
+    },
+    buildbear: {
+      url: `https://rpc.dev.buildbear.io/${bbNode.nodeId}`,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
     },
     mainnet: {
       url: "https://mainnet.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", // <---- YOUR INFURA ID! (or it won't work)

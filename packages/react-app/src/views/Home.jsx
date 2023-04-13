@@ -26,22 +26,60 @@ function Home({ yourLocalBalance, readContracts }) {
           packages/react-app/src/views/Home.jsx
         </span>
       </div>
+      <div style={{ fontWeight: "bolder" }}>You have two contracts to play with :</div>
       <div style={{ margin: 32 }}>
-        <span style={{ marginRight: 8 }}>✏️</span>
-        Edit your smart contract{" "}
+        <span style={{ fontWeight: "bolder" }}>1.</span>
         <span
           className="highlight"
           style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
         >
           YourContract.sol
         </span>{" "}
-        in{" "}
+        <span
+          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
+        >
+          (/packages/hardhat/contracts/YourContract.sol)
+        </span>
+      </div>
+      <div style={{ margin: 32 }}>
+        <span style={{ marginLeft: 4, marginTop: -10, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4 }}>
+          In this contract, you will store a string `newPurpose` in the Contract and read it later from the Smart
+          Contract
+        </span>
+      </div>
+      <span style={{ fontSize: 18, fontWeight: "bolder" }}>OR</span>
+      <div style={{ margin: 32 }}>
+        <span style={{ fontWeight: "bolder" }}>2.</span>
         <span
           className="highlight"
           style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
         >
-          packages/hardhat/contracts
+          SwapOnUniswap.sol
+        </span>{" "}
+        <span
+          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
+        >
+          (packages/hardhat/contracts/SwapOnUniswap.sol)
         </span>
+      </div>
+      <div style={{ margin: 32 }}>
+        <span style={{ marginLeft: 4, marginTop: -10, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4 }}>
+          In this contract, you will store be swapping any two tokens (of your choice, from a drop-down list available)
+          on UniswapV2
+        </span>
+      </div>
+
+      <div style={{ margin: 32 }}>
+        <span style={{ marginRight: 8 }}>🍴</span>
+        For this deploying SwapOnUniswap and swapping tokens on mainnet:
+        <br />
+        <span>Create your private testnet, forked from ethereum mainnet, with</span>
+        <span
+          className="highlight"
+          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
+        >
+          yarn fork-bb
+        </span>{" "}
       </div>
       <div style={{ margin: 32 }}>
         <span style={{ marginRight: 8 }}>🛰</span>
@@ -52,6 +90,29 @@ function Home({ yourLocalBalance, readContracts }) {
         >
           yarn deploy
         </span>{" "}
+      </div>
+      {/* <div style={{ margin: 32, fontWeight: "bolder" }}>FAUCET</div> */}
+      <div style={{ margin: 32 }}>
+        <span style={{ marginRight: 8 }}>🚰</span>
+        You can access the faucet from terminal with{" "}
+        <span
+          className="highlight"
+          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
+        >
+          yarn faucet-bb native {`<Insert Amount (optional)> <Insert Your Wallet Address>`}
+        </span>
+        <span> and this will mint your native tokens</span>{" "}
+      </div>
+      <div style={{ margin: 32 }}>
+        <span style={{ marginRight: 8 }}>🚰</span>
+        You can access the erc20 faucet from terminal with{" "}
+        <span
+          className="highlight"
+          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
+        >
+          yarn faucet-bb USDC {`<Insert Amount (optional)> <Insert Your Wallet Address>`}
+        </span>
+        <span> and this will mint USDC tokens</span>{" "}
       </div>
       {!purpose ? (
         <div style={{ margin: 32 }}>

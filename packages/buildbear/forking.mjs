@@ -1,31 +1,49 @@
 import inquirer from "inquirer";
 import axios from "axios";
 import { ethers } from "ethers";
+import ora from "ora";
 import {
   BB_BACKEND_URL,
   BB_API_KEY,
   networks,
   networkData,
 } from "./constants.mjs";
-import { createNewDeployment } from "./helpers.js";
+import { createNewDeployment } from "./helpers.mjs";
 
 async function getBlockNumber(rpc) {
   const provider = new ethers.providers.JsonRpcProvider(rpc);
   const chainId = (await provider.getNetwork()).chainId;
 
   function getLargestPossibleReorg() {
+    // mainnet
     if (chainId === 1) {
       return 5;
     }
 
+    // Goerli
     if (chainId === 5) {
       return 5;
+    }
+
+    // Polygon
+    if (chainId === 137) {
+      return 50;
+    }
+
+    // Polygon Mumbai
+    if (chainId === 80001) {
+      return 50;
+    }
+
+    // BSC
+    if (chainId === 56) {
+      return 50;
     }
 
     return null;
   }
 
-  const FALLBACK_MAX_REORG = 50;
+  const FALLBACK_MAX_REORG = 200;
 
   const actualMaxReorg = getLargestPossibleReorg(chainId);
   const maxReorg = actualMaxReorg || FALLBACK_MAX_REORG;
@@ -42,6 +60,8 @@ async function createFork() {
   let network;
   let chainId;
   let rpc;
+
+  const mnemonic = ethers.Wallet.createRandom().mnemonic.phrase;
 
   await inquirer
     .prompt([
@@ -72,7 +92,9 @@ async function createFork() {
         });
     });
 
-  console.log(`Creating a new ${network} fork on Buildbear...`);
+  const createNodeSpinner = ora(
+    `Creating a new ${network} fork on Buildbear...`
+  ).start();
 
   const data = JSON.stringify({
     checked: false,
@@ -82,7 +104,8 @@ async function createFork() {
       interval: 0,
     },
     accounts: {
-      mnemonic: ethers.Wallet.createRandom().mnemonic.phrase,
+      // eslint-disable-next-line object-shorthand
+      mnemonic: mnemonic,
     },
     options: {
       hardhat: {
@@ -142,7 +165,7 @@ async function createFork() {
 
     if (response.status === 200) {
       node = { nodeId: resData.nodeId, chainId: resData.chainId };
-      console.log("Node created successfully");
+      createNodeSpinner.succeed("Node created successfully");
       console.log(node);
     } else {
       console.log("Error in creating node, Error: ", resData);
@@ -151,7 +174,7 @@ async function createFork() {
     console.log("Error in creating node, Error: ", err);
   }
 
-  if (node) createNewDeployment(node);
+  if (node) createNewDeployment(node, mnemonic, chainId);
 }
 
 createFork();

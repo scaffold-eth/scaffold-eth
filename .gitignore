@@ -13,7 +13,9 @@ packages/react-app/src/contracts/*
 packages/hardhat/cache*
 packages/**/data
 !packages/react-app/src/contracts/contracts.js
-packages/buildbear/bb-scripts/nodes.json
+packages/buildbear/nodes.json
+packages/buildbear/mnemonic.txt
+packages/react-app/src/nodes.json
 
 
 # ts

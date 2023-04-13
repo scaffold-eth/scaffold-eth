@@ -24,12 +24,12 @@ import {
   FaucetHint,
   NetworkSwitch,
 } from "./components";
-import { NETWORKS, ALCHEMY_KEY } from "./constants";
+import { NETWORKS, ALCHEMY_KEY, bbNode } from "./constants";
 import externalContracts from "./contracts/external_contracts";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { getRPCPollTime, Transactor, Web3ModalSetup } from "./helpers";
-import { Home, ExampleUI, Hints, Subgraph } from "./views";
+import { Home, ExampleUI, SwapTokens, Hints, Subgraph } from "./views";
 import { useStaticJsonRPC, useGasPrice } from "./hooks";
 
 const { ethers } = require("ethers");
@@ -53,7 +53,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const initialNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, goerli, xdai, mainnet)
+const initialNetwork = bbNode ? NETWORKS.buildbear : NETWORKS.localhost; // <------- select your target frontend network (localhost, goerli, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -316,12 +316,15 @@ function App(props) {
         <Menu.Item key="/exampleui">
           <Link to="/exampleui">ExampleUI</Link>
         </Menu.Item>
-        <Menu.Item key="/mainnetdai">
+        <Menu.Item key="/swaptokens">
+          <Link to="/swaptokens">Swap Tokens</Link>
+        </Menu.Item>
+        {/* <Menu.Item key="/mainnetdai">
           <Link to="/mainnetdai">Mainnet DAI</Link>
         </Menu.Item>
         <Menu.Item key="/subgraph">
           <Link to="/subgraph">Subgraph</Link>
-        </Menu.Item>
+        </Menu.Item> */}
       </Menu>
 
       <Switch>
@@ -356,6 +359,20 @@ function App(props) {
         </Route>
         <Route path="/exampleui">
           <ExampleUI
+            address={address}
+            userSigner={userSigner}
+            mainnetProvider={mainnetProvider}
+            localProvider={localProvider}
+            yourLocalBalance={yourLocalBalance}
+            price={price}
+            tx={tx}
+            writeContracts={writeContracts}
+            readContracts={readContracts}
+            purpose={purpose}
+          />
+        </Route>
+        <Route path="/swaptokens">
+          <SwapTokens
             address={address}
             userSigner={userSigner}
             mainnetProvider={mainnetProvider}
@@ -430,6 +447,7 @@ function App(props) {
 
         <Row align="middle" gutter={[4, 4]}>
           <Col span={24}>
+            {console.log("🤗 faucetAvailable", faucetAvailable)}
             {
               /*  if the local provider has a signer, let's show the faucet:  */
               faucetAvailable ? (
@@ -438,6 +456,11 @@ function App(props) {
                 ""
               )
             }
+            {selectedNetwork === "buildbear" ? (
+              <Faucet localProvider={localProvider} price={price} ensProvider={mainnetProvider} buildbear />
+            ) : (
+              ""
+            )}
           </Col>
         </Row>
       </div>

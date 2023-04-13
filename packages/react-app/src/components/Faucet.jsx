@@ -1,9 +1,10 @@
-import { Button, Input, Tooltip } from "antd";
+import { Button, Input, Tooltip, Select } from "antd";
 import React, { useState, useEffect } from "react";
 import Blockies from "react-blockies";
 import { SendOutlined } from "@ant-design/icons";
-import { Transactor } from "../helpers";
+import { Transactor, BuildbearTransactor } from "../helpers";
 import Wallet from "./Wallet";
+import { bbSupportedERC20Tokens, bbNode } from "../constants";
 
 const { utils } = require("ethers");
 
@@ -37,6 +38,7 @@ const { utils } = require("ethers");
 
 export default function Faucet(props) {
   const [address, setAddress] = useState();
+  const [tokenAddress, setTokenAddress] = useState();
   const [faucetAddress, setFaucetAddress] = useState();
 
   const { price, placeholder, localProvider, ensProvider } = props;
@@ -64,39 +66,81 @@ export default function Faucet(props) {
     }
   };
 
+  const updateTokenAddress = newValue => {
+    if (newValue === "native") setTokenAddress(null);
+    else if (typeof newValue !== "undefined" && utils.isAddress(newValue)) {
+      setTokenAddress(newValue);
+    }
+  };
+
   const tx = Transactor(localProvider);
 
+  const erc20Tokens = bbNode ? bbSupportedERC20Tokens[bbNode.forkingChainId] : {};
+  let erc20Options = Object.keys(erc20Tokens).map(token => {
+    return {
+      value: erc20Tokens[token].address,
+      label: token,
+    };
+  });
+  erc20Options = [{ value: "native", label: "BB ETH (Native token)" }, ...erc20Options];
+
+  const submitFaucet = () => {
+    if (!tokenAddress && address) {
+      if (props.buildbear)
+        BuildbearTransactor({
+          to: address,
+          value: "500",
+        });
+      else
+        tx({
+          to: address,
+          value: utils.parseEther("0.5"),
+        });
+      setAddress("");
+    } else {
+      BuildbearTransactor({
+        to: address,
+        token: tokenAddress,
+        value: "500",
+      });
+      setAddress("");
+    }
+  };
+
   return (
-    <span>
-      <Input
-        size="large"
-        placeholder={placeholder ? placeholder : "local faucet"}
-        prefix={blockie}
-        value={address}
-        onChange={e => updateAddress(e.target.value)}
-        suffix={
-          <Tooltip title="Faucet: Send local ether to an address.">
-            <Button
-              onClick={() => {
-                tx({
-                  to: address,
-                  value: utils.parseEther("0.5"),
-                });
-                setAddress("");
-              }}
-              shape="circle"
-              icon={<SendOutlined />}
-            />
-            <Wallet
-              color="#888888"
-              provider={localProvider}
-              ensProvider={ensProvider}
-              price={price}
-              address={faucetAddress}
-            />
-          </Tooltip>
-        }
-      />
-    </span>
+    <>
+      <span>
+        <Input
+          size="large"
+          placeholder={placeholder ? placeholder : props.buildbear ? "buildbear faucet" : "local faucet"}
+          prefix={blockie}
+          value={address}
+          onChange={e => updateAddress(e.target.value)}
+          suffix={
+            <Tooltip title="Faucet: Send local ether to an address.">
+              <Button onClick={submitFaucet} shape="circle" icon={<SendOutlined />} />
+              <Wallet
+                color="#888888"
+                provider={localProvider}
+                ensProvider={ensProvider}
+                price={price}
+                address={faucetAddress}
+              />
+            </Tooltip>
+          }
+        />
+      </span>
+      <br />
+      {props.buildbear && (
+        <div>
+          <Select
+            defaultValue="native"
+            style={{ width: 200 }}
+            onChange={value => updateTokenAddress(value)}
+            options={erc20Options}
+          />
+        </div>
+      )}
+    </>
   );
 }

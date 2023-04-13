@@ -3,7 +3,9 @@ import React, { useState } from "react";
 import { ethers } from "ethers";
 import { useBalance, useGasPrice } from "eth-hooks";
 
-import { getRPCPollTime, Transactor } from "../helpers";
+import { getRPCPollTime, Transactor, BuildbearTransactor } from "../helpers";
+
+import { bbNode } from "../constants";
 
 function FaucetHint({ localProvider, targetNetwork, address }) {
   const [faucetClicked, setFaucetClicked] = useState(false);
@@ -25,7 +27,7 @@ function FaucetHint({ localProvider, targetNetwork, address }) {
     !faucetClicked &&
     localProvider &&
     localProvider._network &&
-    localProvider._network.chainId === 31337 &&
+    (localProvider._network.chainId === 31337 || (bbNode && localProvider._network.chainId === bbNode.chainId)) &&
     yourLocalBalance &&
     ethers.utils.formatEther(yourLocalBalance) <= 0
   ) {
@@ -34,10 +36,16 @@ function FaucetHint({ localProvider, targetNetwork, address }) {
         <Button
           type="primary"
           onClick={() => {
-            faucetTx({
-              to: address,
-              value: ethers.utils.parseEther("0.01"),
-            });
+            if (localProvider._network.chainId === bbNode.chainId)
+              BuildbearTransactor({
+                to: address,
+                value: "1",
+              });
+            else
+              faucetTx({
+                to: address,
+                value: ethers.utils.parseEther("0.01"),
+              });
             setFaucetClicked(true);
           }}
         >
