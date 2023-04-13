@@ -6,9 +6,15 @@
 
 # 🐻 Features of [Buildbear](https://buildbear.io)
 
-<!-- TODO -->
 
-![image](https://user-images.githubusercontent.com/2653167/124158108-c14ca380-da56-11eb-967e-69cde37ca8eb.png)
+Creating your private testnet
+![image](./Your%20Private%20Testnet.png)
+
+Using you personal faucet
+![image](./Native%20Token%20Faucet.png)
+
+Using you personal ERC20 faucet
+![image](./USDC%20Faucet.png)
 
 # 🏄‍♂️ Quick Start
 
