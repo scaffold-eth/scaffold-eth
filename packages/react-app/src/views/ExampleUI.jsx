@@ -3,8 +3,7 @@ import React, { useState } from "react";
 import { utils } from "ethers";
 import { SyncOutlined } from "@ant-design/icons";
 
-import { Address, Balance, Events } from "../components";
-import Transactions from "../components/Transactions";
+import { Address, Balance, Events, Transactions } from "../components";
 import { bbNode } from "../constants";
 
 export default function ExampleUI({
