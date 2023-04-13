@@ -1,10 +1,8 @@
 # 🏗 Scaffold-ETH x Buildbear
 
-🧪 Quickly experiment with Solidity using a frontend that adapts to your smart contract:
+🧪 Quickly experiment with Solidity using a forked private testnet, from the mainnet, and swapping tokens from Uniswap
 
-The original flavor of **Scaffold-Eth** by default uses local hardhat nodes for its working. It is perfect for easy understanding and learning of Solidity.
-
-**Scaffold-Eth x Buildbear** does the same but instead use nodes running on [**Buildbear**](https://buildbear.io).
+**Scaffold-Eth x Buildbear** lets you create your own private testnet, (optional) forked from the mainnet, with your own native token and ERC20 Token faucet and blockchain explorer
 
 # 🐻 Features of [Buildbear](https://buildbear.io)
 
@@ -24,31 +22,32 @@ Prerequisites: [Node (v18 LTS)](https://nodejs.org/en/download/) plus [Yarn (v1.
 git clone https://github.com/BuildBearLabs/scaffold-eth.git
 ```
 
-> 2️⃣ install and create a Buildbear node:
+> 2️⃣ install and create your private testnet (forked from the mainnet):
 
 ```bash
 cd scaffold-eth
 yarn install
-yarn chain-bb or yarn fork-bb
+yarn fork-bb
 ```
 
-> 3️⃣ in a second terminal window, start your 📱 frontend:
-
-🚨 if a buildbear node is not created by default react will try to use the localhost, please ensure the `nodes.json` file is updated in src.
-
-```bash
-cd scaffold-eth
-yarn start
-```
-
-> 4️⃣ in a third terminal window, 🛰 deploy your contract:
+> 3️⃣ 🛰 deploy your SwapOnUniswap Contract:
 
 ```bash
 cd scaffold-eth
 yarn deploy
 ```
 
-> 4️⃣ you can use our 🚰 faucet directly from the terminal after creating the buildbear node:
+> 4️⃣ start your 📱 frontend:
+
+🚨 if you have not created your private testnet please follow the the steps in point 2 above:
+
+```bash
+cd scaffold-eth
+yarn start
+```
+
+
+> 4️⃣ you can use your 🚰 faucet directly from the terminal after creating your private tesnet:
 
 ```bash
 # for native tokens
@@ -56,6 +55,8 @@ yarn faucet-bb native <Insert Amount (optional)> <Insert Your Wallet Address>
 
 # for erc20 tokens
 yarn faucet-bb USDC <Insert Amount (optional)> <Insert Your Wallet Address>
+
+# Please note the supported ERC20 tokens below
 
 # by default faucet mints 100 native / erc20 tokens
 ```
@@ -72,7 +73,13 @@ yarn faucet-bb USDC <Insert Amount (optional)> <Insert Your Wallet Address>
 8. UNI
 9. AAVE
 
-🔏 Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
+```bash
+
+# Please note the address for each ERC20 Tokens is automatically updated / changed based on the network that you have forked from
+
+```
+
+🔏 Edit your smart contracts in `packages/hardhat/contracts`
 
 📝 Edit your frontend `App.jsx` in `packages/react-app/src`
 
