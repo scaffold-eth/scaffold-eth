@@ -29,12 +29,12 @@ git clone https://github.com/BuildBearLabs/scaffold-eth.git
 ```bash
 cd scaffold-eth
 yarn install
-yarn chain or yarn fork
+yarn chain-bb or yarn fork-bb
 ```
 
 > 3️⃣ in a second terminal window, start your 📱 frontend:
 
-🚨 if a buildbear node is not created by default react will try to use the localhost, ensure the `nodes.json` file is updated in src.
+🚨 if a buildbear node is not created by default react will try to use the localhost, please ensure the `nodes.json` file is updated in src.
 
 ```bash
 cd scaffold-eth
@@ -48,6 +48,30 @@ cd scaffold-eth
 yarn deploy
 ```
 
+> 4️⃣ you can use our 🚰 faucet directly from the terminal after creating the buildbear node:
+
+```bash
+# for native tokens
+yarn faucet-bb native <Insert Amount (optional)> <Insert Your Wallet Address>
+
+# for erc20 tokens
+yarn faucet-bb USDC <Insert Amount (optional)> <Insert Your Wallet Address>
+
+# by default faucet mints 100 native / erc20 tokens
+```
+
+### Supported ERC20 tokens that can be used :
+
+1. USDC
+2. USDT
+3. DAI
+4. BNB
+5. BUSD
+6. MATIC
+7. WBTC
+8. UNI
+9. AAVE
+
 🔏 Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
 
 📝 Edit your frontend `App.jsx` in `packages/react-app/src`
@@ -56,7 +80,7 @@ yarn deploy
 
 📱 Open http://localhost:3000 to see the app
 
-🚨📡 To deploy to a public domain, use `yarn surge`. You will need to have a surge account and have the surge CLI installed. There is also the option to deploy to IPFS using `yarn ipfs` and `yarn s3` to deploy to an AWS bucket 🪣 There are scripts in the `packages/react-app/src/scripts` folder to help with this.`
+<!-- 🚨📡 To deploy to a public domain, use `yarn surge`. You will need to have a surge account and have the surge CLI installed. There is also the option to deploy to IPFS using `yarn ipfs` and `yarn s3` to deploy to an AWS bucket 🪣 There are scripts in the `packages/react-app/src/scripts` folder to help with this.` -->
 
 # 📚 Documentation
 
@@ -96,24 +120,10 @@ Check out all the [active branches](https://github.com/scaffold-eth/scaffold-eth
 - ⚖️ [Learn how a simple DEX works](https://medium.com/@austin_48503/%EF%B8%8F-minimum-viable-exchange-d84f30bd0c90)
 - 🦍 [Ape into learning!](https://github.com/scaffold-eth/scaffold-eth/tree/aave-ape)
 
-# 💌 P.S.
-
-🌍 You need an RPC key for testnets and production deployments, create an [Alchemy](https://www.alchemy.com/) account and replace the value of `ALCHEMY_KEY = xxx` in `packages/react-app/src/constants.js` with your new key.
-
-📣 Make sure you update the `InfuraID` before you go to production. Huge thanks to [Infura](https://infura.io/) for our special account that fields 7m req/day!
-
 # 🏃💨 Speedrun Ethereum
 
 Register as a builder [here](https://speedrunethereum.com) and start on some of the challenges and build a portfolio.
 
 # 💬 Support Chat
 
-Join the telegram [support chat 💬](https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA) or buidlguidl [discord](https://discord.gg/pRsr6rwG) to ask questions and find others building with 🏗 scaffold-eth!
-
----
-
-🙏 Please check out our [Gitcoin grant](https://gitcoin.co/grants/2851/scaffold-eth) too!
-
-### Automated with Gitpod
-
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#github.com/scaffold-eth/scaffold-eth)
+Join the telegram [support chat 💬](https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA), [support chat 💬 (BuildBear)](https://t.me/Web3_dApp_Developers) or buidlguidl [discord](https://discord.gg/pRsr6rwG) to ask questions and find others building with 🏗 scaffold-eth!
