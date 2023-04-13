@@ -11,11 +11,11 @@
 
 ![image](./Your%20Private%20Testnet.png)
 
-## Using you personal faucet
+## Using your personal native token faucet
 
 ![image](./Native%20Token%20Faucet.png)
 
-## Using you personal ERC20 faucet
+## Using your personal ERC20 faucet
 
 ![image](./USDC%20Faucet.png)
 
