@@ -65,6 +65,7 @@ Documentation, tutorials, challenges, and many more resources, visit: [docs.scaf
 - [scaffold-eth-tailwind](https://github.com/stevenpslade/scaffold-eth-tailwind)
 - [scaffold-nextjs](https://github.com/scaffold-eth/scaffold-eth/tree/scaffold-nextjs)
 - [scaffold-chakra](https://github.com/scaffold-eth/scaffold-eth/tree/chakra-ui)
+- [Scaffold-ETH x Buildbear](https://github.com/BuildBearLabs/scaffold-eth) - Forking Eth Mainnet and swapping tokens on Uniswap in your private testnet
 - [eth-hooks](https://github.com/scaffold-eth/eth-hooks)
 - [eth-components](https://github.com/scaffold-eth/eth-components)
 - [scaffold-eth-expo](https://github.com/scaffold-eth/scaffold-eth-expo)
