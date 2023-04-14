@@ -23,9 +23,45 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
     // args: [ "Hello", ethers.utils.parseEther("1.5") ],
     log: true,
   });
-
   // Getting a previously deployed contract
   const YourContract = await ethers.getContract("YourContract", deployer);
+
+  await deploy("Counter", {
+    // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
+    from: deployer,
+    // args: [ "Hello", ethers.utils.parseEther("1.5") ],
+    log: true,
+  });
+  // Getting a previously deployed contract
+  const Counter = await ethers.getContract("Counter", deployer);
+
+  await deploy("MapEx", {
+    // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
+    from: deployer,
+    // args: [ "Hello", ethers.utils.parseEther("1.5") ],
+    log: true,
+  });
+  // Getting a previously deployed contract
+  const MapEx = await ethers.getContract("MapEx", deployer);
+
+  await deploy("ChessLeaderBoard", {
+    // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
+    from: deployer,
+    // args: [ "Hello", ethers.utils.parseEther("1.5") ],
+    log: true,
+  });
+  // Getting a previously deployed contract
+  const ChessLeaderBoard = await ethers.getContract("ChessLeaderBoard", deployer);
+
+  await deploy("MaputoToken", {
+    // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
+    from: deployer,
+    // args: [ "Hello", ethers.utils.parseEther("1.5") ],
+    log: true,
+  });
+  // Getting a previously deployed contract
+  const MaputoToken = await ethers.getContract("MaputoToken", deployer);
+
   /*  await YourContract.setPurpose("Hello");
   
     // To take ownership of yourContract using the ownable library uncomment next line and add the 
