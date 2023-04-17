@@ -30,7 +30,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   // if deploying on buildbear node print explorer link
   console.log(
     "Checkout TokenSwap at: ",
-    `https://explorer.dev.buildbear.io/${bbNode.nodeId}/address/${TokenSwap.address}`
+    `https://explorer.buildbear.io/${bbNode.nodeId}/address/${TokenSwap.address}`
   );
 };
 module.exports.tags = ["TokenSwap"];

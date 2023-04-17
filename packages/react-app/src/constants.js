@@ -22,7 +22,7 @@ export const BLOCKNATIVE_DAPPID = process.env.REACT_APP_BLOCKNATIVE_DAPP_ID ?? "
 export const HARDHAT_HOST = process.env.REACT_APP_HARDHAT_HOST ?? "http://localhost";
 
 // Buildbear Backend URL
-export const BB_BACKEND_URL = "https://backend.dev.buildbear.io";
+export const BB_BACKEND_URL = "https://backend.buildbear.io";
 
 /*
 Decrease the number of RPC calls by passing this value to hooks
@@ -41,9 +41,9 @@ export const NETWORKS = {
     name: "buildbear",
     color: "#666666",
     chainId: bbNode ? bbNode.chainId : "",
-    faucet: `https://faucet.dev.buildbear.io/${bbNode ? bbNode.nodeId : ""}`,
-    blockExplorer: `https://explorer.dev.buildbear.io/${bbNode ? bbNode.nodeId : ""}`,
-    rpcUrl: `https://rpc.dev.buildbear.io/${bbNode ? bbNode.nodeId : ""}`,
+    faucet: `https://faucet.buildbear.io/${bbNode ? bbNode.nodeId : ""}`,
+    blockExplorer: `https://explorer.buildbear.io/${bbNode ? bbNode.nodeId : ""}`,
+    rpcUrl: `https://rpc.buildbear.io/${bbNode ? bbNode.nodeId : ""}`,
     nativeCurrency: {
       name: "BB Ether",
       symbol: "BB ETH",

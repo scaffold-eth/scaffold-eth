@@ -20,7 +20,7 @@ export default function SwapTokens({
   const [toToken, setToToken] = useState();
   const [value, setValue] = useState("");
   const [isTokenApproved, setIsTokenApproved] = useState(false);
-  const isBuildbearNet = localProvider && localProvider.connection.url.startsWith("https://rpc.dev.buildbear.io");
+  const isBuildbearNet = localProvider && localProvider.connection.url.startsWith("https://rpc.buildbear.io");
   const erc20ABI = ERC20Artifact.abi;
 
   const erc20Tokens = bbNode ? bbSupportedERC20Tokens[bbNode.forkingChainId] : {};
@@ -212,7 +212,7 @@ export default function SwapTokens({
         <Address
           address={readContracts && readContracts.TokenSwap ? readContracts.TokenSwap.address : null}
           ensProvider={mainnetProvider}
-          blockExplorer={isBuildbearNet ? `https://explorer.dev.buildbear.io/${bbNode.nodeId}/` : undefined}
+          blockExplorer={isBuildbearNet ? `https://explorer.buildbear.io/${bbNode.nodeId}/` : undefined}
           fontSize={16}
         />
       </div>

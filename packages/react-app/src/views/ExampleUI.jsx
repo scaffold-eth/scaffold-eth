@@ -18,7 +18,7 @@ export default function ExampleUI({
   writeContracts,
 }) {
   const [newPurpose, setNewPurpose] = useState("loading...");
-  const isBuildbearNet = localProvider && localProvider.connection.url.startsWith("https://rpc.dev.buildbear.io");
+  const isBuildbearNet = localProvider && localProvider.connection.url.startsWith("https://rpc.buildbear.io");
 
   return (
     <div>
@@ -88,7 +88,7 @@ export default function ExampleUI({
         <Address
           address={readContracts && readContracts.YourContract ? readContracts.YourContract.address : null}
           ensProvider={mainnetProvider}
-          blockExplorer={isBuildbearNet ? `https://explorer.dev.buildbear.io/${bbNode.nodeId}/` : undefined}
+          blockExplorer={isBuildbearNet ? `https://explorer.buildbear.io/${bbNode.nodeId}/` : undefined}
           fontSize={16}
         />
         <Divider />

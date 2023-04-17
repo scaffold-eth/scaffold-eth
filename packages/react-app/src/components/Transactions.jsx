@@ -11,7 +11,7 @@ export default function Transactions() {
 
     var config = {
       method: "get",
-      url: `https://backend.dev.buildbear.io/node/transaction/${bbNode.nodeId}?page=1&no=10`,
+      url: `https://backend.buildbear.io/node/transaction/${bbNode.nodeId}?page=1&no=10`,
     };
 
     function getTransactions() {
@@ -38,7 +38,7 @@ export default function Transactions() {
           return (
             <List.Item key={`transaction${item._id}`}>
               <a
-                href={`https://explorer.dev.buildbear.io/${bbNode.nodeId}/tx/${item.hash}`}
+                href={`https://explorer.buildbear.io/${bbNode.nodeId}/tx/${item.hash}`}
                 target="_blank"
                 rel="noreferrer"
               >

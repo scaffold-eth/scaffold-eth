@@ -92,7 +92,7 @@ module.exports = {
       */
     },
     buildbear: {
-      url: `https://rpc.dev.buildbear.io/${bbNode.nodeId}`,
+      url: `https://rpc.buildbear.io/${bbNode.nodeId}`,
       accounts: {
         mnemonic: mnemonic(),
       },
