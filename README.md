@@ -8,7 +8,7 @@
 
 ---
 
-🎖 Scaffold-ETH 2 is the latest version of this developer experience, we recommend you fork: https://github.com/scaffold-eth/se-2
+🎖 Scaffold-ETH 2 is the latest version of this developer experience, we recommend you fork: https://github.com/scaffold-eth/scaffold-eth-2
 
 ---
 
