@@ -3,6 +3,7 @@ const { utils } = require("ethers");
 const fs = require("fs");
 const chalk = require("chalk");
 const path = require("path");
+const { BASE_URL } = require("../buildbear/constants.mjs");
 
 require("@nomicfoundation/hardhat-chai-matchers");
 require("@tenderly/hardhat-tenderly");
@@ -92,7 +93,7 @@ module.exports = {
       */
     },
     buildbear: {
-      url: `https://rpc.buildbear.io/${bbNode.nodeId}`,
+      url: `https://rpc.${BASE_URL}/${bbNode.nodeId}`,
       accounts: {
         mnemonic: mnemonic(),
       },

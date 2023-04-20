@@ -3,6 +3,7 @@
 const { ethers } = require("hardhat");
 const fs = require("fs");
 const path = require("path");
+const { BASE_URL } = require("../../buildbear/constants.mjs");
 
 let bbNode;
 try {
@@ -95,7 +96,7 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   // if deploying on buildbear node print explorer link
   console.log(
     "Checkout YourContract at: ",
-    `https://explorer.buildbear.io/${bbNode.nodeId}/address/${YourContract.address}`
+    `https://explorer.${BASE_URL}/${bbNode.nodeId}/address/${YourContract.address}`
   );
 };
 module.exports.tags = ["YourContract"];

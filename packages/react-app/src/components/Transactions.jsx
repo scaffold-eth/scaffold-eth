@@ -1,7 +1,7 @@
 import { List } from "antd";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { bbNode } from "../constants";
+import { BASE_URL, bbNode } from "../constants";
 
 export default function Transactions() {
   const [transactions, setTransactions] = useState([]);
@@ -11,7 +11,7 @@ export default function Transactions() {
 
     var config = {
       method: "get",
-      url: `https://backend.buildbear.io/node/transaction/${bbNode.nodeId}?page=1&no=10`,
+      url: `https://backend.${BASE_URL}/node/transaction/${bbNode.nodeId}?page=1&no=10`,
     };
 
     function getTransactions() {
@@ -38,7 +38,7 @@ export default function Transactions() {
           return (
             <List.Item key={`transaction${item._id}`}>
               <a
-                href={`https://explorer.buildbear.io/${bbNode.nodeId}/tx/${item.hash}`}
+                href={`https://explorer.${BASE_URL}/${bbNode.nodeId}/tx/${item.hash}`}
                 target="_blank"
                 rel="noreferrer"
               >

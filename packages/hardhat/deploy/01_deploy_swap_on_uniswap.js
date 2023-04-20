@@ -2,6 +2,7 @@
 
 const fs = require("fs");
 const path = require("path");
+const { BASE_URL } = require("../../buildbear/constants.mjs");
 
 let bbNode;
 try {
@@ -30,7 +31,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   // if deploying on buildbear node print explorer link
   console.log(
     "Checkout TokenSwap at: ",
-    `https://explorer.buildbear.io/${bbNode.nodeId}/address/${TokenSwap.address}`
+    `https://explorer.${BASE_URL}/${bbNode.nodeId}/address/${TokenSwap.address}`
   );
 };
 module.exports.tags = ["TokenSwap"];
