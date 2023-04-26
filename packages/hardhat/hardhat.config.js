@@ -3,7 +3,6 @@ const { utils } = require("ethers");
 const fs = require("fs");
 const chalk = require("chalk");
 const path = require("path");
-const { BASE_URL } = require("../buildbear/constants.mjs");
 
 require("@nomicfoundation/hardhat-chai-matchers");
 require("@tenderly/hardhat-tenderly");
@@ -22,6 +21,7 @@ try {
   console.log("No buildbear node found");
 }
 
+const BASE_URL = "buildbear.io";
 const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 
 /*

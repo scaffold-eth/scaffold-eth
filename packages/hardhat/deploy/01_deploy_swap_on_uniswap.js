@@ -2,7 +2,6 @@
 
 const fs = require("fs");
 const path = require("path");
-const { BASE_URL } = require("../../buildbear/constants.mjs");
 
 let bbNode;
 try {
@@ -17,6 +16,7 @@ try {
 }
 
 module.exports = async ({ getNamedAccounts, deployments }) => {
+  const { BASE_URL } = await import("../../buildbear/constants.mjs");
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
 
