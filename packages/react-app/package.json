@@ -58,7 +58,8 @@
     "react-scripts": "4.0.1",
     "searchico": "^1.2.1",
     "walletlink": "^2.1.5",
-    "web3modal": "^1.9.10"
+    "web3modal": "^1.9.10",
+    "file-saver": "^2.0.5"
   },
   "devDependencies": {
     "@apollo/client": "^3.3.21",
@@ -88,10 +89,10 @@
     }
   },
   "scripts": {
-    "build": "react-scripts --openssl-legacy-provider build",
+    "build": "react-scripts build",
     "eject": "react-scripts eject",
     "prestart": "node ./scripts/create_contracts.js",
-    "start": "react-scripts --openssl-legacy-provider start",
+    "start": "react-scripts start",
     "test": "react-scripts test",
     "lint": "eslint ./src/**/*.{js,jsx} --ignore-path ./.eslintignore --max-warnings=0",
     "ipfs": "node ./scripts/ipfs.js",

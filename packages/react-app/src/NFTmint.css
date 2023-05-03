@@ -1,0 +1,219 @@
+.container {
+    padding: 0 2rem;
+    background-color: #85ffbd;
+    background-image: linear-gradient(45deg, #338b5c 0%, #7d7a1c 100%);
+}
+
+.main {
+    min-height: 100vh;
+    padding: 4rem 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.footer {
+    display: flex;
+    flex: 1;
+    padding: 2rem 0;
+    border-top: 1px solid #eaeaea;
+    justify-content: center;
+    align-items: center;
+}
+
+.footer a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    color: black;
+}
+
+.title a {
+    color: white;
+    text-decoration: none;
+}
+
+.title a:hover,
+.title a:focus,
+.title a:active {
+    text-decoration: underline;
+}
+
+.title {
+    margin: -4%;
+    line-height: 1.15;
+    font-size: 4rem;
+}
+
+.title,
+.description {
+    text-align: center;
+    color: black;
+}
+
+.description {
+    margin: 4rem 0;
+    line-height: 1.5;
+    font-size: 1.5rem;
+}
+
+.form {
+    margin-top: -3%;
+    display: flex;
+    width: 700px;
+    /* height: 350px; */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.35);
+    /* box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37); */
+    /* backdrop-filter: blur(8.5px); */
+    /* -webkit-backdrop-filter: blur(8.5px); */
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.firstrow {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.secondrow {
+    position: rel;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.thirdrow {
+    position: rel;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.buttonrow {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.button {
+    /* background: linear-gradient(to right, #13f1fc, #0470dc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-decoration: none; */
+    background: white;
+    width: 180px;
+    height: 40px;
+    margin: 30px 20px;
+    border-radius: 20px;
+    font-size: large;
+    color: black;
+    border-color: white;
+    margin-bottom: 2px;
+}
+
+.connectbutton {
+    /* background: linear-gradient(to right, #13f1fc, #0470dc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-decoration: none; */
+    background: white;
+    top: 20px;
+    right: 10px;
+    width: 180px;
+    height: 40px;
+    margin: 30px 20px;
+    border-radius: 20px;
+    font-size: large;
+    color: black;
+    border-color: white;
+    margin-bottom: 2px;
+}
+
+.input2 {
+    opacity: 1;
+    margin-top: 4px;
+    height: 20px;
+    width: 30px;
+    border-radius: 30px;
+}
+
+.inputBox {
+    margin-top: 4%;
+    font-size: larger;
+    padding-left: 100px;
+    color: black;
+}
+
+.inputLabel {
+    cursor: pointer;
+    border-radius: 12px;
+}
+
+.returnText {
+    color: black;
+    text-decoration: underline;
+    font-size: larger;
+}
+
+.input {
+    margin-top: 5%;
+    border: 0;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.35);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(1px);
+    -webkit-backdrop-filter: blur(1px);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: black;
+    letter-spacing: 1px;
+    font-size: 26px;
+    width: 350px;
+    margin-bottom: 10px;
+    padding: 10px 20px;
+    text-align: center;
+}
+
+.input::placeholder {
+    color: black;
+    letter-spacing: 2px;
+}
+
+.input:focus {
+    outline: none;
+}
+
+@media (max-width: 600px) {
+    .grid {
+        width: 100%;
+        flex-direction: column;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+
+    .card,
+    .footer {
+        border-color: #222;
+    }
+
+    .code {
+        background: #111;
+    }
+
+    .logo img {
+        filter: invert(1);
+    }
+}
