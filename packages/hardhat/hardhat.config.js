@@ -21,7 +21,7 @@ try {
   console.log("No buildbear node found");
 }
 
-const BASE_URL = "dev.buildbear.io";
+const BASE_URL = "buildbear.io";
 const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 
 /*
