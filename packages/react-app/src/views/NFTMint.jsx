@@ -148,34 +148,30 @@ export default function NFTMint({
           <br />
           <div className={styles.form}>
             <div className={styles.firstrow}>
-              <input
-                className={styles.input}
+              <Input
                 type="text"
                 width={100}
                 value={name}
                 placeholder="Name of the NFT"
                 onChange={e => setName(e.target.value)}
-              ></input>
+              ></Input>
             </div>
             <br />
             <div className={styles.secondrow}>
-              <input
-                className={styles.input}
+              <Input
                 type="text"
                 value={description}
                 placeholder="Description for the NFT"
                 onChange={e => setDescription(e.target.value)}
-              ></input>
+              ></Input>
             </div>
             <br />
             <div className={styles.thirdrow}></div>
             <label className={styles.inputLabel}>
-              <input className={styles.inputBox} type="file" onChange={e => uploadimg(e)}></input>
+              <Input type="file" onChange={e => uploadimg(e)}></Input>
             </label>
             <div className={styles.buttonRow}>
-              <button onClick={upload} className={styles.button}>
-                Mint
-              </button>
+              <Button onClick={upload}>Mint</Button>
             </div>
             <div className={styles.secondrow}></div>
           </div>
