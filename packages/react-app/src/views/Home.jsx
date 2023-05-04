@@ -26,7 +26,7 @@ function Home({ yourLocalBalance, readContracts }) {
           packages/react-app/src/views/Home.jsx
         </span>
       </div>
-      <div style={{ fontWeight: "bolder" }}>You have two contracts to play with :</div>
+      <div style={{ fontWeight: "bolder" }}>You have four contracts to play with :</div>
       <div style={{ margin: 32 }}>
         <span style={{ fontWeight: "bolder" }}>1.</span>
         <span
@@ -68,10 +68,48 @@ function Home({ yourLocalBalance, readContracts }) {
           on UniswapV2
         </span>
       </div>
+      <div style={{ margin: 32 }}>
+        <span style={{ fontWeight: "bolder" }}>3.</span>
+        <span
+          className="highlight"
+          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
+        >
+          NFT.sol
+        </span>{" "}
+        <span
+          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
+        >
+          (packages/hardhat/contracts/NFT.sol)
+        </span>
+      </div>
+      <div style={{ margin: 32 }}>
+        <span style={{ marginLeft: 4, marginTop: -10, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4 }}>
+          In this contract, you can mint NFTs
+        </span>
+      </div>
+      <div style={{ margin: 32 }}>
+        <span style={{ fontWeight: "bolder" }}>4.</span>
+        <span
+          className="highlight"
+          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
+        >
+          DEX.sol
+        </span>{" "}
+        <span
+          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
+        >
+          (packages/hardhat/contracts/DEX.sol)
+        </span>
+      </div>
+      <div style={{ margin: 32 }}>
+        <span style={{ marginLeft: 4, marginTop: -10, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4 }}>
+          In this contract, you will create your own DEX and swap tokens, provide liquidity and withdraw liquidity.
+        </span>
+      </div>
 
       <div style={{ margin: 32 }}>
         <span style={{ marginRight: 8 }}>🍴</span>
-        For this deploying SwapOnUniswap and swapping tokens on mainnet:
+        For this deploying SwapOnUniswap,DEX, NFT on mainnet:
         <br />
         <span>Create your private testnet, forked from ethereum mainnet, with</span>
         <span
