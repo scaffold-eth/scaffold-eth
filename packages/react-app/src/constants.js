@@ -21,9 +21,18 @@ export const BLOCKNATIVE_DAPPID = process.env.REACT_APP_BLOCKNATIVE_DAPP_ID ?? "
 // Docker Hardhat Host
 export const HARDHAT_HOST = process.env.REACT_APP_HARDHAT_HOST ?? "http://localhost";
 
-// Buildbear Backend URL
-export const BB_BACKEND_URL = "https://backend.buildbear.io";
+// Buildbear Base URL
+export const BASE_URL = "buildbear.io";
 
+// Buildbear Backend URL
+export const BB_BACKEND_URL = `https://backend.${BASE_URL}`;
+
+//nft storage api key
+export const NFT_STORAGE_API_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDEwRjk4ODA4NDEzMDgxRUJENDZhOEYzZTQ2REY1YTVCMmE3MzEyMDMiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2NzY1NzM0MTMyNTksIm5hbWUiOiJuZnQifQ.Pm3jhQc6zKo72n0nZuRx-Y1WEAZ9qfbzYUJODSql9r0";
+
+//openAi api key
+export const AI_API_KEY = "sk-hNXaioHbZRcKpIBY6vbdCN0gng7YiONRrWiclqd6dcJa5uLt";
 /*
 Decrease the number of RPC calls by passing this value to hooks
 with pollTime (useContractReader, useBalance, etc.).
@@ -41,9 +50,9 @@ export const NETWORKS = {
     name: "buildbear",
     color: "#666666",
     chainId: bbNode ? bbNode.chainId : "",
-    faucet: `https://faucet.buildbear.io/${bbNode ? bbNode.nodeId : ""}`,
-    blockExplorer: `https://explorer.buildbear.io/${bbNode ? bbNode.nodeId : ""}`,
-    rpcUrl: `https://rpc.buildbear.io/${bbNode ? bbNode.nodeId : ""}`,
+    faucet: `https://faucet.${BASE_URL}/${bbNode ? bbNode.nodeId : ""}`,
+    blockExplorer: `https://explorer.${BASE_URL}/${bbNode ? bbNode.nodeId : ""}`,
+    rpcUrl: `https://rpc.${BASE_URL}/${bbNode ? bbNode.nodeId : ""}`,
     nativeCurrency: {
       name: "BB Ether",
       symbol: "BB ETH",

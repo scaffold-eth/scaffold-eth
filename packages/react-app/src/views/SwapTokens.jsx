@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { ethers, utils } from "ethers";
 import ERC20Artifact from "@openzeppelin/contracts/build/contracts/IERC20.json";
 import { Address, ERC20Balance, Transactions } from "../components";
-import { bbSupportedERC20Tokens, bbNode } from "../constants";
+import { BASE_URL, bbSupportedERC20Tokens, bbNode } from "../constants";
 
 export default function SwapTokens({
   purpose,
@@ -20,7 +20,7 @@ export default function SwapTokens({
   const [toToken, setToToken] = useState();
   const [value, setValue] = useState("");
   const [isTokenApproved, setIsTokenApproved] = useState(false);
-  const isBuildbearNet = localProvider && localProvider.connection.url.startsWith("https://rpc.buildbear.io");
+  const isBuildbearNet = localProvider && localProvider.connection.url.startsWith(`https://rpc.${BASE_URL}`);
   const erc20ABI = ERC20Artifact.abi;
 
   const erc20Tokens = bbNode ? bbSupportedERC20Tokens[bbNode.forkingChainId] : {};
@@ -212,7 +212,7 @@ export default function SwapTokens({
         <Address
           address={readContracts && readContracts.TokenSwap ? readContracts.TokenSwap.address : null}
           ensProvider={mainnetProvider}
-          blockExplorer={isBuildbearNet ? `https://explorer.buildbear.io/${bbNode.nodeId}/` : undefined}
+          blockExplorer={isBuildbearNet ? `https://explorer.${BASE_URL}/${bbNode.nodeId}/` : undefined}
           fontSize={16}
         />
       </div>

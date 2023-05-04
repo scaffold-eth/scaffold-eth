@@ -29,7 +29,7 @@ import externalContracts from "./contracts/external_contracts";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { getRPCPollTime, Transactor, Web3ModalSetup } from "./helpers";
-import { Home, ExampleUI, SwapTokens, Hints, Subgraph } from "./views";
+import { Home, ExampleUI, SwapTokens, Hints, Subgraph, NFTMint, DEX } from "./views";
 import { useStaticJsonRPC, useGasPrice } from "./hooks";
 
 const { ethers } = require("ethers");
@@ -319,6 +319,13 @@ function App(props) {
         <Menu.Item key="/swaptokens">
           <Link to="/swaptokens">Swap Tokens</Link>
         </Menu.Item>
+        <Menu.Item key="/nftmint">
+          <Link to="/nftmint">NFT Mint</Link>
+        </Menu.Item>
+        <Menu.Item key="/dex">
+          <Link to="/dex">DEX</Link>
+        </Menu.Item>
+
         {/* <Menu.Item key="/mainnetdai">
           <Link to="/mainnetdai">Mainnet DAI</Link>
         </Menu.Item>
@@ -385,6 +392,37 @@ function App(props) {
             purpose={purpose}
           />
         </Route>
+        <Route path="/nftmint">
+          <NFTMint
+            address={address}
+            userSigner={userSigner}
+            mainnetProvider={mainnetProvider}
+            localProvider={localProvider}
+            yourLocalBalance={yourLocalBalance}
+            price={price}
+            tx={tx}
+            writeContracts={writeContracts}
+            readContracts={readContracts}
+            purpose={purpose}
+          />
+        </Route>
+        <Route path="/dex">
+          <DEX
+            address={address}
+            userSigner={userSigner}
+            mainnetProvider={mainnetProvider}
+            localProvider={localProvider}
+            yourLocalBalance={yourLocalBalance}
+            price={price}
+            tx={tx}
+            writeContracts={writeContracts}
+            readContracts={readContracts}
+            purpose={purpose}
+            contractConfig={contractConfig}
+            blockExplorer={blockExplorer}
+          />
+        </Route>
+
         <Route path="/mainnetdai">
           <Contract
             name="DAI"

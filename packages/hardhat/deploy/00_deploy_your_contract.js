@@ -27,6 +27,7 @@ const localChainId = "31337";
 //   );
 
 module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
+  const { BASE_URL } = await import("../../buildbear/constants.mjs");
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
   const chainId = await getChainId();
@@ -95,7 +96,7 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   // if deploying on buildbear node print explorer link
   console.log(
     "Checkout YourContract at: ",
-    `https://explorer.buildbear.io/${bbNode.nodeId}/address/${YourContract.address}`
+    `https://explorer.${BASE_URL}/${bbNode.nodeId}/address/${YourContract.address}`
   );
 };
 module.exports.tags = ["YourContract"];

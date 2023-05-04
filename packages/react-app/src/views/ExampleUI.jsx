@@ -4,7 +4,7 @@ import { utils } from "ethers";
 import { SyncOutlined } from "@ant-design/icons";
 
 import { Address, Balance, Events, Transactions } from "../components";
-import { bbNode } from "../constants";
+import { BASE_URL, bbNode } from "../constants";
 
 export default function ExampleUI({
   purpose,
@@ -18,7 +18,7 @@ export default function ExampleUI({
   writeContracts,
 }) {
   const [newPurpose, setNewPurpose] = useState("loading...");
-  const isBuildbearNet = localProvider && localProvider.connection.url.startsWith("https://rpc.buildbear.io");
+  const isBuildbearNet = localProvider && localProvider.connection.url.startsWith(`https://rpc.${BASE_URL}`);
 
   return (
     <div>
@@ -88,7 +88,7 @@ export default function ExampleUI({
         <Address
           address={readContracts && readContracts.YourContract ? readContracts.YourContract.address : null}
           ensProvider={mainnetProvider}
-          blockExplorer={isBuildbearNet ? `https://explorer.buildbear.io/${bbNode.nodeId}/` : undefined}
+          blockExplorer={isBuildbearNet ? `https://explorer.${BASE_URL}/${bbNode.nodeId}/` : undefined}
           fontSize={16}
         />
         <Divider />

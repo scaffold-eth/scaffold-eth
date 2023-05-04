@@ -1,6 +1,6 @@
-export const BB_BACKEND_URL = "https://backend.buildbear.io";
-export const BB_API_KEY = "BB_a55d709e-9513-4f81-973a-6681d36e0970";
 export const BASE_URL = "buildbear.io";
+export const BB_BACKEND_URL = `https://backend.${BASE_URL}`;
+export const BB_API_KEY = "BB_a55d709e-9513-4f81-973a-6681d36e0970";
 
 export const networkData = {
   "Ethereum Mainnet": [1, "https://rpc.ankr.com/eth"],
