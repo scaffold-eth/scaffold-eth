@@ -459,7 +459,7 @@ export default function GnosisStarterView({
         </p>
 
         <p>
-        A 4 out of 9 vote is required to add or remove members or pass an active proposal.
+        A 4 out of 10 vote is required to add or remove members or pass an active proposal.
         </p>
 
         <p>
