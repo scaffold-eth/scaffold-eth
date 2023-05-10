@@ -442,9 +442,9 @@ export default function GnosisStarterView({
 
       <div style={{ border: "1px solid #cccccc", fontSize:16, padding: 16, width: 650, margin: "auto", marginTop: 64 }}>
 
-        <p>
+        <p><b>
         BuidlGuidl DAO LLC Constitution & Governance
-        </p>
+        </b></p>
 
         <p>
         BuidlGuidl DAO (LLC) exists to fund developers building generic tutorials, components, and prototypes to improve the 🏗 scaffold-eth and greater Ethereum ecosystem.
@@ -459,7 +459,7 @@ export default function GnosisStarterView({
         </p>
 
         <p>
-        A majority vote (4/7) is required to add or remove members or pass an active proposal.
+        A 4 out of 9 vote is required to add or remove members or pass an active proposal.
         </p>
 
         <p>
@@ -467,7 +467,7 @@ export default function GnosisStarterView({
         </p>
 
         <p>
-        The DAO will do its best to keep developers' ETH streams on <a href="https://buidlguidl.com">BuidlGuidl.com</a> full and flowing.
+        The DAO will do its best to keep developers' ETH streams on <a href="https://buidlguidl.com">🏰  BuidlGuidl.com</a> full and flowing.
         </p>
 
         <b>Keep 🛠 Buidling</b>
