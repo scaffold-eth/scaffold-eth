@@ -5,3 +5,4 @@ export { default as Hints } from "./Hints";
 export { default as Subgraph } from "./Subgraph";
 export { default as NFTMint } from "./NFTMint";
 export { default as DEX } from "./DEX";
+export { default as Lending } from "./Lending";
