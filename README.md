@@ -1,10 +1,17 @@
 # 🏗 Scaffold-ETH
 
+---
+
+🎖 Scaffold-ETH 2 is the latest version, we recommend you fork: https://github.com/scaffold-eth/scaffold-eth-2
+
+---
+
 > everything you need to build on Ethereum! 🚀
 
 🧪 Quickly experiment with Solidity using a frontend that adapts to your smart contract:
 
 ![image](https://user-images.githubusercontent.com/2653167/124158108-c14ca380-da56-11eb-967e-69cde37ca8eb.png)
+
 
 
 # 🏄‍♂️ Quick Start
@@ -65,6 +72,7 @@ Documentation, tutorials, challenges, and many more resources, visit: [docs.scaf
 - [scaffold-eth-tailwind](https://github.com/stevenpslade/scaffold-eth-tailwind)
 - [scaffold-nextjs](https://github.com/scaffold-eth/scaffold-eth/tree/scaffold-nextjs)
 - [scaffold-chakra](https://github.com/scaffold-eth/scaffold-eth/tree/chakra-ui)
+- [Scaffold-ETH x Buildbear](https://github.com/BuildBearLabs/scaffold-eth)
 - [eth-hooks](https://github.com/scaffold-eth/eth-hooks)
 - [eth-components](https://github.com/scaffold-eth/eth-components)
 - [scaffold-eth-expo](https://github.com/scaffold-eth/scaffold-eth-expo)
