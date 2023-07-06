@@ -1,10 +1,17 @@
 # 🏗 Scaffold-ETH
 
+---
+
+🎖 Scaffold-ETH 2 is the latest version, we recommend you fork: https://github.com/scaffold-eth/scaffold-eth-2
+
+---
+
 > everything you need to build on Ethereum! 🚀
 
 🧪 Quickly experiment with Solidity using a frontend that adapts to your smart contract:
 
 ![image](https://user-images.githubusercontent.com/2653167/124158108-c14ca380-da56-11eb-967e-69cde37ca8eb.png)
+
 
 
 # 🏄‍♂️ Quick Start
@@ -38,9 +45,7 @@ yarn start
 
 > 4️⃣ in a third terminal window, 🛰 deploy your contract:
 
-🚨 if you are not deploying to localhost, you will need to run `yarn generate` (using node v16.x) first and then fund the deployer account. To view account balances, run `yarn account`. You will aslo need to update `hardhat-config.js` with the correct default network.
-
-👀 Side Quest: we need to update this process to use node v18.x 🪄
+🚨 if you are not deploying to localhost, you will need to run `yarn generate` first and then fund the deployer account. To view account balances, run `yarn account`. You will also need to update `hardhat-config.js` with the correct default network.
 
 ```bash
 cd scaffold-eth
@@ -67,6 +72,7 @@ Documentation, tutorials, challenges, and many more resources, visit: [docs.scaf
 - [scaffold-eth-tailwind](https://github.com/stevenpslade/scaffold-eth-tailwind)
 - [scaffold-nextjs](https://github.com/scaffold-eth/scaffold-eth/tree/scaffold-nextjs)
 - [scaffold-chakra](https://github.com/scaffold-eth/scaffold-eth/tree/chakra-ui)
+- [Scaffold-ETH x Buildbear](https://github.com/BuildBearLabs/scaffold-eth)
 - [eth-hooks](https://github.com/scaffold-eth/eth-hooks)
 - [eth-components](https://github.com/scaffold-eth/eth-components)
 - [scaffold-eth-expo](https://github.com/scaffold-eth/scaffold-eth-expo)

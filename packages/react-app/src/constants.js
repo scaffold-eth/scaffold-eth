@@ -47,6 +47,14 @@ export const NETWORKS = {
     blockExplorer: "https://goerli.etherscan.io/",
     rpcUrl: `https://goerli.infura.io/v3/${INFURA_ID}`,
   },
+  sepolia: {
+    name: "sepolia",
+    color: "#87ff65",
+    chainId: 11155111,
+    faucet: "https://faucet.sepolia.dev/",
+    blockExplorer: "https://sepolia.etherscan.io/",
+    rpcUrl: `https://sepolia.infura.io/v3/${INFURA_ID}`,
+  },
   gnosis: {
     name: "gnosis",
     color: "#48a9a6",
