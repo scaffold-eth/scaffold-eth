@@ -1,4 +1,4 @@
-# 🏗 Scaffold-ETH x Buildbear1
+# 🏗 Scaffold-ETH x Buildbear
 
 🧪 Quickly experiment with Solidity using a forked private testnet, from the mainnet, and swapping tokens from Uniswap
 
