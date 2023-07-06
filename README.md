@@ -45,7 +45,7 @@ yarn start
 
 > 4️⃣ in a third terminal window, 🛰 deploy your contract:
 
-🚨 if you are not deploying to localhost, you will need to run `yarn generate` first and then fund the deployer account. To view account balances, run `yarn account`. You will aslo need to update `hardhat-config.js` with the correct default network.
+🚨 if you are not deploying to localhost, you will need to run `yarn generate` first and then fund the deployer account. To view account balances, run `yarn account`. You will also need to update `hardhat-config.js` with the correct default network.
 
 ```bash
 cd scaffold-eth
