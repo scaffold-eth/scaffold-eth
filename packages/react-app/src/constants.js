@@ -22,7 +22,7 @@ export const BLOCKNATIVE_DAPPID = process.env.REACT_APP_BLOCKNATIVE_DAPP_ID ?? "
 export const HARDHAT_HOST = process.env.REACT_APP_HARDHAT_HOST ?? "http://localhost";
 
 // Buildbear Base URL
-export const BASE_URL = "buildbear.io";
+export const BASE_URL = "dev.buildbear.io";
 
 // Buildbear Backend URL
 export const BB_BACKEND_URL = `https://backend.${BASE_URL}`;
