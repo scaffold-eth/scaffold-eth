@@ -29,7 +29,7 @@ import externalContracts from "./contracts/external_contracts";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { getRPCPollTime, Transactor, Web3ModalSetup } from "./helpers";
-import { Home, ExampleUI, SwapTokens, Hints, Subgraph, NFTMint, DEX, Lending } from "./views";
+import { Home, ExampleUI, SwapTokens, Hints, Subgraph, NFTMint, DEX, Lending, FlashLoan } from "./views";
 import { useStaticJsonRPC, useGasPrice } from "./hooks";
 
 const { ethers } = require("ethers");
@@ -328,6 +328,9 @@ function App(props) {
         <Menu.Item key="/lending">
           <Link to="/lending">Lending</Link>
         </Menu.Item>
+        <Menu.Item key="/Flashloan">
+          <Link to="/Flashloan">Flashloan + Arbitrage</Link>
+        </Menu.Item>
 
         {/* <Menu.Item key="/mainnetdai">
           <Link to="/mainnetdai">Mainnet DAI</Link>
@@ -427,6 +430,22 @@ function App(props) {
         </Route>
         <Route path="/lending">
           <Lending
+            address={address}
+            userSigner={userSigner}
+            mainnetProvider={mainnetProvider}
+            localProvider={localProvider}
+            yourLocalBalance={yourLocalBalance}
+            price={price}
+            tx={tx}
+            writeContracts={writeContracts}
+            readContracts={readContracts}
+            purpose={purpose}
+            contractConfig={contractConfig}
+            blockExplorer={blockExplorer}
+          />
+        </Route>
+        <Route path="/FlashLoan">
+          <FlashLoan
             address={address}
             userSigner={userSigner}
             mainnetProvider={mainnetProvider}

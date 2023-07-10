@@ -127,8 +127,28 @@ function Home({ yourLocalBalance, readContracts }) {
       </div>
 
       <div style={{ margin: 32 }}>
+        <span style={{ fontWeight: "bolder" }}>6.</span>
+        <span
+          className="highlight"
+          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
+        >
+          ArbitrageFlashLoan.sol
+        </span>{" "}
+        <span
+          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
+        >
+          (packages/hardhat/contracts/ArbitrageFlashLoan.sol)
+        </span>
+      </div>
+      <div style={{ margin: 32 }}>
+        <span style={{ marginLeft: 4, marginTop: -10, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4 }}>
+          In this contract, you will create your own ArbitrageFlashLoan BoT.
+        </span>
+      </div>
+
+      <div style={{ margin: 32 }}>
         <span style={{ marginRight: 8 }}>🍴</span>
-        For this deploying SwapOnUniswap,DEX, NFT, Lending on mainnet:
+        For this deploying SwapOnUniswap,DEX, NFT, Lending,ArbitrageFlashLoan on mainnet:
         <br />
         <span>Create your private testnet, forked from ethereum mainnet, with</span>
         <span
