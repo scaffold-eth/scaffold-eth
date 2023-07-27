@@ -1,8 +1,8 @@
 # 🏗 Scaffold-ETH
 
----
+# 🚨🚨 This repository has been archived and is now read-only 🚨🚨
 
-🎖 Scaffold-ETH 2 is the latest version, we recommend you fork: https://github.com/scaffold-eth/scaffold-eth-2
+## 🎖 Scaffold-ETH 2 is the latest version, we recommend you fork: https://github.com/scaffold-eth/scaffold-eth-2
 
 ---
 
