@@ -8,7 +8,7 @@ export default function AddressedCard({ badges, etherscanRef }: { badges: any[],
     <>
       {badges && badges.length > 0 ? (
         badges.map(badge => {
-          const src = 'https://remix-project.mypinata.cloud/ipfs/' + badge.decodedIpfsHash
+          const src = 'https://ipfs.io/ipfs/' + badge.decodedIpfsHash
           const txLink = etherscanRef + badge.transactionHash
           return (
             <Box

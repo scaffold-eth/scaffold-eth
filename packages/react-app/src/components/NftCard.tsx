@@ -51,7 +51,7 @@ export default function NftCard(props: NftCardProps) {
       const name = await mainnet.lookupAddress(toFormatted)
       let title = name ? name : toFormatted
 
-      const src = 'https://remix-project.mypinata.cloud/ipfs/' + toBase58(data.hash)
+      const src = 'https://ipfs.io/ipfs/' + toBase58(data.hash)
       const txLink = etherscan + transactionHash
       setState({ data, title, src, txLink })
     } catch (error) {
