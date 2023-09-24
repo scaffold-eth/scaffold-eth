@@ -1,0 +1,160 @@
+.image-18-icon,
+.information-child {
+  position: relative;
+  border-radius: var(--br-11xl);
+}
+.image-18-icon {
+  width: 812px;
+  height: 627px;
+  object-fit: cover;
+}
+.information-child {
+  width: 864px;
+  height: 619px;
+}
+.information {
+  position: absolute;
+  top: 5px;
+  left: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 61px;
+}
+.button-child {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: var(--br-mini);
+  background-color: var(--color-firebrick);
+  width: 241px;
+  height: 60px;
+}
+.mint-key {
+  position: absolute;
+  top: 9px;
+  left: 27px;
+  line-height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 188px;
+  height: 45px;
+}
+.button {
+  position: absolute;
+  top: 540px;
+  left: 1440px;
+  width: 241px;
+  height: 60px;
+  cursor: pointer;
+  font-family: var(--font-fipps);
+}
+.wanna-metastay-txt-container {
+  line-break: anywhere;
+  width: 100%;
+}
+.wanna-metastay {
+  position: absolute;
+  top: 507px;
+  left: 1447px;
+  line-height: 18px;
+  display: flex;
+  color: var(--color-gray-300);
+  align-items: center;
+  width: 228px;
+  height: 42px;
+}
+.frame-child {
+  top: 537px;
+  left: 925px;
+  width: 153px;
+  height: 57px;
+  overflow: hidden;
+}
+.b,
+.frame-child,
+.vector-icon {
+  position: absolute;
+}
+.b {
+  top: 524px;
+  left: 1006px;
+  font-size: 30px;
+  letter-spacing: 0.04em;
+  display: inline-block;
+  color: var(--color-black);
+  text-align: left;
+  width: 57px;
+}
+.vector-icon {
+  height: 7.2%;
+  width: 2.77%;
+  top: 76.91%;
+  right: 42.8%;
+  bottom: 15.89%;
+  left: 54.42%;
+  max-width: 100%;
+  overflow: hidden;
+  max-height: 100%;
+}
+.information-parent {
+  position: absolute;
+  top: 278px;
+  left: 107px;
+  width: 1729px;
+  height: 667px;
+  text-align: center;
+  color: var(--primary-contrast);
+}
+.welcome-to-pier-container {
+  position: absolute;
+  top: 340px;
+  left: 1040px;
+  font-size: var(--font-size-5xl);
+  display: inline-block;
+  width: 734px;
+  height: 121px;
+}
+.venue-capacity {
+  margin: 0;
+}
+.seated-dinner-up-to-1200-gue {
+  margin-bottom: 0;
+}
+.cocktail-reception-up-to-200 {
+  margin: 0;
+  padding-left: 32px;
+}
+.from {
+  font-family: var(--font-inter);
+}
+.venue-capacity-cocktail-container {
+  position: absolute;
+  top: 528px;
+  left: 1040px;
+  font-size: inherit;
+  display: inline-block;
+  width: 652px;
+  height: 203px;
+}
+.head-house-icon2 {
+  position: absolute;
+  top: 148px;
+  left: 1578px;
+  width: 192px;
+  height: 196px;
+  overflow: hidden;
+}
+.mint-the-key {
+  position: relative;
+  background-color: var(--primary-contrast);
+  width: 100%;
+  height: 1186px;
+  overflow: hidden;
+  text-align: left;
+  font-size: var(--font-size-6xl);
+  color: var(--color-black);
+  font-family: var(--font-inter);
+}
