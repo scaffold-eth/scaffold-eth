@@ -1,0 +1,125 @@
+.rectangle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: var(--br-31xl);
+  background-color: var(--primary-contrast);
+  width: 1700px;
+  height: 1112px;
+}
+.welcome-to-metastays {
+  font-weight: 600;
+}
+.welcome-to-metastays-where-r {
+  margin: 0;
+}
+.blank-line {
+  margin: 0;
+  color: var(--color-midnightblue);
+}
+.metastays {
+  font-weight: 600;
+  font-family: var(--font-inter);
+}
+.key-features1 {
+  font-weight: 500;
+}
+.pay-with-crypto-experience-ha1 {
+  margin-bottom: 0;
+}
+.pay-with-crypto-experience-ha {
+  margin: 0;
+  padding-left: var(--padding-29xl);
+}
+.welcome-to-metastays-container1 {
+  line-break: anywhere;
+  width: 100%;
+}
+.welcome-to-metastays-container {
+  position: absolute;
+  top: 0;
+  left: 69px;
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  width: 1562px;
+  height: 1112px;
+}
+.description {
+  position: absolute;
+  top: 1080px;
+  left: calc(50% - 850px);
+  width: 1700px;
+  height: 1112px;
+  text-align: left;
+  font-size: inherit;
+  color: var(--color-firebrick);
+}
+.and-the-comfort,
+.discover-the-fusion-container {
+  position: absolute;
+  top: 442px;
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+}
+.and-the-comfort {
+  left: calc(50% + 305px);
+  justify-content: center;
+  width: 528px;
+}
+.discover-the-fusion-container {
+  left: calc(50% - 867px);
+  width: 557px;
+}
+.connect-button-child {
+  position: absolute;
+  top: 1px;
+  left: calc(50% - 276px);
+  border-radius: 25px;
+  background-color: var(--color-firebrick);
+  width: 552px;
+  height: 108px;
+}
+.connect {
+  position: absolute;
+  top: 10px;
+  left: 148px;
+  letter-spacing: 0.04em;
+}
+.connect-button {
+  position: absolute;
+  top: 902px;
+  left: 667px;
+  width: 552px;
+  height: 108px;
+  cursor: pointer;
+  font-family: var(--font-fipps);
+}
+.metastays-1-icon {
+  position: absolute;
+  top: 140px;
+  left: calc(50% - 349px);
+  width: 693px;
+  height: 692px;
+  object-fit: cover;
+}
+.landing-page1 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1920px;
+  height: 2278px;
+  overflow-y: auto;
+}
+.landing-page {
+  position: relative;
+  background-color: var(--color-midnightblue);
+  width: 100%;
+  height: 2536px;
+  overflow: hidden;
+  text-align: center;
+  font-size: var(--font-size-17xl);
+  color: var(--primary-contrast);
+  font-family: var(--font-inter);
+}
