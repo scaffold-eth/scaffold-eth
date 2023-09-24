@@ -1,0 +1,155 @@
+.user-profile-child {
+  position: absolute;
+  top: 199px;
+  left: 1484px;
+  border-radius: var(--br-xl);
+  background-color: var(--color-whitesmoke);
+  width: 358px;
+  height: 763px;
+}
+.user-profile-item {
+  position: absolute;
+  top: 249px;
+  left: 1507px;
+  width: 312px;
+  height: 312px;
+}
+.image-19-icon,
+.user-profile-inner {
+  position: absolute;
+  top: 260px;
+  left: 1518px;
+  width: 291px;
+  height: 291px;
+}
+.image-19-icon {
+  top: 298px;
+  left: 1581px;
+  width: 164px;
+  height: 220px;
+  object-fit: cover;
+  mix-blend-mode: normal;
+}
+.skellyman0218 {
+  position: absolute;
+  top: 460px;
+  left: 1507px;
+  line-height: 14px;
+  display: none;
+  align-items: center;
+  width: 277px;
+  height: 45px;
+  -webkit-text-stroke: 1px #fff0ee;
+}
+.edit-profile-button-child {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: var(--br-xl);
+  background-color: var(--color-firebrick);
+  width: 254px;
+  height: 61px;
+}
+.go-to-lens {
+  position: absolute;
+  top: 22px;
+  left: 48px;
+  line-height: 18px;
+}
+.edit-profile-button {
+  position: absolute;
+  top: 804px;
+  left: calc(50% + 580px);
+  width: 254px;
+  height: 61px;
+  text-align: center;
+  font-size: var(--font-size-lg);
+  color: var(--primary-contrast);
+}
+.skellymanlens {
+  position: absolute;
+  top: 610px;
+  left: 1525px;
+  line-height: 5px;
+  display: flex;
+  font-weight: 500;
+  font-family: var(--font-inter);
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  width: 277px;
+  height: 45px;
+  -webkit-text-stroke: 1px #fff0ee;
+}
+.recent-stays-child {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: var(--br-xl);
+  background-color: var(--color-whitesmoke);
+  width: 1357px;
+  height: 360px;
+}
+.recent-stays1 {
+  position: absolute;
+  top: 21px;
+  left: 40px;
+  line-height: 18px;
+}
+.rectangle-parent {
+  position: absolute;
+  top: 0;
+  left: 1px;
+  width: 254px;
+  height: 61px;
+}
+.frame-parent,
+.recent-stays {
+  position: absolute;
+  top: 41px;
+  left: 18px;
+  width: 1319px;
+  height: 303px;
+}
+.recent-stays {
+  top: 199px;
+  left: 80px;
+  width: 1357px;
+  height: 360px;
+  font-size: var(--font-size-9xl);
+  color: var(--primary-contrast);
+  font-family: var(--font-inter);
+}
+.p {
+  margin: 0;
+}
+.skelly-smith {
+  position: absolute;
+  top: 548px;
+  left: 1562px;
+  line-height: 100px;
+  color: var(--color-midnightblue);
+  white-space: pre-wrap;
+  display: inline-block;
+  width: 203px;
+  height: 95px;
+}
+.icon-t-green-2x-1 {
+  position: absolute;
+  top: 713px;
+  left: 1605px;
+  width: 124px;
+  height: 84px;
+  object-fit: cover;
+}
+.user-profile {
+  position: relative;
+  background-color: var(--primary-contrast);
+  width: 100%;
+  height: 1186px;
+  overflow: hidden;
+  text-align: left;
+  font-size: var(--font-size-xl);
+  color: var(--color-black);
+  font-family: var(--font-fipps);
+}
