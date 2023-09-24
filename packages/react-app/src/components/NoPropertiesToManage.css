@@ -1,0 +1,15 @@
+.head-house-icon1 {
+  position: absolute;
+  top: 752px;
+  left: 1657px;
+  width: 180px;
+  height: 184px;
+  overflow: hidden;
+}
+.no-properties-to-manage {
+  position: relative;
+  background-color: var(--primary-contrast);
+  width: 100%;
+  height: 1080px;
+  overflow: hidden;
+}
