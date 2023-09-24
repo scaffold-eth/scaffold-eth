@@ -1,0 +1,24 @@
+.background {
+  position: absolute;
+  top: 253px;
+  left: 48px;
+  border-radius: 37px;
+  background-color: var(--color-whitesmoke);
+  width: 1834px;
+  height: 748px;
+}
+.head-house-icon {
+  position: absolute;
+  top: 127px;
+  left: 1548px;
+  width: 184px;
+  height: 188px;
+  overflow: hidden;
+}
+.book-housing {
+  position: relative;
+  background-color: var(--primary-contrast);
+  width: 100%;
+  height: 1282px;
+  overflow: hidden;
+}
